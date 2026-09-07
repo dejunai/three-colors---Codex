@@ -105,6 +105,11 @@ func run(g:Node) -> void:
 	cards(g)
 	assert(g.state.evidence.has("behan_name"))
 	g._close()
+	await g._walk_to(Vector3(-19.2,0,11.2))
+	assert(g.focused=="old_woman","The woman outside Kessler's shop must be reachable on the street")
+	g._interact("old_woman")
+	cards(g)
+	assert(g.state.evidence.has("old_woman"))
 	g.state.coat="Plain wool coat"
 	g._travel("boardinghouse",Vector3(4,0.1,-4))
 	await settle(g)
@@ -145,5 +150,5 @@ func run(g:Node) -> void:
 	assert(g.state.county_evidence==county and g.state.report_evidence==original)
 	assert(g.state.coat=="Plain wool coat" and g.comfort_time==38)
 	assert(g.player.position.distance_to(Vector3(0,0,-6.1))<0.6)
-	print("TOWN PASS: optional inquiry, corroboration, Father Behan's revisitable menu, county dispatch, immutable originals and supplement history, board, cross-location save/load")
+	print("TOWN PASS: optional inquiry, corroboration, Father Behan's revisitable menu, the woman outside Kessler's shop, county dispatch, immutable originals and supplement history, board, cross-location save/load")
 	g.get_tree().quit()

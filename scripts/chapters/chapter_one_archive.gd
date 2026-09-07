@@ -139,6 +139,8 @@ func _board(g:Node) -> void:
 		g._paragraph("SERVICE PLAN  ↔  MUNICIPAL SHEET  ↔  MEASURED PASSAGE\nTwo drawings agree on a limit the passage exceeds. The extension remains unexplained.",22)
 	if g.state.evidence.has("crew") and g.state.statements.has("The gardener saw the woman at the service door. Ask the steward."):
 		g._paragraph("THE SERVICE DOOR\nThe gardener placed the unidentified woman there once. The groundskeeper keeps a fixed distance from it now. Neither observation explains the other.",22)
+	if g.state.evidence.has("old_woman") and g.state.evidence.has("behan_name"):
+		g._paragraph("A DELUSION OF BEING CHOSEN  ↔  BEWARE THE OLD GODS\nA priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making.",22)
 	if g.state.evidence.has("crew") and g.state.evidence.has("pantry_lead"):
 		g._paragraph("THE GROUNDSKEEPER  ↔  THE BARMAN\nOne keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why.",22)
 	g._button("Read the complete notebook",g._journal)

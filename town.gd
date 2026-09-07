@@ -100,6 +100,13 @@ func _street() -> void:
 	person(Vector3(-8,0,-1),"242423",false).rotation.y=1.8
 	target("behan","Speak with Father Behan",Vector3(-8,0,-1))
 	person(Vector3(12,0,14),"414f42").rotation.y=-1.4
+	# Kessler's shop, shuttered since his death, and a woman who won't give her name.
+	box(self,Vector3(-20,1.1,12),Vector3(3.2,2.2,0.3),"333a2f",true)
+	lettering("KESSLER",Vector3(-20,2.5,11.85),26)
+	for y in [0.6,1.1,1.6]: box(self,Vector3(-20,y,11.83),Vector3(2.6,0.16,0.1),"241f1a")
+	var old_woman = person(Vector3(-19.2,0,11.2),"3c3a34")
+	old_woman.rotation.y = -2.0
+	target("old_woman","Speak with the woman outside the shop",Vector3(-19.2,0,11.2))
 	for x in [-28,28]: tree(Vector3(x,0,20))
 
 func _room_shell() -> void:

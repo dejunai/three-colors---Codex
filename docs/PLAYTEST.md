@@ -17,6 +17,7 @@ Record:
 9. At the kitchen wing yard: did anything about the groundskeeper's accent read as unusual before it was pointed out here? Did the refusal itself read as expertise, or as fear?
 10. At Odell's dismissal: which response did you pick, and why? Did the other option feel like a real path not taken, or an obviously worse choice?
 11. Did the barman's and Father Behan's menus feel like real conversations to return to, or like a checklist to clear? Did unlocking each next topic feel earned or arbitrary?
+12. Did the woman outside Kessler's shop feel like a missed opportunity to ask more, or did her leaving before Walter could press her read as intentional? Did her warning connect to anything else on its own, before the board pointed it out?
 
 Then try a minimal second run: go to Odell, prepare a report, and leave without opening the case file. Compare its record to the first run. Save midway, quit, and continue. Optional third check: return to the gardener wearing the plain coat.
 

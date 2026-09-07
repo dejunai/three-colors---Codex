@@ -9,7 +9,8 @@ const FACTS = {
 	"service_work": ["THE SERVICE DOOR", "Mrs. Almy says Naomi sought domestic work at the estate. Neither the dates nor an employer's name is confirmed. Ask the steward for employment records.", "Mrs. Almy · boardinghouse statement"],
 	"gazette": ["THE MORNING EDITION", "The paper names six club members and describes an apparent accident. It names neither the woman nor the boy. Its report supplies no independent explanation of the wounds.", "Gazette · morning edition"],
 	"exemption": ["THE EXEMPTION NOTICE", "Walter's old exemption notice records the need to care for Constance Corwin. It concerns his life before the case. It supplies no evidence about the deaths at the estate.", "Walter's dresser · personal correspondence"],
-	"behan_name": ["NAMED AFTER THE SHIP", "The Ophion Club was named for a vessel lost with its crew a century ago. Father Behan calls the members' belief that the ship had been chosen a delusion, not a fact: men inherit money, then invent a reason they deserved it.", "Father Behan · rectory conversation"]
+	"behan_name": ["NAMED AFTER THE SHIP", "The Ophion Club was named for a vessel lost with its crew a century ago. Father Behan calls the members' belief that the ship had been chosen a delusion, not a fact: men inherit money, then invent a reason they deserved it.", "Father Behan · rectory conversation"],
+	"old_woman": ["BEWARE THE OLD GODS", "An unnamed woman outside Kessler's shuttered shop tells Walter to look at what the six men looked at, not at the men themselves. Pressed to explain, she warns him of something with no boundaries and no need of them, then leaves before he finishes writing it down.", "Kessler's shuttered shop · unnamed witness"]
 }
 
 const ARRIVAL = [
@@ -77,6 +78,14 @@ const SCENES = {
 		["WALTER CORWIN", "Known."],
 		["FATHER BEHAN", "They came to believe the ship had been chosen.\n\nIt wasn't. Men inherit money, and then invent a reason they deserved it."],
 		["WALTER'S NOTEBOOK", "A shipowner's classical flourish, nothing more, by the priest's own account.\n\nThe club's fortune has a human explanation. Walter intends to find it."]],
+	"old_woman": [
+		["OUTSIDE THE SHUTTERED SHOP", "An old woman waits by Kessler's boarded windows. She has been waiting, Walter suspects, for someone in a coat like his."],
+		["THE OLD WOMAN", "You're looking at the men.\n\nLook at what they looked at."],
+		["WALTER CORWIN", "Who?"],
+		["THE OLD WOMAN", "The old ones don't love.\n\n[She crosses herself.]"],
+		["WALTER CORWIN", "What do you mean, the old ones?"],
+		["THE OLD WOMAN", "Beware the old gods, Officer. They have no boundaries, and no need of them.\n\nMen name the ocean too. Doesn't mean the ocean knows."],
+		["WALTER'S NOTEBOOK", "She is gone before he finishes the sentence.\n\nHe writes what he remembers of it, exactly as given. He does not yet have a place on the board where it belongs."]],
 	"supplement": [
 		["THE INTAKE COUNTER", "Walter files the witness's name, the source of the identification, and only the additional observations he has actually recorded.\n\nThe original report remains as received."],
 		["THE INTAKE CLERK", "Received as a supplement.\n\nI can stamp it.\nI can't make the captain read it."]],
