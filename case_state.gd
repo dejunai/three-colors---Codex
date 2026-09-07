@@ -1,6 +1,6 @@
 extends RefCounted
 
-const VERSION = 2
+const VERSION = 3
 var evidence: Array[String] = []
 var statements: Array[String] = []
 var visited: Array[String] = []
@@ -24,6 +24,10 @@ var supplement_evidence: Array[String] = []
 var county_evidence: Array[String] = []
 var inquiry_topics: Array[String] = []
 var supplement_history: Array = []
+var tunnel_complete = false
+var county_statements: Array[String] = []
+var report_sources: Dictionary = {}
+var county_sources: Dictionary = {}
 
 func discover(id: String) -> void:
 	if not evidence.has(id): evidence.append(id)
@@ -34,11 +38,12 @@ func record(id: String) -> void:
 func perception() -> int:
 	return 2 + mini(4, evidence.size() / 2)
 
-func complete_report(mode: String) -> void:
+func complete_report(mode: String, sources:Dictionary={}) -> void:
 	if intake_done: return
 	report = mode
 	report_evidence.assign(evidence)
 	report_statements.assign(statements)
+	report_sources=sources.duplicate(true)
 	copies.assign(["Walter's notebook", "Precinct intake"])
 	if mode == "Full inquest requested": copies.append("County registrar — outgoing copy")
 
@@ -47,20 +52,22 @@ func receive_report() -> void:
 	if report == "Full inquest requested":
 		county_dispatched = true
 		county_evidence.assign(report_evidence)
+		county_statements.assign(report_statements)
+		county_sources=report_sources.duplicate(true)
 		copies.erase("County registrar — outgoing copy")
 		if not copies.has("County registrar — dispatched copy"): copies.append("County registrar — dispatched copy")
 
-func file_supplement(send_county: bool) -> void:
+func file_supplement(send_county: bool, sources:Dictionary={}) -> void:
 	supplement_filed = true
 	supplement_evidence.assign(evidence)
-	supplement_history.append({"evidence":evidence.duplicate(),"county":send_county})
+	supplement_history.append({"evidence":evidence.duplicate(),"statements":statements.duplicate(),"sources":sources.duplicate(true),"county":send_county,"sequence":supplement_history.size()+1})
 	if not copies.has("Precinct — dated supplement"): copies.append("Precinct — dated supplement")
 	if send_county:
 		county_dispatched = true
 		if not copies.has("County registrar — dated supplement"): copies.append("County registrar — dated supplement")
 
 func pack() -> Dictionary:
-	return {"version":VERSION,"evidence":evidence,"statements":statements,"visited":visited,
+	return {"version":VERSION,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"statements":statements,"visited":visited,
 		"report":report,"copies":copies,"report_evidence":report_evidence,"report_statements":report_statements,"flask":flask,"coat":coat,"minutes":minutes,
 		"position":[position.x,position.y,position.z],"yaw":yaw,"started":started,"finished":finished,
 		"world":world,"estate_complete":estate_complete,"intake_done":intake_done,
@@ -68,11 +75,25 @@ func pack() -> Dictionary:
 		"supplement_evidence":supplement_evidence,"county_evidence":county_evidence,"inquiry_topics":inquiry_topics,"supplement_history":supplement_history}
 
 func restore(d: Dictionary) -> bool:
-	if int(d.get("version",0)) not in [1,VERSION]: return false
-	for key in ["evidence","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history"]:
+	if int(d.get("version",0)) not in [1,2,VERSION]: return false
+	for key in ["evidence","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history","county_statements"]:
 		if not d.get(key,[]) is Array: return false
+		if key!="supplement_history":
+			for value in d.get(key,[]):
+				if not value is String: return false
+	for key in ["report_sources","county_sources"]:
+		if not d.get(key,{}) is Dictionary: return false
+	for item in d.get("supplement_history",[]):
+		if not item is Dictionary: return false
+		for key in ["evidence","statements"]:
+			if not item.get(key,[]) is Array: return false
+			for value in item.get(key,[]):
+				if not value is String: return false
+		if not item.get("sources",{}) is Dictionary: return false
 	var p = d.get("position",[0,0.1,36])
 	if not p is Array or p.size() != 3: return false
+	for value in p:
+		if not (value is float or value is int) or not is_finite(float(value)): return false
 	evidence.assign(d.get("evidence",[]))
 	statements.assign(d.get("statements",[]))
 	visited.assign(d.get("visited",[]))
@@ -88,7 +109,7 @@ func restore(d: Dictionary) -> bool:
 	started = bool(d.get("started",false))
 	finished = bool(d.get("finished",false))
 	world = str(d.get("world","estate"))
-	if world not in ["estate","town","precinct","boardinghouse","room"]: world = "estate"
+	if world not in ["estate","town","precinct","boardinghouse","room","tunnel"]: world = "estate"
 	estate_complete = bool(d.get("estate_complete",false))
 	intake_done = bool(d.get("intake_done",false))
 	supplement_filed = bool(d.get("supplement_filed",false))
@@ -97,6 +118,20 @@ func restore(d: Dictionary) -> bool:
 	county_evidence.assign(d.get("county_evidence",[]))
 	inquiry_topics.assign(d.get("inquiry_topics",[]))
 	supplement_history=d.get("supplement_history",[]).duplicate(true)
+	for item in supplement_history:
+		if not item is Dictionary: return false
+		var entry_evidence:Array[String]=[]
+		entry_evidence.assign(item.get("evidence",[]))
+		item["evidence"]=entry_evidence
+		if item.has("statements"):
+			var entry_statements:Array[String]=[]
+			entry_statements.assign(item.statements)
+			item["statements"]=entry_statements
+		if item.has("sequence"): item.sequence=int(item.sequence)
+	tunnel_complete=bool(d.get("tunnel_complete",false))
+	county_statements.assign(d.get("county_statements",[]))
+	report_sources=d.get("report_sources",{}).duplicate(true)
+	county_sources=d.get("county_sources",{}).duplicate(true)
 	if int(d.version) == 1 and finished:
 		estate_complete = true
 		finished = false

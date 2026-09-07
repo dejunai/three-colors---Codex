@@ -1,7 +1,10 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://main.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/chapters/chapter_one.gd" id="2"]
 
 [node name="NoExitWound" type="Node3D"]
 script = ExtResource("1")
 
+[node name="ChapterOne" type="Node3D" parent="."]
+script = ExtResource("2")
