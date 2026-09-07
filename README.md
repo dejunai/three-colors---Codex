@@ -1,6 +1,6 @@
 # Three Colors of Madness — No Exit Wound
 
-Native third-person 3D opening prototype aligned with Design Bible v13 and TDD v1. This is a playable blockout, with primitive art and provisional writing. Roughly ten minutes is an exploratory pacing target, not a measured playtime or a forced timer.
+Native third-person 3D opening prototype aligned with Design Bible v13 and TDD v2. This is a playable blockout, with primitive art and provisional writing. Roughly ten minutes is an exploratory pacing target, not a measured playtime or a forced timer.
 
 ## Play
 
@@ -18,7 +18,7 @@ Double-click `Launch.cmd`, or open `project.godot` in Godot and press F5. The la
 
 Read the civic-history intertitles. Speak to the gatehouse boy, follow the drive, and explore the rose garden, terrace, and birch grove. Consult Captain Odell beyond the fountain. Prepare a report at the field desk beside him. Return to the estate gates to continue to Pickman Street. Submit the report at the precinct, ask Mrs. Almy about the unidentified woman at the boardinghouse, and return to your room. Set the notebook on the desk to finish the current playable inquiry.
 
-Optional observations: wounds, grove, knife, watch, intact windows, seating list, belongings, and the assistant's testimony. The gardener supplies an additional statement when Walter wears his plain wool coat (change it in personal effects).
+Optional observations: wounds, grove, knife, watch, intact windows, seating list, belongings, the assistant's testimony, and the grounds crew's fixed distance from the kitchen wing's service door. The gardener supplies an additional statement when Walter wears his plain wool coat (change it in personal effects).
 
 A minimal run can go directly to Odell and the report. His statement supplies the count without claiming examinations Walter skipped. Opening the case file is optional; it never gates progression. The report snapshots the evidence present when prepared. Later observations remain in Walter's notebook until he revises the report at the desk.
 
@@ -32,7 +32,7 @@ Accessibility is available before play: static grain by default, distortion inte
 
 ## Scope
 
-This build includes perspective movement/camera collision, eight optional observations, conversations, a sparse paperdoll and inventory, displayed Strength/Perception, clothing, a finite flask affecting presentation only, report choices, and a persistent opening record.
+This build includes perspective movement/camera collision, nine optional observations, conversations, a sparse paperdoll and inventory, displayed Strength/Perception, clothing, a finite flask affecting presentation only, report choices, a persistent opening record, and a scoped Observer color tell in the active shader.
 
 It does not include combat, forced spill, glass-shattering break, fatal comprehension, later chapters, gamepad support, full key rebinding, or a full encumbrance/level-up system. Later consumption of the record by Ekon is future work. The v10 difficulty screen is deferred. The respectful all-eight wording is provisional and needs review against Walter's intended initial bias. Neither report choice is scored as morality.
 
@@ -55,7 +55,7 @@ Live renderer captures use `-- --capture=world`, `title`, `case`, `dialogue`, `s
 - `estate.gd`: deterministic environment, figures, collision, interaction points.
 - `case_state.gd`: canonical record and serialization.
 - `story.gd`: provisional dialogue and factual evidence.
-- `film.gdshader`: monochrome, iris, grain and subtle drift.
+- `film.gdshader`: monochrome, iris, grain, subtle drift, and a narrow-hue exception that lets Observer-flagged materials keep color.
 - `docs/PLAYTEST.md`: first-playtest questions.
 
 ## Service passage interaction loop
@@ -64,7 +64,7 @@ After finishing the town inquiry, choose **Continue to the service passage**. Ex
 
 The flask reduces presentation strain; it does not change the encounter's rules. Death offers an entrance checkpoint retry restoring the full record, resources, relief, camera, and encounter state. Continuing a dead save preserves the death screen. Menus pause the encounter.
 
-Returning to the precinct exposes a consequence of the records actually sent to the county. A copy containing both wound and intact-window observations opens a further foundation-record request. This is a persistent documentary lead; the subsequent survey-drawer scene is not built yet. Report and supplement snapshots retain statements and evidence-source labels at filing time.
+Returning to the precinct exposes a consequence of the records actually sent to the county. A copy containing both wound and intact-window observations opens a further foundation-record request. The precinct survey drawer lets Walter follow that reference directly, or independently search the property index after measuring the passage. Transcribing the comparison adds a sourced notebook entry; filing it remains optional. Report and supplement snapshots retain statements and evidence-source labels at filing time.
 
 `Test interaction loop.cmd` verifies both routes, empty-flask completion, county consequences, historical snapshots, death/continue/retry, exact saves, paused reading, settings migration, and presentation relief with distortion disabled. `Test opening.cmd` and `Test town.cmd` remain regression checks. Renderer capture names also include `tunnel_access`, `tunnel_death`, and `tunnel_record`.
 

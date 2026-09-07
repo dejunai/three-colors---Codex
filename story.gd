@@ -10,7 +10,8 @@ const FACTS = {
 	"gas": ["NO BLAST DAMAGE", "Windows facing the garden remain intact. Neither the nearby stone nor the clothing shows scorching. The proposed gas accident is unsupported by the visible scene.", "Terrace windows · assistant's examination"],
 	"register": ["FIVE NAMES", "The steward's seating list names Wexford, Fenn, Corliss, Kessler, and Pruitt. A sixth place is set without a name. A missing name is a missing fact, not an explanation.", "Club terrace · seating list"],
 	"shoes": ["EXPECTED TO GO ON", "The boy's shoes have been resoled. The woman's coat is too light for the season. A boardinghouse inquiry may identify them; clothing cannot establish that nobody will miss them.", "Birch grove · belongings inspection"],
-	"testimony": ["BOTH SCENES", "The assistant counted eight and saw no evidence of an explosion. He was told to prepare the six club members first. His observations corroborate the separate scene notes.", "Coroner's assistant · statement"]
+	"testimony": ["BOTH SCENES", "The assistant counted eight and saw no evidence of an explosion. He was told to prepare the six club members first. His observations corroborate the separate scene notes.", "Coroner's assistant · statement"],
+	"crew": ["A WIDE BERTH", "A groundskeeper stacks crates outside the kitchen wing, never setting one nearer the service door than the last. Asked, he says the step is uneven there. He returns to the crates before Walter can ask a second question.", "Kitchen wing yard · direct observation"]
 }
 
 const INTROS = [
@@ -52,6 +53,11 @@ const SCENES = {
 		["WALTER CORWIN", "Any sign of an explosion?"],
 		["THE CORONER'S ASSISTANT", "None I can find. No burns. No broken glass.\n\nI can't tell you what happened. I can tell you what isn't here."],
 		["A CLEAN READ", "Two independent observations agree.\nFor a moment the work is simple.\n\nWalter knows what to ask next."]],
+	"crew": [
+		["THE KITCHEN WING YARD", "A groundskeeper stacks crates beside a banked fire, working fast in the cold. The service door stands a few feet off. He never sets a crate nearer to it than the last."],
+		["WALTER CORWIN", "Something wrong with the door?"],
+		["THE GROUNDSKEEPER", "Uneven step. Easy to turn an ankle before sunup.\n\nMind the same, if you're going in."],
+		["WALTER'S NOTEBOOK", "The distance he keeps is exact, not nervous. He named a reason before Walter asked for one, then went back to the crates without slowing down.\n\nThe observation is exact. The reason he gave may not be."]],
 	"gardener": [
 		["THE GARDENER", "I keep the roses. I don't keep the hours of the men who walk among them."],
 		["WALTER CORWIN", "You found both scenes?"],
