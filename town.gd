@@ -94,7 +94,11 @@ func _street() -> void:
 	target("gazette","Read the morning paper",Vector3(8.5,0,17.3))
 	lettering("ESTATE ROAD",Vector3(-27,2.4,15.5),38)
 	target("street_estate","Return to the Ophion estate",Vector3(-27,0,15))
-	person(Vector3(-8,0,-1),"69745f",false).rotation.y=1.8
+	# A rectory marker behind which Father Behan will speak plainly, if asked.
+	box(self,Vector3(-8.6,0.55,-1.6),Vector3(0.06,1.1,0.06),"3a443a")
+	box(self,Vector3(-8.6,0.85,-1.6),Vector3(0.5,0.06,0.06),"3a443a")
+	person(Vector3(-8,0,-1),"242423",false).rotation.y=1.8
+	target("behan","Speak with Father Behan",Vector3(-8,0,-1))
 	person(Vector3(12,0,14),"414f42").rotation.y=-1.4
 	for x in [-28,28]: tree(Vector3(x,0,20))
 

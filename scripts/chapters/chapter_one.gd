@@ -573,6 +573,16 @@ func _town_interaction(id:String) -> bool:
 					_save_game()
 					_witness_menu())
 			return true
+		"behan":
+			if state.visited.has("behan"):
+				_behan_menu()
+			else:
+				_cards(TownStory.SCENES.behan,func():
+					state.visited.append("behan")
+					state.record("Father Behan discussed the six men's characters freely and himself not at all.")
+					_save_game()
+					_behan_menu())
+			return true
 		"board": _board(); return true
 		"day_close":
 			if not state.intake_done or not state.evidence.has("naomi"):
@@ -668,6 +678,26 @@ func _witness_menu() -> void:
 				_save_game()
 				_witness_menu()))
 	_button("Thank her and leave the conversation",_close)
+	_focus_first()
+
+func _behan_menu() -> void:
+	_panel("witness","Father Behan","PICKMAN STREET  /  BEHIND THE RECTORY")
+	_paragraph("He answers plainly, the way a man does who stopped being frightened of the truth a long time before Walter arrived.",22)
+	if not state.inquiry_topics.has("behan_invitation"):
+		_button("Ask why he declined the club's invitations",func():
+			_cards(TownStory.SCENES.behan_invitation,func():
+				state.inquiry_topics.append("behan_invitation")
+				state.record("Father Behan declined two invitations to the club and would not say why.")
+				_save_game()
+				_behan_menu()))
+	else:
+		_button("Ask about the meaning of the club's name"+("  · recorded" if state.evidence.has("behan_name") else ""),func():
+			_cards(TownStory.SCENES.behan_name,func():
+				state.discover("behan_name")
+				if not state.inquiry_topics.has("behan_name"): state.inquiry_topics.append("behan_name")
+				_save_game()
+				_behan_menu()))
+	_button("Thank him and leave",_close)
 	_focus_first()
 
 func _supplement() -> void:

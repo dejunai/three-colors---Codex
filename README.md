@@ -22,7 +22,7 @@ Optional observations: wounds, grove, knife, watch, intact windows, seating list
 
 A minimal run can go directly to Odell and the report. His statement supplies the count without claiming examinations Walter skipped. Odell's dismissal ("Six members, Corwin... The other two are a filing matter") opens a genuine choice — answer him to his face, or say nothing and let the notebook carry it — recorded as a distinct statement either way; neither option is scored or gates anything downstream. Opening the case file is optional; it never gates progression. The report snapshots the evidence present when prepared. Later observations remain in Walter's notebook until he revises the report at the desk.
 
-The town includes optional witness questions, a meal ledger, a newspaper, a personal notice, and an automatic case board. The board never gates progression. Reports become immutable when received at the precinct; later findings can be filed as dated supplements, with optional county dispatch. Witness claims remain distinguished from corroborated findings.
+The town includes optional witness questions, a meal ledger, a newspaper, a personal notice, an automatic case board, and Father Behan on the street behind the rectory marker, whose own revisitable menu turns up why the Ophion Club is named for a lost ship and the money it left behind. The board never gates progression. Reports become immutable when received at the precinct; later findings can be filed as dated supplements, with optional county dispatch. Witness claims remain distinguished from corroborated findings.
 
 ## Saves and accessibility
 

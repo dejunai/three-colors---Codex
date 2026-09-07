@@ -8,7 +8,8 @@ const FACTS = {
 	"lay_lead": ["AN UNPAID LAY", "Mrs. Almy recalls Naomi asking about wages owed to a whaling ancestor. She does not hold the wage document and cannot verify the claim. This is a lead, not proof of a debt or a motive for the killings.", "Mrs. Almy · account of Naomi's inquiry"],
 	"service_work": ["THE SERVICE DOOR", "Mrs. Almy says Naomi sought domestic work at the estate. Neither the dates nor an employer's name is confirmed. Ask the steward for employment records.", "Mrs. Almy · boardinghouse statement"],
 	"gazette": ["THE MORNING EDITION", "The paper names six club members and describes an apparent accident. It names neither the woman nor the boy. Its report supplies no independent explanation of the wounds.", "Gazette · morning edition"],
-	"exemption": ["THE EXEMPTION NOTICE", "Walter's old exemption notice records the need to care for Constance Corwin. It concerns his life before the case. It supplies no evidence about the deaths at the estate.", "Walter's dresser · personal correspondence"]
+	"exemption": ["THE EXEMPTION NOTICE", "Walter's old exemption notice records the need to care for Constance Corwin. It concerns his life before the case. It supplies no evidence about the deaths at the estate.", "Walter's dresser · personal correspondence"],
+	"behan_name": ["NAMED AFTER THE SHIP", "The Ophion Club was named for a vessel lost with its crew a century ago. Father Behan calls the members' belief that the ship had been chosen a delusion, not a fact: men inherit money, then invent a reason they deserved it.", "Father Behan · rectory conversation"]
 }
 
 const ARRIVAL = [
@@ -60,6 +61,22 @@ const SCENES = {
 		["WALTER CORWIN", "The birches do not appear in the account.\nNeither does a source for the word accident."]],
 	"exemption": [
 		["THE DRESSER", "An exemption notice, folded along the same worn crease.\nConstance Corwin's name beneath his own.\n\nWalter puts it back.\nThere are other papers requiring him tonight."]],
+	"behan": [
+		["FATHER BEHAN", "Wexford's temper. Fenn's vanity. Kessler's grudges. Corliss's ambitions.\n\nI'll discuss any of it. None of it explains a hole above the bridge of a nose."],
+		["WALTER CORWIN", "You knew all six."],
+		["FATHER BEHAN", "I knew what men tell a priest, which is not the same as what they are.\n\nAsk your question, Officer. I've answered worse."]],
+	"behan_invitation": [
+		["WALTER CORWIN", "You were invited to the club. Twice. You declined both times."],
+		["FATHER BEHAN", "I did."],
+		["WALTER CORWIN", "Why?"],
+		["FATHER BEHAN", "[He says nothing further. The silence is not evasive. It is final.]"],
+		["WALTER'S NOTEBOOK", "A refusal offered without excuse.\nWalter has learned to trust a plain no more than a decorated one.\n\nHe does not press it a second time."]],
+	"behan_name": [
+		["WALTER CORWIN", "Do you know the meaning behind the club's name?"],
+		["FATHER BEHAN", "They named the club after the ship."],
+		["WALTER CORWIN", "Known."],
+		["FATHER BEHAN", "They came to believe the ship had been chosen.\n\nIt wasn't. Men inherit money, and then invent a reason they deserved it."],
+		["WALTER'S NOTEBOOK", "A shipowner's classical flourish, nothing more, by the priest's own account.\n\nThe club's fortune has a human explanation. Walter intends to find it."]],
 	"supplement": [
 		["THE INTAKE COUNTER", "Walter files the witness's name, the source of the identification, and only the additional observations he has actually recorded.\n\nThe original report remains as received."],
 		["THE INTAKE CLERK", "Received as a supplement.\n\nI can stamp it.\nI can't make the captain read it."]],
