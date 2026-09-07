@@ -236,6 +236,9 @@ func _ready() -> void:
 	roof.scale.z = 0.45
 	roof.rotation.y = PI/4
 	lettering("O P H I O N",Vector3(0,5.87,-14.44),62)
+	# A barman keeping his own counsel near the portico steps.
+	var barman = person(Vector3(-6.5,0,-15.7),"3f4540",false)
+	barman.rotation.y = 0.9
 	# Garden: openings in southern hedge and eastern birch access.
 	hedge(Vector3(-10,0.65,6),Vector3(12,1.3,1.25))
 	hedge(Vector3(10,0.65,6),Vector3(12,1.3,1.25))
@@ -313,5 +316,6 @@ func _ready() -> void:
 	target("assistant","Speak to the coroner's assistant",Vector3(12.5,0,-3.8))
 	target("gardener","Speak to the gardener",Vector3(-12,0,1))
 	target("odell","Speak to Captain Odell",Vector3(4,0,-11.5))
+	target("barman","Speak with the club's barman",Vector3(-6.5,0,-15.7))
 	target("report","Write the preliminary report",Vector3(6,0,-13.1))
 	target("exit","Return to the precinct",Vector3(0,0,39))

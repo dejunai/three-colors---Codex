@@ -11,7 +11,10 @@ const FACTS = {
 	"register": ["FIVE NAMES", "The steward's seating list names Wexford, Fenn, Corliss, Kessler, and Pruitt. A sixth place is set without a name. A missing name is a missing fact, not an explanation.", "Club terrace · seating list"],
 	"shoes": ["EXPECTED TO GO ON", "The boy's shoes have been resoled. The woman's coat is too light for the season. A boardinghouse inquiry may identify them; clothing cannot establish that nobody will miss them.", "Birch grove · belongings inspection"],
 	"testimony": ["BOTH SCENES", "The assistant counted eight and saw no evidence of an explosion. He was told to prepare the six club members first. His observations corroborate the separate scene notes.", "Coroner's assistant · statement"],
-	"crew": ["A WIDE BERTH", "A groundskeeper stacks crates outside the kitchen wing, never setting one nearer the service door than the last. Asked, he says the step is uneven there. He returns to the crates before Walter can ask a second question.", "Kitchen wing yard · direct observation"]
+	"crew": ["A WIDE BERTH", "A groundskeeper stacks crates outside the kitchen wing, never setting one nearer the service door than the last. Asked, he says the step is uneven there. He returns to the crates before Walter can ask a second question.", "Kitchen wing yard · direct observation"],
+	"club_talk": ["TOWARD THE END", "Across several visits at the bar, the barman describes the six members' late conversation shifting, toward the end, from power to something spoken tenderly, of an unnamed woman. He will not name her either.", "Ophion Club barman · overheard testimony"],
+	"club_devotion": ["SHE'LL HAVE US HOME", "Kessler told the barman, more than once, that she would have them home, that she was no different from any mother. The other members apparently agreed without ever naming her.", "Ophion Club barman · overheard testimony"],
+	"pantry_lead": ["THE OLD PANTRY DOOR", "The barman names a boarded pantry door in the kitchen wing, unopened since a renovation nobody finished. He will not go near it himself and will not say why.", "Ophion Club barman · direct account"]
 }
 
 const INTROS = [
@@ -58,6 +61,26 @@ const SCENES = {
 		["WALTER CORWIN", "Something wrong with the door?"],
 		["THE GROUNDSKEEPER", "Uneven step. Easy to turn an ankle before sunup.\n\nMind the same, if you're going in."],
 		["WALTER'S NOTEBOOK", "The distance he keeps is exact, not nervous. He named a reason before Walter asked for one, then went back to the crates without slowing down.\n\nThe observation is exact. The reason he gave may not be."]],
+	"barman_badge": [
+		["THE CLUB'S BARMAN", "Evening, Officer. Same as your last visit?"],
+		["WALTER CORWIN", "Same as my last visit."],
+		["THE CLUB'S BARMAN", "One short pour, then. I'll leave you to it."]],
+	"barman_plain": [
+		["THE CLUB'S BARMAN", "He sets down a glass he wasn't asked to refill.\n\nHaven't seen you in here without the badge before, Officer."],
+		["WALTER CORWIN", "I'm not asking as the badge tonight."],
+		["THE CLUB'S BARMAN", "Didn't figure you were.\n\nSit if you're staying. I've got glasses either way."]],
+	"club_talk": [
+		["AT THE FAR END OF THE BAR", "Several visits of exactly one short pour and exactly one question apiece have bought Walter this much: the barman starts talking near him, if not quite to him."],
+		["THE BARMAN", "They stopped speaking of power, toward the end.\n\nStarted speaking, tenderly, of her."],
+		["WALTER'S NOTEBOOK", "Toward the end of what, he doesn't say.\nHer, he doesn't explain.\n\nWalter writes both down exactly as given."]],
+	"club_devotion": [
+		["THE BARMAN", "Kessler said it more than once. She'll have us home.\n\nSaid she's no different from any mother."],
+		["WALTER'S NOTEBOOK", "A butcher, a judge, a doctor, a district attorney, a man of property, all of them speaking the same sentence about the same absent woman.\n\nNone of them ever named her."]],
+	"pantry_lead": [
+		["THE BARMAN", "There's gin left from before the war. Behind the old pantry door.\n\nThey boarded it up during a renovation and never finished unboarding it. Nobody goes back there. Nobody's gone back there in years."],
+		["WALTER CORWIN", "Will you show me?"],
+		["THE BARMAN", "No."],
+		["WALTER'S NOTEBOOK", "He won't say why. He also won't take back the direction he just gave.\n\nThe kitchen wing. The old pantry."]],
 	"gardener": [
 		["THE GARDENER", "I keep the roses. I don't keep the hours of the men who walk among them."],
 		["WALTER CORWIN", "You found both scenes?"],

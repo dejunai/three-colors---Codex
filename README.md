@@ -18,9 +18,9 @@ Double-click `Launch.cmd`, or open `project.godot` in Godot and press F5. The la
 
 Read the civic-history intertitles. Speak to the gatehouse boy, follow the drive, and explore the rose garden, terrace, and birch grove. Consult Captain Odell beyond the fountain. Prepare a report at the field desk beside him. Return to the estate gates to continue to Pickman Street. Submit the report at the precinct, ask Mrs. Almy about the unidentified woman at the boardinghouse, and return to your room. Set the notebook on the desk to finish the current playable inquiry.
 
-Optional observations: wounds, grove, knife, watch, intact windows, seating list, belongings, the assistant's testimony, and the grounds crew's fixed distance from the kitchen wing's service door. The gardener supplies an additional statement when Walter wears his plain wool coat (change it in personal effects).
+Optional observations: wounds, grove, knife, watch, intact windows, seating list, belongings, the assistant's testimony, and the grounds crew's fixed distance from the kitchen wing's service door. The gardener supplies an additional statement when Walter wears his plain wool coat (change it in personal effects). The club's barman, near the portico, opens into a revisitable menu of three further observations asked one at a time, each unlocking the next.
 
-A minimal run can go directly to Odell and the report. His statement supplies the count without claiming examinations Walter skipped. Opening the case file is optional; it never gates progression. The report snapshots the evidence present when prepared. Later observations remain in Walter's notebook until he revises the report at the desk.
+A minimal run can go directly to Odell and the report. His statement supplies the count without claiming examinations Walter skipped. Odell's dismissal ("Six members, Corwin... The other two are a filing matter") opens a genuine choice — answer him to his face, or say nothing and let the notebook carry it — recorded as a distinct statement either way; neither option is scored or gates anything downstream. Opening the case file is optional; it never gates progression. The report snapshots the evidence present when prepared. Later observations remain in Walter's notebook until he revises the report at the desk.
 
 The town includes optional witness questions, a meal ledger, a newspaper, a personal notice, and an automatic case board. The board never gates progression. Reports become immutable when received at the precinct; later findings can be filed as dated supplements, with optional county dispatch. Witness claims remain distinguished from corroborated findings.
 
@@ -32,7 +32,7 @@ Accessibility is available before play: static grain by default, distortion inte
 
 ## Scope
 
-This build includes perspective movement/camera collision, nine optional observations, conversations, a sparse paperdoll and inventory, displayed Strength/Perception, clothing, a finite flask affecting presentation only, report choices, a persistent opening record, and a scoped Observer color tell in the active shader.
+This build includes perspective movement/camera collision, twelve optional observations (three of them behind a revisitable witness menu), a branching response to Odell, a sparse paperdoll and inventory, displayed Strength/Perception, clothing, a finite flask affecting presentation only, report choices, a persistent opening record, and a scoped Observer color tell in the active shader.
 
 It does not include combat, forced spill, glass-shattering break, fatal comprehension, later chapters, gamepad support, full key rebinding, or a full encumbrance/level-up system. Later consumption of the record by Ekon is future work. The v10 difficulty screen is deferred. The respectful all-eight wording is provisional and needs review against Walter's intended initial bias. Neither report choice is scored as morality.
 
@@ -42,7 +42,7 @@ The earlier 2.5D scenes, scripts, shaders, and tests remain available through `L
 
 ## Verification and source
 
-`Test town.cmd` checks travel through all three interiors, minimal progression without the board, optional inquiry, immutable report and supplement history, migration, and cross-location saves. `Test opening.cmd` checks the minimal route, optional observations, clothing testimony, report snapshots, save/load, completion, actual WASD traversal, departure focus, and hedge collision. The existing `tests/smoke_test.gd` also remains runnable.
+`Test town.cmd` checks travel through all three interiors, minimal progression without the board, optional inquiry, immutable report and supplement history, migration, and cross-location saves. `Test opening.cmd` checks the minimal route, Odell's response branch, optional observations including the barman's revisitable menu, clothing testimony, report snapshots, save/load, completion, actual WASD traversal, departure focus, and hedge collision. The existing `tests/smoke_test.gd` also remains runnable.
 
 Live renderer captures use `-- --capture=world`, `title`, `case`, `dialogue`, `settings`, `effects`, `large_text`, or `gate`. These developer arguments are not shown in-game. Reviewed captures are in `docs/qa/`.
 

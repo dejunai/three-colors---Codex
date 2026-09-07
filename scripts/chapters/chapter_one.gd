@@ -293,6 +293,16 @@ func _interact(id:String) -> void:
 		if state.report.is_empty(): return
 		_finish()
 		return
+	if id == "barman":
+		if state.visited.has("barman"):
+			_barman_menu()
+		else:
+			var intro = "barman_plain" if state.coat == "Plain wool coat" else "barman_badge"
+			_cards(Story.SCENES[intro],func():
+				state.visited.append("barman")
+				_save_game()
+				_barman_menu())
+		return
 	var key = "gardener_plain" if id == "gardener" and state.coat == "Plain wool coat" else id
 	if not Story.SCENES.has(key): return
 	_cards(Story.SCENES[key],func():
@@ -301,13 +311,50 @@ func _interact(id:String) -> void:
 		if id == "assistant":
 			state.discover("testimony")
 			state.discover("eight")
-		if id == "odell":
-			state.discover("eight")
-			state.record("Odell proposed an accident before cause had been established.")
 		if key == "gardener_plain": state.record("The gardener saw the woman at the service door. Ask the steward.")
 		elif id == "gardener": state.record("The gardener requested eight sheets. Six arrived first.")
+		if id == "odell":
+			state.discover("eight")
+			_save_game()
+			_odell_response()
+		else:
+			_save_game()
+			_toast("Recorded in Walter's case file.  [ Tab ]",4)
+	)
+
+func _odell_response() -> void:
+	_panel("witness","A filing matter","THE TERRACE  /  WALTER'S ANSWER")
+	_paragraph("Odell has already turned back toward the sheeted tables. Walter can let the matter rest here, or say what he actually thinks before it does.",22)
+	_button("\"I understand it. I don't accept it.\"",func():
+		state.record("Walter told Odell to his face that six was not the whole count. Odell did not answer.")
 		_save_game()
-		_toast("Recorded in Walter's case file.  [ Tab ]",4)
+		_close()
+		_toast("Recorded in Walter's case file.  [ Tab ]",4))
+	_button("Say nothing. Write it down instead.",func():
+		state.record("Walter wrote EIGHT in his own file, in a hand larger than his usual notation, and said nothing further to the captain.")
+		_save_game()
+		_close()
+		_toast("Recorded in Walter's case file.  [ Tab ]",4))
+	_focus_first()
+
+func _barman_menu() -> void:
+	_panel("witness","The club's barman","THE PORTICO  /  ASK, LISTEN, RECORD")
+	_paragraph("He keeps his voice low and his eyes on the glasses he's drying. He has already decided how much of this he's willing to say.",22)
+	_button("Ask what the members talk about, this late"+("  · recorded" if state.evidence.has("club_talk") else ""),func(): _estate_observation("club_talk",true))
+	if state.evidence.has("club_talk"):
+		_button("Ask what Kessler used to say"+("  · recorded" if state.evidence.has("club_devotion") else ""),func(): _estate_observation("club_devotion",true))
+	if state.evidence.has("club_devotion"):
+		_button("Ask about the old pantry door"+("  · recorded" if state.evidence.has("pantry_lead") else ""),func(): _estate_observation("pantry_lead",true))
+	_button("Leave him to his glasses",_close)
+	_focus_first()
+
+func _estate_observation(id:String,return_to_barman:bool=false) -> void:
+	_cards(Story.SCENES[id],func():
+		state.discover(id)
+		if not state.inquiry_topics.has(id): state.inquiry_topics.append(id)
+		_save_game()
+		if return_to_barman: _barman_menu()
+		else: _close(); _toast("Recorded in Walter's case file.  [ Tab ]",4)
 	)
 
 func _objective() -> String:
