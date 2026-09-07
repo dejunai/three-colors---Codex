@@ -146,6 +146,8 @@ func _precinct() -> void:
 	box(self,Vector3(6.8,2.3,7.78),Vector3(2.2,1.5,0.1),"374d37")
 	target("intake","Submit the estate report",Vector3(0,0,-1.3))
 	target("supplement","File additional observations",Vector3(-5,0,2.1))
+	lettering("SURVEYS",Vector3(7,3.25,-4.85),28)
+	target("survey_drawer","Consult the survey drawer",Vector3(7,0,-3.8))
 
 func _boardinghouse() -> void:
 	box(self,Vector3(-5.8,0.6,-2.3),Vector3(3,0.65,1.2),"5c7853",true)

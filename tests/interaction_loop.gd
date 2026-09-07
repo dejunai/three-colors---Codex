@@ -35,6 +35,24 @@ func run(g:Node) -> void:
 	assert(g._custody_result().begins_with("No county"))
 	assert(not g._county_has_comparison())
 	print("LOOP PASS: minimal route without flask or board; lower measurement; return and unsent-copy consequence")
+	# An unsent record still permits independent archive work; looking alone grants nothing.
+	g._close()
+	await g._walk_to(Vector3(7,0,5))
+	await g._walk_to(Vector3(7,0,-3.8))
+	assert(g.focused=="survey_drawer")
+	g._interact("survey_drawer")
+	assert(not g.state.evidence.has("municipal_foundation"))
+	g._survey_drawer(true)
+	assert(not g.state.evidence.has("municipal_foundation"))
+	for button in g.content.find_children("*","Button",true,false):
+		if button.text.begins_with("Copy the reference"):
+			button.pressed.emit()
+			break
+	assert(g.state.evidence.has("municipal_foundation"))
+	assert(not g.state.report_evidence.has("municipal_foundation"))
+	g._save_game()
+	g._load_game()
+	assert(g.state.evidence.has("municipal_foundation"))
 	# Complete snapshots, including statements captured after the original was received.
 	g.state.record("Later gardener statement · source: gardener in plain coat")
 	g.state.discover("wounds")
@@ -43,6 +61,8 @@ func run(g:Node) -> void:
 	var first=g.state.supplement_history[0].duplicate(true)
 	assert(first.statements.has("Later gardener statement · source: gardener in plain coat"))
 	assert(first.sources.has("lower_foundation"))
+	assert(first.evidence.has("municipal_foundation"))
+	assert(first.sources.municipal_foundation.contains("municipal foundation sheet"))
 	g.state.record("A still later statement")
 	g.state.file_supplement(false)
 	assert(g.state.supplement_history[0]==first)
@@ -57,6 +77,12 @@ func run(g:Node) -> void:
 			request_found=true
 			break
 	assert(request_found and g.state.evidence.has("county_foundation_request"))
+	g.state.evidence.erase("municipal_foundation")
+	g._survey_drawer()
+	var direct_copy=false
+	for button in g.content.find_children("*","Button",true,false):
+		if button.text.begins_with("Copy the reference"): direct_copy=true
+	assert(direct_copy,"County request points directly to the sheet")
 	g.state.flask=3
 	g.comfort_time=37
 	g._begin_tunnel()

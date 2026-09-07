@@ -499,7 +499,9 @@ func _region_name() -> String:
 		"precinct": return "PRECINCT 4"
 		"boardinghouse": return "MRS. ALMY'S PARLOR"
 		"room": return "CORWIN'S ROOM"
-	return "THE BIRCH GROVE" if player.position.x > 18 else ("THE TERRACE" if player.position.z < -10 else ("THE ROSE GARDEN" if player.position.z < 6 else "THE OPHION ESTATE"))
+	if player.position.x > 18: return "THE BIRCH GROVE"
+	if player.position.x < -10 and player.position.z < -14: return "THE KITCHEN WING YARD"
+	return "THE TERRACE" if player.position.z < -10 else ("THE ROSE GARDEN" if player.position.z < 6 else "THE OPHION ESTATE")
 
 func _town_interaction(id:String) -> bool:
 	match id:
@@ -513,6 +515,7 @@ func _town_interaction(id:String) -> bool:
 			return true
 		"intake": _intake(); return true
 		"supplement": _supplement(); return true
+		"survey_drawer": _survey_drawer(); return true
 		"almy":
 			if state.visited.has("almy"):
 				_witness_menu()
@@ -550,6 +553,26 @@ func _town_observation(id:String,return_to_witness:bool=false) -> void:
 		_save_game()
 		if return_to_witness: _witness_menu()
 		else: _close(); _toast("Source recorded in Walter's notebook.  [ J ]",4))
+
+func _survey_drawer(index_open:bool=false) -> void:
+	_panel("case","The survey drawer","PRECINCT 4  /  MUNICIPAL RECORDS")
+	if state.evidence.has("municipal_foundation"):
+		_paragraph("Walter's transcription remains in the notebook. The sheet stays in the drawer.")
+		_button("Read the comparison",func(): _fact("municipal_foundation"))
+	elif not state.evidence.has("lower_foundation"):
+		_paragraph("Foundation sheets, street surveys, drainage plans. Without a measured discrepancy to compare, Walter has no particular entry to copy.")
+	elif state.evidence.has("county_foundation_request") or index_open:
+		_paragraph("KITCHEN WING / FOUNDATION\n\nThe municipal sheet stops at the same support as the service plan. Walter lays his measurement beside it. The passage he walked continues beyond the limits on both pages.\n\nNeither drawing says who extended it, or when.",24)
+		_button("Copy the reference and comparison into my notebook",func():
+			state.discover("municipal_foundation")
+			_save_game()
+			_close()
+			_toast("Municipal source recorded. The sheet stays in the drawer.  [ J ]",5))
+	else:
+		_paragraph("No reply has named a sheet. Walter can work through the property index himself.\n\nUnder the estate address: drainage, boundaries, kitchen-wing foundation.")
+		_button("Follow the kitchen-wing entry",func(): _survey_drawer(true))
+	_button("Close the drawer",_close)
+	_focus_first()
 
 func _intake() -> void:
 	if state.intake_done:

@@ -14,6 +14,7 @@ Record:
 6. Which intertitles felt like dialogue, and which felt like narration interrupting play?
 7. Was there a moment when evidence became satisfying to understand?
 8. Did you want to continue into town?
+9. At the kitchen wing yard: did anything about the groundskeeper's accent read as unusual before it was pointed out here? Did the refusal itself read as expertise, or as fear?
 
 Then try a minimal second run: go to Odell, prepare a report, and leave without opening the case file. Compare its record to the first run. Save midway, quit, and continue. Optional third check: return to the gardener wearing the plain coat.
 

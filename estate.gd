@@ -85,12 +85,14 @@ func lamp(pos: Vector3, tall: bool = true) -> void:
 	light.omni_range = 8.0
 	add_child(light)
 
-func person(pos: Vector3, coat: String = "353838", hat: bool = true) -> Node3D:
+func person(pos: Vector3, coat: String = "353838", hat: bool = true, accent: String = "") -> Node3D:
 	var root = Node3D.new()
 	root.position = pos
 	add_child(root)
 	cylinder(root,Vector3(0,1.08,0),0.32,0.85,coat,0.24).name = "Coat"
 	box(root,Vector3(0,1.48,0),Vector3(0.52,0.27,0.32),coat)
+	if not accent.is_empty():
+		box(root,Vector3(0.16,1.48,-0.17),Vector3(0.07,0.10,0.025),accent).name = "Accent"
 	cylinder(root,Vector3(0,1.78,0),0.15,0.3,"a0a095",0.17)
 	box(root,Vector3(0,1.38,-0.18),Vector3(0.08,0.24,0.025),"b9b8ac")
 	for side in [-1,1]:
@@ -266,6 +268,13 @@ func _ready() -> void:
 	body(Vector3(23,0,-5),0.6,true)
 	body(Vector3(24.6,0,-4.5),0.4,true,true)
 	for p in [Vector3(20,0,-9),Vector3(26,0,-8),Vector3(27,0,-1),Vector3(22,0,1)]: tree(p,true)
+	# Kitchen wing yard: the grounds crew keeps a fixed distance from the service door.
+	box(self,Vector3(-13.4,0.35,-16.4),Vector3(0.55,0.5,0.55),"3b443b")
+	box(self,Vector3(-13.0,0.85,-16.6),Vector3(0.5,0.42,0.5),"353c36")
+	cylinder(self,Vector3(-12.0,0.06,-15.4),0.32,0.12,"242626")
+	sphere(self,Vector3(-12.0,0.24,-15.4),0.15,"656a66")
+	var groundskeeper = person(Vector3(-12.6,0,-16.6),"3a3f36",true,"7a2a1a")
+	groundskeeper.rotation.y = 2.4
 	# Boundary walls and iron gate, with a lodge beside the entrance.
 	for x in [-14,14]: box(self,Vector3(x,1.2,37),Vector3(20,2.4,0.65),"6c736b",true)
 	for x in [-4.1,4.1]:
@@ -298,6 +307,7 @@ func _ready() -> void:
 	target("knife","Examine beneath the hedge",Vector3(-7,0,-0.4))
 	target("watch","Examine the unidentified man",Vector3(-3.8,0,-3.1))
 	target("gas","Examine the terrace windows",Vector3(-8,0,-18.0))
+	target("crew","Watch the grounds crew",Vector3(-12.6,0,-16.9))
 	target("register","Read the seating list",Vector3(7.4,0,-13.1))
 	target("shoes","Examine the belongings",Vector3(25.6,0,-4.0))
 	target("assistant","Speak to the coroner's assistant",Vector3(12.5,0,-3.8))

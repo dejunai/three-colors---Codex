@@ -1,5 +1,7 @@
 extends "res://estate.gd"
 
+const TunnelStory = preload("res://tunnel_story.gd")
+
 # Encounter state is advanced by main only during exploration. Menus pause it.
 const CYCLE = 12.0
 const NOTICE_TIME = 1.4
@@ -88,11 +90,8 @@ func pose() -> void:
 	figure.get_node("RightArm").rotation.x = -0.9 if phase()=="watching" else 0.0
 
 func cue() -> String:
-	if exposure > 0: return "It sees Walter. Get behind stone."
-	match phase():
-		"warning": return "[A thin, wet cough.] Its head lifts toward the central passage."
-		"watching": return "It watches the central passage."
-	return "It turns toward the wall."
+	if exposure > 0: return TunnelStory.CUES.exposed
+	return TunnelStory.CUES.get(phase(),TunnelStory.CUES.turned)
 
 func presentation(strain:float,relieved:bool) -> void:
 	# A quiet geometric alternative remains readable even at zero optical distortion.
