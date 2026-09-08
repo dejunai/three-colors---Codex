@@ -2,6 +2,7 @@
 setlocal
 set "GODOT_STANDARD=C:\Portables\GodotStandard\Godot_v4.7.2-stable_win64.exe"
 set "OUT=%~dp0build\web"
+set "PORT=8060"
 
 if not exist "%GODOT_STANDARD%" (
   echo Standard (non-Mono) Godot not found at %GODOT_STANDARD%.
@@ -20,6 +21,11 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo Serving %OUT% at http://localhost:8060 ...
-start "" http://localhost:8060/index.html
-python -m http.server 8060 -d "%OUT%"
+for /f "usebackq delims=" %%P in (`powershell -NoProfile -Command "$connections = Get-NetTCPConnection -LocalPort %PORT% -State Listen -ErrorAction SilentlyContinue; if ($connections) { $connections | Select-Object -ExpandProperty OwningProcess -Unique }"`) do (
+  echo Stopping existing server on port %PORT% ^(PID %%P^)...
+  taskkill /PID %%P /T /F >nul 2>&1
+)
+
+echo Serving %OUT% at http://localhost:%PORT% ...
+start "" http://localhost:%PORT%/index.html
+python -m http.server %PORT% -d "%OUT%"
