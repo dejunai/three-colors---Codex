@@ -48,6 +48,21 @@ It does not include combat, forced spill, glass-shattering break, fatal comprehe
 
 The earlier 2.5D scenes, scripts, shaders, and tests remain available through `Launch legacy.cmd`; see `README_legacy.md`. The project now starts `main.tscn`. `GameState` and `LegacyInputs` autoloads retain compatibility with the old scene.
 
+## Web build on GitHub Pages
+
+The exported Web build already lives in `build/web/`. GitHub Pages can publish that static folder over HTTPS once **Settings → Pages** is set to **Source: GitHub Actions**. The workflow in `.github/workflows/deploy-pages.yml` uploads `build/web/` and deploys it whenever the Web export changes on `main`.
+
+Suggested publish URL: `https://dejunai.github.io/three-colors---Codex/`
+
+Update flow:
+
+1. Re-export the Godot Web build so `build/web/` contains the latest `index.html`, `.js`, `.wasm`, and `.pck` files.
+2. Commit and push the updated `build/web/` files.
+3. Wait for the **Deploy GitHub Pages** workflow to finish.
+4. Open the GitHub Pages URL instead of `http://localhost:8060`.
+
+The existing `Build and serve web.cmd` script still runs the local HTTP server on port 8060 for local checks; GitHub Pages is the HTTPS publishing path.
+
 ## Verification and source
 
 `Test town.cmd` checks travel through all three interiors, minimal progression without the board, optional inquiry, immutable report and supplement history, migration, and cross-location saves. `Test opening.cmd` checks the minimal route, Odell's response branch, optional observations including the barman's revisitable menu, clothing testimony, report snapshots, save/load, completion, actual WASD traversal, departure focus, and hedge collision. The existing `tests/smoke_test.gd` also remains runnable.
