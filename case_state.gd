@@ -33,6 +33,7 @@ var ammo = 6
 var flask_spilled = false
 var flask_spill_amount = 0
 var drowned_dead = false
+<<<<<<< HEAD
 # Staging milestones are explicit; re-entering a room never advances a day.
 var day = 1
 var steward_visits = 0
@@ -42,6 +43,8 @@ var montage_index = -1
 func steward_ready() -> bool:
 	return visited.has("almy") and day == 3 and steward_visits >= 2 and coat == "Plain wool coat"
 
+=======
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
 
 func strength() -> int:
 	return 2

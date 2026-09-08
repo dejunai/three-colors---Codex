@@ -169,6 +169,7 @@ func _board(g:Node) -> void:
 		box.add_child(source)
 	if g.state.evidence.has("crew") and g.state.statements.has("The gardener saw the woman at the service door. Ask the steward."):
 		g._paragraph("THE SERVICE DOOR\nThe gardener placed the unidentified woman there once. The groundskeeper keeps a fixed distance from it now. Neither observation explains the other.",22)
+<<<<<<< HEAD
 	var confirmed=false
 	for entry in LINKS.values():
 		if not g.state.has_link(entry.id): continue
@@ -183,6 +184,19 @@ func _board(g:Node) -> void:
 		g._paragraph("THE CAUSAL SPINE — FORMING  (PERCEPTION %d)\nTHE SIX VICTIMS  ═  THE INHERITED FORTUNE  —  AN UNEXPLAINED PASSAGE\nTwine stretches across the center of the board. The line between the insurance fortune and the murders is visible, but the final connection beneath the house still lacks its last link." % p,21)
 	else:
 		g._paragraph("THE CAUSAL SPINE — UNRESOLVED  (PERCEPTION %d)\nA scatter of individual cards. Twine hangs loose between the columns. The board waits for more of the case to be seen before the underlying spine can connect." % p,19)
+=======
+	if g.state.evidence.has("old_woman") and g.state.evidence.has("behan_name"):
+		g._paragraph("A DELUSION OF BEING CHOSEN  ↔  BEWARE THE OLD GODS\nA priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making.",22)
+	if g.state.evidence.has("crew") and g.state.evidence.has("pantry_lead"):
+		g._paragraph("THE GROUNDSKEEPER  ↔  THE BARMAN\nOne keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why.",22)
+	var p = g.state.perception()
+	if p >= 5:
+		g._paragraph("THE CAUSAL SPINE — COMPLETE  (PERCEPTION %d)\nSIX MEN IN EVENING DRESS  ═  THE OPHION'S SINKING  ═  AN UNDERSEA PASSAGE  ═  A SUMMONED PRESENCE\nEvery fact has found its parent. The twine connects the rose garden to the cellar without an empty card between them. Walter did not choose the moment the board went whole; the shape closed itself.",22)
+	elif p >= 4:
+		g._paragraph("THE CAUSAL SPINE — FORMING  (PERCEPTION %d)\nTHE SIX VICTIMS  ═  THE INHERITED FORTUNE  —  AN UNEXPLAINED PASSAGE\nTwine stretches across the center of the board. The line between the insurance fortune and the murders is visible, but the final connection beneath the house still lacks its last link.",21)
+	else:
+		g._paragraph("THE CAUSAL SPINE — UNRESOLVED  (PERCEPTION %d)\nA scatter of individual cards. Twine hangs loose between the columns. The board waits for more of the case to be seen before the underlying spine can connect.",19)
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
 	g._button("Read the complete notebook",g._journal)
 	g._button("Step away from the board",g._close)
 	g._focus_first()

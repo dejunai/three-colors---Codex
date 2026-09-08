@@ -93,15 +93,24 @@ func run(g:Node) -> void:
 	assert(not g.estate.points.has("drowned_remains"), "Defeated sailor target is removed from active points")
 	print("COMBAT PASS: ammo tracking, knife melee scaling with Strength, immortal cultist vs mortal drowned finishing blow")
 
+<<<<<<< HEAD
 	# 5. Test Causal Spine Completion on Corkboard & Link Acceleration
 	# With 8 observations (7 existing + lodging) and 0 links, perception is 2 + 2 + 0 = 4 (Spine Forming)
 	g.state.discover("lodging")
 	assert(g.state.evidence.size() == 8, "Evidence size should be 8")
 	assert(g.state.perception() == 4, "Perception without links should be 4 (Spine Forming)")
+=======
+	# 5. Test Causal Spine Completion on Corkboard
+	# Add facts to reach Perception >= 5 (evidence count >= 6: 2 + mini(4, 8/2) = 6)
+	for id in ["intake", "lodging", "lay_lead", "municipal_foundation"]:
+		g.state.discover(id)
+	assert(g.state.perception() >= 5, "Perception must reach threshold for whole causal spine")
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
 	g._travel("room", Vector3(0, 0.1, 4))
 	await settle(g)
 	g._board()
 	assert(g.page == "board")
+<<<<<<< HEAD
 	var found_spine_forming = false
 	for child in g.content.find_children("*", "Label", true, false):
 		if child.text.contains("CAUSAL SPINE — FORMING"):
@@ -117,12 +126,18 @@ func run(g:Node) -> void:
 
 	# Refresh board
 	g._board()
+=======
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
 	var found_spine_complete = false
 	for child in g.content.find_children("*", "Label", true, false):
 		if child.text.contains("CAUSAL SPINE — COMPLETE"):
 			found_spine_complete = true
 			break
+<<<<<<< HEAD
 	assert(found_spine_complete, "Corkboard must display complete causal spine when Perception reaches 5 via drawn link")
+=======
+	assert(found_spine_complete, "Corkboard must display complete causal spine when Perception >= 5")
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
 	g._close()
 
 	print("PHASE 2 PASS: forced spill, inspectable loss, combat stagger, ammo spending, Strength scaling, drowned defeat, corkboard causal spine")

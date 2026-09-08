@@ -5,6 +5,7 @@ var points = {}
 var colliders: Array[Rect2] = []
 var rng = RandomNumberGenerator.new()
 var conditional_actors: Dictionary = {}
+<<<<<<< HEAD
 var scene_bodies: Array[Node3D] = []
 var gardener_actor: Node3D
 var groundskeeper_actor: Node3D
@@ -30,6 +31,8 @@ func sync_staging(st) -> void:
 		target("service_entrance","Enter the smoking lounge through the service entrance",Vector3(-10,0,-18))
 	else: points.erase("service_entrance")
 
+=======
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
 
 func register_actor(id: String, node: Node3D, target_id: String = "", condition: Callable = Callable()) -> void:
 	conditional_actors[id] = {

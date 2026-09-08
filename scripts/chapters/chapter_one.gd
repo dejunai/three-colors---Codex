@@ -86,7 +86,11 @@ var last_hazard_phase = ""
 
 func start(player_rig:Node3D) -> void:
 	rig=player_rig
+<<<<<<< HEAD
 	test_mode = OS.get_cmdline_user_args().has("--qa") or OS.get_cmdline_user_args().has("--qa-town") or OS.get_cmdline_user_args().has("--qa-loop") or OS.get_cmdline_user_args().has("--qa-phase2") or OS.get_cmdline_user_args().has("--qa-staging")
+=======
+	test_mode = OS.get_cmdline_user_args().has("--qa") or OS.get_cmdline_user_args().has("--qa-town") or OS.get_cmdline_user_args().has("--qa-loop") or OS.get_cmdline_user_args().has("--qa-phase2")
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
 	facts = Story.FACTS.duplicate(true)
 	facts.merge(TownStory.FACTS)
 	facts.merge(TunnelStory.FACTS)
@@ -103,7 +107,10 @@ func start(player_rig:Node3D) -> void:
 	if OS.get_cmdline_user_args().has("--qa-town"): call_deferred("_qa_town")
 	if OS.get_cmdline_user_args().has("--qa-loop"): call_deferred("_qa_loop")
 	if OS.get_cmdline_user_args().has("--qa-phase2"): call_deferred("_qa_phase2")
+<<<<<<< HEAD
 	if OS.get_cmdline_user_args().has("--qa-staging"): call_deferred("_qa_staging")
+=======
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
 	if not capture_mode.is_empty(): call_deferred("_capture")
 
 
@@ -531,7 +538,10 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true)
 		estate=Town.new()
 		estate.location=destination
 	add_child(estate)
+<<<<<<< HEAD
 	if destination == "estate": estate.sync_staging(state)
+=======
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
 	if estate and estate.has_method("sync_actors"):
 		estate.sync_actors(state)
 	elif destination=="town" and state.evidence.has("old_woman") and estate.has_method("dismiss_old_woman"):

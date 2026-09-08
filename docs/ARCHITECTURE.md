@@ -42,7 +42,15 @@ The woman outside Kessler's shuttered shop (canonical-only) is deliberately not 
 
 ## Review corrections
 
+<<<<<<< HEAD
 Observer color preservation currently uses a screen-wide red-pixel threshold, not an object mask. A controlled palette supports the intended prototype effect; the live capture `qa_observer.png` verifies the groundskeeper's red chest accent standing out against the monochrome world. The groundskeeper observation is available without a Perception gate. Perception reveals tunnel route information, not exclusive physical access. Odell answers are locked by their saved statement; older contradictory records are preserved rather than silently rewritten. The woman disappears after her warning and remains absent on load and travel, enforced through the declarative actor lifecycle. Barman dialogue now describes the present daytime portico encounter. Observation returns are generalized to arbitrary Callables.
+=======
+Observer color preservation currently uses a screen-wide red-pixel threshold, not an object mask. A controlled palette supports the intended prototype effect; true object isolation remains future work. The `tests/capture_views.gd` rig can stage a dedicated "observer" capture (`qa_observer.png`), but no such image exists in `docs/qa/` yet — the shader's real-world legibility against the groundskeeper's accent is still unconfirmed by any rendered output. The groundskeeper observation is available without a Perception gate. Perception reveals tunnel route information, not exclusive physical access. Odell answers are locked by their saved statement; older contradictory records are preserved rather than silently rewritten. The woman disappears after her warning and remains absent on load and travel, enforced through the declarative actor lifecycle. Barman dialogue now describes the present daytime portico encounter. Observation returns are generalized to arbitrary Callables.
+
+## Movement latch and click-to-move (TDD v8 correction + one item TDD v8 missed)
+
+TDD v6 hypothesized an input-latch fix for `main.gd`'s movement, found no supporting commit, and declined to credit one. TDD v8 corrects this: the fix is real, just uncommitted at the time — `main.gd` carries a `MOVE_LATCH_MIN = 0.15` constant and a `move_latch_timer` dict, set from `_unhandled_input`'s action-pressed events rather than polled, so a keydown/keyup pair that resolves within a single physics frame (synthetic/automated input) still registers as held for at least that long. `main.gd` also carries a second, related addition TDD v8's source read did not mention: click-to-move (`move_target`). A left click raycasts the world (layer 1) and steers the player toward the hit point, clamped into `movement_bounds`, until arrival or a keypress — an accessibility fallback for players who can't sustain a held key, and incidentally a working path for automated/scripted input. Neither gates on `Input.mouse_mode == MOUSE_MODE_CAPTURED`, since pointer lock is unreliable in some browser embeddings and gating on it would silently disable the fallback.
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
 
 ## Phase 2 Mechanics: Forced Spill, Combat Stagger, and Causal Spine
 
@@ -56,6 +64,7 @@ Observer color preservation currently uses a screen-wide red-pixel threshold, no
    - The case board diegetically reflects Walter's accumulated Perception.
    - At Perception >= 5, the board displays the completed causal spine ("SIX MEN IN EVENING DRESS = THE OPHION'S SINKING = AN UNDERSEA PASSAGE = A SUMMONED PRESENCE"), showing that the shape closes itself when sufficient evidence is linked, rather than gating progression behind an arbitrary puzzle.
    - Automated regression test `tests/phase_two_mechanics.gd` (`--qa-phase2`) verifies all Phase 2 mechanics.
+<<<<<<< HEAD
 
 
 ## Chapter One restaging (September 8, 2026)
@@ -65,3 +74,5 @@ Observer color preservation currently uses a screen-wide red-pixel threshold, no
 `chapter_one_notebook.gd` renders detached values only, with a close callback. The existing corkboard retains linking. `montage_still.gd` draws fixed storyboard images under the protected intertitles. No collected facts are synthesized by the montage.
 
 `tests/staging_flow.gd` exercises real traversal, all gates, repeat visits, exact montage resume, source-call bypasses, body removal, legacy migration, notebook immutability, and continuation. See `docs/qa/STAGING_PASS.md` for verification, pacing measurements and explicit placeholders; the TDD remains separately maintained.
+=======
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
