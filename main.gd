@@ -10,6 +10,11 @@ var pitch = 0.38
 var distance = 6.3
 var animation_time = 0.0
 var movement_bounds = Rect2(-31,-18.4,62,60.4)
+# Guarantees a keydown/keyup pair resolves as movement even if it completes within one physics frame (synthetic/automated input).
+const MOVE_LATCH_MIN = 0.15
+var move_latch_timer = {"walk_forward":0.0,"walk_back":0.0,"walk_left":0.0,"walk_right":0.0}
+# Click-to-move waypoint: accessibility/automation fallback for players who can't sustain a held key.
+var move_target = null
 
 func _ready() -> void:
 	_setup_inputs()
@@ -64,9 +69,29 @@ func _update_camera(delta:float) -> void:
 	if camera.global_position.distance_to(pivot) > 0.01: camera.look_at(pivot)
 
 func _physics_process(delta:float) -> void:
-	if not is_instance_valid(chapter) or chapter.page != "play": return
-	var axis = Input.get_vector("walk_left","walk_right","walk_forward","walk_back")
-	var movement = Vector3(axis.x,0,axis.y).rotated(Vector3.UP,yaw)
+	if not is_instance_valid(chapter) or chapter.page != "play":
+		move_target = null
+		return
+	for action in move_latch_timer.keys(): move_latch_timer[action] = maxf(0.0,move_latch_timer[action]-delta)
+	var axis = Vector2(
+		(1.0 if _dir_pressed("walk_right") else 0.0)-(1.0 if _dir_pressed("walk_left") else 0.0),
+		(1.0 if _dir_pressed("walk_back") else 0.0)-(1.0 if _dir_pressed("walk_forward") else 0.0)
+	)
+	if axis.length() > 1.0: axis = axis.normalized()
+	var movement:Vector3
+	if axis.length() > 0.05:
+		move_target = null
+		movement = Vector3(axis.x,0,axis.y).rotated(Vector3.UP,yaw)
+	elif move_target != null:
+		var to_target:Vector3 = move_target-player.global_position
+		to_target.y = 0
+		if to_target.length() < 0.35:
+			move_target = null
+			movement = Vector3.ZERO
+		else:
+			movement = to_target.normalized()
+	else:
+		movement = Vector3.ZERO
 	var speed = 3.5 if Input.is_action_pressed("brisk") else 2.15
 	player.velocity.x = move_toward(player.velocity.x,movement.x*speed,delta*13)
 	player.velocity.z = move_toward(player.velocity.z,movement.z*speed,delta*13)
@@ -89,7 +114,12 @@ func _physics_process(delta:float) -> void:
 	_update_camera(delta)
 	chapter.tick_world(delta)
 
+func _dir_pressed(action:String) -> bool:
+	return Input.is_action_pressed(action) or move_latch_timer[action] > 0.0
+
 func _unhandled_input(event:InputEvent) -> void:
+	for action in move_latch_timer.keys():
+		if event.is_action_pressed(action): move_latch_timer[action] = MOVE_LATCH_MIN
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F11:
 		var mode = DisplayServer.window_get_mode()
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if mode == DisplayServer.WINDOW_MODE_FULLSCREEN else DisplayServer.WINDOW_MODE_FULLSCREEN)
@@ -100,4 +130,16 @@ func _unhandled_input(event:InputEvent) -> void:
 		if event is InputEventMouseButton and event.pressed:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP: distance = maxf(3.2,distance-0.5)
 			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN: distance = minf(9,distance+0.5)
+			# Click-to-move: not gated on pointer-lock, so it works whether or not mouse capture is available (accessibility/automation fallback).
+			if event.button_index == MOUSE_BUTTON_LEFT:
+				var from = camera.project_ray_origin(event.position)
+				var to = from+camera.project_ray_normal(event.position)*100
+				var query = PhysicsRayQueryParameters3D.create(from,to,1)
+				var hit = get_world_3d().direct_space_state.intersect_ray(query)
+				if not hit.is_empty():
+					move_target = Vector3(
+						clampf(hit.position.x,movement_bounds.position.x,movement_bounds.end.x),
+						hit.position.y,
+						clampf(hit.position.z,movement_bounds.position.y,movement_bounds.end.y)
+					)
 	chapter.handle_input(event)
