@@ -4,6 +4,36 @@ var mats = {}
 var points = {}
 var colliders: Array[Rect2] = []
 var rng = RandomNumberGenerator.new()
+var conditional_actors: Dictionary = {}
+
+func register_actor(id: String, node: Node3D, target_id: String = "", condition: Callable = Callable()) -> void:
+	conditional_actors[id] = {
+		"node": node,
+		"target_id": target_id if not target_id.is_empty() else id,
+		"condition": condition
+	}
+
+func sync_actors(state_obj: RefCounted) -> void:
+	for id in conditional_actors:
+		var info = conditional_actors[id]
+		if info.condition.is_valid():
+			var is_present: bool = info.condition.call(state_obj)
+			if not is_present:
+				dismiss_actor(id)
+
+func dismiss_actor(id: String) -> void:
+	if not conditional_actors.has(id):
+		points.erase(id)
+		return
+	var info = conditional_actors[id]
+	if not info.target_id.is_empty():
+		points.erase(info.target_id)
+	if is_instance_valid(info.node):
+		info.node.hide()
+		info.node.queue_free()
+
+func dismiss_old_woman() -> void:
+	dismiss_actor("old_woman")
 
 func mat(c: String, glow: bool = false) -> StandardMaterial3D:
 	var key = c + str(glow)

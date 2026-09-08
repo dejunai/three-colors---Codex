@@ -31,7 +31,8 @@ func _case_file(g:Node) -> void:
 	right.add_child(g._label("CURRENT INQUIRY",14,false))
 	right.add_child(g._label(g._objective(),23))
 	right.add_child(g._label("EQUIPPED",14,false))
-	right.add_child(g._label(g.state.coat+" · worn leather boots\nNotebook · pencil · service revolver\nFlask"+(" · sealed knife envelope" if g.state.evidence.has("knife") else ""),21))
+	var equipped_text = g.state.coat+" · worn leather boots\nNotebook · pencil · service revolver (%d/6 rounds)\n" % g.state.ammo + ("Flask (lost on descent)" if g.state.flask_spilled else "Flask") + (" · sealed knife envelope" if g.state.evidence.has("knife") else "")
+	right.add_child(g._label(equipped_text,21))
 	g._button("Inspect the flask",g._flask,right)
 	g._button("Change to "+("plain wool coat" if g.state.coat == "Police coat" else "police coat"),func():
 		g.state.coat = "Plain wool coat" if g.state.coat == "Police coat" else "Police coat"
@@ -44,14 +45,20 @@ func _case_file(g:Node) -> void:
 
 func _flask(g:Node) -> void:
 	g._panel("case","The flask","PERSONAL EFFECTS")
-	var levels = ["Empty. The metal carries no weight beyond itself.","A little left. Enough for one short pour.","Partly full. Two short pours remain.","Three short pours by Walter's reckoning."]
-	g._paragraph(levels[g.state.flask])
-	g._paragraph("A familiar weight. A brief narrowing of the world.\nIt has never promised anything more.",24)
-	if g.state.flask > 0:
-		g._button("Take a short pour",func():
-			g._take_pour()
-			g._close()
-			g._toast("The edges settle. The facts remain.",4))
+	if g.state.flask_spilled:
+		g._paragraph("Lost in the dark below.",27)
+		var lost_text = "All three short pours were" if g.state.flask_spill_amount == 3 else ("Two short pours were" if g.state.flask_spill_amount == 2 else ("One short pour was" if g.state.flask_spill_amount == 1 else "The flask was already empty when it"))
+		g._paragraph("%s lost when a jagged spur of rock tore the flask from its strap on the descent.\n\nHe did not chase it into the dark. The case had only ever let the flask hold as much peace as it had use for, and had decided it needed him thirsty now." % lost_text, 22)
+		g._paragraph("The severed leather strap hangs empty at his belt.", 18)
+	else:
+		var levels = ["Empty. The metal carries no weight beyond itself.","A little left. Enough for one short pour.","Partly full. Two short pours remain.","Three short pours by Walter's reckoning."]
+		g._paragraph(levels[g.state.flask])
+		g._paragraph("A familiar weight. A brief narrowing of the world.\nIt has never promised anything more.",24)
+		if g.state.flask > 0:
+			g._button("Take a short pour",func():
+				g._take_pour()
+				g._close()
+				g._toast("The edges settle. The facts remain.",4))
 	g._button("Put it away",g._case_file)
 	g._focus_first()
 
@@ -143,6 +150,13 @@ func _board(g:Node) -> void:
 		g._paragraph("A DELUSION OF BEING CHOSEN  ↔  BEWARE THE OLD GODS\nA priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making.",22)
 	if g.state.evidence.has("crew") and g.state.evidence.has("pantry_lead"):
 		g._paragraph("THE GROUNDSKEEPER  ↔  THE BARMAN\nOne keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why.",22)
+	var p = g.state.perception()
+	if p >= 5:
+		g._paragraph("THE CAUSAL SPINE — COMPLETE  (PERCEPTION %d)\nSIX MEN IN EVENING DRESS  ═  THE OPHION'S SINKING  ═  AN UNDERSEA PASSAGE  ═  A SUMMONED PRESENCE\nEvery fact has found its parent. The twine connects the rose garden to the cellar without an empty card between them. Walter did not choose the moment the board went whole; the shape closed itself.",22)
+	elif p >= 4:
+		g._paragraph("THE CAUSAL SPINE — FORMING  (PERCEPTION %d)\nTHE SIX VICTIMS  ═  THE INHERITED FORTUNE  —  AN UNEXPLAINED PASSAGE\nTwine stretches across the center of the board. The line between the insurance fortune and the murders is visible, but the final connection beneath the house still lacks its last link.",21)
+	else:
+		g._paragraph("THE CAUSAL SPINE — UNRESOLVED  (PERCEPTION %d)\nA scatter of individual cards. Twine hangs loose between the columns. The board waits for more of the case to be seen before the underlying spine can connect.",19)
 	g._button("Read the complete notebook",g._journal)
 	g._button("Step away from the board",g._close)
 	g._focus_first()

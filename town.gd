@@ -109,6 +109,7 @@ func _street() -> void:
 	departing_woman=old_woman
 	old_woman.rotation.y = -2.0
 	target("old_woman","Speak with the woman outside the shop",Vector3(-19.2,0,11.2))
+	register_actor("old_woman", old_woman, "old_woman", func(st): return not st.evidence.has("old_woman"))
 	for x in [-28,28]: tree(Vector3(x,0,20))
 
 func _room_shell() -> void:
@@ -217,7 +218,7 @@ func update_board(evidence:Array) -> void:
 		if card: card.visible=i<evidence.size()
 
 func dismiss_old_woman() -> void:
-	points.erase("old_woman")
+	dismiss_actor("old_woman")
 	if is_instance_valid(departing_woman):
 		departing_woman.hide()
 		departing_woman.queue_free()

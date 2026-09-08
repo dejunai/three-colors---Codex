@@ -8,6 +8,9 @@ const NOTICE_TIME = 1.4
 var clock = 0.0
 var exposure = 0.0
 var figure: Node3D
+var drowned_sailor: Node3D
+var cultist_stagger: float = 0.0
+var drowned_stagger: float = 0.0
 var reflected_edges: Node3D
 var wall_shadow: MeshInstance3D
 var strain_shadows: Array[MeshInstance3D] = []
@@ -50,6 +53,11 @@ func _ready() -> void:
 	figure.scale = Vector3(1.05,1.18,0.9)
 	# A visible face plane and reaching arms make its facing legible without audio.
 	box(figure,Vector3(0,1.83,0.18),Vector3(0.19,0.20,0.05),"b2b4a6")
+	target("cultist_encounter","Confront the transformed cultist",Vector3(0,0,-16))
+	drowned_sailor = person(Vector3(-7.0,0,-32),"2b3a36",false)
+	drowned_sailor.scale = Vector3(1.1,1.0,1.1)
+	target("drowned_remains","Examine the waterlogged remains",Vector3(-7.0,0,-32))
+	target("tunnel_descent","Descend past the foundation into the unmapped dark",Vector3(0,0,-33))
 	reflected_edges = Node3D.new()
 	add_child(reflected_edges)
 	for z in [-10,-13,-16,-19,-22]:
@@ -66,7 +74,15 @@ func reveal(perception:int) -> void:
 		target("tunnel_edge","Follow the reflected service marks",Vector3(4.4,0,-9))
 	else: points.erase("tunnel_edge")
 
+func sync_actors(state_obj: RefCounted) -> void:
+	super.sync_actors(state_obj)
+	if state_obj.drowned_dead and is_instance_valid(drowned_sailor):
+		drowned_sailor.rotation.x = PI * 0.5
+		drowned_sailor.position.y = 0.15
+		points.erase("drowned_remains")
+
 func phase() -> String:
+	if cultist_stagger > 0: return "staggered"
 	var beat = fposmod(clock,CYCLE)
 	if beat < 2.0: return "warning"
 	if beat < 6.0: return "watching"
@@ -77,6 +93,8 @@ func in_sight(pos:Vector3) -> bool:
 	return absf(pos.x) < 2.2 and pos.z < -11.5 and pos.z > -20.5
 
 func advance(delta:float,pos:Vector3) -> bool:
+	if cultist_stagger > 0: cultist_stagger = maxf(0.0, cultist_stagger - delta)
+	if drowned_stagger > 0: drowned_stagger = maxf(0.0, drowned_stagger - delta)
 	clock += delta
 	if phase() == "watching" and in_sight(pos): exposure += delta
 	else: exposure = 0.0
@@ -84,12 +102,19 @@ func advance(delta:float,pos:Vector3) -> bool:
 	return exposure >= NOTICE_TIME
 
 func pose() -> void:
-	figure.rotation.y = PI if phase() == "turned" else 0.0
-	figure.position.z = -16 + minf(exposure,NOTICE_TIME)*0.7
-	figure.get_node("LeftArm").rotation.x = -0.9 if phase()=="watching" else 0.0
-	figure.get_node("RightArm").rotation.x = -0.9 if phase()=="watching" else 0.0
+	if phase() == "staggered":
+		figure.rotation.y = 0.2
+		figure.position.z = -16.5
+		figure.get_node("LeftArm").rotation.x = 0.4
+		figure.get_node("RightArm").rotation.x = 0.4
+	else:
+		figure.rotation.y = PI if phase() == "turned" else 0.0
+		figure.position.z = -16 + minf(exposure,NOTICE_TIME)*0.7
+		figure.get_node("LeftArm").rotation.x = -0.9 if phase()=="watching" else 0.0
+		figure.get_node("RightArm").rotation.x = -0.9 if phase()=="watching" else 0.0
 
 func cue() -> String:
+	if phase() == "staggered": return "It staggers, folded at the middle. Move past it."
 	if exposure > 0: return TunnelStory.CUES.exposed
 	return TunnelStory.CUES.get(phase(),TunnelStory.CUES.turned)
 

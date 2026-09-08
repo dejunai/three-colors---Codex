@@ -28,6 +28,13 @@ var tunnel_complete = false
 var county_statements: Array[String] = []
 var report_sources: Dictionary = {}
 var county_sources: Dictionary = {}
+var ammo = 6
+var flask_spilled = false
+var flask_spill_amount = 0
+var drowned_dead = false
+
+func strength() -> int:
+	return 2
 
 func discover(id: String) -> void:
 	if not evidence.has(id): evidence.append(id)
@@ -72,7 +79,8 @@ func pack() -> Dictionary:
 		"position":[position.x,position.y,position.z],"yaw":yaw,"started":started,"finished":finished,
 		"world":world,"estate_complete":estate_complete,"intake_done":intake_done,
 		"supplement_filed":supplement_filed,"county_dispatched":county_dispatched,
-		"supplement_evidence":supplement_evidence,"county_evidence":county_evidence,"inquiry_topics":inquiry_topics,"supplement_history":supplement_history}
+		"supplement_evidence":supplement_evidence,"county_evidence":county_evidence,"inquiry_topics":inquiry_topics,"supplement_history":supplement_history,
+		"ammo":ammo,"flask_spilled":flask_spilled,"flask_spill_amount":flask_spill_amount,"drowned_dead":drowned_dead}
 
 func restore(d: Dictionary) -> bool:
 	if int(d.get("version",0)) not in [1,2,VERSION]: return false
@@ -117,6 +125,10 @@ func restore(d: Dictionary) -> bool:
 	supplement_evidence.assign(d.get("supplement_evidence",[]))
 	county_evidence.assign(d.get("county_evidence",[]))
 	inquiry_topics.assign(d.get("inquiry_topics",[]))
+	ammo = clampi(int(d.get("ammo",6)),0,6)
+	flask_spilled = bool(d.get("flask_spilled",false))
+	flask_spill_amount = int(d.get("flask_spill_amount",0))
+	drowned_dead = bool(d.get("drowned_dead",false))
 	supplement_history=d.get("supplement_history",[]).duplicate(true)
 	for item in supplement_history:
 		if not item is Dictionary: return false
