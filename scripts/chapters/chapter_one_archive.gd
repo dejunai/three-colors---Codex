@@ -8,12 +8,42 @@ extends RefCounted
 # One's own content and deliberately does not live in case_state.gd, which
 # stays chapter-agnostic and only counts confirmed link ids.
 const LINKS := {
-	"lodging|naomi": {"id":"naomi_address","title":"TWO RECORDS, ONE WOMAN","summary":"Mrs. Almy's statement and the meal ledger name the same woman. Two independent records agree."},
-	"lay_lead|naomi": {"id":"naomi_lay","title":"THE CLAIM HAS A NAME NOW","summary":"The wage claim belongs to a woman with a name now. It still does not establish why she was killed."},
-	"eight|intake": {"id":"count_disagreement","title":"THE HEADING DISAGREES WITH THE COUNT","summary":"The precinct's own heading disagrees with Walter's report. The disagreement has a source on each side; neither page replaces the other."},
-	"lower_foundation|municipal_foundation": {"id":"two_drawings","title":"TWO DRAWINGS, ONE LIMIT","summary":"The service plan and the municipal sheet agree on where the foundation ends. The passage does not. The extension remains unexplained."},
-	"behan_name|old_woman": {"id":"chosen_delusion","title":"A DELUSION OF BEING CHOSEN","summary":"A priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making."},
-	"crew|pantry_lead": {"id":"same_door","title":"THE GROUNDSKEEPER AND THE STEWARD","summary":"One keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why."}
+	"lodging|naomi": {
+		"id": "naomi_address",
+		"title": "TWO RECORDS, ONE WOMAN",
+		"summary": "Mrs. Almy's statement and the meal ledger name the same woman. Two independent records agree.",
+		"deduction": "Mrs. Almy identified her boarder as Naomi Freeman. The ledger at the diner records Naomi Freeman having breakfast at seven every morning for a week. These are two completely independent witnesses placing the same living woman in town right up to the night of the murders. The unidentified woman on the estate now has an address and a daily routine."
+	},
+	"lay_lead|naomi": {
+		"id": "naomi_lay",
+		"title": "THE CLAIM HAS A NAME NOW",
+		"summary": "The wage claim belongs to a woman with a name now. It still does not establish why she was killed.",
+		"deduction": "The handwritten claim found in the satchel concerns an unpaid whaling lay owed to a Freeman ancestor from the Ophion's loss. Tying this document to Naomi Freeman explains what brought an outsider to Widow's Bight — not chance or vagrancy, but an inherited financial demand leveled directly at the club's founding fortune."
+	},
+	"eight|intake": {
+		"id": "count_disagreement",
+		"title": "THE HEADING DISAGREES WITH THE COUNT",
+		"summary": "The precinct's own heading disagrees with Walter's report. The disagreement has a source on each side; neither page replaces the other.",
+		"deduction": "The desk sergeant's heading clearly specifies 'Six male victims; members of the Ophion Club.' But Walter's field survey documents eight bodies — including the woman and boy behind the birches. The discrepancy is not clerical error; the precinct deliberately omitted two victims from the official count before the investigation even opened."
+	},
+	"lower_foundation|municipal_foundation": {
+		"id": "two_drawings",
+		"title": "TWO DRAWINGS, ONE LIMIT",
+		"summary": "The service plan and the municipal sheet agree on where the foundation ends. The passage does not. The extension remains unexplained.",
+		"deduction": "The municipal survey of 1888 and the estate's private architectural drawings align stone-for-stone along the cellar perimeter. Both declare the bedrock boundary reached. Yet Walter's pacing through the passage continues twelve yards past that boundary. The passage was cut without civic permission — a private tunnel leading under the waterline."
+	},
+	"behan_name|old_woman": {
+		"id": "chosen_delusion",
+		"title": "A DELUSION OF BEING CHOSEN",
+		"summary": "A priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making.",
+		"deduction": "Father Behan dismisses the Ophion founders as vain men intoxicated by their own wealth, convinced they had made a covenant with Providence. The woman outside Kessler's shop gives the counterweight: they did make a covenant, but with an ancient hunger that cares nothing for human pride. Two halves of an argument neither speaker knew the other was making."
+	},
+	"crew|pantry_lead": {
+		"id": "same_door",
+		"title": "THE GROUNDSKEEPER AND THE STEWARD",
+		"summary": "One keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why.",
+		"deduction": "The groundskeeper outside refuses to turn his back on the kitchen wing service door, giving it a deliberate berth in broad daylight. Behind that very same door inside the hall, the steward refuses to glance toward the boarded pantry. Two men separated by stone and position, united by the same silent terror of what lies behind that threshold."
+	}
 }
 
 static func _link_key(a:String,b:String) -> String:
@@ -169,7 +199,6 @@ func _board(g:Node) -> void:
 		box.add_child(source)
 	if g.state.evidence.has("crew") and g.state.statements.has("The gardener saw the woman at the service door. Ask the steward."):
 		g._paragraph("THE SERVICE DOOR\nThe gardener placed the unidentified woman there once. The groundskeeper keeps a fixed distance from it now. Neither observation explains the other.",22)
-<<<<<<< HEAD
 	var confirmed=false
 	for entry in LINKS.values():
 		if not g.state.has_link(entry.id): continue
@@ -184,19 +213,6 @@ func _board(g:Node) -> void:
 		g._paragraph("THE CAUSAL SPINE — FORMING  (PERCEPTION %d)\nTHE SIX VICTIMS  ═  THE INHERITED FORTUNE  —  AN UNEXPLAINED PASSAGE\nTwine stretches across the center of the board. The line between the insurance fortune and the murders is visible, but the final connection beneath the house still lacks its last link." % p,21)
 	else:
 		g._paragraph("THE CAUSAL SPINE — UNRESOLVED  (PERCEPTION %d)\nA scatter of individual cards. Twine hangs loose between the columns. The board waits for more of the case to be seen before the underlying spine can connect." % p,19)
-=======
-	if g.state.evidence.has("old_woman") and g.state.evidence.has("behan_name"):
-		g._paragraph("A DELUSION OF BEING CHOSEN  ↔  BEWARE THE OLD GODS\nA priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making.",22)
-	if g.state.evidence.has("crew") and g.state.evidence.has("pantry_lead"):
-		g._paragraph("THE GROUNDSKEEPER  ↔  THE BARMAN\nOne keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why.",22)
-	var p = g.state.perception()
-	if p >= 5:
-		g._paragraph("THE CAUSAL SPINE — COMPLETE  (PERCEPTION %d)\nSIX MEN IN EVENING DRESS  ═  THE OPHION'S SINKING  ═  AN UNDERSEA PASSAGE  ═  A SUMMONED PRESENCE\nEvery fact has found its parent. The twine connects the rose garden to the cellar without an empty card between them. Walter did not choose the moment the board went whole; the shape closed itself.",22)
-	elif p >= 4:
-		g._paragraph("THE CAUSAL SPINE — FORMING  (PERCEPTION %d)\nTHE SIX VICTIMS  ═  THE INHERITED FORTUNE  —  AN UNEXPLAINED PASSAGE\nTwine stretches across the center of the board. The line between the insurance fortune and the murders is visible, but the final connection beneath the house still lacks its last link.",21)
-	else:
-		g._paragraph("THE CAUSAL SPINE — UNRESOLVED  (PERCEPTION %d)\nA scatter of individual cards. Twine hangs loose between the columns. The board waits for more of the case to be seen before the underlying spine can connect.",19)
->>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
 	g._button("Read the complete notebook",g._journal)
 	g._button("Step away from the board",g._close)
 	g._focus_first()
@@ -227,6 +243,39 @@ func _link_picker(g:Node,first_id:String) -> void:
 	g._button("Cancel",func(): _link_observation(g,first_id))
 	g._focus_first()
 
+static func _negative_feedback(g:Node,a:String,b:String) -> String:
+	var key = _link_key(a,b)
+	match key:
+		"watch|wounds":
+			return "Walter holds the stop-watch beside the injury notes. 03:17 marks an exact minute, but the clean puncture above Judge Wexford's brow offers no powder burn or caliber to match it. A timestamp and a wound are two cards on the same table, but the hand that pulled the trigger remains absent between them."
+		"knife|wounds":
+			return "The knife beneath the hedge is a heavy butcher's tool with a clean blade. The wounds in the rose garden are neat, circular punctures with no powder burn and no exit wound. A boning knife did not cause these deaths, and tying them together would only mislead the inquiry."
+		"register|watch":
+			return "Five names inscribed for six places, and a watch filed blank. Both hint at an absent sixth man, but neither supplies the identity. Tying an omission to an erased serial number only doubles the blank without filling in a letter."
+		"naomi|shoes":
+			return "The resoled shoes belonged to the child found behind the birches. While Naomi Freeman is likely the woman beside him, the child's footwear does not establish their legal relationship or explain why either died in the garden."
+		"gas|wounds":
+			return "The intact terrace windows disprove an explosion, while the puncture wounds demonstrate deliberate, targeted violence. Pointing twine between a ruled-out accident and an execution only restates what didn't happen."
+		"knife|watch":
+			return "A butcher's knife and an erased pocket watch. Both were found at the estate, but they belong to different hands and different moments. Walter lets the twine drop; an investigator cannot forge a murder weapon out of an unexplained timepiece."
+		"intake|wounds":
+			return "The precinct's intake ledger accepts the field report, but it cannot explain how the six men died. Filing paperwork alongside ballistics notes does not solve the lack of powder burns."
+		"crew|gardener":
+			return "The gardener and the groundskeeper work the same grounds under different instructions. One reported the bodies; the other avoids the kitchen door. Their duties do not connect without the steward between them."
+		"behan_name|naomi":
+			return "Father Behan spoke of the town's founding families, not of a boarder on Pickman Street. Naomi Freeman's presence in town has no record in the parish register."
+		"lodging|old_woman":
+			return "Mrs. Almy rents clean rooms to quiet visitors; the woman outside Kessler's shop speaks of deep covenants and old sea gods. Their accounts do not cross."
+		_:
+			if (a in ["wounds","eight","knife","watch","gas","shoes"] and b in ["naomi","lodging","lay_lead","municipal_foundation"]) or (b in ["wounds","eight","knife","watch","gas","shoes"] and a in ["naomi","lodging","lay_lead","municipal_foundation"]):
+				return "Physical debris from the estate lawn cannot explain archival records or boardinghouse accounts from town. Walter steps back; tying twine between physical evidence and a town rumor invents a bridge where none exists."
+			elif a in ["municipal_foundation","lower_foundation"] or b in ["municipal_foundation","lower_foundation"]:
+				return "Architectural surveys mark stone and mortar beneath the foundation; this observation speaks to human testimony and motive. Until an entrance or passage is proven between them, the blue-prints and the witness cards remain separate."
+			elif a in ["behan_name","old_woman"] or b in ["behan_name","old_woman"]:
+				return "Theological warnings and civic lore speak in dread and metaphor, while the rest of the case demands cold facts and measurable dates. Forcing twine between them only clouds the board with speculation."
+			else:
+				return "Walter turns the two cards over in his fingers. The facts share the same morning, but neither explains or corroborates the other. Drawing twine between them would be a guess, not an observation."
+
 func _link_result(g:Node,first_id:String,second_id:String) -> void:
 	if first_id==second_id or not g.state.evidence.has(first_id) or not g.state.evidence.has(second_id): return
 	var before = g.state.perception()
@@ -238,10 +287,14 @@ func _link_result(g:Node,first_id:String,second_id:String) -> void:
 	g._panel("board",heading,"THE CASE BOARD / CONNECTION RESULT")
 	g._paragraph(str(g.facts[first_id][0])+"\n+\n"+str(g.facts[second_id][0]),21)
 	if link.is_empty():
-		g._paragraph("These observations do not establish a connection. The facts remain separate.",24)
-		g._paragraph("Nothing changed. No evidence or Perception was lost.",19)
+		var commentary = _negative_feedback(g,first_id,second_id)
+		g._paragraph(commentary,22)
+		g._paragraph("These observations do not establish a connection. The facts remain separate.",20)
+		g._paragraph("Nothing changed. No evidence or Perception was lost.",18)
 	else:
 		g._paragraph(str(link.title)+"\n"+str(link.summary),24)
+		if link.has("deduction"):
+			g._paragraph(str(link.deduction),21)
 		var after = g.state.perception()
 		if not already: g._save_game()
 		if after>before:

@@ -31,9 +31,9 @@ const SCENES = {
 	"boy_repeat": [
 		["THE GATEHOUSE BOY", "Through the gap in the hedge. The captain's still on the terrace."]],
 	"boy_return": [
-		["THE GATEHOUSE BOY", "The wagon's been and gone. The captain left with the coroner's man."],
+		["THE GATEHOUSE BOY", "The wagon's been and gone. The captain and the coroner's man went right with the bodies."],
 		["WALTER CORWIN", "And the gardener?"],
-		["THE GATEHOUSE BOY", "Beside the drive, just below the garden hedge. He's back at his work."]],
+		["THE GATEHOUSE BOY", "Over yonder, just beside the drive below the hedge. He's back at his work."]],
 	"wounds": [
 		["THE ROSE GARDEN", "Six men in evening dress, arranged in a half-circle.\n\nWalter knows five of the faces. Judge Wexford. Dr. Fenn. Corliss, the district attorney. Pruitt. Kessler.\n\nThe sixth means nothing to him."],
 		["EXAMINE · JUDGE WEXFORD", "A wound above the bridge of the nose.\nNo powder scorching.\n\nWalter turns the head.\nThere is no exit wound."],
