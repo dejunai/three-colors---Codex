@@ -12,9 +12,9 @@ const FACTS = {
 	"shoes": ["EXPECTED TO GO ON", "The boy's shoes have been resoled. The woman's coat is too light for the season. A boardinghouse inquiry may identify them; clothing cannot establish that nobody will miss them.", "Birch grove · belongings inspection"],
 	"testimony": ["BOTH SCENES", "The assistant counted eight and saw no evidence of an explosion. He was told to prepare the six club members first. His observations corroborate the separate scene notes.", "Coroner's assistant · statement"],
 	"crew": ["A WIDE BERTH", "A groundskeeper stacks crates outside the kitchen wing, never setting one nearer the service door than the last. Asked, he says the step is uneven there. He returns to the crates before Walter can ask a second question.", "Kitchen wing yard · direct observation"],
-	"club_talk": ["TOWARD THE END", "The barman describes the six members' late conversation shifting, toward the end, from power to something spoken tenderly, of an unnamed woman. He will not name her either.", "Ophion Club barman · overheard testimony"],
-	"club_devotion": ["SHE'LL HAVE US HOME", "Kessler told the barman, more than once, that she would have them home, that she was no different from any mother. The other members apparently agreed without ever naming her.", "Ophion Club barman · overheard testimony"],
-	"pantry_lead": ["THE OLD PANTRY DOOR", "The barman names a boarded pantry door in the kitchen wing, unopened since a renovation nobody finished. He will not go near it himself and will not say why.", "Ophion Club barman · direct account"]
+	"club_talk": ["TOWARD THE END", "The steward describes the six members' late conversation shifting, toward the end, from power to something spoken tenderly, of an unnamed woman. He will not name her either.", "Ophion Club steward · overheard testimony"],
+	"club_devotion": ["SHE'LL HAVE US HOME", "Kessler told the steward, more than once, that she would have them home, that she was no different from any mother. The other members apparently agreed without ever naming her.", "Ophion Club steward · overheard testimony"],
+	"pantry_lead": ["THE OLD PANTRY DOOR", "The steward names a boarded pantry door in the kitchen wing, unopened since a renovation nobody finished. He will not go near it himself and will not say why.", "Ophion Club steward · direct account"]
 }
 
 const INTROS = [
@@ -28,6 +28,12 @@ const SCENES = {
 		["THE GATEHOUSE BOY", "THEY'RE IN THE ROSE GARDEN, OFFICER.\nWHAT'S LEFT OF THEM."],
 		["WALTER CORWIN", "Who found them?"],
 		["THE GATEHOUSE BOY", "The gardener. He sent me for the police.\n\nStraight up the drive. Through the opening in the hedge.\nThe captain is waiting on the terrace."]],
+	"boy_repeat": [
+		["THE GATEHOUSE BOY", "Through the gap in the hedge. The captain's still on the terrace."]],
+	"boy_return": [
+		["THE GATEHOUSE BOY", "The wagon's been and gone. The captain left with the coroner's man."],
+		["WALTER CORWIN", "And the gardener?"],
+		["THE GATEHOUSE BOY", "Beside the drive, just below the garden hedge. He's back at his work."]],
 	"wounds": [
 		["THE ROSE GARDEN", "Six men in evening dress, arranged in a half-circle.\n\nWalter knows five of the faces. Judge Wexford. Dr. Fenn. Corliss, the district attorney. Pruitt. Kessler.\n\nThe sixth means nothing to him."],
 		["EXAMINE · JUDGE WEXFORD", "A wound above the bridge of the nose.\nNo powder scorching.\n\nWalter turns the head.\nThere is no exit wound."],
@@ -59,27 +65,27 @@ const SCENES = {
 	"crew": [
 		["THE KITCHEN WING YARD", "A groundskeeper stacks crates beside a banked fire, working fast in the cold. The service door stands a few feet off. He never sets a crate nearer to it than the last."],
 		["WALTER CORWIN", "Something wrong with the door?"],
-		["THE GROUNDSKEEPER", "Uneven step. Easy to turn an ankle before sunup.\n\nMind the same, if you're going in."],
+		["THE GROUNDSKEEPER", "Uneven step. Easy to turn an ankle in this light.\n\nMind the same on your way out."],
 		["WALTER'S NOTEBOOK", "The distance he keeps is exact, not nervous. He named a reason before Walter asked for one, then went back to the crates without slowing down.\n\nThe observation is exact. The reason he gave may not be."]],
 	"barman_badge": [
-		["THE CLUB'S BARMAN", "Officer. I remember your usual order."],
+		["THE CLUB'S STEWARD", "Officer. I remember your usual order."],
 		["WALTER CORWIN", "Questions today."],
-		["THE CLUB'S BARMAN", "Then ask. I've glasses to put away."]],
+		["THE CLUB'S STEWARD", "Then ask. I've glasses to put away."]],
 	"barman_plain": [
-		["THE CLUB'S BARMAN", "He sets down the glass he was drying.\n\nNot used to seeing you without the badge, Officer."],
+		["THE CLUB'S STEWARD", "He sets down the glass he was drying.\n\nNot used to seeing you without the badge, Officer."],
 		["WALTER CORWIN", "I'm not asking as the badge today."],
-		["THE CLUB'S BARMAN", "Didn't figure you were.\n\nAsk, then. I'll keep drying these."]],
+		["THE CLUB'S STEWARD", "Didn't figure you were.\n\nAsk, then. I'll keep drying these."]],
 	"club_talk": [
-		["BENEATH THE PORTICO", "The barman turns a glass in the daylight. Walter asks about the conversations he used to overhear while serving the members."],
-		["THE BARMAN", "They stopped speaking of power, toward the end.\n\nStarted speaking, tenderly, of her."],
+		["THE SMOKING LOUNGE", "The steward sets a glass on the sideboard. Walter asks about the conversations he used to overhear while serving the members."],
+		["THE STEWARD", "They stopped speaking of power, toward the end.\n\nStarted speaking, tenderly, of her."],
 		["WALTER'S NOTEBOOK", "Toward the end of what, he doesn't say.\nHer, he doesn't explain.\n\nWalter writes both down exactly as given."]],
 	"club_devotion": [
-		["THE BARMAN", "Kessler said it more than once. She'll have us home.\n\nSaid she's no different from any mother."],
+		["THE STEWARD", "Kessler said it more than once. She'll have us home.\n\nSaid she's no different from any mother."],
 		["WALTER'S NOTEBOOK", "A butcher, a judge, a doctor, a district attorney, a man of property, all of them speaking the same sentence about the same absent woman.\n\nNone of them ever named her."]],
 	"pantry_lead": [
-		["THE BARMAN", "There's gin left from before the war. Behind the old pantry door.\n\nThey boarded it up during a renovation and never finished unboarding it. Nobody goes back there. Nobody's gone back there in years."],
+		["THE STEWARD", "There's gin left from before the war. Behind the old pantry door.\n\nThey boarded it up during a renovation and never finished unboarding it. Nobody goes back there. Nobody's gone back there in years."],
 		["WALTER CORWIN", "Will you show me?"],
-		["THE BARMAN", "No."],
+		["THE STEWARD", "No."],
 		["WALTER'S NOTEBOOK", "He won't say why. He also won't take back the direction he just gave.\n\nThe kitchen wing. The old pantry."]],
 	"gardener": [
 		["THE GARDENER", "I keep the roses. I don't keep the hours of the men who walk among them."],

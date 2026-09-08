@@ -1,7 +1,8 @@
 extends RefCounted
 
-const VERSION = 3
+const VERSION = 5
 var evidence: Array[String] = []
+var links: Array[String] = []
 var statements: Array[String] = []
 var visited: Array[String] = []
 var report = ""
@@ -28,6 +29,25 @@ var tunnel_complete = false
 var county_statements: Array[String] = []
 var report_sources: Dictionary = {}
 var county_sources: Dictionary = {}
+var ammo = 6
+var flask_spilled = false
+var flask_spill_amount = 0
+var drowned_dead = false
+<<<<<<< HEAD
+# Staging milestones are explicit; re-entering a room never advances a day.
+var day = 1
+var steward_visits = 0
+var lounge_exited = false
+var montage_index = -1
+
+func steward_ready() -> bool:
+	return visited.has("almy") and day == 3 and steward_visits >= 2 and coat == "Plain wool coat"
+
+=======
+>>>>>>> 6c726860d957944aee48cee9eca8dd6e766a8cfb
+
+func strength() -> int:
+	return 2
 
 func discover(id: String) -> void:
 	if not evidence.has(id): evidence.append(id)
@@ -35,8 +55,19 @@ func discover(id: String) -> void:
 func record(id: String) -> void:
 	if not statements.has(id): statements.append(id)
 
+func record_link(id: String) -> void:
+	if not links.has(id): links.append(id)
+
+func has_link(id: String) -> bool:
+	return links.has(id)
+
 func perception() -> int:
-	return 2 + mini(4, evidence.size() / 2)
+	# A deliberate connection is worth more than raw collection: full evidence
+	# credit needs volume (9+ observations); full link credit needs only three
+	# meaningful ones drawn by hand. Chapter-specific validity of a link pair
+	# lives with the chapter's own content, not here — this just counts what
+	# was confirmed.
+	return 2 + mini(3, evidence.size() / 3) + mini(3, links.size())
 
 func complete_report(mode: String, sources:Dictionary={}) -> void:
 	if intake_done: return
@@ -67,16 +98,17 @@ func file_supplement(send_county: bool, sources:Dictionary={}) -> void:
 		if not copies.has("County registrar — dated supplement"): copies.append("County registrar — dated supplement")
 
 func pack() -> Dictionary:
-	return {"version":VERSION,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"statements":statements,"visited":visited,
+	return {"version":VERSION,"day":day,"steward_visits":steward_visits,"lounge_exited":lounge_exited,"montage_index":montage_index,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
 		"report":report,"copies":copies,"report_evidence":report_evidence,"report_statements":report_statements,"flask":flask,"coat":coat,"minutes":minutes,
 		"position":[position.x,position.y,position.z],"yaw":yaw,"started":started,"finished":finished,
 		"world":world,"estate_complete":estate_complete,"intake_done":intake_done,
 		"supplement_filed":supplement_filed,"county_dispatched":county_dispatched,
-		"supplement_evidence":supplement_evidence,"county_evidence":county_evidence,"inquiry_topics":inquiry_topics,"supplement_history":supplement_history}
+		"supplement_evidence":supplement_evidence,"county_evidence":county_evidence,"inquiry_topics":inquiry_topics,"supplement_history":supplement_history,
+		"ammo":ammo,"flask_spilled":flask_spilled,"flask_spill_amount":flask_spill_amount,"drowned_dead":drowned_dead}
 
 func restore(d: Dictionary) -> bool:
-	if int(d.get("version",0)) not in [1,2,VERSION]: return false
-	for key in ["evidence","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history","county_statements"]:
+	if int(d.get("version",0)) not in [1,2,3,4,VERSION]: return false
+	for key in ["evidence","links","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history","county_statements"]:
 		if not d.get(key,[]) is Array: return false
 		if key!="supplement_history":
 			for value in d.get(key,[]):
@@ -95,6 +127,7 @@ func restore(d: Dictionary) -> bool:
 	for value in p:
 		if not (value is float or value is int) or not is_finite(float(value)): return false
 	evidence.assign(d.get("evidence",[]))
+	links.assign(d.get("links",[]))
 	statements.assign(d.get("statements",[]))
 	visited.assign(d.get("visited",[]))
 	copies.assign(d.get("copies",[]))
@@ -109,7 +142,7 @@ func restore(d: Dictionary) -> bool:
 	started = bool(d.get("started",false))
 	finished = bool(d.get("finished",false))
 	world = str(d.get("world","estate"))
-	if world not in ["estate","town","precinct","boardinghouse","room","tunnel"]: world = "estate"
+	if world not in ["estate","town","precinct","boardinghouse","room","tunnel","lounge"]: world = "estate"
 	estate_complete = bool(d.get("estate_complete",false))
 	intake_done = bool(d.get("intake_done",false))
 	supplement_filed = bool(d.get("supplement_filed",false))
@@ -117,6 +150,10 @@ func restore(d: Dictionary) -> bool:
 	supplement_evidence.assign(d.get("supplement_evidence",[]))
 	county_evidence.assign(d.get("county_evidence",[]))
 	inquiry_topics.assign(d.get("inquiry_topics",[]))
+	ammo = clampi(int(d.get("ammo",6)),0,6)
+	flask_spilled = bool(d.get("flask_spilled",false))
+	flask_spill_amount = int(d.get("flask_spill_amount",0))
+	drowned_dead = bool(d.get("drowned_dead",false))
 	supplement_history=d.get("supplement_history",[]).duplicate(true)
 	for item in supplement_history:
 		if not item is Dictionary: return false
@@ -138,4 +175,19 @@ func restore(d: Dictionary) -> bool:
 		world = "town"
 		position = Vector3(0,0.1,17)
 		yaw = 0
+	day = clampi(int(d.get("day",1)),1,3)
+	steward_visits = clampi(int(d.get("steward_visits",0)),0,3)
+	lounge_exited = bool(d.get("lounge_exited",false))
+	montage_index = clampi(int(d.get("montage_index",-1)),-1,3)
+	if int(d.version) < 5:
+		# Retain earned testimony and completed older inquiries without inventing evidence.
+		if finished or world == "tunnel" or evidence.has("club_talk"):
+			day = 3
+			steward_visits = 3
+			lounge_exited = true
+		elif visited.has("barman"):
+			steward_visits = 1
+	if world == "lounge" and not visited.has("almy"):
+		world = "estate"
+		position = Vector3(-10,0.1,-17)
 	return true
