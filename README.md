@@ -1,6 +1,6 @@
 # Three Colors of Madness — No Exit Wound
 
-Native third-person 3D opening prototype aligned with Design Bible v13 and TDD v2. This is a playable blockout, with primitive art and provisional writing. Roughly ten minutes is an exploratory pacing target, not a measured playtime or a forced timer.
+Native third-person 3D opening prototype aligned with Design Bible v14 and TDD v6. This is a playable blockout, with primitive art and provisional writing. Roughly ten minutes is an exploratory pacing target, not a measured playtime or a forced timer.
 
 ## Play
 
