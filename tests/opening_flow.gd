@@ -15,6 +15,12 @@ func run(g:Node) -> void:
 			button.pressed.emit()
 			break
 	assert(g.state.statements.has("Walter told Odell to his face that six was not the whole count. Odell did not answer."))
+	g._save_game()
+	g._load_game()
+	g._interact("odell")
+	while g.page=="dialogue": g._next_card()
+	for button in g.content.find_children("*","Button",true,false):
+		assert(not button.text.begins_with("Say nothing"),"Saved Odell answer cannot be reversed")
 	g._write_report("Observations filed","report_routine")
 	while g.page == "dialogue": g._next_card()
 	assert(g.state.copies.size()==2)

@@ -10,6 +10,18 @@ func run(g:Node) -> void:
 	g.aperture_target=1.2
 	g._update_camera(1)
 	if g.capture_mode != "title": g._close()
+	if g.capture_mode == "observer":
+		g.page="capture"
+		g.model.hide()
+		g.player.position=Vector3(-14.6,0.1,-14.4)
+		g.yaw=0.74
+		g.distance=3.2
+		g.pitch=0.24
+		g.settings.grain=0
+		g.settings.distortion=0
+		g._apply_settings()
+		g.camera.global_position=Vector3(-13.7,1.8,-15.4)
+		g.camera.look_at(Vector3(-12.6,1.4,-16.6))
 	if g.capture_mode == "case":
 		for id in g.Story.FACTS: g.state.discover(id)
 		g.state.visited.assign(["garden","odell"])

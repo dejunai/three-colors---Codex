@@ -110,6 +110,16 @@ func run(g:Node) -> void:
 	g._interact("old_woman")
 	cards(g)
 	assert(g.state.evidence.has("old_woman"))
+	assert(not g.estate.points.has("old_woman"))
+	g._save_game()
+	g._load_game()
+	assert(not g.estate.points.has("old_woman"),"Departure survives loading")
+	g._travel("precinct",Vector3(0,0.1,6))
+	g._travel("town",Vector3(-19.2,0.1,11.2))
+	assert(not g.estate.points.has("old_woman"),"Departure survives travel")
+	g._town_observation("old_woman")
+	assert(g.page!="dialogue")
+
 	g.state.coat="Plain wool coat"
 	g._travel("boardinghouse",Vector3(4,0.1,-4))
 	await settle(g)

@@ -323,6 +323,15 @@ func _interact(id:String) -> void:
 	)
 
 func _odell_response() -> void:
+	var spoken="Walter told Odell to his face that six was not the whole count. Odell did not answer."
+	var silent="Walter wrote EIGHT in his own file, in a hand larger than his usual notation, and said nothing further to the captain."
+	# Existing saves already encode the answer in the permanent statement record.
+	if state.statements.has(spoken) or state.statements.has(silent):
+		_panel("witness","Already answered","THE TERRACE / WALTER'S NOTEBOOK")
+		_paragraph("Walter's answer is already in his notebook. Odell has nothing further to add.")
+		_button("Leave the captain",_close)
+		_focus_first()
+		return
 	_panel("witness","A filing matter","THE TERRACE  /  WALTER'S ANSWER")
 	_paragraph("Odell has already turned back toward the sheeted tables. Walter can let the matter rest here, or say what he actually thinks before it does.",22)
 	_button("\"I understand it. I don't accept it.\"",func():
@@ -340,7 +349,7 @@ func _odell_response() -> void:
 func _barman_menu() -> void:
 	_panel("witness","The club's barman","THE PORTICO  /  ASK, LISTEN, RECORD")
 	_paragraph("He keeps his voice low and his eyes on the glasses he's drying. He has already decided how much of this he's willing to say.",22)
-	_button("Ask what the members talk about, this late"+("  · recorded" if state.evidence.has("club_talk") else ""),func(): _estate_observation("club_talk",true))
+	_button("Ask what the members used to talk about"+("  · recorded" if state.evidence.has("club_talk") else ""),func(): _estate_observation("club_talk",true))
 	if state.evidence.has("club_talk"):
 		_button("Ask what Kessler used to say"+("  · recorded" if state.evidence.has("club_devotion") else ""),func(): _estate_observation("club_devotion",true))
 	if state.evidence.has("club_devotion"):
@@ -351,6 +360,7 @@ func _barman_menu() -> void:
 func _estate_observation(id:String,return_to_barman:bool=false) -> void:
 	_cards(Story.SCENES[id],func():
 		state.discover(id)
+		if id=="old_woman" and state.world=="town": estate.dismiss_old_woman()
 		if not state.inquiry_topics.has(id): state.inquiry_topics.append(id)
 		_save_game()
 		if return_to_barman: _barman_menu()
@@ -513,6 +523,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true)
 		estate=Town.new()
 		estate.location=destination
 	add_child(estate)
+	if destination=="town" and state.evidence.has("old_woman"): estate.dismiss_old_woman()
 	if destination == "tunnel":
 		estate.reveal(state.perception())
 		last_hazard_phase = ""
@@ -604,8 +615,10 @@ func _town_interaction(id:String) -> bool:
 	return false
 
 func _town_observation(id:String,return_to_witness:bool=false) -> void:
+	if id=="old_woman" and state.evidence.has(id): return
 	_cards(TownStory.SCENES[id],func():
 		state.discover(id)
+		if id=="old_woman" and state.world=="town": estate.dismiss_old_woman()
 		if not state.inquiry_topics.has(id): state.inquiry_topics.append(id)
 		_save_game()
 		if return_to_witness: _witness_menu()

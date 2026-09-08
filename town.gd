@@ -1,6 +1,7 @@
 extends "res://estate.gd"
 
 var location = "town"
+var departing_woman: Node3D
 
 func _ready() -> void:
 	rng.seed = 1924
@@ -105,6 +106,7 @@ func _street() -> void:
 	lettering("KESSLER",Vector3(-20,2.5,11.85),26)
 	for y in [0.6,1.1,1.6]: box(self,Vector3(-20,y,11.83),Vector3(2.6,0.16,0.1),"241f1a")
 	var old_woman = person(Vector3(-19.2,0,11.2),"3c3a34")
+	departing_woman=old_woman
 	old_woman.rotation.y = -2.0
 	target("old_woman","Speak with the woman outside the shop",Vector3(-19.2,0,11.2))
 	for x in [-28,28]: tree(Vector3(x,0,20))
@@ -213,3 +215,9 @@ func update_board(evidence:Array) -> void:
 	for i in 8:
 		var card=get_node_or_null("BoardCard"+str(i))
 		if card: card.visible=i<evidence.size()
+
+func dismiss_old_woman() -> void:
+	points.erase("old_woman")
+	if is_instance_valid(departing_woman):
+		departing_woman.hide()
+		departing_woman.queue_free()
