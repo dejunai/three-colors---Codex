@@ -92,9 +92,10 @@ func _physics_process(delta:float) -> void:
 			movement = to_target.normalized()
 	else:
 		movement = Vector3.ZERO
-	var speed = 3.5 if Input.is_action_pressed("brisk") else 2.15
-	player.velocity.x = move_toward(player.velocity.x,movement.x*speed,delta*13)
-	player.velocity.z = move_toward(player.velocity.z,movement.z*speed,delta*13)
+	var speed = 10.5 if Input.is_action_pressed("brisk") else 2.15
+	var accel = 39.0 if Input.is_action_pressed("brisk") else 13.0
+	player.velocity.x = move_toward(player.velocity.x,movement.x*speed,delta*accel)
+	player.velocity.z = move_toward(player.velocity.z,movement.z*speed,delta*accel)
 	if not player.is_on_floor(): player.velocity.y -= 18*delta
 	else: player.velocity.y = -0.2
 	player.move_and_slide()
