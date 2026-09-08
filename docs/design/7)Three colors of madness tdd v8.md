@@ -92,6 +92,8 @@
 
 **This does not change the underlying finding that browser-pane focus also mattered during testing — both things can be true, and likely are: a real input-latch fix landed in the working tree, and foregrounding the pane was still probably necessary for reasons outside the game's own code (the embedded browser's pointer/keyboard event delivery). What changes is that this document was wrong to say no code-level fix exists. It does, and it is functioning as intended.**
 
+**Addendum: this pass's source read also missed a second, related addition sitting in the same uncommitted `main.gd` changes — click-to-move. A `move_target: Vector3` is set from a left-click raycast against world geometry (layer 1) in `_unhandled_input`, clamped into `movement_bounds`, and steered toward in `_physics_process` whenever no walk key is held; it clears on arrival or on the next keypress. It is deliberately not gated on `Input.mouse_mode == MOUSE_MODE_CAPTURED`, only on `chapter.page == "play"`, specifically because pointer lock is unreliable in some browser embeddings and gating the fallback on it would silently disable it. This is an accessibility affordance (a held-key alternative) that also happens to give automated/scripted input a second, more reliable way to move the player. Confirmed directly against source, same as the latch fix above; not yet reflected in Part Two's "Current Build" summary or Part Four's decision list.**
+
 ## **Forced-Spill, Tunnel Combat, and Generalized Systems (Antigravity Phase 1–2) — new**
 
 **A second delivery from Antigravity implemented most of its own review's Phase 1 and Phase 2 roadmap. Checked directly against source rather than against the delivery's own report:**
