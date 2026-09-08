@@ -4,6 +4,61 @@ var mats = {}
 var points = {}
 var colliders: Array[Rect2] = []
 var rng = RandomNumberGenerator.new()
+var conditional_actors: Dictionary = {}
+var scene_bodies: Array[Node3D] = []
+var gardener_actor: Node3D
+var groundskeeper_actor: Node3D
+var opening_knife: Node3D
+var opening_staff: Dictionary = {}
+
+func sync_staging(st) -> void:
+	for corpse in scene_bodies: corpse.visible = not st.estate_complete
+	for id in opening_staff:
+		opening_staff[id].visible = not st.estate_complete
+		if st.estate_complete: points.erase(id)
+	if st.estate_complete:
+		for id in ["wounds","eight","watch","shoes","knife"]: points.erase(id)
+	if is_instance_valid(opening_knife): opening_knife.visible = not st.estate_complete
+	if is_instance_valid(groundskeeper_actor):
+		groundskeeper_actor.visible = st.lounge_exited
+		if st.lounge_exited: target("crew","Watch the groundskeeper",Vector3(-12.6,0,-16.9))
+		else: points.erase("crew")
+	if is_instance_valid(gardener_actor):
+		gardener_actor.position = Vector3(-4,0,12) if st.estate_complete else Vector3(-12,0,1)
+		target("gardener","Speak to the gardener",gardener_actor.position)
+	if st.visited.has("almy"):
+		target("service_entrance","Enter the smoking lounge through the service entrance",Vector3(-10,0,-18))
+	else: points.erase("service_entrance")
+
+
+func register_actor(id: String, node: Node3D, target_id: String = "", condition: Callable = Callable()) -> void:
+	conditional_actors[id] = {
+		"node": node,
+		"target_id": target_id if not target_id.is_empty() else id,
+		"condition": condition
+	}
+
+func sync_actors(state_obj: RefCounted) -> void:
+	for id in conditional_actors:
+		var info = conditional_actors[id]
+		if info.condition.is_valid():
+			var is_present: bool = info.condition.call(state_obj)
+			if not is_present:
+				dismiss_actor(id)
+
+func dismiss_actor(id: String) -> void:
+	if not conditional_actors.has(id):
+		points.erase(id)
+		return
+	var info = conditional_actors[id]
+	if not info.target_id.is_empty():
+		points.erase(info.target_id)
+	if is_instance_valid(info.node):
+		info.node.hide()
+		info.node.queue_free()
+
+func dismiss_old_woman() -> void:
+	dismiss_actor("old_woman")
 
 func mat(c: String, glow: bool = false) -> StandardMaterial3D:
 	var key = c + str(glow)
@@ -118,6 +173,7 @@ func body(pos: Vector3, angle: float, covered: bool = false, small: bool = false
 	n.position = pos
 	n.rotation.y = angle
 	add_child(n)
+	scene_bodies.append(n)
 	if small: n.scale = Vector3.ONE*0.68
 	if covered:
 		var sheet = sphere(n,Vector3(0,0.24,0),0.62,"9e9e96")
@@ -236,9 +292,9 @@ func _ready() -> void:
 	roof.scale.z = 0.45
 	roof.rotation.y = PI/4
 	lettering("O P H I O N",Vector3(0,5.87,-14.44),62)
-	# A barman keeping his own counsel near the portico steps.
-	var barman = person(Vector3(-6.5,0,-15.7),"3f4540",false)
-	barman.rotation.y = 0.9
+	# Staff entrance in the kitchen-wing facade; member doors remain scenery.
+	box(self,Vector3(-10,1.4,-19.7),Vector3(1.4,2.8,0.16),"242b28")
+	lettering("SERVICE",Vector3(-10,3.1,-19.5),26)
 	# Garden: openings in southern hedge and eastern birch access.
 	hedge(Vector3(-10,0.65,6),Vector3(12,1.3,1.25))
 	hedge(Vector3(10,0.65,6),Vector3(12,1.3,1.25))
@@ -278,6 +334,8 @@ func _ready() -> void:
 	sphere(self,Vector3(-12.0,0.24,-15.4),0.15,"656a66")
 	var groundskeeper = person(Vector3(-12.6,0,-16.6),"3a3f36",true,"7a2a1a")
 	groundskeeper.rotation.y = 2.4
+	groundskeeper_actor = groundskeeper
+	groundskeeper.hide()
 	# Boundary walls and iron gate, with a lodge beside the entrance.
 	for x in [-14,14]: box(self,Vector3(x,1.2,37),Vector3(20,2.4,0.65),"6c736b",true)
 	for x in [-4.1,4.1]:
@@ -299,10 +357,14 @@ func _ready() -> void:
 	box(self,Vector3(6.6,1.06,-13.8),Vector3(0.52,0.035,0.7),"cccbba")
 	box(self,Vector3(7.4,1.06,-13.8),Vector3(0.48,0.035,0.6),"babaa8")
 	person(Vector3(-2,0,31),"555c52").rotation.y = -0.3
-	person(Vector3(4,0,-11.5),"272e2b").rotation.y = 0.2
-	person(Vector3(12.5,0,-3.8),"aaa99a",false).rotation.y = -1.2
-	person(Vector3(-12,0,1),"4e5a4b").rotation.y = 0.7
-	box(self,Vector3(-7,0.08,-1),Vector3(0.08,0.1,0.72),"b8b8a6").rotation.y = 0.5
+	opening_staff["odell"] = person(Vector3(4,0,-11.5),"272e2b")
+	opening_staff["odell"].rotation.y = 0.2
+	opening_staff["assistant"] = person(Vector3(12.5,0,-3.8),"aaa99a",false)
+	opening_staff["assistant"].rotation.y = -1.2
+	gardener_actor = person(Vector3(-12,0,1),"4e5a4b")
+	gardener_actor.rotation.y = 0.7
+	opening_knife = box(self,Vector3(-7,0.08,-1),Vector3(0.08,0.1,0.72),"b8b8a6")
+	opening_knife.rotation.y = 0.5
 	# Interaction positions are reachable on foot and never embedded in collision.
 	target("boy","Speak to the gatehouse boy",Vector3(-2,0,31))
 	target("wounds","Examine the six men",Vector3(0,0,0))
@@ -310,12 +372,10 @@ func _ready() -> void:
 	target("knife","Examine beneath the hedge",Vector3(-7,0,-0.4))
 	target("watch","Examine the unidentified man",Vector3(-3.8,0,-3.1))
 	target("gas","Examine the terrace windows",Vector3(-8,0,-18.0))
-	target("crew","Watch the grounds crew",Vector3(-12.6,0,-16.9))
 	target("register","Read the seating list",Vector3(7.4,0,-13.1))
 	target("shoes","Examine the belongings",Vector3(25.6,0,-4.0))
 	target("assistant","Speak to the coroner's assistant",Vector3(12.5,0,-3.8))
 	target("gardener","Speak to the gardener",Vector3(-12,0,1))
 	target("odell","Speak to Captain Odell",Vector3(4,0,-11.5))
-	target("barman","Speak with the club's barman",Vector3(-6.5,0,-15.7))
 	target("report","Write the preliminary report",Vector3(6,0,-13.1))
 	target("exit","Return to the precinct",Vector3(0,0,39))

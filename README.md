@@ -2,6 +2,14 @@
 
 Native third-person 3D opening prototype aligned with Design Bible v13 and TDD v2. This is a playable blockout, with primitive art and provisional writing. Roughly ten minutes is an exploratory pacing target, not a measured playtime or a forced timer.
 
+## Current staging pass
+
+The steward is inside the smoking lounge, reached through the estate's service entrance after speaking to Mrs. Almy. Speak to him once, return home and sleep for the provisional second-day montage, then return on day three in the plain wool coat. Sleep is temporarily blocked until the first conversation (and the existing intake/identification beats) are complete. Repeated entries do not advance a visit. The groundskeeper appears when leaving the lounge. On estate returns, the bodies, Odell and the coroner's assistant are gone and the gardener is beside the approach drive, below the garden hedge; his plain-coat testimony remains optional.
+
+“Read the notebook” in personal effects or the case file opens the new read-only reference. Linking remains at the physical board. The desk's end-of-day action now follows the same staging milestones as the bed. The existing service-passage continuation follows the third encounter and return home.
+
+See `docs/qa/STAGING_PASS.md` for the precise flow, version-5 save migration, test results, and pacing estimates. `Test staging.cmd` verifies the new progression. The minimal opener estimates 3.1–3.6 minutes; all opening observations estimate 6.6–7.8 minutes. The Web build has not been re-exported by this pass.
+
 ## Play
 
 Double-click `Launch.cmd`, or open `project.godot` in Godot and press F5. The launcher uses the installed engine at `C:\Portables\Godot4\Godot_v4.7.2-stable_mono_win64.exe`. No downloads, additional libraries, or network connection are needed.
@@ -18,7 +26,7 @@ Double-click `Launch.cmd`, or open `project.godot` in Godot and press F5. The la
 
 Read the civic-history intertitles. Speak to the gatehouse boy, follow the drive, and explore the rose garden, terrace, and birch grove. Consult Captain Odell beyond the fountain. Prepare a report at the field desk beside him. Return to the estate gates to continue to Pickman Street. Submit the report at the precinct, ask Mrs. Almy about the unidentified woman at the boardinghouse, and return to your room. Set the notebook on the desk to finish the current playable inquiry.
 
-Optional observations: wounds, grove, knife, watch, intact windows, seating list, belongings, the assistant's testimony, and the grounds crew's fixed distance from the kitchen wing's service door. The gardener supplies an additional statement when Walter wears his plain wool coat (change it in personal effects). The club's barman, near the portico, opens into a revisitable menu of three further observations asked one at a time, each unlocking the next.
+Optional observations: wounds, grove, knife, watch, intact windows, seating list, belongings, the assistant's testimony, and the grounds crew's fixed distance from the kitchen wing's service door. After the opening, the gardener supplies an optional additional statement beside the drive below the garden hedge when Walter wears his plain wool coat (change it in personal effects). The club's steward, inside the smoking lounge, opens his three-topic revisitable menu on the third visit under the conditions above.
 
 A minimal run can go directly to Odell and the report. His statement supplies the count without claiming examinations Walter skipped. Odell's dismissal ("Six members, Corwin... The other two are a filing matter") opens a genuine choice — answer him to his face, or say nothing and let the notebook carry it — recorded as a distinct statement either way; neither option is scored or gates anything downstream. Opening the case file is optional; it never gates progression. The report snapshots the evidence present when prepared. Later observations remain in Walter's notebook until he revises the report at the desk.
 

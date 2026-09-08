@@ -13,6 +13,7 @@ const MUTED = Color("a6aa9b")
 
 var interface: CanvasLayer
 var presentation: CanvasLayer
+var staging=preload("res://scripts/chapters/chapter_one_staging.gd").new()
 var archive=preload("res://scripts/chapters/chapter_one_archive.gd").new()
 var rig: Node3D
 var state = CaseState.new()
@@ -85,7 +86,7 @@ var last_hazard_phase = ""
 
 func start(player_rig:Node3D) -> void:
 	rig=player_rig
-	test_mode = OS.get_cmdline_user_args().has("--qa") or OS.get_cmdline_user_args().has("--qa-town") or OS.get_cmdline_user_args().has("--qa-loop")
+	test_mode = OS.get_cmdline_user_args().has("--qa") or OS.get_cmdline_user_args().has("--qa-town") or OS.get_cmdline_user_args().has("--qa-loop") or OS.get_cmdline_user_args().has("--qa-phase2") or OS.get_cmdline_user_args().has("--qa-staging")
 	facts = Story.FACTS.duplicate(true)
 	facts.merge(TownStory.FACTS)
 	facts.merge(TunnelStory.FACTS)
@@ -101,6 +102,8 @@ func start(player_rig:Node3D) -> void:
 	if OS.get_cmdline_user_args().has("--qa"): call_deferred("_qa")
 	if OS.get_cmdline_user_args().has("--qa-town"): call_deferred("_qa_town")
 	if OS.get_cmdline_user_args().has("--qa-loop"): call_deferred("_qa_loop")
+	if OS.get_cmdline_user_args().has("--qa-phase2"): call_deferred("_qa_phase2")
+	if OS.get_cmdline_user_args().has("--qa-staging"): call_deferred("_qa_staging")
 	if not capture_mode.is_empty(): call_deferred("_capture")
 
 
@@ -174,7 +177,7 @@ func _new_game() -> void:
 	tunnel_dead = false
 	comfort_time = 0
 	state = CaseState.new()
-	if not estate is Estate or estate.get_script() != Estate: _travel("estate",state.position,0,false)
+	_travel("estate",state.position,0,false)
 	player.position = state.position
 	yaw = 0
 	_refresh_outfit()
@@ -222,7 +225,7 @@ func tick_world(delta:float) -> void:
 	var region = _region_name()
 	if region != last_region:
 		last_region = region
-		location_label.text = region+"\n—  "+("BEFORE DAWN" if state.world == "estate" else ("THE SERVICE PASSAGE" if state.world=="tunnel" else "PICKMAN STREET"))+"  —"
+		location_label.text = region+"\n—  "+(("BEFORE DAWN" if not state.estate_complete else "DAY %d" % state.day) if state.world == "estate" else ("THE SERVICE PASSAGE" if state.world=="tunnel" else ("OPHION CLUB / DAY %d" % state.day if state.world=="lounge" else "PICKMAN STREET")))+"  —"
 		location_time = 4
 	autosave_time += delta
 	if autosave_time > 20:
@@ -258,11 +261,11 @@ func handle_input(event:InputEvent) -> void:
 		elif event.is_action_pressed("journal"): _journal()
 		elif event.is_action_pressed("pause_game"): _pause()
 	elif event.is_action_pressed("pause_game"):
-		if page == "dialogue": return
+		if page in ["dialogue","montage"]: return
 		if page == "settings":
 			if return_page == "title": _title()
 			else: _pause()
-		elif page in ["case","journal","pause","report","fact","witness","board"]: _close()
+		elif page in ["case","journal","pause","report","fact","witness","board","notebook"]: _close()
 	elif event.is_action_pressed("case") and page in ["case","journal","fact"]: _close()
 
 func _find_focus() -> void:
@@ -284,6 +287,7 @@ func _find_focus() -> void:
 	if marker.visible: marker.position = estate.points[focused].pos+Vector3(0,0.06,0)
 
 func _interact(id:String) -> void:
+	if staging.interact(self,id): return
 	if _tunnel_interaction(id): return
 	if _town_interaction(id): return
 	if id == "report":
@@ -293,17 +297,10 @@ func _interact(id:String) -> void:
 		if state.report.is_empty(): return
 		_finish()
 		return
-	if id == "barman":
-		if state.visited.has("barman"):
-			_barman_menu()
-		else:
-			var intro = "barman_plain" if state.coat == "Plain wool coat" else "barman_badge"
-			_cards(Story.SCENES[intro],func():
-				state.visited.append("barman")
-				_save_game()
-				_barman_menu())
-		return
-	var key = "gardener_plain" if id == "gardener" and state.coat == "Plain wool coat" else id
+	var key = "gardener_plain" if id == "gardener" and state.estate_complete and state.coat == "Plain wool coat" else id
+	if id == "boy":
+		if state.estate_complete: key = "boy_return"
+		elif state.visited.has("boy"): key = "boy_repeat"
 	if not Story.SCENES.has(key): return
 	_cards(Story.SCENES[key],func():
 		if not state.visited.has(id): state.visited.append(id)
@@ -347,7 +344,10 @@ func _odell_response() -> void:
 	_focus_first()
 
 func _barman_menu() -> void:
-	_panel("witness","The club's barman","THE PORTICO  /  ASK, LISTEN, RECORD")
+	if state.world != "lounge" or not state.steward_ready():
+		staging.steward(self)
+		return
+	_panel("witness","The club's steward","THE SMOKING LOUNGE  /  ASK, LISTEN, RECORD")
 	_paragraph("He keeps his voice low and his eyes on the glasses he's drying. He has already decided how much of this he's willing to say.",22)
 	_button("Ask what the members used to talk about"+("  · recorded" if state.evidence.has("club_talk") else ""),func(): _estate_observation("club_talk",true))
 	if state.evidence.has("club_talk"):
@@ -358,9 +358,10 @@ func _barman_menu() -> void:
 	_focus_first()
 
 func _estate_observation(id:String,return_to_barman:bool=false) -> void:
+	if id in ["club_talk","club_devotion","pantry_lead"] and (state.world != "lounge" or not state.steward_ready()): return
 	_cards(Story.SCENES[id],func():
 		state.discover(id)
-		if id=="old_woman" and state.world=="town": estate.dismiss_old_woman()
+		if estate and estate.has_method("sync_actors"): estate.sync_actors(state)
 		if not state.inquiry_topics.has(id): state.inquiry_topics.append(id)
 		_save_game()
 		if return_to_barman: _barman_menu()
@@ -373,6 +374,10 @@ func _objective() -> String:
 	if state.estate_complete or state.world != "estate":
 		if not state.intake_done: return "Submit your estate report at the precinct intake counter on Pickman Street."
 		if not state.evidence.has("naomi"): return "Speak to Mrs. Almy at her boardinghouse on Pickman Street. Ask who the woman was."
+		if not state.finished:
+			if state.steward_visits == 0: return "Return to the estate. Speak to the steward inside the smoking lounge, through the service entrance."
+			if state.day < 3: return "There is nothing more from the steward tonight. Return to your room above the cobbler's and sleep."
+			if state.steward_visits < 3: return "Return to the smoking lounge. The steward asked you to leave your badge behind."
 		if state.finished: return "The first town inquiry is recorded. You can revisit witnesses, file a supplement, or review Walter's board."
 		return "Continue questioning Mrs. Almy or file a dated supplement at the precinct. Set the notebook on your desk above the cobbler's when ready to end the day."
 	if not state.visited.has("garden") and not state.visited.has("odell"): return "Follow the drive to the rose garden. The gatehouse boy can direct you."
@@ -402,6 +407,7 @@ func _write_report(mode:String,scene:String) -> void:
 
 func _finish() -> void:
 	state.estate_complete = true
+	estate.sync_staging(state)
 	_save_game()
 	_cards(TownStory.ARRIVAL,func(): _travel("town",Vector3(0,0.1,17)))
 
@@ -482,6 +488,7 @@ func _load_game() -> void:
 	_restore_session(d)
 	tunnel_dead=bool(d.get("tunnel_dead",false))
 	if tunnel_dead: _show_tunnel_death(false)
+	elif state.montage_index >= 0: staging.draw_montage(self)
 	elif state.finished and state.world != "tunnel": _town_complete()
 	else: _close()
 
@@ -514,6 +521,7 @@ func _walk_to(destination:Vector3) -> void:
 	await load("res://tests/walk_driver.gd").new().walk_to(self,destination)
 
 func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true) -> void:
+	if destination == "lounge" and not state.visited.has("almy"): return
 	if is_instance_valid(estate):
 		remove_child(estate)
 		estate.queue_free()
@@ -523,7 +531,11 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true)
 		estate=Town.new()
 		estate.location=destination
 	add_child(estate)
-	if destination=="town" and state.evidence.has("old_woman"): estate.dismiss_old_woman()
+	if destination == "estate": estate.sync_staging(state)
+	if estate and estate.has_method("sync_actors"):
+		estate.sync_actors(state)
+	elif destination=="town" and state.evidence.has("old_woman") and estate.has_method("dismiss_old_woman"):
+		estate.dismiss_old_woman()
 	if destination == "tunnel":
 		estate.reveal(state.perception())
 		last_hazard_phase = ""
@@ -557,6 +569,7 @@ func _region_name() -> String:
 		"precinct": return "PRECINCT 4"
 		"boardinghouse": return "MRS. ALMY'S PARLOR"
 		"room": return "CORWIN'S ROOM"
+		"lounge": return "THE SMOKING LOUNGE"
 	if player.position.x > 18: return "THE BIRCH GROVE"
 	if player.position.x < -10 and player.position.z < -14: return "THE KITCHEN WING YARD"
 	return "THE TERRACE" if player.position.z < -10 else ("THE ROSE GARDEN" if player.position.z < 6 else "THE OPHION ESTATE")
@@ -595,15 +608,6 @@ func _town_interaction(id:String) -> bool:
 					_behan_menu())
 			return true
 		"board": _board(); return true
-		"day_close":
-			if not state.intake_done or not state.evidence.has("naomi"):
-				_panel("case","Work still to do","WALTER'S DESK")
-				_paragraph(_objective())
-				_button("Take the notebook",_close)
-				_focus_first()
-			else:
-				_cards(TownStory.SCENES.close_day,func(): state.finished=true; _save_game(); _town_complete())
-			return true
 	if TownStory.FACTS.has(id) and TownStory.SCENES.has(id):
 		if id=="lodging" and not state.evidence.has("naomi"):
 			_panel("case","A private ledger","MRS. ALMY'S PARLOR")
@@ -614,15 +618,23 @@ func _town_interaction(id:String) -> bool:
 		return true
 	return false
 
-func _town_observation(id:String,return_to_witness:bool=false) -> void:
+func _town_observation(id:String,return_target:Variant=null) -> void:
 	if id=="old_woman" and state.evidence.has(id): return
 	_cards(TownStory.SCENES[id],func():
 		state.discover(id)
-		if id=="old_woman" and state.world=="town": estate.dismiss_old_woman()
+		if estate and estate.has_method("sync_actors"):
+			estate.sync_actors(state)
+		elif id=="old_woman" and state.world=="town" and estate.has_method("dismiss_old_woman"):
+			estate.dismiss_old_woman()
 		if not state.inquiry_topics.has(id): state.inquiry_topics.append(id)
 		_save_game()
-		if return_to_witness: _witness_menu()
-		else: _close(); _toast("Source recorded in Walter's notebook.  [ J ]",4))
+		if return_target is Callable and return_target.is_valid():
+			return_target.call()
+		elif return_target is bool and return_target:
+			_witness_menu()
+		else:
+			_close()
+			_toast("Source recorded in Walter's notebook.  [ J ]",4))
 
 func _survey_drawer(index_open:bool=false) -> void:
 	_panel("case","The survey drawer","PRECINCT 4  /  MUNICIPAL RECORDS")
@@ -705,11 +717,7 @@ func _behan_menu() -> void:
 				_behan_menu()))
 	else:
 		_button("Ask about the meaning of the club's name"+("  · recorded" if state.evidence.has("behan_name") else ""),func():
-			_cards(TownStory.SCENES.behan_name,func():
-				state.discover("behan_name")
-				if not state.inquiry_topics.has("behan_name"): state.inquiry_topics.append("behan_name")
-				_save_game()
-				_behan_menu()))
+			_town_observation("behan_name",_behan_menu))
 	_button("Thank him and leave",_close)
 	_focus_first()
 
@@ -746,6 +754,7 @@ func _qa_town() -> void:
 	await load("res://tests/town_flow.gd").new().run(self)
 
 func _refresh_outfit() -> void:
+	if state.world == "estate": estate.sync_staging(state)
 	model.get_node("Coat").material_override=estate.mat("5f6559" if state.coat=="Plain wool coat" else "424b43")
 	if model.has_node("Badge"): model.get_node("Badge").visible=state.coat=="Police coat"
 
@@ -797,6 +806,12 @@ func _tunnel_interaction(id:String) -> bool:
 				state.record("Walter measured a passage beyond the recorded foundation; the service plan is the comparison source.")
 				_save_game()
 				_toast("Measurement recorded. Return to the service stair.",5))
+		"tunnel_descent":
+			_tunnel_descent()
+		"drowned_remains":
+			_drowned_encounter()
+		"cultist_encounter":
+			_cultist_encounter()
 		"tunnel_exit":
 			if state.evidence.has("lower_foundation"):
 				state.tunnel_complete=true
@@ -808,6 +823,124 @@ func _tunnel_interaction(id:String) -> bool:
 		_:
 			return false
 	return true
+
+func _tunnel_descent() -> void:
+	if not state.flask_spilled:
+		state.flask_spill_amount = state.flask
+		state.flask_spilled = true
+		state.flask = 0
+		_cards(TunnelStory.FLASK_SPILL,func():
+			state.discover("flask_spill")
+			state.record("A rock spur tore Walter's flask loose on the descent. What remained inside was lost.")
+			_save_game()
+			_toast("The flask was torn loose and lost in the dark.",5)
+		)
+	else:
+		_panel("descent","The Deep Corridor","BEYOND THE FOUNDATION")
+		_paragraph("The worked masonry gives way to rough-hewn stone descending beneath the seabed. Water seeps through the joints.\n\nCold air carries the faint rhythm of the tide miles overhead.",24)
+		if state.ammo > 0:
+			_paragraph("Revolver: %d rounds in the cylinder." % state.ammo,18)
+		_button("Step back to the foundation support",_close)
+		_focus_first()
+
+func _cultist_encounter() -> void:
+	_panel("combat","The Transformed Cultist","CENTRAL PASSAGE")
+	_paragraph("The dinner jacket hangs in ribbons over elongated collar and limbs. A thin, wet cough rattles from a head turned too far around.\n\nIts eyes catch the light with no human expression.",23)
+	if estate is Tunnel and estate.cultist_stagger > 0:
+		_paragraph("The creature is staggered (%.1f seconds remaining), folded at the waist. Move past it into the side walk." % estate.cultist_stagger,20)
+	if state.ammo > 0:
+		_button("Fire service revolver center-mass (%d/6 rounds left)" % state.ammo,func():
+			state.ammo -= 1
+			if estate is Tunnel:
+				estate.cultist_stagger = 4.0
+				estate.exposure = 0.0
+			_save_game()
+			_panel("combat","Revolver Shot","STAGGERED ONLY")
+			_paragraph("The shot roars in the stone corridor. No exit wound. The creature folds at the middle and staggers backward, groaning.\n\nIt does not fall. No force can destroy it permanently; the shot buys only a few seconds to run.",23)
+			_button("Retreat into the side walk",_close)
+			_focus_first()
+		)
+	if state.evidence.has("knife"):
+		var stagger_sec = 1.5 + state.strength() * 1.0
+		_button("Drive Kessler's boning knife in low",func():
+			if estate is Tunnel:
+				estate.cultist_stagger = stagger_sec
+				estate.exposure = 0.0
+			_save_game()
+			_panel("combat","Knife Strike","STRENGTH %d" % state.strength())
+			_paragraph("Walter drives the heavy knife in low, levering against the reaching arm. The creature staggers, breaking its grip.\n\nStrength buys %.1f seconds of delay. It will rise again." % stagger_sec,23)
+			_button("Retreat into the side walk",_close)
+			_focus_first()
+		)
+	_button("Retreat behind the stone wall",_close)
+	_focus_first()
+
+func _drowned_encounter() -> void:
+	if state.drowned_dead:
+		_panel("fact","Waterlogged Remains","DEEP CORRIDOR")
+		_paragraph("The drowned sailor lies permanently still. No movement stirs the sodden wool.",22)
+		_button("Leave the remains",_close)
+		_focus_first()
+		return
+	_panel("combat","The Drowned Sailor","SUB-BASEMENT CORRIDOR  /  REMAINS")
+	_paragraph("Bloated, pale flesh wrapped in sea-worn wool. It shifts against the stone floor with a low, impersonal groan, turning toward Walter.",23)
+	if estate is Tunnel and estate.drowned_stagger > 0:
+		_paragraph("The sailor is staggered (%.1f seconds remaining). An opening is available." % estate.drowned_stagger,20)
+		_button("Deliver desperate finishing blow",func():
+			state.drowned_dead = true
+			state.discover("drowned_remains")
+			state.record("A drowned sailor put down permanently by a brutal finishing blow. Different rules from the other thing.")
+			if estate is Tunnel:
+				estate.drowned_sailor.rotation.x = PI * 0.5
+				estate.drowned_sailor.position.y = 0.15
+				estate.points.erase("drowned_remains")
+			_save_game()
+			_cards([["FINISHING BLOW","Walter puts his boot into the sailor's skull as it reaches for his ankle. Something gives, definitively.\n\nThe sailor goes completely still. Unlike the cultists, this body carries no curse; brutal force ends it permanently."]],_close)
+		)
+	if state.ammo > 0:
+		_button("Fire service revolver (%d/6 rounds left)" % state.ammo,func():
+			state.ammo -= 1
+			if estate is Tunnel: estate.drowned_stagger = 4.0
+			_save_game()
+			_panel("combat","Revolver shot","CENTER MASS")
+			_paragraph("The revolver cracks in the close corridor. Center mass. No exit wound.\n\nThe drowned sailor staggers backward into the stone, folded at the waist.",23)
+			_button("Deliver desperate finishing blow",func():
+				state.drowned_dead = true
+				state.discover("drowned_remains")
+				state.record("A drowned sailor put down permanently by a brutal finishing blow. Different rules from the other thing.")
+				if estate is Tunnel:
+					estate.drowned_sailor.rotation.x = PI * 0.5
+					estate.drowned_sailor.position.y = 0.15
+					estate.points.erase("drowned_remains")
+				_save_game()
+				_cards([["FINISHING BLOW","Walter puts his boot into the sailor's skull as it reaches for his ankle. Something gives, definitively.\n\nThe sailor goes completely still. Unlike the cultists, this body carries no curse; brutal force ends it permanently."]],_close)
+			)
+			_button("Step back into cover",_close)
+			_focus_first()
+		)
+	if state.evidence.has("knife"):
+		var stagger_duration = 2.0 + state.strength() * 1.5
+		_button("Strike with Kessler's boning knife",func():
+			if estate is Tunnel: estate.drowned_stagger = stagger_duration
+			_save_game()
+			_panel("combat","Knife strike","STRENGTH %d" % state.strength())
+			_paragraph("Walter drives Kessler's knife in low. The force in his arms and back buys %.1f seconds of the sailor simply not breathing again." % stagger_duration,23)
+			_button("Deliver desperate finishing blow",func():
+				state.drowned_dead = true
+				state.discover("drowned_remains")
+				state.record("A drowned sailor put down permanently by a brutal finishing blow. Different rules from the other thing.")
+				if estate is Tunnel:
+					estate.drowned_sailor.rotation.x = PI * 0.5
+					estate.drowned_sailor.position.y = 0.15
+					estate.points.erase("drowned_remains")
+				_save_game()
+				_cards([["FINISHING BLOW","Walter puts his boot into the sailor's skull as it reaches for his ankle. Something gives, definitively.\n\nThe sailor goes completely still. Unlike the cultists, this body carries no curse; brutal force ends it permanently."]],_close)
+			)
+			_button("Step back into cover",_close)
+			_focus_first()
+		)
+	_button("Retreat behind the stone wall",_close)
+	_focus_first()
 
 func _custody_result() -> String:
 	var source = state.county_evidence
@@ -907,6 +1040,9 @@ func _build_cough() -> void:
 func _qa_loop() -> void:
 	await load("res://tests/interaction_loop.gd").new().run(self)
 
+func _qa_phase2() -> void:
+	await load("res://tests/phase_two_mechanics.gd").new().run(self)
+
 func _normalize_snapshot(value:Variant) -> Dictionary:
 	if not value is Dictionary or value.is_empty(): return {}
 	var restored=CaseState.new()
@@ -915,3 +1051,14 @@ func _normalize_snapshot(value:Variant) -> Dictionary:
 	for key in ["comfort_time","pitch","distance","aperture","aperture_target","hazard_clock","hazard_exposure"]:
 		if value.has(key): normalized[key]=float(value[key])
 	return normalized
+
+func _notebook() -> void:
+	_panel("notebook","Walter's notebook","THE CASE / OBSERVATIONS AND CONNECTIONS",true)
+	# Pass detached display data, never the mutable case-state object.
+	var snapshot = state.pack().duplicate(true)
+	snapshot["perception"] = state.perception()
+	snapshot["sources"] = _current_sources().duplicate(true)
+	preload("res://scripts/chapters/chapter_one_notebook.gd").new().render(interface,snapshot,facts.duplicate(true),archive.LINKS.duplicate(true),_close)
+
+func _qa_staging() -> void:
+	await load("res://tests/staging_flow.gd").new().run(self)

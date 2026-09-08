@@ -72,9 +72,27 @@ func run(g:Node) -> void:
 	assert(g.focused=="day_close")
 	g._interact("day_close")
 	cards(g)
+	assert(not g.state.finished and g.page=="case","First steward conversation is required before sleep")
+	g._travel("estate",Vector3(-10,0.1,-18))
+	g._interact("service_entrance")
+	g._interact("barman")
+	cards(g)
+	g._interact("lounge_exit")
+	g._travel("room",Vector3(0,0.1,6))
+	g._interact("sleep")
+	while g.page=="montage": g.content.find_children("*","Button",true,false)[0].pressed.emit()
+	g.state.coat="Plain wool coat"
+	g._travel("estate",Vector3(-10,0.1,-18))
+	g._interact("service_entrance")
+	g._interact("barman")
+	cards(g)
+	g._interact("lounge_exit")
+	g._travel("room",Vector3(0,0.1,6))
+	g._interact("day_close")
+	cards(g)
 	assert(g.state.finished and g.page=="ending")
 	assert(not g.state.supplement_filed)
-	print("TOWN PASS: actual movement through all three buildings; minimal uniformed inquiry reaches completion without the board or optional topics")
+	print("TOWN PASS: actual movement through all three buildings; minimal inquiry and three steward visits reach completion without the board or optional topics")
 	# Enriched run: incoming report and county original remain immutable.
 	g.state=g.CaseState.new()
 	g.state.started=true
@@ -151,6 +169,52 @@ func run(g:Node) -> void:
 	assert(g.focused=="board")
 	g._interact("board")
 	assert(g.page=="board")
+	var perception_before=g.state.perception()
+	# Follow the player-facing flow: observation, Link, second observation, persistent result.
+	press(g,"NAOMI FREEMAN")
+	press(g,"Link")
+	for button in g.content.find_children("*","Button",true,false):
+		assert(button.text!="NAOMI FREEMAN","First observation is excluded from the comparison list")
+	press(g,"A LOCAL ADDRESS")
+	assert(g.state.has_link("naomi_address"))
+	assert(g.state.perception()>perception_before)
+	assert(panel_text(g).contains("This link makes sense."))
+	assert(panel_text(g).contains("PERCEPTION:"))
+	press(g,"Back to the board")
+	assert(panel_text(g).contains("TWO RECORDS, ONE WOMAN"))
+	var linked_state=g.state.pack().duplicate(true)
+	# Repeating a connection is acknowledged without another award.
+	press(g,"NAOMI FREEMAN")
+	press(g,"Link")
+	press(g,"A LOCAL ADDRESS")
+	assert(panel_text(g).contains("already recorded"))
+	assert(g.state.pack()==linked_state)
+	press(g,"Back to the board")
+	# Cancelling selection changes nothing.
+	press(g,"THE MORNING EDITION")
+	press(g,"Link")
+	press(g,"Cancel")
+	assert(g.state.pack()==linked_state)
+	press(g,"Link")
+	press(g,"NO EXIT WOUND")
+	assert(panel_text(g).contains("That link makes no sense."))
+	assert(g.state.pack()==linked_state,"Invalid pairs cost nothing and record nothing")
+	# Neither self-pairs nor uncollected evidence can create a link through the validator.
+	assert(g.archive._try_link(g,"naomi","naomi").is_empty())
+	assert(g.archive._try_link(g,"lower_foundation","municipal_foundation").is_empty())
+	assert(g.state.pack()==linked_state)
+	press(g,"Back to the board")
+	# The link survives a save/load round trip alongside everything else.
+	g._save_game()
+	var links_before=g.state.links.duplicate()
+	g.state=g.CaseState.new()
+	g._load_game()
+	assert(g.state.links==links_before)
+	assert(g.state.has_link("naomi_address"))
+	# Older saves with no "links" key at all still restore, with an empty link list.
+	var legacy_links=g.CaseState.new()
+	assert(legacy_links.restore({"version":3,"evidence":["eight"]}))
+	assert(legacy_links.links.is_empty())
 	g._close()
 	g.comfort_time=38
 	assert(g._save_game())
@@ -160,5 +224,17 @@ func run(g:Node) -> void:
 	assert(g.state.county_evidence==county and g.state.report_evidence==original)
 	assert(g.state.coat=="Plain wool coat" and g.comfort_time==38)
 	assert(g.player.position.distance_to(Vector3(0,0,-6.1))<0.6)
-	print("TOWN PASS: optional inquiry, corroboration, Father Behan's revisitable menu, the woman outside Kessler's shop, county dispatch, immutable originals and supplement history, board, cross-location save/load")
+	print("TOWN PASS: optional inquiry, corroboration, Father Behan's revisitable menu, the woman outside Kessler's shop, county dispatch, immutable originals and supplement history, board with drawn links, cross-location save/load")
 	g.get_tree().quit()
+
+func press(g:Node,label:String) -> void:
+	for button in g.content.find_children("*","Button",true,false):
+		if button.text==label:
+			button.pressed.emit()
+			return
+	assert(false,"Missing button: "+label)
+
+func panel_text(g:Node) -> String:
+	var text=""
+	for label in g.content.find_children("*","Label",true,false): text+=label.text+"\n"
+	return text

@@ -2,6 +2,35 @@ extends RefCounted
 
 # Chapter One archive content, rendered through the shared panel manager.
 
+# Meaningful connections between two pieces of evidence, confirmed only when
+# the player draws them on the board rather than revealed automatically.
+# Keys are two evidence ids, sorted and joined by "|"; this table is Chapter
+# One's own content and deliberately does not live in case_state.gd, which
+# stays chapter-agnostic and only counts confirmed link ids.
+const LINKS := {
+	"lodging|naomi": {"id":"naomi_address","title":"TWO RECORDS, ONE WOMAN","summary":"Mrs. Almy's statement and the meal ledger name the same woman. Two independent records agree."},
+	"lay_lead|naomi": {"id":"naomi_lay","title":"THE CLAIM HAS A NAME NOW","summary":"The wage claim belongs to a woman with a name now. It still does not establish why she was killed."},
+	"eight|intake": {"id":"count_disagreement","title":"THE HEADING DISAGREES WITH THE COUNT","summary":"The precinct's own heading disagrees with Walter's report. The disagreement has a source on each side; neither page replaces the other."},
+	"lower_foundation|municipal_foundation": {"id":"two_drawings","title":"TWO DRAWINGS, ONE LIMIT","summary":"The service plan and the municipal sheet agree on where the foundation ends. The passage does not. The extension remains unexplained."},
+	"behan_name|old_woman": {"id":"chosen_delusion","title":"A DELUSION OF BEING CHOSEN","summary":"A priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making."},
+	"crew|pantry_lead": {"id":"same_door","title":"THE GROUNDSKEEPER AND THE STEWARD","summary":"One keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why."}
+}
+
+static func _link_key(a:String,b:String) -> String:
+	var ids=[a,b]
+	ids.sort()
+	return "%s|%s" % [ids[0],ids[1]]
+
+# Returns the link entry on success (already-confirmed or newly confirmed),
+# or an empty dictionary if the pair names no real connection.
+static func _try_link(g:Node,a:String,b:String) -> Dictionary:
+	if a==b or not g.state.evidence.has(a) or not g.state.evidence.has(b): return {}
+	var key=_link_key(a,b)
+	if not LINKS.has(key): return {}
+	var link:Dictionary=LINKS[key]
+	g.state.record_link(link.id)
+	return link
+
 func _case_file(g:Node) -> void:
 	g._panel("case","Walter Corwin","PERSONAL EFFECTS  /  PRECINCT 4",true)
 	var row = HBoxContainer.new()
@@ -31,33 +60,42 @@ func _case_file(g:Node) -> void:
 	right.add_child(g._label("CURRENT INQUIRY",14,false))
 	right.add_child(g._label(g._objective(),23))
 	right.add_child(g._label("EQUIPPED",14,false))
-	right.add_child(g._label(g.state.coat+" · worn leather boots\nNotebook · pencil · service revolver\nFlask"+(" · sealed knife envelope" if g.state.evidence.has("knife") else ""),21))
+	var equipped_text = g.state.coat+" · worn leather boots\nNotebook · pencil · service revolver (%d/6 rounds)\n" % g.state.ammo + ("Flask (lost on descent)" if g.state.flask_spilled else "Flask") + (" · sealed knife envelope" if g.state.evidence.has("knife") else "")
+	right.add_child(g._label(equipped_text,21))
 	g._button("Inspect the flask",g._flask,right)
 	g._button("Change to "+("plain wool coat" if g.state.coat == "Police coat" else "police coat"),func():
 		g.state.coat = "Plain wool coat" if g.state.coat == "Police coat" else "Police coat"
 		g._refresh_outfit()
 		g._save_game()
 		g._case_file(),right)
+	g._button("Read the notebook",g._notebook,right)
 	g._button("Open the case file",g._journal,right)
 	g._button("Return to the grounds",g._close)
 	g._focus_first()
 
 func _flask(g:Node) -> void:
 	g._panel("case","The flask","PERSONAL EFFECTS")
-	var levels = ["Empty. The metal carries no weight beyond itself.","A little left. Enough for one short pour.","Partly full. Two short pours remain.","Three short pours by Walter's reckoning."]
-	g._paragraph(levels[g.state.flask])
-	g._paragraph("A familiar weight. A brief narrowing of the world.\nIt has never promised anything more.",24)
-	if g.state.flask > 0:
-		g._button("Take a short pour",func():
-			g._take_pour()
-			g._close()
-			g._toast("The edges settle. The facts remain.",4))
+	if g.state.flask_spilled:
+		g._paragraph("Lost in the dark below.",27)
+		var lost_text = "All three short pours were" if g.state.flask_spill_amount == 3 else ("Two short pours were" if g.state.flask_spill_amount == 2 else ("One short pour was" if g.state.flask_spill_amount == 1 else "The flask was already empty when it"))
+		g._paragraph("%s lost when a jagged spur of rock tore the flask from its strap on the descent.\n\nHe did not chase it into the dark. The case had only ever let the flask hold as much peace as it had use for, and had decided it needed him thirsty now." % lost_text, 22)
+		g._paragraph("The severed leather strap hangs empty at his belt.", 18)
+	else:
+		var levels = ["Empty. The metal carries no weight beyond itself.","A little left. Enough for one short pour.","Partly full. Two short pours remain.","Three short pours by Walter's reckoning."]
+		g._paragraph(levels[g.state.flask])
+		g._paragraph("A familiar weight. A brief narrowing of the world.\nIt has never promised anything more.",24)
+		if g.state.flask > 0:
+			g._button("Take a short pour",func():
+				g._take_pour()
+				g._close()
+				g._toast("The edges settle. The facts remain.",4))
 	g._button("Put it away",g._case_file)
 	g._focus_first()
 
 func _journal(g:Node) -> void:
 	g._panel("journal","The preliminary case","WALTER CORWIN  /  ORIGINAL RECORD",true)
 	g._paragraph(g._objective(),20)
+	g._button("Read the notebook",g._notebook)
 	if g.state.evidence.is_empty(): g._paragraph("No observations recorded yet. The garden waits.",24)
 	var grid = GridContainer.new()
 	grid.columns = 2
@@ -112,7 +150,7 @@ func _report_screen(g:Node) -> void:
 
 func _board(g:Node) -> void:
 	g._panel("board","What belongs beside what","CORWIN'S ROOM  /  THE CASE BOARD",true)
-	g._paragraph("The cards reflect the investigation already made.\nReading them does not decide whether it can continue.",19)
+	g._paragraph("Select an observation to read it, then choose Link to compare it with another.\nConfirmed connections are recorded below and in the notebook.",19)
 	var grid=GridContainer.new()
 	grid.columns=2
 	grid.add_theme_constant_override("h_separation",18)
@@ -123,28 +161,83 @@ func _board(g:Node) -> void:
 		var box=VBoxContainer.new()
 		box.size_flags_horizontal=Control.SIZE_EXPAND_FILL
 		grid.add_child(box)
-		var b=g._button(str(g.facts[id][0]),func(): g._fact(id),box)
+		var b=g._button(str(g.facts[id][0]),func(): _link_observation(g,id),box)
 		b.custom_minimum_size.y=68
 		b.clip_text=true
 		box.custom_minimum_size.x=270
 		var source=g._label(g._source_for(id),14,false)
 		box.add_child(source)
-	if g.state.evidence.has("naomi") and g.state.evidence.has("lodging"):
-		g._paragraph("UNIDENTIFIED WOMAN  →  NAOMI FREEMAN  →  A LOCAL ADDRESS\nMrs. Almy's statement and the meal ledger support the same identification.",22)
-	if g.state.evidence.has("lay_lead"):
-		g._paragraph("AN UNPAID LAY  →  DOCUMENT NOT EXAMINED\nThe claim is a question to investigate. It does not establish why she was killed.",22)
-	if g.state.evidence.has("intake"):
-		g._paragraph("SIX IN THE HEADING  ↔  EIGHT IN WALTER'S REPORT\nThe disagreement has a source on each side. Neither page replaces the other.",22)
-	if g.state.evidence.has("municipal_foundation"):
-		g._paragraph("SERVICE PLAN  ↔  MUNICIPAL SHEET  ↔  MEASURED PASSAGE\nTwo drawings agree on a limit the passage exceeds. The extension remains unexplained.",22)
 	if g.state.evidence.has("crew") and g.state.statements.has("The gardener saw the woman at the service door. Ask the steward."):
 		g._paragraph("THE SERVICE DOOR\nThe gardener placed the unidentified woman there once. The groundskeeper keeps a fixed distance from it now. Neither observation explains the other.",22)
-	if g.state.evidence.has("old_woman") and g.state.evidence.has("behan_name"):
-		g._paragraph("A DELUSION OF BEING CHOSEN  ↔  BEWARE THE OLD GODS\nA priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making.",22)
-	if g.state.evidence.has("crew") and g.state.evidence.has("pantry_lead"):
-		g._paragraph("THE GROUNDSKEEPER  ↔  THE BARMAN\nOne keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why.",22)
+	var confirmed=false
+	for entry in LINKS.values():
+		if not g.state.has_link(entry.id): continue
+		if not confirmed:
+			g._paragraph("CONNECTIONS DRAWN",14)
+			confirmed=true
+		g._paragraph(str(entry.title)+"\n"+str(entry.summary),22)
+	var p = g.state.perception()
+	if p >= 5:
+		g._paragraph("THE CAUSAL SPINE — COMPLETE  (PERCEPTION %d)\nSIX MEN IN EVENING DRESS  ═  THE OPHION'S SINKING  ═  AN UNDERSEA PASSAGE  ═  A SUMMONED PRESENCE\nEvery fact has found its parent. The twine connects the rose garden to the cellar without an empty card between them. Walter did not choose the moment the board went whole; the shape closed itself." % p,22)
+	elif p >= 4:
+		g._paragraph("THE CAUSAL SPINE — FORMING  (PERCEPTION %d)\nTHE SIX VICTIMS  ═  THE INHERITED FORTUNE  —  AN UNEXPLAINED PASSAGE\nTwine stretches across the center of the board. The line between the insurance fortune and the murders is visible, but the final connection beneath the house still lacks its last link." % p,21)
+	else:
+		g._paragraph("THE CAUSAL SPINE — UNRESOLVED  (PERCEPTION %d)\nA scatter of individual cards. Twine hangs loose between the columns. The board waits for more of the case to be seen before the underlying spine can connect." % p,19)
 	g._button("Read the complete notebook",g._journal)
 	g._button("Step away from the board",g._close)
+	g._focus_first()
+
+func _link_observation(g:Node,id:String) -> void:
+	if not g.state.evidence.has(id) or not g.facts.has(id): return
+	g._panel("board",str(g.facts[id][0]),"THE CASE BOARD / SELECTED OBSERVATION")
+	g._paragraph(str(g.facts[id][1]),25)
+	g._paragraph("SOURCE\n"+g._source_for(id),18)
+	if g.state.evidence.size()>1: g._button("Link",func(): _link_picker(g,id))
+	else: g._paragraph("Record another observation before drawing a connection.",20)
+	g._button("Back to the board",func(): _board(g))
+	g._focus_first()
+
+func _link_picker(g:Node,first_id:String) -> void:
+	if first_id.is_empty():
+		_board(g)
+		return
+	if not g.state.evidence.has(first_id) or not g.facts.has(first_id): return
+	g._panel("board","Choose a second observation","THE CASE BOARD / COMPARE NOTES",true)
+	g._paragraph("LINK FROM: "+str(g.facts[first_id][0]),22)
+	g._paragraph("Select another observation below. The first is left out of this list.",19)
+	for id in g.state.evidence:
+		if id==first_id or not g.facts.has(id): continue
+		g._button(str(g.facts[id][0]),func(): _link_result(g,first_id,id))
+		g._paragraph(str(g.facts[id][1]),20)
+		g._paragraph(g._source_for(id),16)
+	g._button("Cancel",func(): _link_observation(g,first_id))
+	g._focus_first()
+
+func _link_result(g:Node,first_id:String,second_id:String) -> void:
+	if first_id==second_id or not g.state.evidence.has(first_id) or not g.state.evidence.has(second_id): return
+	var before = g.state.perception()
+	var known = g.state.links.duplicate()
+	var link = _try_link(g,first_id,second_id)
+	var already = not link.is_empty() and known.has(link.id)
+	var heading = "This link makes sense." if not link.is_empty() else "That link makes no sense."
+	if already: heading = "This connection is already recorded."
+	g._panel("board",heading,"THE CASE BOARD / CONNECTION RESULT")
+	g._paragraph(str(g.facts[first_id][0])+"\n+\n"+str(g.facts[second_id][0]),21)
+	if link.is_empty():
+		g._paragraph("These observations do not establish a connection. The facts remain separate.",24)
+		g._paragraph("Nothing changed. No evidence or Perception was lost.",19)
+	else:
+		g._paragraph(str(link.title)+"\n"+str(link.summary),24)
+		var after = g.state.perception()
+		if not already: g._save_game()
+		if after>before:
+			g._paragraph("Connection recorded on the board and in the notebook.\nPERCEPTION: %d → %d" % [before,after],20)
+		elif already:
+			g._paragraph("No duplicate was added. Perception remains %d." % after,20)
+		else:
+			g._paragraph("Connection recorded on the board and in the notebook.\nPerception remains %d; its bonus from connections is already at its limit." % after,20)
+	g._button("Back to the board",func(): _board(g))
+	g._button("Compare another observation",func(): _link_picker(g,first_id))
 	g._focus_first()
 
 func _town_complete(g:Node) -> void:

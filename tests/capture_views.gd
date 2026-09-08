@@ -11,6 +11,8 @@ func run(g:Node) -> void:
 	g._update_camera(1)
 	if g.capture_mode != "title": g._close()
 	if g.capture_mode == "observer":
+		g.state.lounge_exited=true
+		g.estate.sync_staging(g.state)
 		g.page="capture"
 		g.model.hide()
 		g.player.position=Vector3(-14.6,0.1,-14.4)
@@ -59,6 +61,37 @@ func run(g:Node) -> void:
 		if g.capture_mode=="tunnel_access": g.settings.distortion=0; g.settings.text_scale=1.3; g._apply_settings()
 		if g.capture_mode=="tunnel_death": g._show_tunnel_death(false)
 		if g.capture_mode=="tunnel_record": g._tunnel_interaction("tunnel_notes")
+	if g.capture_mode == "return_gardener":
+		g.state.estate_complete=true
+		g.state.coat="Plain wool coat"
+		g._travel("estate",Vector3(0,0.1,16))
+		g.model.hide()
+		g.page="capture"
+		g.camera.global_position=Vector3(0,2.4,18)
+		g.camera.look_at(Vector3(-4,1,12))
+	if g.capture_mode in ["lounge","montage","notebook","cleared_estate"]:
+		g.state.visited.append("almy")
+		g.state.estate_complete=true
+		g.state.day=3
+		g.state.steward_visits=2
+		g.state.coat="Plain wool coat"
+		g.state.lounge_exited=true
+		if g.capture_mode=="lounge": g._travel("lounge",Vector3(0,0.1,2))
+		elif g.capture_mode=="montage":
+			g._travel("room",Vector3(0,0.1,6))
+			g.state.day=2
+			g.state.montage_index=3
+			g.staging.draw_montage(g)
+		elif g.capture_mode=="notebook":
+			for id in ["eight","naomi","lodging"]: g.state.discover(id)
+			g.state.record_link("naomi_address")
+			g._notebook()
+		else: g._travel("estate",Vector3(1,0.1,7.5))
+	if g.capture_mode in ["link_picker","link_positive","link_negative"]:
+		g._travel("room",Vector3(0,0.1,4))
+		for id in ["naomi","lodging","wounds"]: g.state.discover(id)
+		if g.capture_mode=="link_picker": g.archive._link_picker(g,"naomi")
+		else: g.archive._link_result(g,"naomi","lodging" if g.capture_mode=="link_positive" else "wounds")
 	await g.get_tree().create_timer(1.5).timeout
 	await RenderingServer.frame_post_draw
 	var path=ProjectSettings.globalize_path("res://qa_"+g.capture_mode+".png")
