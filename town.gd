@@ -13,6 +13,7 @@ func _ready() -> void:
 			"precinct": _precinct()
 			"boardinghouse": _boardinghouse()
 			"room": _corwin_room()
+			"lounge": _smoking_lounge()
 
 func _lighting(inside:bool) -> void:
 	var we = WorldEnvironment.new()
@@ -109,6 +110,7 @@ func _street() -> void:
 	departing_woman=old_woman
 	old_woman.rotation.y = -2.0
 	target("old_woman","Speak with the woman outside the shop",Vector3(-19.2,0,11.2))
+	register_actor("old_woman", old_woman, "old_woman", func(st): return not st.evidence.has("old_woman"))
 	for x in [-28,28]: tree(Vector3(x,0,20))
 
 func _room_shell() -> void:
@@ -207,6 +209,7 @@ func _corwin_room() -> void:
 	for y in [0.5,1.1]: box(self,Vector3(6.8,y,4.1),Vector3(0.3,0.07,0.06),"b6b798")
 	lettering("",Vector3(0,3.6,-7.35),28)
 	target("board","Consult the case board",Vector3(0,0,-6.2))
+	target("sleep","Turn in for the night",Vector3(-3.4,0,-2.2))
 	target("day_close","Set the notebook down for the evening",Vector3(3.5,0,-2.9))
 	target("exemption","Examine the folded notice",Vector3(6.8,0,4.4))
 
@@ -217,7 +220,26 @@ func update_board(evidence:Array) -> void:
 		if card: card.visible=i<evidence.size()
 
 func dismiss_old_woman() -> void:
-	points.erase("old_woman")
+	dismiss_actor("old_woman")
 	if is_instance_valid(departing_woman):
 		departing_woman.hide()
 		departing_woman.queue_free()
+
+func _smoking_lounge() -> void:
+	points.erase("interior_exit")
+	target("lounge_exit","Leave through the service entrance",Vector3(0,0,7.2))
+	lettering("SMOKING LOUNGE",Vector3(0,3.3,-7.6),42)
+	# A modest staff-side approach to a members' sitting room.
+	for x in [-5,4]:
+		cylinder(self,Vector3(x,0.62,-2),0.75,0.12,"57614e")
+		cylinder(self,Vector3(x,0.3,-2),0.12,0.6,"35422f")
+		cylinder(self,Vector3(x,0.72,-2),0.18,0.05,"999b87")
+		for offset in [-1.6,1.6]:
+			var seat=Vector3(x+offset,0,-2)
+			box(self,seat+Vector3(0,0.45,0),Vector3(1.05,0.65,1.05),"4b5544",true)
+			box(self,seat+Vector3(0,1.0,0.43),Vector3(1.05,1.1,0.22),"48513f")
+			for arm in [-0.48,0.48]: box(self,seat+Vector3(arm,0.75,0),Vector3(0.22,0.35,1.05),"3b4735")
+	box(self,Vector3(0,0.03,-1),Vector3(4.4,0.03,6),"626957")
+	box(self,Vector3(0,1,-5.8),Vector3(3,2,0.8),"394638",true)
+	person(Vector3(0,0,-4.4),"3f4540",false)
+	target("barman","Speak with the club's steward",Vector3(0,0,-3.6))
