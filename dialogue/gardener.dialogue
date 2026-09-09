@@ -15,11 +15,11 @@ TOPIC: default
   THE GARDENER: "You took the badge off."
   CHOICE: "I'm still asking."
     THE GARDENER: "Then write this down as well. I saw the woman here before. Walking to the service door.\n\nI don't know her name. The steward might.\nAsk him as though an answer is required."
-    NOTEBOOK: "The gardener saw the woman at the service door. Ask the steward."
+    NOTEBOOK: service_door | "The gardener saw the woman at the service door. Ask the steward."
 
 TOPIC: default
   GATE: always
   THE GARDENER: "I keep the roses. I don't keep the hours of the men who walk among them."
   CHOICE: "You found both scenes?"
     THE GARDENER: "Yes.\n\nI sent for eight sheets.\nThey brought six the first time."
-    NOTEBOOK: "The gardener requested eight sheets. Six arrived first."
+    NOTEBOOK: eight_sheets | "The gardener requested eight sheets. Six arrived first."

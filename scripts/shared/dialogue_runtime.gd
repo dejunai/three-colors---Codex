@@ -59,7 +59,7 @@ static func make_context(state, dstate) -> Dictionary:
 
 # Finds the winning `default` topic (first true GATE, file order) and every
 # other topic currently GATE-true, as menu entries. Does not render or
-# apply effects — call play_topic() with the chosen id for that.
+# apply effects — prepare with play_topic(), then acknowledge playback.
 static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 	var default_topic = null
 	var entries: Array = []
@@ -72,37 +72,37 @@ static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 			entries.append({"id": topic.id, "label": topic.label if not topic.label.is_empty() else topic.id.capitalize()})
 	return {"default_topic": default_topic, "entries": entries}
 
-# The single entry point for "the player interacts with this NPC": counts
-# the visit, then resolves and renders the default line if one applies.
-# `choices` lets a caller resume a default topic that halted on a FORK on a
-# prior enter() (e.g. Odell's branching response) — note this still counts
-# as a fresh visit, so an NPC whose default topic can fork should not also
-# gate anything else on its exact visit_count.
-static func enter(def: Dictionary, ctx: Dictionary, dstate, choices: Array = []) -> Dictionary:
+# A fresh interaction counts one visit. A FORK continues this same session
+# through resume(); never call enter() again to answer a pending choice.
+static func enter(def: Dictionary, ctx: Dictionary, dstate) -> Dictionary:
 	dstate.visit(def.npc)
-	var result = menu(def, ctx)
-	var rendered = {"cards": [], "fork": null}
-	if result.default_topic != null:
-		rendered = render(def.npc, result.default_topic, dstate, choices)
-	return {"cards": rendered.cards, "fork": rendered.fork, "entries": result.entries}
+	var selection = menu(def, ctx)
+	var result = _empty_result()
+	if selection.default_topic != null:
+		result = render(def.npc, selection.default_topic, dstate)
+	result["entries"] = selection.entries
+	return result
 
-static func play_topic(def: Dictionary, dstate, topic_id: String, choices: Array = []) -> Dictionary:
+static func play_topic(def: Dictionary, dstate, topic_id: String) -> Dictionary:
 	for topic in def.topics:
-		if topic.id == topic_id: return render(def.npc, topic, dstate, choices)
-	return {"cards": [], "fork": null}
+		if topic.id == topic_id: return render(def.npc, topic, dstate)
+	return _empty_result()
 
-# Walks a topic's steps into a flat card list, applying NOTEBOOK effects as
-# it goes. A FORK step not yet resolved by `choices` halts the walk and
-# returns its options for the caller to prompt; re-calling with `choices`
-# extended by the player's pick resumes exactly where it left off. Marks
-# the topic complete (for topic_count's cross-NPC tally) only once the walk
-# reaches the end with no pending fork.
-static func render(npc: String, topic: Dictionary, dstate, choices: Array = []) -> Dictionary:
-	var cards: Array = []
-	var fork_index = 0
-	var notebook_seq = 0
-	var stack: Array = [{"steps": topic.steps, "i": 0}]
-	var pending = null
+static func _empty_result() -> Dictionary:
+	return {"cards": [], "fork": null, "effects": [], "session": {}, "acknowledged": -1, "finished": false, "resumed": false}
+
+# Preparation is side-effect free. The caller acknowledges displayed cards
+# with commit_through(), then passes this result to resume() after a choice.
+# Sessions are transient playback cursors, not save payloads.
+static func render(npc: String, topic: Dictionary, _dstate) -> Dictionary:
+	var session = {"npc": npc, "topic": topic.id,
+		"stack": [{"steps": topic.steps, "i": 0}], "pending": []}
+	return _next_segment(session)
+
+static func _next_segment(session: Dictionary) -> Dictionary:
+	var result = _empty_result()
+	result.session = session
+	var stack: Array = session.stack
 	while not stack.is_empty():
 		var frame = stack[stack.size() - 1]
 		if frame.i >= frame.steps.size():
@@ -111,28 +111,54 @@ static func render(npc: String, topic: Dictionary, dstate, choices: Array = []) 
 		var step = frame.steps[frame.i]
 		frame.i += 1
 		match String(step.kind):
-			"line": cards.append([step.speaker, step.text])
-			"beat": cards.append(["", step.text])
+			"line": result.cards.append([step.speaker, step.text])
+			"beat": result.cards.append(["", step.text])
 			"notebook":
-				notebook_seq += 1
-				dstate.record_fact("%s.%s.%d" % [npc, topic.id, notebook_seq], step.text)
+				var note_id = String(step.get("id", ""))
+				# Legacy unlabelled notes remain supported without ordinal collisions.
+				# Authors should supply an explicit id to survive future wording edits.
+				if note_id.is_empty(): note_id = "text_" + String(step.text).sha256_text()
+				result.effects.append({"id": session.npc + "." + note_id,
+					"text": step.text, "after_cards": result.cards.size(), "applied": false})
 			"fork":
-				if fork_index < choices.size():
-					var chosen = step.options[choices[fork_index]]
-					fork_index += 1
-					stack.append({"steps": chosen.steps, "i": 0})
-				else:
-					pending = {"options": step.options.map(func(o): return o.label)}
-					stack.clear()
-	if pending != null: return {"cards": cards, "fork": pending}
-	dstate.complete_topic(npc, topic.id)
-	return {"cards": cards, "fork": null}
+				session.pending = step.options
+				result.fork = {"options": step.options.map(func(o): return o.label)}
+				return result
+	return result
 
-static func enter_by_path(path: String, state, dstate, choices: Array = []) -> Dictionary:
-	return enter(load_npc(path), make_context(state, dstate), dstate, choices)
+# Call only after the first count cards of this segment have been consumed.
+# Returns true exactly once when the whole topic finishes: the future UI can
+# use that event to charge conversation time once. Repeated calls are safe.
+static func commit_through(result: Dictionary, dstate, count: int) -> bool:
+	if result.session.is_empty() or result.resumed or result.finished: return false
+	if count < result.acknowledged or count > result.cards.size(): return false
+	result.acknowledged = count
+	for effect in result.effects:
+		if not effect.applied and effect.after_cards <= count:
+			dstate.record_fact(effect.id, effect.text)
+			effect.applied = true
+	if count == result.cards.size() and result.fork == null:
+		dstate.complete_topic(result.session.npc, result.session.topic)
+		result.finished = true
+		return true
+	return false
 
-static func play_topic_by_path(path: String, state, dstate, topic_id: String, choices: Array = []) -> Dictionary:
-	return play_topic(load_npc(path), dstate, topic_id, choices)
+# Continue the saved stack, including nested forks and the parent tail.
+# Invalid/stale choices leave the pending segment untouched and return {}.
+static func resume(result: Dictionary, choice: int) -> Dictionary:
+	if result.resumed or result.fork == null or result.acknowledged != result.cards.size(): return {}
+	var options: Array = result.session.pending
+	if choice < 0 or choice >= options.size(): return {}
+	result.resumed = true
+	result.session.pending = []
+	result.session.stack.append({"steps": options[choice].steps, "i": 0})
+	return _next_segment(result.session)
+
+static func enter_by_path(path: String, state, dstate) -> Dictionary:
+	return enter(load_npc(path), make_context(state, dstate), dstate)
+
+static func play_topic_by_path(path: String, _state, dstate, topic_id: String) -> Dictionary:
+	return play_topic(load_npc(path), dstate, topic_id)
 
 # Not yet done, left for the live-integration pass:
 #  - chapter_one.gd's _interact()/_cards() need a branch that consults this

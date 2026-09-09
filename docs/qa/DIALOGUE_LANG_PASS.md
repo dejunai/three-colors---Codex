@@ -7,6 +7,15 @@ day, and cross-NPC tallies ("ask four to six people about X before the historian
 `scripts/chapters/town_places.gd`). A plugin's own graph format would have fought those systems
 instead of reading them directly.
 
+## Provenance
+
+Original authoring system and content conversion: Claude Sonnet 5 in VS Code,
+as reported by Dejunai; baseline commits `0da8d2e` and `59b6d51`.
+September 9, 2026 follow-up: Codex reviewed that implementation, reproduced the
+gardener notebook collision and Odell fork replay/extra visit, then implemented
+the fixes below at Dejunai's request. This extends the original work; it does not
+replace its authorship. Dialogue wording and story gates are unchanged.
+
 ## Grammar
 
 A `.dialogue` file is `NPC:` / `LOCATION:` (or `SCHEDULE:` for template/background NPCs), followed
@@ -26,8 +35,11 @@ by `TOPIC: id` blocks. Each topic has:
 - `FORK:` — a block of sibling `CHOICE:` entries that *are* mutually exclusive; rendering halts and
   returns the options for the caller to prompt, then resumes exactly where it left off once given a
   choice index.
-- `NOTEBOOK: "text"` — writes free text straight into the record; no separate facts table to keep in
-  sync with the dialogue.
+- `NOTEBOOK: stable_note_id | "text"` — queues free text for the record at that
+  playback position. IDs must be unique across all topics/branches of an NPC;
+  preserve them when editing or moving text. The stored key is `npc.stable_note_id`.
+  Legacy `NOTEBOOK: "text"` remains supported with a text-hash key, but wording
+  edits change that fallback identity. All current authored effects now have IDs.
 - `#` full-line comments. A topic with no dialogue lines (just `GATE:`/comments) is a documentation
   stub and never surfaces in play.
 
@@ -45,11 +57,10 @@ flag to author.
 - `scripts/shared/dialogue_runtime.gd` — the game-facing half: builds the GATE context from live
   `case_state`/`dialogue_state`, loads and caches parsed files, resolves an NPC's current default
   line and menu (`enter()`, `menu()`), and renders a chosen topic into the same `[speaker, text]`
-  card-array shape `story.gd`/`town_story.gd` already use, so `dialogue_sequence.gd`/
-  `chapter_interface.gd` need no changes to consume it. `enter()` takes an optional `choices` array
-  so a `default` topic that halts on a `FORK` (Odell's branching response) can be resumed on a
-  later interaction, not just via `play_topic()` — note this still counts as a fresh visit, so an
-  NPC whose default topic can fork should not also gate anything else on its exact `visit_count`.
+  card-array shape `story.gd`/`town_story.gd` already use. Playback integration
+  must call `commit_through()` and use `resume()` at forks, as described below.
+  The old optional `choices` array API has been removed; it replayed the prefix
+  and incorrectly counted another visit.
 - `scripts/shared/dialogue_state.gd` — a persistent store deliberately separate from
   `case_state.gd`: `visit_counts`, `topic_sources` (the cross-NPC tally), `visited_topics`, `facts`,
   and `flags`. New TOPIC ids and GATE conditions are invented by content authors with no engine code
@@ -145,3 +156,56 @@ must be used if stdout needs to be read from a non-headless run.
   linearly today.
 - `SCHEDULE:`/`{placeholder}` substitution for the ~50 background residents is intentionally
   unimplemented — the grammar tolerates the syntax; nothing resolves it to a concrete NPC yet.
+
+## Codex playback correction — September 9, 2026
+
+Three changes address the review findings:
+
+1. Explicit notebook IDs replace NPC/topic/ordinal keys, which collided between
+   multiple `default` topics. Both `gardener.eight_sheets` and
+   `gardener.service_door` now survive the two encounters. Other authored notes
+   also received stable IDs without changing their text.
+2. Each prepared result carries a transient stack cursor. `resume(result, index)`
+   continues the selected branch and parent tail, including nested forks. It
+   neither repeats earlier cards nor reevaluates the opening gate/counts a visit.
+   Out-of-range choices and repeated use of an old result return an empty dictionary
+   without consuming the pending choice.
+3. Preparation no longer writes facts or completes topics. The playback owner calls
+   `commit_through(result, dialogue_state, count)` after consuming the first `count`
+   cards of that segment. Effects commit at their authored card boundary. Completion
+   returns true exactly once, only after the final segment's last card. Use that
+   event for the future clock adapter, not render/preparation. Repeated acknowledgment
+   does not repeat effects or completion. Abandoning an unread segment commits nothing;
+   already acknowledged effects remain. A leading NOTEBOOK requires acknowledgment
+   at count zero, including when a segment contains no cards.
+
+Playback contract:
+
+```gdscript
+var segment = Runtime.enter(definition, context, dialogue_state) # one visit
+# Display cards in order; after each card is consumed:
+var completed = Runtime.commit_through(segment, dialogue_state, consumed_count)
+# Once every card has been consumed, expose segment.fork.options if non-null.
+# After the player chooses, use the same result, not another enter():
+segment = Runtime.resume(segment, selected_index)
+# Display/acknowledge this new segment, repeating for any subsequent forks.
+```
+
+Do not acknowledge a segment merely because it was prepared. Zero-card segments
+still need an explicit `commit_through(segment, dialogue_state, 0)` at playback.
+Refresh menus using `menu(definition, context)` after completion, since the entries
+returned by enter are a snapshot from before playback effects.
+
+Tests updated: the two existing suites now explicitly simulate consuming cards.
+New `tests/dialogue_playback_flow.gd` covers both gardener facts, deferred writes,
+one-shot completion, committed-state pack/restore, one-visit Odell continuation,
+invalid/stale choices, and nested forks with parent tails. All three suites passed
+headless with Godot 4.7.2 on September 9, 2026.
+
+The runtime remains isolated from live Chapter 1 dispatch. No branch UI, automatic
+case-state evidence mapping, game-save integration, or clock adapter was added in
+this correction. Playback cursors are transient and are not packed by DialogueState;
+mid-conversation save/resume remains future work. Existing development-only dialogue
+state snapshots keep any old fact keys on restore; no released game saves contain
+this unintegrated state, and no speculative migration was introduced. The web build
+was not re-exported or published by this pass.

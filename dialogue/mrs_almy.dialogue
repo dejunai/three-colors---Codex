@@ -38,7 +38,7 @@ TOPIC: identify
   WALTER CORWIN: "I counted eight people.\nI would like to put a name beside each of them."
   MRS. ALMY: "Naomi Freeman.\n\nShe ate here. The boy too.\nHe waited for her to begin before touching his own plate."
   WALTER'S NOTEBOOK: "NAOMI FREEMAN.\nIdentified by Mrs. Almy, Pickman Street.\nBoy accompanying her: name still to be established."
-  NOTEBOOK: "NAOMI FREEMAN\n\nMrs. Almy identifies the woman as Naomi Freeman. A boy accompanied her. His name is not yet established. The witness knew them before the deaths.\n\nMrs. Almy · boardinghouse statement"
+  NOTEBOOK: identify_1_1 | "NAOMI FREEMAN\n\nMrs. Almy identifies the woman as Naomi Freeman. A boy accompanied her. His name is not yet established. The witness knew them before the deaths.\n\nMrs. Almy · boardinghouse statement"
   MRS. ALMY: "You can ask me again tomorrow.\nHer name will still be Naomi."
 
 TOPIC: lay_lead
@@ -47,7 +47,7 @@ TOPIC: lay_lead
   MRS. ALMY: "She was looking for something owed.\nA whaler's wages. A share, she called it. A lay.\nFrom her family's time, long before hers."
   CHOICE: "Did you see the document?"
     MRS. ALMY: "No. She spoke of finding it.\nYou mustn't write that I saw it."
-    NOTEBOOK: "AN UNPAID LAY\n\nMrs. Almy recalls Naomi asking about wages owed to a whaling ancestor. She does not hold the wage document and cannot verify the claim. This is a lead, not proof of a debt or a motive for the killings.\n\nMrs. Almy · account of Naomi's inquiry"
+    NOTEBOOK: lay_lead_1_1 | "AN UNPAID LAY\n\nMrs. Almy recalls Naomi asking about wages owed to a whaling ancestor. She does not hold the wage document and cannot verify the claim. This is a lead, not proof of a debt or a motive for the killings.\n\nMrs. Almy · account of Naomi's inquiry"
 
 TOPIC: service_work
   GATE: evidence(naomi)
@@ -55,7 +55,7 @@ TOPIC: service_work
   MRS. ALMY: "She asked about work at the estate.\nCleaning, perhaps. They always need someone who can leave by the other door."
   CHOICE: "Who engaged her?"
     MRS. ALMY: "I don't know.\nThe steward has books enough.\nAsk him for one that contains her."
-    NOTEBOOK: "THE SERVICE DOOR\n\nMrs. Almy says Naomi sought domestic work at the estate. Neither the dates nor an employer's name is confirmed. Ask the steward for employment records.\n\nMrs. Almy · boardinghouse statement"
+    NOTEBOOK: service_work_1_1 | "THE SERVICE DOOR\n\nMrs. Almy says Naomi sought domestic work at the estate. Neither the dates nor an employer's name is confirmed. Ask the steward for employment records.\n\nMrs. Almy · boardinghouse statement"
 
 TOPIC: almy_ledger
   GATE: evidence(naomi)
@@ -66,4 +66,4 @@ TOPIC: almy_trust
   GATE: coat = plain AND NOT topic_done(almy, almy_trust)
   LABEL: "Ask why the coat made a difference"
   MRS. ALMY: "A uniform asks what belongs in a report.\nA man might still ask what happened.\n\nI haven't decided which you are yet."
-  NOTEBOOK: "Mrs. Almy distinguished speaking to a uniform from speaking to a man. The name she supplied was the same."
+  NOTEBOOK: almy_trust_1_1 | "Mrs. Almy distinguished speaking to a uniform from speaking to a man. The name she supplied was the same."

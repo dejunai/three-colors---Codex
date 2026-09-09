@@ -22,5 +22,5 @@ TOPIC: default
     THE OLD WOMAN: "The old ones don't love.\n\n[She crosses herself.]"
   CHOICE: "What do you mean, the old ones?"
     THE OLD WOMAN: "Beware the old gods, Officer. They have no boundaries, and no need of them.\n\nMen name the ocean too. Doesn't mean the ocean knows."
-    NOTEBOOK: "BEWARE THE OLD GODS\n\nAn unnamed woman outside Kessler's shuttered shop tells Walter to look at what the six men looked at, not at the men themselves. Pressed to explain, she warns him of something with no boundaries and no need of them, then leaves before he finishes writing it down.\n\nKessler's shuttered shop · unnamed witness"
+    NOTEBOOK: default_1_1 | "BEWARE THE OLD GODS\n\nAn unnamed woman outside Kessler's shuttered shop tells Walter to look at what the six men looked at, not at the men themselves. Pressed to explain, she warns him of something with no boundaries and no need of them, then leaves before he finishes writing it down.\n\nKessler's shuttered shop · unnamed witness"
     WALTER'S NOTEBOOK: "She is gone before he finishes the sentence.\n\nHe writes what he remembers of it, exactly as given. He does not yet have a place on the board where it belongs."

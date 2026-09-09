@@ -11,7 +11,7 @@ const VERSION = 1
 var visit_counts: Dictionary = {}   # npc_id -> int, once per enter()
 var topic_sources: Dictionary = {}  # topic_id -> Array[String] distinct npc_ids that completed it
 var visited_topics: Dictionary = {} # npc_id -> Array[String] topic_ids completed at least once
-var facts: Dictionary = {}          # generated fact id -> free text
+var facts: Dictionary = {}          # NPC + authored note id -> free text (legacy notes use text hash)
 var flags: Dictionary = {}          # arbitrary named booleans for future SET-style effects
 
 func visit(npc: String) -> void:

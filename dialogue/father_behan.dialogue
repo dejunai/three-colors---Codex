@@ -25,7 +25,7 @@ TOPIC: club_invitation
     BEHAN: "I did."
   CHOICE: "Why?"
     BEHAN: [He says nothing further. The silence is not evasive. It is final.]
-    NOTEBOOK: "A refusal offered without excuse.
+    NOTEBOOK: club_invitation_1_1 | "A refusal offered without excuse.
                Walter has learned to trust a plain no more than a decorated one."
 
 # Reverse-engineered from town_story.gd SCENES.behan_name. _behan_menu()
@@ -39,7 +39,7 @@ TOPIC: behan_name
   FATHER BEHAN: "They named the club after the ship."
   WALTER CORWIN: "Known."
   FATHER BEHAN: "They came to believe the ship had been chosen.\n\nIt wasn't. Men inherit money, and then invent a reason they deserved it."
-  NOTEBOOK: "NAMED AFTER THE SHIP\n\nThe Ophion Club was named for a vessel lost with its crew a century ago. Father Behan calls the members' belief that the ship had been chosen a delusion, not a fact: men inherit money, then invent a reason they deserved it.\n\nFather Behan · rectory conversation"
+  NOTEBOOK: behan_name_1_1 | "NAMED AFTER THE SHIP\n\nThe Ophion Club was named for a vessel lost with its crew a century ago. Father Behan calls the members' belief that the ship had been chosen a delusion, not a fact: men inherit money, then invent a reason they deserved it.\n\nFather Behan · rectory conversation"
   WALTER'S NOTEBOOK: "A shipowner's classical flourish, nothing more, by the priest's own account.\n\nThe club's fortune has a human explanation. Walter intends to find it."
 
 TOPIC: bullets

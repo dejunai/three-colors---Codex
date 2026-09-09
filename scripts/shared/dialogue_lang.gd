@@ -22,7 +22,7 @@ extends RefCounted
 #     CHOICE: "The player's own line."
 #       SPEAKER: "The reply. CHOICE always opens a nested, linear
 #                 continuation — it never branches by itself."
-#       NOTEBOOK: "Free text written straight into the record; no separate
+#       NOTEBOOK: stable_note_id | "Free text written straight into the record; no separate
 #                  facts table to keep in sync with the dialogue."
 #     FORK:
 #       CHOICE: "Option A — mutually exclusive with any sibling CHOICE here."
@@ -149,7 +149,13 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 			steps.append({"kind": "beat", "text": _strip_brackets(line)})
 			k += 1
 		elif line.begins_with("NOTEBOOK:"):
-			steps.append({"kind": "notebook", "text": _quoted(line.substr(9))})
+			var payload = line.substr(9).strip_edges()
+			var note_id = ""
+			if not payload.begins_with("\"") and payload.contains("|"):
+				var separator = payload.find("|")
+				note_id = payload.substr(0, separator).strip_edges()
+				payload = payload.substr(separator + 1).strip_edges()
+			steps.append({"kind": "notebook", "id": note_id, "text": _quoted(payload)})
 			k += 1
 		elif line.begins_with("CHOICE:"):
 			var label = _quoted(line.substr(7))

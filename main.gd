@@ -58,8 +58,6 @@ func build_player(avatar:Node3D,spawn:Vector3) -> void:
 	_update_camera(1.0)
 
 func _update_camera(delta:float) -> void:
-	# Hide the avatar when the camera moves underneath it for a skyward glance.
-	if is_instance_valid(model): model.visible = pitch > -0.55
 	var pivot = player.global_position+Vector3(0,1.45,0)
 	var offset = Vector3(0,sin(pitch)*distance,cos(pitch)*distance).rotated(Vector3.UP,yaw)
 	var desired = pivot+offset
@@ -68,6 +66,8 @@ func _update_camera(delta:float) -> void:
 		var hit = get_world_3d().direct_space_state.intersect_ray(query)
 		if not hit.is_empty(): desired = hit.position+hit.normal*0.3
 	camera.global_position = camera.global_position.lerp(desired,minf(1,delta*12))
+	# Keep skyward and collision-shortened views clear of the avatar.
+	if is_instance_valid(model): model.visible = pitch > -0.55 and camera.global_position.distance_to(pivot) > 1.5
 	if camera.global_position.distance_to(pivot) > 0.01: camera.look_at(pivot)
 
 func _physics_process(delta:float) -> void:
