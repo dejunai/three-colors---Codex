@@ -24,6 +24,8 @@ func _run() -> void:
 		"gardener": "res://dialogue/gardener.dialogue",
 		"old_woman": "res://dialogue/old_woman.dialogue",
 		"almy": "res://dialogue/mrs_almy.dialogue",
+		"odell": "res://dialogue/odell.dialogue",
+		"father_behan": "res://dialogue/father_behan.dialogue",
 	}
 	var defs = {}
 	for key in paths:
@@ -114,5 +116,37 @@ func _run() -> void:
 	for entry in almy_menu_after_trust.entries: almy_ids_after_trust.append(entry.id)
 	assert(not almy_ids_after_trust.has("almy_trust"), "answering almy_trust once must remove it from the menu, via topic_done")
 
-	print("DIALOGUE CONTENT PASS: gatehouse_boy/coroners_assistant/groundskeeper/gardener/old_woman/mrs_almy all reverse-engineered, parsing clean and gating correctly against real game state")
+	# --- Odell: the real branching response, ported alongside the invented 'bullets' demo ---
+	var odell_ctx = Runtime.make_context(state, dstate)
+	var odell_first = Runtime.enter(defs.odell, odell_ctx, dstate)
+	assert(odell_first.cards[0][1].begins_with("A gas-main tragedy"), "the real Odell opening line must play first")
+	assert(odell_first.fork != null, "the branching response must halt for a choice, same as odell.dialogue's invented FORK proof")
+	assert(odell_first.fork.options == ["I understand it. I don't accept it.", "Say nothing. Write it down instead."], "both of Walter's real documented reactions must be offered, in source order")
+	var odell_resumed = Runtime.enter(defs.odell, odell_ctx, dstate, [0])
+	assert(odell_resumed.fork == null, "supplying a choice must resume the default topic to completion")
+	var odell_recorded = false
+	for text in dstate.facts.values():
+		if text.begins_with("Walter told Odell to his face"): odell_recorded = true
+	assert(odell_recorded, "the chosen branch's real statement must be persisted")
+	var odell_replay = Runtime.enter(defs.odell, odell_ctx, dstate)
+	assert(odell_replay.cards.is_empty(), "once answered, topic_done(odell, default) must keep the scene from replaying")
+
+	# --- Father Behan: the real behan_name topic, mutually exclusive with club_invitation ---
+	var behan_ctx = Runtime.make_context(state, dstate)
+	var behan_menu_before = Runtime.menu(defs.father_behan, behan_ctx)
+	var behan_ids_before = []
+	for entry in behan_menu_before.entries: behan_ids_before.append(entry.id)
+	assert(behan_ids_before.has("club_invitation") and not behan_ids_before.has("behan_name"), "behan_name must stay hidden until club_invitation has been answered")
+	Runtime.play_topic(defs.father_behan, dstate, "club_invitation")
+	var behan_menu_after = Runtime.menu(defs.father_behan, behan_ctx)
+	var behan_ids_after = []
+	for entry in behan_menu_after.entries: behan_ids_after.append(entry.id)
+	assert(behan_ids_after.has("behan_name") and not behan_ids_after.has("club_invitation"), "behan_name must replace club_invitation, never both at once")
+	Runtime.play_topic(defs.father_behan, dstate, "behan_name")
+	var behan_name_recorded = false
+	for text in dstate.facts.values():
+		if text.begins_with("NAMED AFTER THE SHIP"): behan_name_recorded = true
+	assert(behan_name_recorded, "the real ship-naming fact must be recorded")
+
+	print("DIALOGUE CONTENT PASS: gatehouse_boy/coroners_assistant/groundskeeper/gardener/old_woman/mrs_almy/odell/father_behan all reverse-engineered, parsing clean and gating correctly against real game state")
 	quit(0)

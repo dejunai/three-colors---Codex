@@ -46,7 +46,10 @@ flag to author.
   `case_state`/`dialogue_state`, loads and caches parsed files, resolves an NPC's current default
   line and menu (`enter()`, `menu()`), and renders a chosen topic into the same `[speaker, text]`
   card-array shape `story.gd`/`town_story.gd` already use, so `dialogue_sequence.gd`/
-  `chapter_interface.gd` need no changes to consume it.
+  `chapter_interface.gd` need no changes to consume it. `enter()` takes an optional `choices` array
+  so a `default` topic that halts on a `FORK` (Odell's branching response) can be resumed on a
+  later interaction, not just via `play_topic()` — note this still counts as a fresh visit, so an
+  NPC whose default topic can fork should not also gate anything else on its exact `visit_count`.
 - `scripts/shared/dialogue_state.gd` — a persistent store deliberately separate from
   `case_state.gd`: `visit_counts`, `topic_sources` (the cross-NPC tally), `visited_topics`, `facts`,
   and `flags`. New TOPIC ids and GATE conditions are invented by content authors with no engine code
@@ -62,9 +65,14 @@ exclusive `default` resolution driven purely by `GATE`), and
 `dialogue/background_npc_template.dialogue` (parses `SCHEDULE:`/`{placeholder}` syntax for the
 ~50 background residents; substitution is intentionally unimplemented — see Explicit placeholders).
 `club_five`/`club_invitation` in `father_behan.dialogue` are real lines pulled from
-`town_story.gd`'s `behan`/`behan_invitation`; its third topic, `bullets`, is a deliberately invented
-GATE-tally demo, not real content — the real third topic (`behan_name`, the club's naming) is not
-yet ported; see Explicit placeholders.
+`town_story.gd`'s `behan`/`behan_invitation`; its third topic, `bullets`, remains a deliberately
+invented GATE-tally demo, not real content, but the real third topic — `behan_name`, the club's
+naming — is now also present, gated on `topic_done(father_behan, club_invitation)` so it replaces
+the invitation topic in the menu exactly as `_behan_menu()` does, never showing both at once.
+`odell.dialogue` similarly now carries both: its original invented `bullets` FORK-tally demo, and a
+new `default` topic reverse-engineered from `story.gd`'s `SCENES.odell` and `_odell_response()` — a
+genuine two-way player choice via a real `FORK`, each branch persisting its own real statement text,
+gated on `topic_done(odell, default)` so it resolves to nothing once answered.
 
 Six further files reverse-engineer already-shipped NPCs verbatim (`tests/dialogue_content_flow.gd`),
 proving the grammar holds real content and real GATE conditions, not just illustrative fixtures:
@@ -109,7 +117,8 @@ asserts both halves of this directly (a flavor card renders but never lands in `
 
 ## Verification
 
-`tests/dialogue_lang_flow.gd` and `tests/dialogue_content_flow.gd` both pass headless:
+`tests/dialogue_lang_flow.gd` and `tests/dialogue_content_flow.gd` both pass headless (the latter
+now also covers the real Odell/behan_name additions above):
 `godot --headless --path . --script res://tests/dialogue_lang_flow.gd` and the same for
 `dialogue_content_flow.gd`. No `.cmd` launcher yet. A GUI-subsystem Godot exe on Windows exits
 cleanly without `--headless` but silently swallows `print()` output; the sibling `*_console.exe`
@@ -129,9 +138,6 @@ must be used if stdout needs to be read from a non-headless run.
   live state, but nothing calls `state.discover()`/`state.record()` automatically after a topic
   completes. `tests/dialogue_content_flow.gd` calls `state.discover()` manually to stand in for
   whatever the eventual integration does.
-- `father_behan.dialogue`'s third topic (`bullets`) is an invented GATE-tally demonstration, not the
-  real `behan_name` (ship-naming) content from `town_story.gd`; porting it is a follow-up, and would
-  need `tests/dialogue_lang_flow.gd`'s topic-count assertion (currently 3 entries) reconsidered.
 - The first four (grammar-fixture) files use space-joined physical-line continuation for their
   longer quotes, which loses the source's `\n\n` paragraph breaks — a minor cosmetic fidelity gap the
   six reverse-engineered files avoid by using the new `\n` escape throughout.

@@ -1,8 +1,32 @@
 # ============================================
 # odell.dialogue
 # ============================================
+# LOCATION is where Odell actually stands in the shipped game (the estate
+# terrace, beyond the fountain) — "bullets" below imagines a later precinct
+# encounter that doesn't exist in the source yet; the grammar has no
+# per-topic LOCATION override, so a real second Odell scene elsewhere would
+# need its own NPC id.
 NPC: odell
-LOCATION: precinct
+LOCATION: estate
+
+# Reverse-engineered from story.gd SCENES.odell and chapter_one.gd's
+# _odell_response(): a genuine two-way player choice, not a state check,
+# each branch with its own persisted statement. GATE keeps it from
+# replaying once answered, matching the source's "already answered" guard
+# (simplified: the source shows a short acknowledgement panel on replay,
+# this just makes the topic resolve to nothing further).
+TOPIC: default
+  GATE: NOT topic_done(odell, default)
+  CAPTAIN ODELL: "A gas-main tragedy.\nOr something close enough for the morning edition."
+  CHOICE: "There are eight bodies. Six club members. A woman and a boy beyond the birches.\n\nNobody has established an accident."
+    CAPTAIN ODELL: "Six members, Corwin.\nThe other two are a filing matter."
+  CHOICE: "Eight people are dead."
+    CAPTAIN ODELL: "Then put your observations in writing.\n\nI need a preliminary report.\nI do not need a quarrel before breakfast."
+  FORK:
+    CHOICE: "I understand it. I don't accept it."
+      NOTEBOOK: "Walter told Odell to his face that six was not the whole count. Odell did not answer."
+    CHOICE: "Say nothing. Write it down instead."
+      NOTEBOOK: "Walter wrote EIGHT in his own file, in a hand larger than his usual notation, and said nothing further to the captain."
 
 TOPIC: bullets
   GATE: always

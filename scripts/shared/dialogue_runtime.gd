@@ -74,12 +74,16 @@ static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 
 # The single entry point for "the player interacts with this NPC": counts
 # the visit, then resolves and renders the default line if one applies.
-static func enter(def: Dictionary, ctx: Dictionary, dstate) -> Dictionary:
+# `choices` lets a caller resume a default topic that halted on a FORK on a
+# prior enter() (e.g. Odell's branching response) — note this still counts
+# as a fresh visit, so an NPC whose default topic can fork should not also
+# gate anything else on its exact visit_count.
+static func enter(def: Dictionary, ctx: Dictionary, dstate, choices: Array = []) -> Dictionary:
 	dstate.visit(def.npc)
 	var result = menu(def, ctx)
 	var rendered = {"cards": [], "fork": null}
 	if result.default_topic != null:
-		rendered = render(def.npc, result.default_topic, dstate)
+		rendered = render(def.npc, result.default_topic, dstate, choices)
 	return {"cards": rendered.cards, "fork": rendered.fork, "entries": result.entries}
 
 static func play_topic(def: Dictionary, dstate, topic_id: String, choices: Array = []) -> Dictionary:
@@ -124,8 +128,8 @@ static func render(npc: String, topic: Dictionary, dstate, choices: Array = []) 
 	dstate.complete_topic(npc, topic.id)
 	return {"cards": cards, "fork": null}
 
-static func enter_by_path(path: String, state, dstate) -> Dictionary:
-	return enter(load_npc(path), make_context(state, dstate), dstate)
+static func enter_by_path(path: String, state, dstate, choices: Array = []) -> Dictionary:
+	return enter(load_npc(path), make_context(state, dstate), dstate, choices)
 
 static func play_topic_by_path(path: String, state, dstate, topic_id: String, choices: Array = []) -> Dictionary:
 	return play_topic(load_npc(path), dstate, topic_id, choices)
