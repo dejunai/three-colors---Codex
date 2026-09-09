@@ -5,6 +5,9 @@ var points = {}
 var colliders: Array[Rect2] = []
 var rng = RandomNumberGenerator.new()
 var conditional_actors: Dictionary = {}
+var routes: Dictionary = {}
+var rose_bodies: Array[Node3D] = []
+var birch_bodies: Array[Node3D] = []
 var scene_bodies: Array[Node3D] = []
 var gardener_actor: Node3D
 var groundskeeper_actor: Node3D
@@ -15,13 +18,16 @@ var departure_leaves: Array[Node3D] = []
 func sync_staging(st) -> void:
 	for leaf in departure_leaves:
 		leaf.rotation.y = -float(leaf.get_meta("side"))*PI/2 if not st.report.is_empty() else 0.0
-	for corpse in scene_bodies: corpse.visible = not st.estate_complete
+	for corpse in rose_bodies: corpse.visible = not st.rose_bodies_removed
+	for corpse in birch_bodies: corpse.visible = not st.birch_bodies_removed
 	for id in opening_staff:
 		opening_staff[id].visible = not st.estate_complete
 		if st.estate_complete: points.erase(id)
-	if st.estate_complete:
-		for id in ["wounds","eight","watch","shoes","knife"]: points.erase(id)
-	if is_instance_valid(opening_knife): opening_knife.visible = not st.estate_complete
+	if st.rose_bodies_removed:
+		for id in ["wounds","watch","knife"]: points.erase(id)
+	if st.birch_bodies_removed:
+		for id in ["eight","shoes"]: points.erase(id)
+	if is_instance_valid(opening_knife): opening_knife.visible = not st.rose_bodies_removed
 	if is_instance_valid(groundskeeper_actor):
 		groundskeeper_actor.visible = st.lounge_exited
 		if st.lounge_exited: target("crew","Watch the groundskeeper",Vector3(-12.6,0,-16.9))
@@ -170,12 +176,14 @@ func person(pos: Vector3, coat: String = "353838", hat: bool = true, accent: Str
 		cylinder(root,Vector3(0,2.06,0),0.2,0.16,"343737",0.16)
 	return root
 
-func body(pos: Vector3, angle: float, covered: bool = false, small: bool = false) -> void:
+func body(pos: Vector3, angle: float, covered: bool = false, small: bool = false, group: String = "rose") -> void:
 	var n = Node3D.new()
 	n.position = pos
 	n.rotation.y = angle
 	add_child(n)
 	scene_bodies.append(n)
+	if group == "birch": birch_bodies.append(n)
+	elif group == "rose": rose_bodies.append(n)
 	if small: n.scale = Vector3.ONE*0.68
 	if covered:
 		var sheet = sphere(n,Vector3(0,0.24,0),0.62,"9e9e96")
@@ -337,8 +345,8 @@ func _ready() -> void:
 		for dx in [-0.95,0.95]: box(self,Vector3(x+dx,0.3,-11),Vector3(0.12,0.6,0.4),"353c36")
 	# Birch grove has a clear path and two non-graphic covered figures.
 	box(self,Vector3(20,-0.025,-4),Vector3(11,0.08,4),"8c9185")
-	body(Vector3(23,0,-5),0.6,true)
-	body(Vector3(24.6,0,-4.5),0.4,true,true)
+	body(Vector3(23,0,-5),0.6,true,false,"birch")
+	body(Vector3(24.6,0,-4.5),0.4,true,true,"birch")
 	for p in [Vector3(20,0,-9),Vector3(26,0,-8),Vector3(27,0,-1),Vector3(22,0,1)]: tree(p,true)
 	# Kitchen wing yard: the grounds crew keeps a fixed distance from the service door.
 	box(self,Vector3(-13.4,0.35,-16.4),Vector3(0.55,0.5,0.55),"3b443b")

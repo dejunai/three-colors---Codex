@@ -227,6 +227,8 @@ func tick_world(delta:float) -> void:
 	if region != last_region:
 		last_region = region
 		location_label.text = region+"\n—  "+(("BEFORE DAWN" if not state.estate_complete else "DAY %d" % state.day) if state.world == "estate" else ("THE SERVICE PASSAGE" if state.world=="tunnel" else ("OPHION CLUB / DAY %d" % state.day if state.world=="lounge" else "PICKMAN STREET")))+"  —"
+		if preload("res://scripts/chapters/town_places.gd").valid(state.world):
+			location_label.text = region+"\n—  DAY %d  —" % state.day
 		location_time = 4
 	autosave_time += delta
 	if autosave_time > 20:
@@ -527,13 +529,18 @@ func _walk_to(destination:Vector3) -> void:
 
 func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true) -> void:
 	if destination == "lounge" and not state.visited.has("almy"): return
+	if save and state.world == "estate" and destination == "town":
+		state.estate_visits_completed += 1
+		state.rose_bodies_removed = true
+	if save and destination == "estate" and state.world == "town" and state.day >= 3 and state.estate_visits_completed >= 2:
+		state.birch_bodies_removed = true
 	if is_instance_valid(estate):
 		remove_child(estate)
 		estate.queue_free()
 	if destination == "estate": estate=Estate.new()
 	elif destination == "tunnel": estate=Tunnel.new()
 	else:
-		estate=Town.new()
+		estate=preload("res://town_expansion.gd").new() if preload("res://scripts/chapters/town_places.gd").valid(destination) else Town.new()
 		estate.location=destination
 	add_child(estate)
 	if destination == "estate": estate.sync_staging(state)
@@ -553,6 +560,10 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true)
 	pitch=0.38 if destination in ["estate","town"] else 0.48
 	distance=6.3 if destination in ["estate","town"] else 4.8
 	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-6,58,28) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
+	if destination in ["upper","business","lower"]:
+		movement_bounds=Rect2(-29,-7,58,36)
+		distance=6.3
+		pitch=0.38
 	if destination == "tunnel":
 		movement_bounds=Rect2(-8.6,-33,14.2,42)
 		distance=5.3
@@ -568,6 +579,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true)
 	if save: _save_game()
 
 func _region_name() -> String:
+	if preload("res://scripts/chapters/town_places.gd").valid(state.world): return preload("res://scripts/chapters/town_places.gd").title(state.world).to_upper()
 	match state.world:
 		"tunnel": return "BENEATH THE KITCHEN WING"
 		"town": return "WIDOW'S BIGHT"
@@ -580,6 +592,16 @@ func _region_name() -> String:
 	return "THE TERRACE" if player.position.z < -10 else ("THE ROSE GARDEN" if player.position.z < 6 else "THE OPHION ESTATE")
 
 func _town_interaction(id:String) -> bool:
+	if estate.routes.has(id):
+		var route=estate.routes[id]
+		_travel(route[0],route[1],route[2])
+		return true
+	if id == "local_resident" and estate.points.has(id):
+		_cards([["A RESIDENT","I've got nothing to say about it."]],_close)
+		return true
+	if id == "morgue_coroner" and state.world == "morgue":
+		_cards([["THE CORONER","The coroner spreads his hands over the row of sheeted tables. He has no answer to offer."]],_close)
+		return true
 	match id:
 		"street_precinct": _travel("precinct",Vector3(0,0.1,6)); return true
 		"street_almy": _travel("boardinghouse",Vector3(0,0.1,6)); return true

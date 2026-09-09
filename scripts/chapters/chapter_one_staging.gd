@@ -10,7 +10,9 @@ const MONTAGE = [
 
 func interact(g:Node,id:String) -> bool:
 	if id in ["club_talk","club_devotion","pantry_lead"] and (g.state.world != "lounge" or not g.state.steward_ready()): return true
-	if id in ["wounds","eight","watch","shoes","knife","odell","assistant"] and g.state.estate_complete:
+	if id in ["eight","shoes"] and g.state.birch_bodies_removed: return true
+	if id in ["wounds","watch","knife"] and g.state.rose_bodies_removed: return true
+	if id in ["odell","assistant"] and g.state.estate_complete:
 		return true # Cleared bodies and departed staff cannot be interacted with remotely.
 	if id == "crew":
 		return g.state.world != "estate" or not g.state.lounge_exited

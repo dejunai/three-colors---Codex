@@ -1,6 +1,6 @@
 extends RefCounted
 
-const VERSION = 5
+const VERSION = 6
 var evidence: Array[String] = []
 var links: Array[String] = []
 var statements: Array[String] = []
@@ -34,6 +34,9 @@ var flask_spilled = false
 var flask_spill_amount = 0
 var drowned_dead = false
 # Staging milestones are explicit; re-entering a room never advances a day.
+var rose_bodies_removed = false
+var birch_bodies_removed = false
+var estate_visits_completed = 0
 var day = 1
 var steward_visits = 0
 var lounge_exited = false
@@ -94,7 +97,7 @@ func file_supplement(send_county: bool, sources:Dictionary={}) -> void:
 		if not copies.has("County registrar — dated supplement"): copies.append("County registrar — dated supplement")
 
 func pack() -> Dictionary:
-	return {"version":VERSION,"day":day,"steward_visits":steward_visits,"lounge_exited":lounge_exited,"montage_index":montage_index,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
+	return {"version":VERSION,"rose_bodies_removed":rose_bodies_removed,"birch_bodies_removed":birch_bodies_removed,"estate_visits_completed":estate_visits_completed,"day":day,"steward_visits":steward_visits,"lounge_exited":lounge_exited,"montage_index":montage_index,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
 		"report":report,"copies":copies,"report_evidence":report_evidence,"report_statements":report_statements,"flask":flask,"coat":coat,"minutes":minutes,
 		"position":[position.x,position.y,position.z],"yaw":yaw,"started":started,"finished":finished,
 		"world":world,"estate_complete":estate_complete,"intake_done":intake_done,
@@ -103,7 +106,7 @@ func pack() -> Dictionary:
 		"ammo":ammo,"flask_spilled":flask_spilled,"flask_spill_amount":flask_spill_amount,"drowned_dead":drowned_dead}
 
 func restore(d: Dictionary) -> bool:
-	if int(d.get("version",0)) not in [1,2,3,4,VERSION]: return false
+	if int(d.get("version",0)) not in [1,2,3,4,5,VERSION]: return false
 	for key in ["evidence","links","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history","county_statements"]:
 		if not d.get(key,[]) is Array: return false
 		if key!="supplement_history":
@@ -138,7 +141,7 @@ func restore(d: Dictionary) -> bool:
 	started = bool(d.get("started",false))
 	finished = bool(d.get("finished",false))
 	world = str(d.get("world","estate"))
-	if world not in ["estate","town","precinct","boardinghouse","room","tunnel","lounge"]: world = "estate"
+	if world not in ["estate","town","precinct","boardinghouse","room","tunnel","lounge"] and not preload("res://scripts/chapters/town_places.gd").valid(world): world = "estate"
 	estate_complete = bool(d.get("estate_complete",false))
 	intake_done = bool(d.get("intake_done",false))
 	supplement_filed = bool(d.get("supplement_filed",false))
@@ -186,4 +189,7 @@ func restore(d: Dictionary) -> bool:
 	if world == "lounge" and not visited.has("almy"):
 		world = "estate"
 		position = Vector3(-10,0.1,-17)
+	rose_bodies_removed = bool(d.get("rose_bodies_removed",estate_complete))
+	birch_bodies_removed = bool(d.get("birch_bodies_removed",false))
+	estate_visits_completed = maxi(0,int(d.get("estate_visits_completed",1 if estate_complete else 0)))
 	return true
