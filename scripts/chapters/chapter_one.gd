@@ -86,7 +86,7 @@ var last_hazard_phase = ""
 
 func start(player_rig:Node3D) -> void:
 	rig=player_rig
-	test_mode = OS.get_cmdline_user_args().has("--qa") or OS.get_cmdline_user_args().has("--qa-town") or OS.get_cmdline_user_args().has("--qa-loop") or OS.get_cmdline_user_args().has("--qa-phase2") or OS.get_cmdline_user_args().has("--qa-staging")
+	test_mode = OS.get_cmdline_user_args().has("--qa") or OS.get_cmdline_user_args().has("--qa-town") or OS.get_cmdline_user_args().has("--qa-loop") or OS.get_cmdline_user_args().has("--qa-phase2") or OS.get_cmdline_user_args().has("--qa-staging") or OS.get_cmdline_user_args().has("--qa-usability")
 	facts = Story.FACTS.duplicate(true)
 	facts.merge(TownStory.FACTS)
 	facts.merge(TunnelStory.FACTS)
@@ -104,6 +104,7 @@ func start(player_rig:Node3D) -> void:
 	if OS.get_cmdline_user_args().has("--qa-loop"): call_deferred("_qa_loop")
 	if OS.get_cmdline_user_args().has("--qa-phase2"): call_deferred("_qa_phase2")
 	if OS.get_cmdline_user_args().has("--qa-staging"): call_deferred("_qa_staging")
+	if OS.get_cmdline_user_args().has("--qa-usability"): call_deferred("_qa_usability")
 	if not capture_mode.is_empty(): call_deferred("_capture")
 
 
@@ -273,18 +274,17 @@ func _find_focus() -> void:
 	var best = 3.0
 	for id in estate.points:
 		if id == "report" and not state.visited.has("odell"): continue
-		if id == "exit" and state.report.is_empty(): continue
 		var p:Vector3 = estate.points[id].pos
 		var d = Vector2(p.x-player.position.x,p.z-player.position.z).length()
 		if d < best:
 			var origin = player.position+Vector3.UP*1.1
-			var query = PhysicsRayQueryParameters3D.create(origin,p+Vector3.UP*1.1,1)
+			var query = PhysicsRayQueryParameters3D.create(origin,estate.points[id].get("sight",p+Vector3.UP*1.1),1,estate.points[id].get("excluded",[]))
 			if get_world_3d().direct_space_state.intersect_ray(query).is_empty():
 				best=d
 				focused=id
 	prompt.text = "" if focused.is_empty() else "[ E ]  "+str(estate.points[focused].title)
 	marker.visible = not focused.is_empty() and bool(settings.hints)
-	if marker.visible: marker.position = estate.points[focused].pos+Vector3(0,0.06,0)
+	if marker.visible: marker.position = estate.points[focused].get("marker",estate.points[focused].pos)+Vector3(0,0.06,0)
 
 func _interact(id:String) -> void:
 	if staging.interact(self,id): return
@@ -294,7 +294,9 @@ func _interact(id:String) -> void:
 		_report_screen()
 		return
 	if id == "exit":
-		if state.report.is_empty(): return
+		if state.report.is_empty():
+			_cards([["WALTER CORWIN","It would be unprofessional to leave the scene without completing the paperwork."]],_close)
+			return
 		_finish()
 		return
 	var key = "gardener_plain" if id == "gardener" and state.estate_complete and state.coat == "Plain wool coat" else id
@@ -402,8 +404,11 @@ func _report_screen() -> void:
 
 func _write_report(mode:String,scene:String) -> void:
 	state.complete_report(mode,_current_sources())
+	if state.world=="estate": estate.sync_staging(state)
 	_save_game()
-	_cards(Story.SCENES[scene],func(): _close(); _toast("Report prepared. Return to the estate gates when ready.",6))
+	var cards=Story.SCENES[scene].duplicate(true)
+	cards.append(["WALTER CORWIN","That's everything for now. Back through the estate gates."])
+	_cards(cards,func(): _close(); _toast("Report prepared. Return to the estate gates when ready.",6))
 
 func _finish() -> void:
 	state.estate_complete = true
@@ -1062,3 +1067,6 @@ func _notebook() -> void:
 
 func _qa_staging() -> void:
 	await load("res://tests/staging_flow.gd").new().run(self)
+
+func _qa_usability() -> void:
+	await load("res://tests/usability_flow.gd").new().run(self)

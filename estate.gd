@@ -10,8 +10,11 @@ var gardener_actor: Node3D
 var groundskeeper_actor: Node3D
 var opening_knife: Node3D
 var opening_staff: Dictionary = {}
+var departure_leaves: Array[Node3D] = []
 
 func sync_staging(st) -> void:
+	for leaf in departure_leaves:
+		leaf.rotation.y = -float(leaf.get_meta("side"))*PI/2 if not st.report.is_empty() else 0.0
 	for corpse in scene_bodies: corpse.visible = not st.estate_complete
 	for id in opening_staff:
 		opening_staff[id].visible = not st.estate_complete
@@ -214,6 +217,17 @@ func tree(pos:Vector3, birch:bool = false) -> void:
 func target(id:String,title:String,pos:Vector3) -> void:
 	points[id] = {"title":title,"pos":pos}
 
+# The object's own supporting cabinet may occlude its center from the far side.
+# Exclude only that cabinet from sight checks; its movement collision stays active.
+func tabletop_target(id:String,title:String,surface:Vector3,support:Node3D) -> void:
+	target(id,title,Vector3(surface.x,0,surface.z))
+	points[id]["sight"] = surface
+	points[id]["marker"] = surface
+	var excluded: Array[RID] = []
+	for child in support.get_children():
+		if child is CollisionObject3D: excluded.append(child.get_rid())
+	points[id]["excluded"] = excluded
+
 func _ready() -> void:
 	rng.seed = 1923
 	var world_env = WorldEnvironment.new()
@@ -341,7 +355,21 @@ func _ready() -> void:
 		box(self,Vector3(x,2.0,37),Vector3(1,4,1),"92978b",true)
 		cylinder(self,Vector3(x,4.2,37),0.75,0.4,"b0b1a1",0.5)
 	for side in [-1,1]:
-		for i in 7: cylinder(self,Vector3(side*(4.5+i*0.28),2.3,35.5-i*0.23),0.035,3.2,"292f2c")
+		var leaf=Node3D.new()
+		leaf.position=Vector3(side*3.6,0,37)
+		leaf.set_meta("side",side)
+		add_child(leaf)
+		departure_leaves.append(leaf)
+		for i in 8: cylinder(leaf,Vector3(-side*(0.2+i*0.45),1.8,0),0.035,3.2,"292f2c")
+		for y in [0.6,2.7]: box(leaf,Vector3(-side*1.8,y,0),Vector3(3.6,0.09,0.09),"292f2c")
+		var barrier=StaticBody3D.new()
+		var collision=CollisionShape3D.new()
+		var shape=BoxShape3D.new()
+		shape.size=Vector3(3.6,3.2,0.12)
+		collision.shape=shape
+		collision.position=Vector3(-side*1.8,1.6,0)
+		barrier.add_child(collision)
+		leaf.add_child(barrier)
 	box(self,Vector3(-10,2.2,29),Vector3(6,4.4,7),"777c71",true)
 	box(self,Vector3(-10,4.6,29),Vector3(6.5,0.3,7.5),"4f5750")
 	box(self,Vector3(-6.95,2.3,29),Vector3(0.12,1.7,2),"282f2d")
@@ -377,4 +405,9 @@ func _ready() -> void:
 	target("gardener","Speak to the gardener",Vector3(-12,0,1))
 	target("odell","Speak to Captain Odell",Vector3(4,0,-11.5))
 	target("report","Write the preliminary report",Vector3(6,0,-13.1))
-	target("exit","Return to the precinct",Vector3(0,0,39))
+	target("exit","Leave through the estate gates",Vector3(0,0,37))
+	var gate_bodies: Array[RID] = []
+	for leaf in departure_leaves:
+		for child in leaf.get_children():
+			if child is CollisionObject3D: gate_bodies.append(child.get_rid())
+	points.exit["excluded"] = gate_bodies

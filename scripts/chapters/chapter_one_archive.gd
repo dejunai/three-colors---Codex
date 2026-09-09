@@ -180,7 +180,14 @@ func _report_screen(g:Node) -> void:
 
 func _board(g:Node) -> void:
 	g._panel("board","What belongs beside what","CORWIN'S ROOM  /  THE CASE BOARD",true)
-	g._paragraph("Select an observation to read it, then choose Link to compare it with another.\nConfirmed connections are recorded below and in the notebook.",19)
+	# First control, above the evidence list: available without opening a card.
+	var link_button=g._button("Link",func(): _link_picker(g,""))
+	var count=0
+	for id in g.state.evidence:
+		if g.facts.has(id): count+=1
+	link_button.disabled=count<2
+	if count<2: link_button.tooltip_text="Two recorded observations are needed."
+	g._paragraph("Walter’s observations",19)
 	var grid=GridContainer.new()
 	grid.columns=2
 	grid.add_theme_constant_override("h_separation",18)
@@ -229,7 +236,13 @@ func _link_observation(g:Node,id:String) -> void:
 
 func _link_picker(g:Node,first_id:String) -> void:
 	if first_id.is_empty():
-		_board(g)
+		g._panel("board","Choose the first observation","THE CASE BOARD / LINK",true)
+		for id in g.state.evidence:
+			if not g.facts.has(id): continue
+			g._button(str(g.facts[id][0]),func(): _link_picker(g,id))
+			g._paragraph(str(g.facts[id][1]),20)
+		g._button("Cancel",func(): _board(g))
+		g._focus_first()
 		return
 	if not g.state.evidence.has(first_id) or not g.facts.has(first_id): return
 	g._panel("board","Choose a second observation","THE CASE BOARD / COMPARE NOTES",true)

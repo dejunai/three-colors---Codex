@@ -174,7 +174,7 @@ func _boardinghouse() -> void:
 	for x in [0.9,1.9]:
 		cylinder(self,Vector3(x,1.13,-2.6),0.10,0.17,"cac9ad")
 		cylinder(self,Vector3(x,1.05,-2.6),0.18,0.03,"b8c09f")
-	box(self,Vector3(6.3,0.9,2),Vector3(2.6,1.8,0.9),"556f4c",true)
+	var ledger_cabinet=box(self,Vector3(6.3,0.9,2),Vector3(2.6,1.8,0.9),"556f4c",true)
 	box(self,Vector3(6.3,1.84,2),Vector3(0.8,0.07,0.6),"bebea1")
 	box(self,Vector3(-6.8,1.4,-6),Vector3(2.8,2.8,1.1),"4d6846",true)
 	for y in [0.6,1.3,2.1]:
@@ -182,7 +182,7 @@ func _boardinghouse() -> void:
 		for x in [-7.6,-7,-6.4,-5.9]: cylinder(self,Vector3(x,y+0.2,-5.4),0.12,0.3,"b4c09b")
 	box(self,Vector3(0,0.06,3),Vector3(5,0.03,3),"5c7050")
 	target("almy","Speak to Mrs. Almy",Vector3(1.7,0,-3.3))
-	target("lodging","Examine the meal ledger",Vector3(6.3,0,3.1))
+	tabletop_target("lodging","Examine the meal ledger",Vector3(6.3,1.9,2),ledger_cabinet)
 
 func _corwin_room() -> void:
 	# Bed, desk, dresser, and a physical board. Every playable card has an immutable text source.
@@ -204,14 +204,14 @@ func _corwin_room() -> void:
 	for x in [-1.2,0.1,1.4]:
 		var thread=box(self,Vector3(x,2.15,-7.35),Vector3(1.8,0.016,0.018),"343e2a")
 		thread.rotation.z=0.6
-	box(self,Vector3(6.8,0.9,3.5),Vector3(2.6,1.8,1.1),"5c7250",true)
+	var notice_dresser=box(self,Vector3(6.8,0.9,3.5),Vector3(2.6,1.8,1.1),"5c7250",true)
 	box(self,Vector3(6.8,1.84,3.5),Vector3(0.7,0.025,0.45),"c8c7a8")
 	for y in [0.5,1.1]: box(self,Vector3(6.8,y,4.1),Vector3(0.3,0.07,0.06),"b6b798")
 	lettering("",Vector3(0,3.6,-7.35),28)
 	target("board","Consult the case board",Vector3(0,0,-6.2))
 	target("sleep","Turn in for the night",Vector3(-3.4,0,-2.2))
 	target("day_close","Set the notebook down for the evening",Vector3(3.5,0,-2.9))
-	target("exemption","Examine the folded notice",Vector3(6.8,0,4.4))
+	tabletop_target("exemption","Examine the folded notice",Vector3(6.8,1.9,3.5),notice_dresser)
 
 func update_board(evidence:Array) -> void:
 	if location != "room": return
