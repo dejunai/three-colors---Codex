@@ -1,0 +1,37 @@
+# ============================================
+# father_behan.dialogue
+# ============================================
+NPC: father_behan
+LOCATION: rectory
+
+TOPIC: sixth_man
+  GATE: never
+  # Permanently excluded. No line exists for this topic, on this NPC
+  # or any other. Do not fill this in on a later pass.
+
+TOPIC: club_five
+  GATE: always
+  LABEL: "Ask about the five club members"
+  BEHAN: "Wexford's temper. Fenn's vanity. Kessler's grudges. Corliss's ambitions.
+          I'll discuss any of it. None of it explains a hole above the bridge of a nose."
+  CHOICE: "You knew all six."
+    BEHAN: "I knew what men tell a priest, which is not the same as what they are.
+            Ask your question, Officer. I've answered worse."
+
+TOPIC: club_invitation
+  GATE: always
+  LABEL: "Ask about the club invitations"
+  CHOICE: "You were invited to the club. Twice. You declined both times."
+    BEHAN: "I did."
+  CHOICE: "Why?"
+    BEHAN: [He says nothing further. The silence is not evasive. It is final.]
+    NOTEBOOK: "A refusal offered without excuse.
+               Walter has learned to trust a plain no more than a decorated one."
+
+TOPIC: bullets
+  GATE: always
+  LABEL: "Ask about the bullet wound"
+  CHOICE: "Have you ever heard of a bullet that leaves no exit wound?"
+    BEHAN: [A pause held a beat too long.] "Ask your question, Officer. I've answered worse."
+    # deliberately reuses his own stock line — the second use reads as evasion,
+    # not repetition, once the player's heard it land honestly once already

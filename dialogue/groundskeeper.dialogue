@@ -1,0 +1,21 @@
+# ============================================
+# groundskeeper.dialogue
+# ============================================
+# Reverse-engineered from story.gd SCENES.crew. "crew" is itself a FACTS
+# entry, so the original auto-discovers it generically (no separate
+# record() call) — the NOTEBOOK line below carries that FACTS text
+# verbatim. The closing "WALTER'S NOTEBOOK" card in the source is flavor
+# only (not mirrored by any discover()/record() call) and stays a plain
+# speaker line, per the same split used in coroners_assistant.dialogue.
+# No GATE beyond "always": docs/ARCHITECTURE.md notes this observation is
+# available without a Perception gate.
+NPC: crew
+LOCATION: estate
+
+TOPIC: default
+  GATE: always
+  [A groundskeeper stacks crates beside a banked fire, working fast in the cold. The service door stands a few feet off. He never sets a crate nearer to it than the last.]
+  CHOICE: "Something wrong with the door?"
+    THE GROUNDSKEEPER: "Uneven step. Easy to turn an ankle in this light.\n\nMind the same on your way out."
+    NOTEBOOK: "A WIDE BERTH\n\nA groundskeeper stacks crates outside the kitchen wing, never setting one nearer the service door than the last. Asked, he says the step is uneven there. He returns to the crates before Walter can ask a second question.\n\nKitchen wing yard · direct observation"
+    WALTER'S NOTEBOOK: "The distance he keeps is exact, not nervous. He named a reason before Walter asked for one, then went back to the crates without slowing down.\n\nThe observation is exact. The reason he gave may not be."

@@ -1,0 +1,28 @@
+# ============================================
+# gatehouse_boy.dialogue
+# ============================================
+# Reverse-engineered from story.gd SCENES.boy / boy_repeat / boy_return and
+# the key-selection in chapter_one.gd's _interact() ("if state.estate_complete:
+# key = boy_return elif state.visited.has(boy): key = boy_repeat"). Same
+# mutually-exclusive "default" pattern as steward.dialogue: most specific
+# GATE first. visit_count(boy) is 1 on the very first enter() (the counter
+# increments before the gate is checked), so ">= 2" is the correct reading
+# of "this is a repeat", not ">= 1".
+NPC: boy
+LOCATION: estate
+
+TOPIC: default
+  GATE: estate_complete = true
+  THE GATEHOUSE BOY: "The wagon's been and gone. The captain and the coroner's man went right with the bodies."
+  CHOICE: "And the gardener?"
+    THE GATEHOUSE BOY: "Over yonder, just beside the drive below the hedge. He's back at his work."
+
+TOPIC: default
+  GATE: visit_count(boy) >= 2
+  THE GATEHOUSE BOY: "Through the gap in the hedge. The captain's still on the terrace."
+
+TOPIC: default
+  GATE: always
+  THE GATEHOUSE BOY: "THEY'RE IN THE ROSE GARDEN, OFFICER.\nWHAT'S LEFT OF THEM."
+  CHOICE: "Who found them?"
+    THE GATEHOUSE BOY: "The gardener. He sent me for the police.\n\nStraight up the drive. Through the opening in the hedge.\nThe captain is waiting on the terrace."

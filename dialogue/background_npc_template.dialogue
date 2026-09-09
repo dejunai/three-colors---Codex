@@ -1,0 +1,18 @@
+# ============================================
+# background_npc_template.dialogue
+# ============================================
+# Template, not a concrete NPC: {generated}/{assigned by schedule}/{home}/
+# {workplace}/{home_or_speakeasy} are placeholder tokens for a future
+# resident generator to substitute per instance (e.g. against
+# scripts/chapters/town_places.gd's building registry). The parser treats
+# them as opaque literal text today — no substitution happens yet. This
+# file exists to prove the grammar tolerates the shape; wiring up the
+# generator is a separate, later pass.
+NPC: {generated}
+LOCATION: {assigned by schedule}
+SCHEDULE: dawn={home}, midday={workplace}, dusk={home}, night={home_or_speakeasy}
+
+TOPIC: default
+  GATE: always
+  NPC: "I've got nothing to say about it."
+  # placeholder for all ~50 background residents until the NPC-content pass

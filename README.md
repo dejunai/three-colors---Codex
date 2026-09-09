@@ -1,6 +1,6 @@
 # Three Colors of Madness — No Exit Wound
 
-Native third-person 3D opening prototype aligned with Design Bible v14 and TDD v8. This is a playable blockout, with primitive art and provisional writing. Roughly ten minutes is an exploratory pacing target, not a measured playtime or a forced timer.
+Native third-person 3D opening prototype aligned with Design Bible v15 and TDD v11. This is a playable blockout, with primitive art and provisional writing. Roughly ten minutes is an exploratory pacing target, not a measured playtime or a forced timer.
 
 ## Current staging pass
 
@@ -8,7 +8,11 @@ The steward is inside the smoking lounge, reached through the estate's service e
 
 “Read the notebook” in personal effects or the case file opens the new read-only reference. Linking remains at the physical board. The desk's end-of-day action now follows the same staging milestones as the bed. The existing service-passage continuation follows the third encounter and return home.
 
-See `docs/qa/STAGING_PASS.md` for the precise flow, version-5 save migration, test results, and pacing estimates. `Test staging.cmd` verifies the new progression. The minimal opener estimates 3.1–3.6 minutes; all opening observations estimate 6.6–7.8 minutes. The Web build has not been re-exported by this pass.
+See `docs/qa/STAGING_PASS.md` for the precise flow, version-5 save migration, test results, and pacing estimates. `Test staging.cmd` verifies the new progression. The minimal opener estimates 3.1–3.6 minutes; all opening observations estimate 6.6–7.8 minutes.
+
+## Town expansion pass
+
+Pickman Street's opposite frontage now leads to three neighborhoods — a business district, an upper residential quarter, and a lower residential quarter — plus the post office, for eighteen buildings and twelve accessible interiors in total. Precinct intake also leads to a morgue with a coroner. Only the stationer, Residence No. 1, and Dwelling No. 1 hold a placeholder resident with a single dismissive line; the rest are empty interiors or exterior-only fronts. Departing the estate for town clears the rose garden's six bodies; returning from town on Day 3 after two completed estate visits silently clears the birches too, with no accompanying scene. See `docs/qa/TOWN_EXPANSION_PASS.md` for the geography table and verification. There is no dedicated launcher script yet; run the check directly with the engine's `--headless --path . --fixed-fps 60 --script res://tests/town_expansion_flow.gd` arguments.
 
 ## Play
 
@@ -34,15 +38,15 @@ The town includes optional witness questions, a meal ledger, a newspaper, a pers
 
 ## Saves and accessibility
 
-The launcher stores Godot's user data in `.runtime-data` inside the project. Saves occur after interactions, every 20 seconds of exploration, on pause and on exit. Continue restores position, camera, evidence, statements, clothing, report copies, flask supply, and presentation relief. QA uses a separate save. Earlier opening saves migrate automatically; completed opening saves continue into town. Continue also looks for the newest save from a previous editor launch.
+The launcher stores Godot's user data in `.runtime-data` inside the project. Saves occur after interactions, every 20 seconds of exploration, on pause and on exit. Continue restores position, camera, evidence, statements, links, clothing, report copies, flask supply, ammunition, the day clock, and presentation relief. QA uses a separate save. Earlier opening saves migrate automatically; completed opening saves continue into town. Continue also looks for the newest save from a previous editor launch.
 
 Accessibility is available before play: static grain by default, distortion intensity, grain, contrast, text size up to 130%, mouse sensitivity/inversion, and optional interaction markers. Text stays above all film effects; long menus scroll. The service passage includes a provisional synthetic cough with a matching readable caption. Full audio design remains unfinished.
 
 ## Scope
 
-This build includes perspective movement/camera collision, twelve optional observations (three of them behind a revisitable witness menu), a branching response to Odell, a sparse paperdoll and inventory, displayed Strength/Perception, clothing, a finite flask affecting presentation only, report choices, a persistent opening record, and a scoped Observer color tell in the active shader.
+This build includes perspective movement/camera collision, twelve optional observations (three of them behind a revisitable witness menu), a branching response to Odell, a sparse paperdoll and inventory, displayed Strength/Perception, clothing, a finite flask affecting presentation only, report choices, a persistent opening record, a scoped Observer color tell in the active shader, a player-drawn corkboard link mechanic that accelerates Perception, and a real day/night clock driving lighting.
 
-It does not include combat, forced spill, glass-shattering break, fatal comprehension, later chapters, gamepad support, full key rebinding, or a full encumbrance/level-up system. Later consumption of the record by Ekon is future work. The v10 difficulty screen is deferred. The respectful all-eight wording is provisional and needs review against Walter's intended initial bias. Neither report choice is scored as morality.
+The service passage adds a forced flask spill, a six-round revolver, and knife melee: drowned sailors can be finished off permanently once staggered, while fully transformed cultists can only be staggered and evaded, never killed. It does not include glass-shattering break, fatal comprehension, later chapters, gamepad support, full key rebinding, or a full encumbrance/level-up system. Later consumption of the record by Ekon is future work. The v10 difficulty screen is deferred. The respectful all-eight wording is provisional and needs review against Walter's intended initial bias. Neither report choice is scored as morality.
 
 ## Existing prototype
 
@@ -65,17 +69,22 @@ The existing `Build and serve web.cmd` script still runs the local HTTP server o
 
 ## Verification and source
 
-`Test town.cmd` checks travel through all three interiors, minimal progression without the board, optional inquiry, immutable report and supplement history, migration, and cross-location saves. `Test opening.cmd` checks the minimal route, Odell's response branch, optional observations including the barman's revisitable menu, clothing testimony, report snapshots, save/load, completion, actual WASD traversal, departure focus, and hedge collision. The existing `tests/smoke_test.gd` also remains runnable.
+`Test town.cmd` checks travel through all three interiors, minimal progression without the board, optional inquiry, immutable report and supplement history, migration, and cross-location saves. `Test opening.cmd` checks the minimal route, Odell's response branch, optional observations including the barman's revisitable menu, clothing testimony, report snapshots, save/load, completion, actual WASD traversal, departure focus, and hedge collision. `tests/phase_two_mechanics.gd` (`--qa-phase2`) covers the forced spill, revolver/knife combat, and corkboard causal spine; `tests/usability_flow.gd` (`--qa-usability`) covers waypoint traversal and interaction focus. Neither has a dedicated `.cmd` launcher yet — run them via the engine's `--headless --fixed-fps 60` arguments. The existing `tests/smoke_test.gd` also remains runnable.
 
-Live renderer captures use `-- --capture=world`, `title`, `case`, `dialogue`, `settings`, `effects`, `large_text`, or `gate`. These developer arguments are not shown in-game. Reviewed captures are in `docs/qa/`.
+Live renderer captures use `-- --capture=` followed by a mode name: `world`, `title`, `case`, `dialogue`, `settings`, `effects`, `large_text`, `gate`, `town`, `precinct`, `boardinghouse`, `room`, `board`, `witness`, `tunnel_access`, `tunnel_death`, `tunnel_record`, `return_gardener`, `lounge`, `montage`, `notebook`, `cleared_estate`, `observer`, `link_picker`, `link_positive`, or `link_negative` (see `tests/capture_views.gd` for the authoritative list). These developer arguments are not shown in-game. Reviewed captures are in `docs/qa/`.
 
 - `main.gd`: shared player movement and camera rig.
 - `scripts/chapters/chapter_one.gd`: Chapter One progression and interaction orchestration.
 - `scripts/chapters/chapter_one_archive.gd`: chapter-specific record and inventory panels.
-- `scripts/shared/`: reusable interface, dialogue sequence, save store, accessibility settings, and film presentation.
+- `scripts/chapters/chapter_one_staging.gd`: day/visit progression, sleep gate, and montage intertitles.
+- `scripts/chapters/chapter_one_notebook.gd`: read-only detached notebook.
+- `scripts/chapters/montage_still.gd`: procedural storyboard intertitles.
+- `scripts/shared/`: reusable interface, dialogue sequence, save store, accessibility settings, film presentation, the day/night clock, its lighting presentation, and the Chapter Two trinket generator.
 - `tests/`: extracted traversal and integration checks.
 - `tunnel.gd` / `tunnel_story.gd`: service passage encounter and provisional text.
 - `estate.gd`: deterministic environment, figures, collision, interaction points.
+- `town.gd` / `town_story.gd` / `town_expansion.gd`: town scenes, dialogue, and the neighborhood/morgue/post-office expansion.
+- `scripts/chapters/town_places.gd` / `business_street.gd`: neighborhood building registry and street geometry.
 - `case_state.gd`: canonical record and serialization.
 - `story.gd`: provisional dialogue and factual evidence.
 - `film.gdshader`: monochrome, iris, grain, subtle drift, and a narrow-hue exception that lets Observer-flagged materials keep color.

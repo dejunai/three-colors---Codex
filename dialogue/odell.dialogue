@@ -1,0 +1,24 @@
+# ============================================
+# odell.dialogue
+# ============================================
+NPC: odell
+LOCATION: precinct
+
+TOPIC: bullets
+  GATE: always
+  LABEL: "Press him about the bullet wound"
+  CHOICE: "Have you ever heard of a bullet that leaves no exit wound?"
+    ODELL: "Gas explosion. Debris, most likely. Strange things, explosions."
+  FORK:
+    CHOICE: "All six through the same spot? That's debris?"
+      ODELL: "Coincidence. Odd ones happen."
+      NOTEBOOK: "Odell has found the shape that lets him stop looking.
+                 He is not lying to hurt anyone. He is only finished."
+    CHOICE: "Maybe you're right."
+      ODELL: "Good. Keep thinking that."
+
+TOPIC: exit_paperwork
+  GATE: always
+  # existing mechanic — filing the report unlocks the estate gate.
+  # included here only so this file is a complete record of Odell's lines,
+  # not proposing new content.

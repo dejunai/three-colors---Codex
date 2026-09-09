@@ -1,0 +1,23 @@
+# ============================================
+# steward.dialogue  (formerly barman — see rename pass)
+# ============================================
+# Both blocks below use the reserved "default" topic id: it is the single
+# auto-spoken line for this NPC, never a menu entry. Their GATEs are
+# written to be mutually exclusive (visit_count < 3 vs. >= 3 with the
+# later conditions); the first one whose GATE is true, in file order,
+# wins. If visit_count >= 3 but coat/spoken_to aren't satisfied yet,
+# neither matches and the NPC has nothing to say this visit — that gap is
+# deliberate (see the TBD note below), not a bug.
+NPC: steward
+LOCATION: smoking_lounge
+
+TOPIC: default
+  GATE: visit_count(steward) < 3
+  [Polite. Attentive. Gives nothing.]
+  # visits 1 and 2, regardless of coat, day, or anything else
+
+TOPIC: default
+  GATE: visit_count(steward) >= 3 AND coat = plain AND spoken_to(mrs_almy) = true
+  [Sets a glass down at the far end of the bar.]
+  STEWARD: "You came back. Alone this time."
+  # the actual scene — full content TBD, this is a stub

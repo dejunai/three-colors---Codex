@@ -1,0 +1,22 @@
+# ============================================
+# coroners_assistant.dialogue
+# ============================================
+# Reverse-engineered from story.gd SCENES.assistant. The original hands out
+# two bonus discover()s beyond the conversation's own id ("assistant" itself
+# isn't a FACTS entry, so it earns no fact of its own): discover("testimony")
+# and discover("eight"), both written here as NOTEBOOK effects holding the
+# real FACTS text those ids resolve to elsewhere. The closing "A CLEAN READ"
+# card is flavor only (no discover()/record() behind it) and is kept as a
+# plain titled line, matching the "ephemeral vs. persisted" split documented
+# in docs/qa/DIALOGUE_LANG_PASS.md.
+NPC: assistant
+LOCATION: estate
+
+TOPIC: default
+  GATE: always
+  THE CORONER'S ASSISTANT: "I've counted them twice. Eight.\n\nThe captain wants the identified men prepared first."
+  CHOICE: "Any sign of an explosion?"
+    THE CORONER'S ASSISTANT: "None I can find. No burns. No broken glass.\n\nI can't tell you what happened. I can tell you what isn't here."
+    NOTEBOOK: "NO BLAST DAMAGE\n\nWindows facing the garden remain intact. Neither the nearby stone nor the clothing shows scorching. The proposed gas accident is unsupported by the visible scene.\n\nTerrace windows · assistant's examination"
+    NOTEBOOK: "BOTH SCENES\n\nThe assistant counted eight and saw no evidence of an explosion. He was told to prepare the six club members first. His observations corroborate the separate scene notes.\n\nCoroner's assistant · statement"
+    A CLEAN READ: "Two independent observations agree.\nFor a moment the work is simple.\n\nWalter knows what to ask next."
