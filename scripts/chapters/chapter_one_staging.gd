@@ -59,6 +59,7 @@ func sleep(g:Node) -> void:
 		return
 	if g.state.day < 3:
 		g.state.day = 2
+		g.state.clock_minutes = 360.0
 		g.state.montage_index = 0
 		g._save_game()
 		draw_montage(g)
@@ -92,6 +93,7 @@ func draw_montage(g:Node) -> void:
 			g.state.montage_index = -1
 			g.state.steward_visits = 2
 			g.state.day = 3
+			g.state.clock_minutes = 360.0
 			g._save_game()
 			g._close()
 			g._toast("The third day. The steward is expecting you.",6))

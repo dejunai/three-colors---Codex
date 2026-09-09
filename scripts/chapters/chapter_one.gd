@@ -61,6 +61,9 @@ var toast_time = 0.0
 var location_time = 0.0
 var autosave_time = 0.0
 var comfort_time: float = 0.0
+const DayClock=preload("res://scripts/shared/day_clock.gd")
+var daylight:Node3D
+var last_clock_phase=""
 var last_region = ""
 var return_page = "title"
 var settings_schema=preload("res://scripts/shared/accessibility_settings.gd").new()
@@ -194,7 +197,13 @@ func _new_game() -> void:
 	)
 
 func _cards(cards:Array,after:Callable) -> void:
-	dialogue.start(cards,_draw_card,func(): _close(); after.call())
+	var timing_key=DayClock.conversation_key(self,cards)
+	dialogue.start(cards,_draw_card,func():
+		var charged=DayClock.complete_conversation(state,timing_key)
+		if charged and is_instance_valid(daylight): daylight.update_clock(state.clock_minutes,player.position)
+		_close()
+		after.call()
+		if charged: _save_game())
 
 func _draw_card(card:Array,index:int) -> void:
 	_panel("dialogue",str(card[0]),"NO EXIT WOUND  /  %02d" % (index+1))
@@ -211,7 +220,14 @@ func _next_card() -> void:
 	dialogue.next()
 
 func tick_world(delta:float) -> void:
+	if page != "play": return
 	state.minutes += delta/60
+	DayClock.advance(state,delta*DayClock.WANDER_RATE)
+	if is_instance_valid(daylight): daylight.update_clock(state.clock_minutes,player.position)
+	var phase=DayClock.phase(state.clock_minutes)
+	if phase!=last_clock_phase:
+		last_clock_phase=phase
+		last_region=""
 	_find_focus()
 	if state.world == "tunnel":
 		estate.reveal(state.perception())
@@ -226,9 +242,7 @@ func tick_world(delta:float) -> void:
 	var region = _region_name()
 	if region != last_region:
 		last_region = region
-		location_label.text = region+"\n—  "+(("BEFORE DAWN" if not state.estate_complete else "DAY %d" % state.day) if state.world == "estate" else ("THE SERVICE PASSAGE" if state.world=="tunnel" else ("OPHION CLUB / DAY %d" % state.day if state.world=="lounge" else "PICKMAN STREET")))+"  —"
-		if preload("res://scripts/chapters/town_places.gd").valid(state.world):
-			location_label.text = region+"\n—  DAY %d  —" % state.day
+		location_label.text = region+"\n—  DAY %d · %s  —" % [state.day,DayClock.phase(state.clock_minutes).to_upper()]
 		location_time = 4
 	autosave_time += delta
 	if autosave_time > 20:
@@ -527,8 +541,9 @@ func _qa() -> void:
 func _walk_to(destination:Vector3) -> void:
 	await load("res://tests/walk_driver.gd").new().walk_to(self,destination)
 
-func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true) -> void:
+func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,elapsed_travel:bool=false) -> void:
 	if destination == "lounge" and not state.visited.has("almy"): return
+	if save or elapsed_travel: DayClock.advance(state,DayClock.travel_cost(state.world,destination))
 	if save and state.world == "estate" and destination == "town":
 		state.estate_visits_completed += 1
 		state.rose_bodies_removed = true
@@ -543,6 +558,12 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true)
 		estate=preload("res://town_expansion.gd").new() if preload("res://scripts/chapters/town_places.gd").valid(destination) else Town.new()
 		estate.location=destination
 	add_child(estate)
+	daylight=null
+	if destination in ["estate","town","business","upper","lower"]:
+		daylight=preload("res://scripts/shared/daylight.gd").new()
+		estate.add_child(daylight)
+		daylight.setup(estate)
+		daylight.update_clock(state.clock_minutes,spawn)
 	if destination == "estate": estate.sync_staging(state)
 	if estate and estate.has_method("sync_actors"):
 		estate.sync_actors(state)
@@ -842,10 +863,10 @@ func _tunnel_interaction(id:String) -> bool:
 		"tunnel_exit":
 			if state.evidence.has("lower_foundation"):
 				state.tunnel_complete=true
-				_travel("precinct",Vector3(0,0.1,5),0,false)
+				_travel("precinct",Vector3(0,0.1,5),0,false,true)
 				_cards([["BACK AT THE PRECINCT",_custody_result()],["A LATER PAGE","The lower-foundation measurement is still in Walter's notebook.\nHe can file it as a dated supplement at the side counter. Earlier copies remain as they were received."]],func(): _save_game())
 			else:
-				_travel("room",Vector3(0,0.1,5),0,false)
+				_travel("room",Vector3(0,0.1,5),0,false,true)
 				_save_game()
 		_:
 			return false

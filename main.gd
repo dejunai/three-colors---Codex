@@ -58,6 +58,8 @@ func build_player(avatar:Node3D,spawn:Vector3) -> void:
 	_update_camera(1.0)
 
 func _update_camera(delta:float) -> void:
+	# Hide the avatar when the camera moves underneath it for a skyward glance.
+	if is_instance_valid(model): model.visible = pitch > -0.55
 	var pivot = player.global_position+Vector3(0,1.45,0)
 	var offset = Vector3(0,sin(pitch)*distance,cos(pitch)*distance).rotated(Vector3.UP,yaw)
 	var desired = pivot+offset
@@ -127,7 +129,7 @@ func _unhandled_input(event:InputEvent) -> void:
 	if chapter.page == "play":
 		if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			yaw -= event.relative.x*float(chapter.settings.sensitivity)
-			pitch = clampf(pitch+event.relative.y*float(chapter.settings.sensitivity)*(-1 if chapter.settings.invert_y else 1),0.08,1.05)
+			pitch = clampf(pitch+event.relative.y*float(chapter.settings.sensitivity)*(-1 if chapter.settings.invert_y else 1),-1.3,1.05)
 		if event is InputEventMouseButton and event.pressed:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP: distance = maxf(3.2,distance-0.5)
 			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN: distance = minf(9,distance+0.5)

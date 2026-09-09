@@ -137,11 +137,16 @@ func lamp(pos: Vector3, tall: bool = true) -> void:
 	var h = 3.8 if tall else 1.7
 	cylinder(self,pos+Vector3.UP*h*0.45,0.08,h*0.9,"242626")
 	cylinder(self,pos+Vector3.UP*0.15,0.23,0.3,"333535")
-	box(self,pos+Vector3.UP*h,Vector3(0.42,0.62,0.42),"aaa99d")
+	var glass=box(self,pos+Vector3.UP*h,Vector3(0.42,0.62,0.42),"aaa99d")
+	glass.set_meta("lamp_glass",true)
+	glass.material_override=glass.material_override.duplicate()
+	glass.material_override.emission=Color("dddcc2")
+	glass.material_override.emission_energy_multiplier=0.7
 	for x in [-0.24,0.24]:
 		for z in [-0.24,0.24]: box(self,pos+Vector3(x,h,z),Vector3(0.045,0.75,0.045),"191b1c")
 	cylinder(self,pos+Vector3.UP*(h+0.47),0.42,0.32,"252726",0.02)
 	var light = OmniLight3D.new()
+	light.set_meta("street_lamp",true)
 	light.position = pos+Vector3.UP*(h-0.1)
 	light.light_color = Color("eeeee2")
 	light.light_energy = 2.3

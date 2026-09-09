@@ -33,6 +33,9 @@ func _exit_to(destination:String,spawn:Vector3,label:String,angle:float=0.0) -> 
 	routes["route_return"]=[destination,spawn,angle]
 
 func _neighborhood() -> void:
+	if location == "business":
+		preload("res://scripts/chapters/business_street.gd").new().build(self)
+		return
 	var upper=location=="upper"
 	var lower=location=="lower"
 	box(self,Vector3(0,-0.3,10),Vector3(66,0.5,54),"586052",true)
