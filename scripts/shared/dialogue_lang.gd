@@ -121,11 +121,19 @@ static func _parse_topic_body(body: Array, errors: Array) -> Dictionary:
 	var base_indent = body[0].indent
 	var gate_src = "never"
 	var label = ""
+	var tag = ""
+	var timing = ""
 	var k = 0
 	while k < body.size() and body[k].indent == base_indent:
 		var text = body[k].text
 		if text.begins_with("GATE:"):
 			gate_src = text.substr(5).strip_edges()
+			k += 1
+		elif text.begins_with("TAG:"):
+			tag = text.substr(4).strip_edges()
+			k += 1
+		elif text.begins_with("TIME:"):
+			timing = text.substr(5).strip_edges()
 			k += 1
 		elif text.begins_with("LABEL:"):
 			label = _quoted(text.substr(6))
@@ -133,7 +141,7 @@ static func _parse_topic_body(body: Array, errors: Array) -> Dictionary:
 		else:
 			break
 	var steps = _parse_steps(body, k, body.size(), base_indent, errors)
-	return {"gate_src": gate_src, "gate": _parse_gate(gate_src), "label": label, "steps": steps}
+	return {"gate_src": gate_src, "gate": _parse_gate(gate_src), "label": label, "tag": tag, "timing": timing, "steps": steps}
 
 static func _parse_steps(body: Array, start: int, end: int, indent: int, errors: Array) -> Array:
 	var steps: Array = []
@@ -148,6 +156,9 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 		if line.begins_with("["):
 			steps.append({"kind": "beat", "text": _strip_brackets(line)})
 			k += 1
+		elif line.begins_with("EVIDENCE:"):
+			steps.append({"kind": "evidence", "id": line.substr(9).strip_edges()})
+			k += 1
 		elif line.begins_with("NOTEBOOK:"):
 			var payload = line.substr(9).strip_edges()
 			var note_id = ""
@@ -160,7 +171,7 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 		elif line.begins_with("CHOICE:"):
 			var label = _quoted(line.substr(7))
 			var child_indent = _peek_indent(body, k + 1, end)
-			var child_end = _block_end(body, k + 1, end, child_indent)
+			var child_end = _block_end(body, k + 1, end, child_indent) if child_indent > indent else k + 1
 			steps.append({"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true})
 			if child_indent > indent:
 				steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors))
@@ -193,11 +204,11 @@ static func _parse_fork(body: Array, start: int, end: int, indent: int, errors: 
 			continue
 		var label = _quoted(entry.text.substr(7))
 		var child_indent = _peek_indent(body, k + 1, end)
-		var child_end = _block_end(body, k + 1, end, child_indent)
+		var child_end = _block_end(body, k + 1, end, child_indent) if child_indent > indent else k + 1
 		var steps: Array = [{"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true}]
 		if child_indent > indent:
 			steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors))
-		options.append({"label": label, "steps": steps})
+		options.append({"label": label, "tag": tag, "timing": timing, "steps": steps})
 		k = child_end
 	return options
 

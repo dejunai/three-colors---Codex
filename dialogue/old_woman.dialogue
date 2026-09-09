@@ -1,26 +1,17 @@
-# ============================================
-# old_woman.dialogue
-# ============================================
-# Reverse-engineered from town_story.gd SCENES.old_woman. The original is a
-# one-shot, disappearing-actor scene: chapter_one.gd's _town_observation()
-# refuses to replay it once state.evidence has the id ("if id == old_woman
-# and state.evidence.has(id): return"), and the actor is dismissed via
-# estate.sync_actors()/dismiss_old_woman() the same moment it plays. "not
-# evidence(old_woman)" reproduces that one-shot gate directly; the actual
-# disappearance is presentation (actor lifecycle), not something a GATE
-# expression needs to encode. "old_woman" is a FACTS entry, so it
-# auto-discovers generically; the closing "WALTER'S NOTEBOOK" card is
-# flavor only and stays a plain speaker line.
+# Live Chapter 1 content, ported from existing scenes; Codex integration 2026-09-09.
 NPC: old_woman
 LOCATION: town
 
 TOPIC: default
   GATE: NOT evidence(old_woman)
-  [An old woman waits by Kessler's boarded windows. She has been waiting, Walter suspects, for someone in a coat like his.]
+  TAG: old_woman
+  TIME: old_woman
+  OUTSIDE THE SHUTTERED SHOP: "An old woman waits by Kessler's boarded windows. She has been waiting, Walter suspects, for someone in a coat like his."
   THE OLD WOMAN: "You're looking at the men.\n\nLook at what they looked at."
-  CHOICE: "Who?"
-    THE OLD WOMAN: "The old ones don't love.\n\n[She crosses herself.]"
-  CHOICE: "What do you mean, the old ones?"
-    THE OLD WOMAN: "Beware the old gods, Officer. They have no boundaries, and no need of them.\n\nMen name the ocean too. Doesn't mean the ocean knows."
-    NOTEBOOK: default_1_1 | "BEWARE THE OLD GODS\n\nAn unnamed woman outside Kessler's shuttered shop tells Walter to look at what the six men looked at, not at the men themselves. Pressed to explain, she warns him of something with no boundaries and no need of them, then leaves before he finishes writing it down.\n\nKessler's shuttered shop · unnamed witness"
-    WALTER'S NOTEBOOK: "She is gone before he finishes the sentence.\n\nHe writes what he remembers of it, exactly as given. He does not yet have a place on the board where it belongs."
+  WALTER CORWIN: "Who?"
+  THE OLD WOMAN: "The old ones don't love.\n\n[She crosses herself.]"
+  WALTER CORWIN: "What do you mean, the old ones?"
+  THE OLD WOMAN: "Beware the old gods, Officer. They have no boundaries, and no need of them.\n\nMen name the ocean too. Doesn't mean the ocean knows."
+  WALTER'S NOTEBOOK: "She is gone before he finishes the sentence.\n\nHe writes what he remembers of it, exactly as given. He does not yet have a place on the board where it belongs."
+  EVIDENCE: old_woman
+

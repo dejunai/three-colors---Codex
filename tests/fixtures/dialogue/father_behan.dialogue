@@ -1,0 +1,51 @@
+# ============================================
+# father_behan.dialogue
+# ============================================
+NPC: father_behan
+LOCATION: rectory
+
+TOPIC: sixth_man
+  GATE: never
+  # Permanently excluded. No line exists for this topic, on this NPC
+  # or any other. Do not fill this in on a later pass.
+
+TOPIC: club_five
+  GATE: always
+  LABEL: "Ask about the five club members"
+  BEHAN: "Wexford's temper. Fenn's vanity. Kessler's grudges. Corliss's ambitions.
+          I'll discuss any of it. None of it explains a hole above the bridge of a nose."
+  CHOICE: "You knew all six."
+    BEHAN: "I knew what men tell a priest, which is not the same as what they are.
+            Ask your question, Officer. I've answered worse."
+
+TOPIC: club_invitation
+  GATE: always AND NOT topic_done(father_behan, club_invitation)
+  LABEL: "Ask about the club invitations"
+  CHOICE: "You were invited to the club. Twice. You declined both times."
+    BEHAN: "I did."
+  CHOICE: "Why?"
+    BEHAN: [He says nothing further. The silence is not evasive. It is final.]
+    NOTEBOOK: club_invitation_1_1 | "A refusal offered without excuse.
+               Walter has learned to trust a plain no more than a decorated one."
+
+# Reverse-engineered from town_story.gd SCENES.behan_name. _behan_menu()
+# shows this button INSTEAD OF club_invitation's once that one is answered
+# (never both at once); "NOT topic_done(...)" on club_invitation above and
+# "topic_done(...)" here reproduce that mutually exclusive reveal exactly.
+TOPIC: behan_name
+  GATE: topic_done(father_behan, club_invitation)
+  LABEL: "Ask about the meaning of the club's name"
+  WALTER CORWIN: "Do you know the meaning behind the club's name?"
+  FATHER BEHAN: "They named the club after the ship."
+  WALTER CORWIN: "Known."
+  FATHER BEHAN: "They came to believe the ship had been chosen.\n\nIt wasn't. Men inherit money, and then invent a reason they deserved it."
+  NOTEBOOK: behan_name_1_1 | "NAMED AFTER THE SHIP\n\nThe Ophion Club was named for a vessel lost with its crew a century ago. Father Behan calls the members' belief that the ship had been chosen a delusion, not a fact: men inherit money, then invent a reason they deserved it.\n\nFather Behan · rectory conversation"
+  WALTER'S NOTEBOOK: "A shipowner's classical flourish, nothing more, by the priest's own account.\n\nThe club's fortune has a human explanation. Walter intends to find it."
+
+TOPIC: bullets
+  GATE: always
+  LABEL: "Ask about the bullet wound"
+  CHOICE: "Have you ever heard of a bullet that leaves no exit wound?"
+    BEHAN: [A pause held a beat too long.] "Ask your question, Officer. I've answered worse."
+    # deliberately reuses his own stock line — the second use reads as evasion,
+    # not repetition, once the player's heard it land honestly once already

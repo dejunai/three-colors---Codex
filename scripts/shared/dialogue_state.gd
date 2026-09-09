@@ -12,6 +12,7 @@ var visit_counts: Dictionary = {}   # npc_id -> int, once per enter()
 var topic_sources: Dictionary = {}  # topic_id -> Array[String] distinct npc_ids that completed it
 var visited_topics: Dictionary = {} # npc_id -> Array[String] topic_ids completed at least once
 var facts: Dictionary = {}          # NPC + authored note id -> free text (legacy notes use text hash)
+var evidence: Array[String] = [] # Existing case FACTS identifiers, separate from prose statements.
 var flags: Dictionary = {}          # arbitrary named booleans for future SET-style effects
 
 func visit(npc: String) -> void:
@@ -39,6 +40,9 @@ func topic_done(npc: String, topic_id: String) -> bool:
 func record_fact(id: String, text: String) -> void:
 	if not facts.has(id): facts[id] = text
 
+func discover(id: String) -> void:
+	if not evidence.has(id): evidence.append(id)
+
 func flag(name: String) -> bool:
 	return bool(flags.get(name, false))
 
@@ -47,12 +51,27 @@ func set_flag(name: String, value: bool) -> void:
 
 func pack() -> Dictionary:
 	return {"version": VERSION, "visit_counts": visit_counts, "topic_sources": topic_sources,
-		"visited_topics": visited_topics, "facts": facts, "flags": flags}
+		"visited_topics": visited_topics, "facts": facts, "flags": flags, "evidence": evidence}
 
 func restore(d: Dictionary) -> bool:
 	if int(d.get("version", 0)) != VERSION: return false
 	for key in ["visit_counts", "topic_sources", "visited_topics", "facts", "flags"]:
 		if not d.get(key, {}) is Dictionary: return false
+	if not d.get("evidence", []) is Array: return false
+	for id in d.get("evidence", []):
+		if not id is String: return false
+	for key in ["topic_sources", "visited_topics"]:
+		for values in d.get(key, {}).values():
+			if not values is Array: return false
+			for value in values:
+				if not value is String: return false
+	for value in d.get("visit_counts", {}).values():
+		if not (value is int or value is float) or not is_finite(float(value)) or float(value) < 0: return false
+	for value in d.get("facts", {}).values():
+		if not value is String: return false
+	for value in d.get("flags", {}).values():
+		if not value is bool: return false
+	evidence.assign(d.get("evidence", []))
 	visit_counts = d.get("visit_counts", {}).duplicate(true)
 	topic_sources = d.get("topic_sources", {}).duplicate(true)
 	visited_topics = d.get("visited_topics", {}).duplicate(true)

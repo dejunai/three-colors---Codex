@@ -1,25 +1,22 @@
-# ============================================
-# gardener.dialogue
-# ============================================
-# Reverse-engineered from story.gd SCENES.gardener / gardener_plain and
-# chapter_one.gd's key selection ("key = gardener_plain if id == gardener
-# and state.estate_complete and state.coat == Plain wool coat else id").
-# Neither scene is a FACTS entry; both payoffs are record() statements,
-# not discover()s, so each becomes one NOTEBOOK line holding that exact
-# statement text.
+# Live Chapter 1 content, ported from existing scenes; Codex integration 2026-09-09.
 NPC: gardener
 LOCATION: estate
 
 TOPIC: default
-  GATE: estate_complete = true AND coat = plain
+  GATE: estate_complete AND coat = plain
+  TAG: gardener_plain
+  TIME: gardener_plain
   THE GARDENER: "You took the badge off."
-  CHOICE: "I'm still asking."
-    THE GARDENER: "Then write this down as well. I saw the woman here before. Walking to the service door.\n\nI don't know her name. The steward might.\nAsk him as though an answer is required."
-    NOTEBOOK: service_door | "The gardener saw the woman at the service door. Ask the steward."
+  WALTER CORWIN: "I'm still asking."
+  THE GARDENER: "Then write this down as well. I saw the woman here before. Walking to the service door.\n\nI don't know her name. The steward might.\nAsk him as though an answer is required."
+  NOTEBOOK: service_door | "The gardener saw the woman at the service door. Ask the steward."
 
 TOPIC: default
   GATE: always
+  TAG: gardener
+  TIME: gardener
   THE GARDENER: "I keep the roses. I don't keep the hours of the men who walk among them."
-  CHOICE: "You found both scenes?"
-    THE GARDENER: "Yes.\n\nI sent for eight sheets.\nThey brought six the first time."
-    NOTEBOOK: eight_sheets | "The gardener requested eight sheets. Six arrived first."
+  WALTER CORWIN: "You found both scenes?"
+  THE GARDENER: "Yes.\n\nI sent for eight sheets.\nThey brought six the first time."
+  NOTEBOOK: eight_sheets | "The gardener requested eight sheets. Six arrived first."
+

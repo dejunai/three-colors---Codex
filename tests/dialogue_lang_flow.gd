@@ -15,9 +15,9 @@ func _run() -> void:
 	var CaseState = load("res://case_state.gd")
 	var DialogueState = load("res://scripts/shared/dialogue_state.gd")
 
-	var behan_path = "res://dialogue/father_behan.dialogue"
-	var odell_path = "res://dialogue/odell.dialogue"
-	var steward_path = "res://dialogue/steward.dialogue"
+	var behan_path = "res://tests/fixtures/dialogue/father_behan.dialogue"
+	var odell_path = "res://tests/fixtures/dialogue/odell.dialogue"
+	var steward_path = "res://tests/fixtures/dialogue/steward.dialogue"
 
 	var state = CaseState.new()
 	var dstate = DialogueState.new()

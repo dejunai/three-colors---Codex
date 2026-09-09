@@ -1,69 +1,62 @@
-# ============================================
-# mrs_almy.dialogue
-# ============================================
-# Reverse-engineered from town_story.gd (almy_badge/almy_plain/identify/
-# lay_lead/service_work/lodging) and chapter_one.gd's "almy" interaction
-# point plus _witness_menu(). NPC id is "almy" (not "mrs_almy") to match
-# the id already used everywhere else in the codebase (state.visited,
-# TownStory.SCENES keys) — the file is named for readability only.
-#
-# The two "default" topics are the one-time coat-dependent introduction.
-# visit_count(almy) is already 1 on the very first enter() (the counter
-# increments before the gate is checked, same as gatehouse_boy.dialogue),
-# so "< 2" is what actually means "this is the first visit" here — matching
-# almy/almy_badge vs. almy_plain in the source; every visit after that
-# resolves no "default"
-# at all; the witness-menu topics below are the revisitable content,
-# matching chapter_one.gd's _witness_menu() exactly, including the
-# lay_lead/service_work gate on evidence(naomi) and almy_trust's
-# disappear-once-answered gate (topic_done, not just a flag, so a save
-# that already answered it stays answered).
+# Live Chapter 1 content, ported from existing scenes; Codex integration 2026-09-09.
 NPC: almy
 LOCATION: boardinghouse
 
 TOPIC: default
-  GATE: visit_count(almy) < 2 AND coat = plain
-  [The coat changes the room before Walter says a word. Mrs. Almy sets a second cup beside the first.]
+  GATE: NOT topic_done(almy, default) AND coat = plain
+  TAG: almy_plain
+  MRS. ALMY: "The coat changes the room before Walter says a word.\nMrs. Almy sets a second cup beside the first."
   MRS. ALMY: "You came to ask about Naomi.\n\nSit, then. Ask properly."
 
 TOPIC: default
-  GATE: visit_count(almy) < 2
+  GATE: NOT topic_done(almy, default)
+  TAG: almy_badge
   MRS. ALMY: "If you've come to tell me what the paper says, Officer,\nI have already read it."
-  CHOICE: "I'm asking about the woman and the boy."
-    MRS. ALMY: "The paper wasn't.\n\nWhat is it you intend to write down?"
+  WALTER CORWIN: "I'm asking about the woman and the boy."
+  MRS. ALMY: "The paper wasn't.\n\nWhat is it you intend to write down?"
 
 TOPIC: identify
   GATE: always
+  TAG: identify
   LABEL: "Ask for the woman's name"
+  TIME: identify
   WALTER CORWIN: "I counted eight people.\nI would like to put a name beside each of them."
   MRS. ALMY: "Naomi Freeman.\n\nShe ate here. The boy too.\nHe waited for her to begin before touching his own plate."
   WALTER'S NOTEBOOK: "NAOMI FREEMAN.\nIdentified by Mrs. Almy, Pickman Street.\nBoy accompanying her: name still to be established."
-  NOTEBOOK: identify_1_1 | "NAOMI FREEMAN\n\nMrs. Almy identifies the woman as Naomi Freeman. A boy accompanied her. His name is not yet established. The witness knew them before the deaths.\n\nMrs. Almy · boardinghouse statement"
   MRS. ALMY: "You can ask me again tomorrow.\nHer name will still be Naomi."
+  EVIDENCE: naomi
 
 TOPIC: lay_lead
   GATE: evidence(naomi)
+  TAG: lay_lead
   LABEL: "Ask what brought Naomi to town"
+  TIME: lay_lead
   MRS. ALMY: "She was looking for something owed.\nA whaler's wages. A share, she called it. A lay.\nFrom her family's time, long before hers."
-  CHOICE: "Did you see the document?"
-    MRS. ALMY: "No. She spoke of finding it.\nYou mustn't write that I saw it."
-    NOTEBOOK: lay_lead_1_1 | "AN UNPAID LAY\n\nMrs. Almy recalls Naomi asking about wages owed to a whaling ancestor. She does not hold the wage document and cannot verify the claim. This is a lead, not proof of a debt or a motive for the killings.\n\nMrs. Almy · account of Naomi's inquiry"
+  WALTER CORWIN: "Did you see the document?"
+  MRS. ALMY: "No. She spoke of finding it.\nYou mustn't write that I saw it."
+  WALTER'S NOTEBOOK: "Possible wage claim. Document not examined.\nSource: Mrs. Almy's recollection.\n\nA question to pursue.\nNo conclusion about why Naomi died."
+  EVIDENCE: lay_lead
 
 TOPIC: service_work
   GATE: evidence(naomi)
+  TAG: service_work
   LABEL: "Ask about work at the estate"
+  TIME: service_work
   MRS. ALMY: "She asked about work at the estate.\nCleaning, perhaps. They always need someone who can leave by the other door."
-  CHOICE: "Who engaged her?"
-    MRS. ALMY: "I don't know.\nThe steward has books enough.\nAsk him for one that contains her."
-    NOTEBOOK: service_work_1_1 | "THE SERVICE DOOR\n\nMrs. Almy says Naomi sought domestic work at the estate. Neither the dates nor an employer's name is confirmed. Ask the steward for employment records.\n\nMrs. Almy · boardinghouse statement"
+  WALTER CORWIN: "Who engaged her?"
+  MRS. ALMY: "I don't know.\nThe steward has books enough.\nAsk him for one that contains her."
+  EVIDENCE: service_work
 
 TOPIC: almy_ledger
   GATE: evidence(naomi)
+  TAG: almy_ledger
   LABEL: "Ask to corroborate the visit in her ledger"
   MRS. ALMY: "On the sideboard.\nCopy the entry, if you need it.\nThe book stays here."
 
 TOPIC: almy_trust
   GATE: coat = plain AND NOT topic_done(almy, almy_trust)
+  TAG: almy_trust
   LABEL: "Ask why the coat made a difference"
   MRS. ALMY: "A uniform asks what belongs in a report.\nA man might still ask what happened.\n\nI haven't decided which you are yet."
   NOTEBOOK: almy_trust_1_1 | "Mrs. Almy distinguished speaking to a uniform from speaking to a man. The name she supplied was the same."
+

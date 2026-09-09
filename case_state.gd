@@ -1,6 +1,7 @@
 extends RefCounted
 
-const VERSION = 7
+const VERSION = 8
+var dialogue_state = preload("res://scripts/shared/dialogue_state.gd").new()
 var evidence: Array[String] = []
 var links: Array[String] = []
 var statements: Array[String] = []
@@ -99,7 +100,7 @@ func file_supplement(send_county: bool, sources:Dictionary={}) -> void:
 		if not copies.has("County registrar — dated supplement"): copies.append("County registrar — dated supplement")
 
 func pack() -> Dictionary:
-	return {"version":VERSION,"clock_minutes":clock_minutes,"timed_conversations":timed_conversations,"rose_bodies_removed":rose_bodies_removed,"birch_bodies_removed":birch_bodies_removed,"estate_visits_completed":estate_visits_completed,"day":day,"steward_visits":steward_visits,"lounge_exited":lounge_exited,"montage_index":montage_index,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
+	return {"version":VERSION,"dialogue_state":dialogue_state.pack(),"clock_minutes":clock_minutes,"timed_conversations":timed_conversations,"rose_bodies_removed":rose_bodies_removed,"birch_bodies_removed":birch_bodies_removed,"estate_visits_completed":estate_visits_completed,"day":day,"steward_visits":steward_visits,"lounge_exited":lounge_exited,"montage_index":montage_index,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
 		"report":report,"copies":copies,"report_evidence":report_evidence,"report_statements":report_statements,"flask":flask,"coat":coat,"minutes":minutes,
 		"position":[position.x,position.y,position.z],"yaw":yaw,"started":started,"finished":finished,
 		"world":world,"estate_complete":estate_complete,"intake_done":intake_done,
@@ -108,7 +109,7 @@ func pack() -> Dictionary:
 		"ammo":ammo,"flask_spilled":flask_spilled,"flask_spill_amount":flask_spill_amount,"drowned_dead":drowned_dead}
 
 func restore(d: Dictionary) -> bool:
-	if int(d.get("version",0)) not in [1,2,3,4,5,6,VERSION]: return false
+	if int(d.get("version",0)) not in [1,2,3,4,5,6,7,VERSION]: return false
 	for key in ["evidence","links","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history","county_statements","timed_conversations"]:
 		if not d.get(key,[]) is Array: return false
 		if key!="supplement_history":
@@ -199,4 +200,23 @@ func restore(d: Dictionary) -> bool:
 	clock_minutes=clampf(float(clock_value),360.0,1200.0)
 	timed_conversations.assign(d.get("timed_conversations",[]))
 	if int(d.version)<7: preload("res://scripts/shared/day_clock.gd").migrate(self)
+	var dialogue_payload=d.get("dialogue_state", {})
+	if not dialogue_payload is Dictionary: return false
+	dialogue_state=preload("res://scripts/shared/dialogue_state.gd").new()
+	if not dialogue_payload.is_empty():
+		if not dialogue_state.restore(dialogue_payload): return false
+	else:
+		# Import earned milestones from pre-interpreter saves; never invent evidence.
+		for id in visited:
+			var npc="father_behan" if id=="behan" else ("steward" if id=="barman" else id)
+			dialogue_state.visit(npc)
+			if id != "odell": dialogue_state.complete_topic(npc,"default")
+		for statement in statements:
+			if statement.begins_with("Walter told Odell to his face") or statement.begins_with("Walter wrote EIGHT"):
+				dialogue_state.complete_topic("odell","default")
+		if inquiry_topics.has("behan_invitation"): dialogue_state.complete_topic("father_behan","club_invitation")
+		if inquiry_topics.has("almy_trust"): dialogue_state.complete_topic("almy","almy_trust")
+		if steward_visits>=3: dialogue_state.complete_topic("steward","steward_open")
+		for id in ["club_talk","club_devotion","pantry_lead"]:
+			if evidence.has(id): dialogue_state.complete_topic("steward",id)
 	return true

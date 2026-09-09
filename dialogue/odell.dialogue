@@ -1,48 +1,19 @@
-# ============================================
-# odell.dialogue
-# ============================================
-# LOCATION is where Odell actually stands in the shipped game (the estate
-# terrace, beyond the fountain) — "bullets" below imagines a later precinct
-# encounter that doesn't exist in the source yet; the grammar has no
-# per-topic LOCATION override, so a real second Odell scene elsewhere would
-# need its own NPC id.
+# Live Chapter 1 content, ported from existing scenes; Codex integration 2026-09-09.
 NPC: odell
 LOCATION: estate
 
-# Reverse-engineered from story.gd SCENES.odell and chapter_one.gd's
-# _odell_response(): a genuine two-way player choice, not a state check,
-# each branch with its own persisted statement. GATE keeps it from
-# replaying once answered, matching the source's "already answered" guard
-# (simplified: the source shows a short acknowledgement panel on replay,
-# this just makes the topic resolve to nothing further).
 TOPIC: default
   GATE: NOT topic_done(odell, default)
+  TAG: odell
+  TIME: odell
   CAPTAIN ODELL: "A gas-main tragedy.\nOr something close enough for the morning edition."
-  CHOICE: "There are eight bodies. Six club members. A woman and a boy beyond the birches.\n\nNobody has established an accident."
-    CAPTAIN ODELL: "Six members, Corwin.\nThe other two are a filing matter."
-  CHOICE: "Eight people are dead."
-    CAPTAIN ODELL: "Then put your observations in writing.\n\nI need a preliminary report.\nI do not need a quarrel before breakfast."
+  WALTER CORWIN: "There are eight bodies. Six club members. A woman and a boy beyond the birches.\n\nNobody has established an accident."
+  CAPTAIN ODELL: "Six members, Corwin.\nThe other two are a filing matter."
+  WALTER CORWIN: "Eight people are dead."
+  CAPTAIN ODELL: "Then put your observations in writing.\n\nI need a preliminary report.\nI do not need a quarrel before breakfast."
+  EVIDENCE: eight
   FORK:
     CHOICE: "I understand it. I don't accept it."
       NOTEBOOK: default_1_1 | "Walter told Odell to his face that six was not the whole count. Odell did not answer."
     CHOICE: "Say nothing. Write it down instead."
       NOTEBOOK: default_1_2 | "Walter wrote EIGHT in his own file, in a hand larger than his usual notation, and said nothing further to the captain."
-
-TOPIC: bullets
-  GATE: always
-  LABEL: "Press him about the bullet wound"
-  CHOICE: "Have you ever heard of a bullet that leaves no exit wound?"
-    ODELL: "Gas explosion. Debris, most likely. Strange things, explosions."
-  FORK:
-    CHOICE: "All six through the same spot? That's debris?"
-      ODELL: "Coincidence. Odd ones happen."
-      NOTEBOOK: bullets_1_1 | "Odell has found the shape that lets him stop looking.
-                 He is not lying to hurt anyone. He is only finished."
-    CHOICE: "Maybe you're right."
-      ODELL: "Good. Keep thinking that."
-
-TOPIC: exit_paperwork
-  GATE: always
-  # existing mechanic — filing the report unlocks the estate gate.
-  # included here only so this file is a complete record of Odell's lines,
-  # not proposing new content.

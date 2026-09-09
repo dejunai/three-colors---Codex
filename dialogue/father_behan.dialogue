@@ -1,51 +1,40 @@
-# ============================================
-# father_behan.dialogue
-# ============================================
+# Live Chapter 1 content, ported from existing scenes; Codex integration 2026-09-09.
 NPC: father_behan
-LOCATION: rectory
+LOCATION: town
 
-TOPIC: sixth_man
-  GATE: never
-  # Permanently excluded. No line exists for this topic, on this NPC
-  # or any other. Do not fill this in on a later pass.
-
-TOPIC: club_five
-  GATE: always
-  LABEL: "Ask about the five club members"
-  BEHAN: "Wexford's temper. Fenn's vanity. Kessler's grudges. Corliss's ambitions.
-          I'll discuss any of it. None of it explains a hole above the bridge of a nose."
-  CHOICE: "You knew all six."
-    BEHAN: "I knew what men tell a priest, which is not the same as what they are.
-            Ask your question, Officer. I've answered worse."
+TOPIC: default
+  GATE: NOT topic_done(father_behan, default)
+  TAG: behan
+  TIME: behan
+  FATHER BEHAN: "Wexford's temper. Fenn's vanity. Kessler's grudges. Corliss's ambitions.\n\nI'll discuss any of it. None of it explains a hole above the bridge of a nose."
+  WALTER CORWIN: "You knew all six."
+  FATHER BEHAN: "I knew what men tell a priest, which is not the same as what they are.\n\nAsk your question, Officer. I've answered worse."
+  NOTEBOOK: introduction | "Father Behan discussed the six men's characters freely and himself not at all."
 
 TOPIC: club_invitation
-  GATE: always AND NOT topic_done(father_behan, club_invitation)
-  LABEL: "Ask about the club invitations"
-  CHOICE: "You were invited to the club. Twice. You declined both times."
-    BEHAN: "I did."
-  CHOICE: "Why?"
-    BEHAN: [He says nothing further. The silence is not evasive. It is final.]
-    NOTEBOOK: club_invitation_1_1 | "A refusal offered without excuse.
-               Walter has learned to trust a plain no more than a decorated one."
+  GATE: NOT topic_done(father_behan, club_invitation)
+  TAG: behan_invitation
+  LABEL: "Ask why he declined the club's invitations"
+  TIME: behan_invitation
+  WALTER CORWIN: "You were invited to the club. Twice. You declined both times."
+  FATHER BEHAN: "I did."
+  WALTER CORWIN: "Why?"
+  FATHER BEHAN: "[He says nothing further. The silence is not evasive. It is final.]"
+  WALTER'S NOTEBOOK: "A refusal offered without excuse.\nWalter has learned to trust a plain no more than a decorated one.\n\nHe does not press it a second time."
+  NOTEBOOK: club_invitation_1_1 | "Father Behan declined two invitations to the club and would not say why."
 
-# Reverse-engineered from town_story.gd SCENES.behan_name. _behan_menu()
-# shows this button INSTEAD OF club_invitation's once that one is answered
-# (never both at once); "NOT topic_done(...)" on club_invitation above and
-# "topic_done(...)" here reproduce that mutually exclusive reveal exactly.
 TOPIC: behan_name
   GATE: topic_done(father_behan, club_invitation)
+  TAG: behan_name
   LABEL: "Ask about the meaning of the club's name"
+  TIME: behan_name
   WALTER CORWIN: "Do you know the meaning behind the club's name?"
   FATHER BEHAN: "They named the club after the ship."
   WALTER CORWIN: "Known."
   FATHER BEHAN: "They came to believe the ship had been chosen.\n\nIt wasn't. Men inherit money, and then invent a reason they deserved it."
-  NOTEBOOK: behan_name_1_1 | "NAMED AFTER THE SHIP\n\nThe Ophion Club was named for a vessel lost with its crew a century ago. Father Behan calls the members' belief that the ship had been chosen a delusion, not a fact: men inherit money, then invent a reason they deserved it.\n\nFather Behan · rectory conversation"
   WALTER'S NOTEBOOK: "A shipowner's classical flourish, nothing more, by the priest's own account.\n\nThe club's fortune has a human explanation. Walter intends to find it."
+  EVIDENCE: behan_name
 
-TOPIC: bullets
-  GATE: always
-  LABEL: "Ask about the bullet wound"
-  CHOICE: "Have you ever heard of a bullet that leaves no exit wound?"
-    BEHAN: [A pause held a beat too long.] "Ask your question, Officer. I've answered worse."
-    # deliberately reuses his own stock line — the second use reads as evasion,
-    # not repetition, once the player's heard it land honestly once already
+TOPIC: sixth_man
+  GATE: never
+  # Deliberately unauthored.

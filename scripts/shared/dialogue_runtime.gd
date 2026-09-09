@@ -54,6 +54,7 @@ static func make_context(state, dstate) -> Dictionary:
 			"day": func(): return state.day,
 			"phase": func(): return DayClock.phase(state.clock_minutes),
 			"estate_complete": func(): return state.estate_complete,
+			"steward_ready": func(): return state.steward_ready(),
 		}
 	}
 
@@ -96,7 +97,8 @@ static func _empty_result() -> Dictionary:
 # Sessions are transient playback cursors, not save payloads.
 static func render(npc: String, topic: Dictionary, _dstate) -> Dictionary:
 	var session = {"npc": npc, "topic": topic.id,
-		"stack": [{"steps": topic.steps, "i": 0}], "pending": []}
+		"stack": [{"steps": topic.steps, "i": 0}], "pending": [],
+		"tag": topic.get("tag", ""), "timing": topic.get("timing", "")}
 	return _next_segment(session)
 
 static func _next_segment(session: Dictionary) -> Dictionary:
@@ -113,6 +115,8 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 		match String(step.kind):
 			"line": result.cards.append([step.speaker, step.text])
 			"beat": result.cards.append(["", step.text])
+			"evidence":
+				result.effects.append({"kind": "evidence", "id": step.id, "after_cards": result.cards.size(), "applied": false})
 			"notebook":
 				var note_id = String(step.get("id", ""))
 				# Legacy unlabelled notes remain supported without ordinal collisions.
@@ -135,10 +139,12 @@ static func commit_through(result: Dictionary, dstate, count: int) -> bool:
 	result.acknowledged = count
 	for effect in result.effects:
 		if not effect.applied and effect.after_cards <= count:
-			dstate.record_fact(effect.id, effect.text)
+			if effect.get("kind", "notebook") == "evidence": dstate.discover(effect.id)
+			else: dstate.record_fact(effect.id, effect.text)
 			effect.applied = true
 	if count == result.cards.size() and result.fork == null:
 		dstate.complete_topic(result.session.npc, result.session.topic)
+		if not result.session.tag.is_empty(): dstate.complete_topic(result.session.npc, result.session.tag)
 		result.finished = true
 		return true
 	return false

@@ -1,23 +1,51 @@
-# ============================================
-# steward.dialogue  (formerly barman — see rename pass)
-# ============================================
-# Both blocks below use the reserved "default" topic id: it is the single
-# auto-spoken line for this NPC, never a menu entry. Their GATEs are
-# written to be mutually exclusive (visit_count < 3 vs. >= 3 with the
-# later conditions); the first one whose GATE is true, in file order,
-# wins. If visit_count >= 3 but coat/spoken_to aren't satisfied yet,
-# neither matches and the NPC has nothing to say this visit — that gap is
-# deliberate (see the TBD note below), not a bug.
+# Live Chapter 1 content, ported from existing scenes; Codex integration 2026-09-09.
 NPC: steward
-LOCATION: smoking_lounge
+LOCATION: lounge
 
 TOPIC: default
-  GATE: visit_count(steward) < 3
-  [Polite. Attentive. Gives nothing.]
-  # visits 1 and 2, regardless of coat, day, or anything else
+  GATE: steward_ready AND NOT topic_done(steward, steward_open)
+  TAG: steward_open
+  THE CLUB'S STEWARD: "He sets down the glass he was drying.\n\nNot used to seeing you without the badge, Officer."
+  WALTER CORWIN: "I'm not asking as the badge today."
+  THE CLUB'S STEWARD: "Didn't figure you were.\n\nAsk, then. I'll keep drying these."
 
 TOPIC: default
-  GATE: visit_count(steward) >= 3 AND coat = plain AND spoken_to(mrs_almy) = true
-  [Sets a glass down at the far end of the bar.]
-  STEWARD: "You came back. Alone this time."
-  # the actual scene — full content TBD, this is a stub
+  GATE: day = 3 AND coat != plain
+  TAG: steward_badge
+  THE STEWARD: "I asked you to leave your badge behind."
+
+TOPIC: default
+  GATE: day < 3
+  TAG: steward_first
+  THE STEWARD: "Good evening, Officer. Nothing further tonight. I have the room to put in order."
+
+TOPIC: club_talk
+  GATE: steward_ready
+  TAG: club_talk
+  LABEL: "Ask what the members used to talk about"
+  TIME: club_talk
+  THE SMOKING LOUNGE: "The steward sets a glass on the sideboard. Walter asks about the conversations he used to overhear while serving the members."
+  THE STEWARD: "They stopped speaking of power, toward the end.\n\nStarted speaking, tenderly, of her."
+  WALTER'S NOTEBOOK: "Toward the end of what, he doesn't say.\nHer, he doesn't explain.\n\nWalter writes both down exactly as given."
+  EVIDENCE: club_talk
+
+TOPIC: club_devotion
+  GATE: steward_ready AND evidence(club_talk)
+  TAG: club_devotion
+  LABEL: "Ask what Kessler used to say"
+  TIME: club_devotion
+  THE STEWARD: "Kessler said it more than once. She'll have us home.\n\nSaid she's no different from any mother."
+  WALTER'S NOTEBOOK: "A butcher, a judge, a doctor, a district attorney, a man of property, all of them speaking the same sentence about the same absent woman.\n\nNone of them ever named her."
+  EVIDENCE: club_devotion
+
+TOPIC: pantry_lead
+  GATE: steward_ready AND evidence(club_devotion)
+  TAG: pantry_lead
+  LABEL: "Ask about the old pantry door"
+  TIME: pantry_lead
+  THE STEWARD: "There's gin left from before the war. Behind the old pantry door.\n\nThey boarded it up during a renovation and never finished unboarding it. Nobody goes back there. Nobody's gone back there in years."
+  WALTER CORWIN: "Will you show me?"
+  THE STEWARD: "No."
+  WALTER'S NOTEBOOK: "He won't say why. He also won't take back the direction he just gave.\n\nThe kitchen wing. The old pantry."
+  EVIDENCE: pantry_lead
+
