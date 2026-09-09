@@ -49,36 +49,27 @@ func _run() -> void:
 	_play(after_departure, dstate)
 	assert(after_departure.cards[0][1].begins_with("The wagon's been and gone"), "estate_complete must win over a mere repeat, regardless of visit count")
 
-	# --- coroner's assistant: two real NOTEBOOK facts, one flavor-only card ---
+	# --- coroner's assistant: two real EVIDENCE ids, one flavor-only card ---
 	var assistant_play = Runtime.play_topic(defs.assistant, dstate, "default")
 	_play(assistant_play, dstate)
 	var has_flavor_card = false
 	for card in assistant_play.cards:
 		if card[0] == "A CLEAN READ": has_flavor_card = true
 	assert(has_flavor_card, "the closing flavor card must still render even though it writes no fact")
-	var fact_texts = dstate.facts.values()
-	var has_both_scenes = false
-	var has_no_blast = false
-	for text in fact_texts:
-		if text.begins_with("BOTH SCENES"): has_both_scenes = true
-		if text.begins_with("NO BLAST DAMAGE"): has_no_blast = true
-	assert(has_both_scenes and has_no_blast, "both bonus discover()s from the source must land as real NOTEBOOK facts")
+	assert(dstate.evidence.has("testimony") and dstate.evidence.has("eight"), "both bonus discover()s from the source must land as real EVIDENCE ids")
 
 	# --- groundskeeper: ephemeral WALTER'S NOTEBOOK card must not be persisted ---
 	var crew_play = Runtime.play_topic(defs.crew, dstate, "default")
 	_play(crew_play, dstate)
-	var crew_fact_found = false
-	for text in dstate.facts.values():
-		if text.begins_with("A WIDE BERTH"): crew_fact_found = true
-	assert(crew_fact_found, "the FACTS-backed observation must be recorded")
+	assert(dstate.evidence.has("crew"), "the FACTS-backed observation must be recorded")
 	var ephemeral_persisted = false
 	for text in dstate.facts.values():
 		if text.begins_with("The distance he keeps is exact"): ephemeral_persisted = true
 	assert(not ephemeral_persisted, "a flavor-only WALTER'S NOTEBOOK card must render but never persist as a fact")
-	var crew_has_beat = false
+	var crew_has_heading = false
 	for card in crew_play.cards:
-		if card[0] == "" and card[1].begins_with("A groundskeeper stacks crates"): crew_has_beat = true
-	assert(crew_has_beat, "the bracketed opening line must render as a beat with no speaker")
+		if card[0] == "THE KITCHEN WING YARD" and card[1].begins_with("A groundskeeper stacks crates"): crew_has_heading = true
+	assert(crew_has_heading, "the opening scene-heading card must render with its source speaker, matching story.gd's own card shape")
 
 	# --- gardener: estate_complete + plain coat must win over the base scene ---
 	var gardener_before = Runtime.enter(defs.gardener, ctx, dstate)
@@ -154,10 +145,7 @@ func _run() -> void:
 	for entry in behan_menu_after.entries: behan_ids_after.append(entry.id)
 	assert(behan_ids_after.has("behan_name") and not behan_ids_after.has("club_invitation"), "behan_name must replace club_invitation, never both at once")
 	_play(Runtime.play_topic(defs.father_behan, dstate, "behan_name"), dstate)
-	var behan_name_recorded = false
-	for text in dstate.facts.values():
-		if text.begins_with("NAMED AFTER THE SHIP"): behan_name_recorded = true
-	assert(behan_name_recorded, "the real ship-naming fact must be recorded")
+	assert(dstate.evidence.has("behan_name"), "the real ship-naming fact must be recorded")
 
 	print("DIALOGUE CONTENT PASS: gatehouse_boy/coroners_assistant/groundskeeper/gardener/old_woman/mrs_almy/odell/father_behan all reverse-engineered, parsing clean and gating correctly against real game state")
 	quit(0)

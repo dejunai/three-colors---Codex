@@ -208,7 +208,9 @@ static func _parse_fork(body: Array, start: int, end: int, indent: int, errors: 
 		var steps: Array = [{"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true}]
 		if child_indent > indent:
 			steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors))
-		options.append({"label": label, "tag": tag, "timing": timing, "steps": steps})
+		# Tag/timing live on the topic (session-level), not per fork option —
+		# every branch of one FORK still belongs to the same topic/session.
+		options.append({"label": label, "steps": steps})
 		k = child_end
 	return options
 
