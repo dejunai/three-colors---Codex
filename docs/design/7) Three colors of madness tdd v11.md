@@ -153,3 +153,17 @@
 
 **In rough priority order: build the ontological break — glass-shatter cue, aspect-ratio widening, color bleed, and the entity's Constance-shaped manifestation — and the fatal-comprehension ending. With the corkboard, forced-spill, and tunnel combat now all resolved, this is the single largest remaining piece of Chapter One, and the one most worth holding for Codex given the stakes of getting the chapter's emotional payoff wrong. Settle whether tunnel combat needs its own exhausted-resources death state or whether the exposure-death mechanic already covers it (see Part Four) — bounded enough for a secondary pass. Trim `town.gd`'s redundant explicit hide/free call in `dismiss_old_woman()`. Build the Part Seven difficulty screen and achievement registration — self-contained, well-specified, low-risk for a secondary pass. Decide whether the palette-discipline convention for color isolation needs to become an actual object/material mask before more Observer content is added — the capture found no evidence this is currently necessary. Consolidate the two Part Four items that turned out to be one problem (see above) in the next revision's own bookkeeping. Wire the trinket generator into an actual Chapter Two scene once one exists, and give that slice its own Architecture As Built entry, held to the shared/chapter-specific template v2 established. Continue diffing a zipped delivery's working tree against `HEAD` in addition to reading commit history, and continue noting which agent delivers work as committed history versus working-tree-only changes — that distinction has mattered at least twice now.**
 
+
+
+## Implementation addendum — 9 September 2026: live authored dialogue
+
+Codex connected the Claude-origin interpreter to Dejunai's expanded dialogue
+corpus and numeric TIME values. Named NPCs now use authored menus, branches,
+case-record effects, one-time numeric minute costs and schema-9 resumable saves.
+The three-visit steward montage and existing case progression remain in effect.
+Additional residents occupy existing rooms/frontages according to discrete
+schedule phases. See [Live dialogue implementation and provenance](../qa/DIALOGUE_LIVE_PASS.md)
+for the placement aliases, content-preservation record, author reading notes,
+legacy-save migration and regression coverage. This supersedes earlier statements
+that place live NPC conversations exclusively in hard-coded arrays; it does not
+change the design bible.

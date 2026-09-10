@@ -33,22 +33,7 @@ func interact(g:Node,id:String) -> bool:
 	return false
 
 func steward(g:Node) -> void:
-	if g.state.world != "lounge" or not g.state.visited.has("almy"): return
-	if g.state.steward_ready():
-		if g.state.steward_visits == 3:
-			g._barman_menu()
-		else:
-			g._cards(g.Story.SCENES.barman_plain,func():
-				g.state.steward_visits = 3
-				if not g.state.visited.has("barman"): g.state.visited.append("barman")
-				g._save_game()
-				g._barman_menu())
-		return
-	var text = "Good evening, Officer. Nothing further tonight. I have the room to put in order."
-	if g.state.day == 3: text = "I asked you to leave your badge behind."
-	g._cards([["THE STEWARD",text]],func():
-		if g.state.steward_visits == 0: g.state.steward_visits = 1
-		g._save_game())
+	g.scripted_dialogue.interact(g,"barman")
 
 func sleep(g:Node) -> void:
 	if g.state.steward_visits == 0 or not g.state.intake_done or not g.state.evidence.has("naomi"):
@@ -92,6 +77,7 @@ func draw_montage(g:Node) -> void:
 		else:
 			g.state.montage_index = -1
 			g.state.steward_visits = 2
+			g.state.dialogue_state.visit_counts["steward"] = 2
 			g.state.day = 3
 			g.state.clock_minutes = 360.0
 			g._save_game()

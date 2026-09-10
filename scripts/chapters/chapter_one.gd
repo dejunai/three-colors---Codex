@@ -14,6 +14,7 @@ const MUTED = Color("a6aa9b")
 var interface: CanvasLayer
 var presentation: CanvasLayer
 var staging=preload("res://scripts/chapters/chapter_one_staging.gd").new()
+var scripted_dialogue=preload("res://scripts/chapters/chapter_one_dialogue.gd").new()
 var archive=preload("res://scripts/chapters/chapter_one_archive.gd").new()
 var rig: Node3D
 var state = CaseState.new()
@@ -93,6 +94,7 @@ func start(player_rig:Node3D) -> void:
 	facts = Story.FACTS.duplicate(true)
 	facts.merge(TownStory.FACTS)
 	facts.merge(TunnelStory.FACTS)
+	scripted_dialogue.setup(self)
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--capture="): capture_mode = arg.trim_prefix("--capture=")
 	_load_settings()
@@ -161,6 +163,7 @@ func _focus_first() -> void:
 	interface._focus_first()
 
 func _close() -> void:
+	scripted_dialogue.clear()
 	interface.close()
 	page="play"
 	Input.mouse_mode=Input.MOUSE_MODE_CAPTURED
@@ -184,6 +187,8 @@ func _new_game() -> void:
 	_travel("estate",state.position,0,false)
 	player.position = state.position
 	yaw = 0
+	# Look down over Walter and the gate during the opening iris.
+	pitch = 1.2
 	_refresh_outfit()
 	aperture = 0.51
 	aperture_target = 0.51
@@ -197,6 +202,7 @@ func _new_game() -> void:
 	)
 
 func _cards(cards:Array,after:Callable) -> void:
+	scripted_dialogue.clear()
 	var timing_key=DayClock.conversation_key(self,cards)
 	dialogue.start(cards,_draw_card,func():
 		var charged=DayClock.complete_conversation(state,timing_key)
@@ -217,7 +223,8 @@ func _draw_card(card:Array,index:int) -> void:
 	_focus_first()
 
 func _next_card() -> void:
-	dialogue.next()
+	if not scripted_dialogue.active.is_empty(): scripted_dialogue.next(self)
+	else: dialogue.next()
 
 func tick_world(delta:float) -> void:
 	if page != "play": return
@@ -226,6 +233,7 @@ func tick_world(delta:float) -> void:
 	if is_instance_valid(daylight): daylight.update_clock(state.clock_minutes,player.position)
 	var phase=DayClock.phase(state.clock_minutes)
 	if phase!=last_clock_phase:
+		scripted_dialogue.populate(self)
 		last_clock_phase=phase
 		last_region=""
 	_find_focus()
@@ -278,7 +286,7 @@ func handle_input(event:InputEvent) -> void:
 		elif event.is_action_pressed("journal"): _journal()
 		elif event.is_action_pressed("pause_game"): _pause()
 	elif event.is_action_pressed("pause_game"):
-		if page in ["dialogue","montage"]: return
+		if page in ["dialogue","montage"] or not scripted_dialogue.active.is_empty(): return
 		if page == "settings":
 			if return_page == "title": _title()
 			else: _pause()
@@ -304,6 +312,7 @@ func _find_focus() -> void:
 
 func _interact(id:String) -> void:
 	if staging.interact(self,id): return
+	if scripted_dialogue.interact(self,id): return
 	if _tunnel_interaction(id): return
 	if _town_interaction(id): return
 	if id == "report":
@@ -338,44 +347,16 @@ func _interact(id:String) -> void:
 	)
 
 func _odell_response() -> void:
-	var spoken="Walter told Odell to his face that six was not the whole count. Odell did not answer."
-	var silent="Walter wrote EIGHT in his own file, in a hand larger than his usual notation, and said nothing further to the captain."
-	# Existing saves already encode the answer in the permanent statement record.
-	if state.statements.has(spoken) or state.statements.has(silent):
-		_panel("witness","Already answered","THE TERRACE / WALTER'S NOTEBOOK")
-		_paragraph("Walter's answer is already in his notebook. Odell has nothing further to add.")
-		_button("Leave the captain",_close)
-		_focus_first()
-		return
-	_panel("witness","A filing matter","THE TERRACE  /  WALTER'S ANSWER")
-	_paragraph("Odell has already turned back toward the sheeted tables. Walter can let the matter rest here, or say what he actually thinks before it does.",22)
-	_button("\"I understand it. I don't accept it.\"",func():
-		state.record("Walter told Odell to his face that six was not the whole count. Odell did not answer.")
-		_save_game()
-		_close()
-		_toast("Recorded in Walter's case file.  [ Tab ]",4))
-	_button("Say nothing. Write it down instead.",func():
-		state.record("Walter wrote EIGHT in his own file, in a hand larger than his usual notation, and said nothing further to the captain.")
-		_save_game()
-		_close()
-		_toast("Recorded in Walter's case file.  [ Tab ]",4))
-	_focus_first()
+	scripted_dialogue.show_menu(self,"odell")
 
 func _barman_menu() -> void:
-	if state.world != "lounge" or not state.steward_ready():
-		staging.steward(self)
-		return
-	_panel("witness","The club's steward","THE SMOKING LOUNGE  /  ASK, LISTEN, RECORD")
-	_paragraph("He keeps his voice low and his eyes on the glasses he's drying. He has already decided how much of this he's willing to say.",22)
-	_button("Ask what the members used to talk about"+("  · recorded" if state.evidence.has("club_talk") else ""),func(): _estate_observation("club_talk",true))
-	if state.evidence.has("club_talk"):
-		_button("Ask what Kessler used to say"+("  · recorded" if state.evidence.has("club_devotion") else ""),func(): _estate_observation("club_devotion",true))
-	if state.evidence.has("club_devotion"):
-		_button("Ask about the old pantry door"+("  · recorded" if state.evidence.has("pantry_lead") else ""),func(): _estate_observation("pantry_lead",true))
-	_button("Leave him to his glasses",_close)
-	_focus_first()
+	if not state.steward_ready(): staging.steward(self)
+	else: scripted_dialogue.show_menu(self,"barman")
 
 func _estate_observation(id:String,return_to_barman:bool=false) -> void:
+	if id in ["club_talk","club_devotion","pantry_lead"]:
+		scripted_dialogue.play_topic(self,"barman",id)
+		return
 	if id in ["club_talk","club_devotion","pantry_lead"] and (state.world != "lounge" or not state.steward_ready()): return
 	_cards(Story.SCENES[id],func():
 		state.discover(id)
@@ -511,7 +492,10 @@ func _load_game() -> void:
 	if tunnel_dead: _show_tunnel_death(false)
 	elif state.montage_index >= 0: staging.draw_montage(self)
 	elif state.finished and state.world != "tunnel": _town_complete()
-	else: _close()
+	else:
+		_close()
+		if d.get("dialogue_playback",{}) != {} and not scripted_dialogue.restore(self,d.dialogue_playback):
+			_toast("The saved conversation could not resume. Speak to the witness again.",5)
 
 func _save_settings() -> void:
 	if test_mode or not capture_mode.is_empty(): return
@@ -542,6 +526,7 @@ func _walk_to(destination:Vector3) -> void:
 	await load("res://tests/walk_driver.gd").new().walk_to(self,destination)
 
 func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,elapsed_travel:bool=false) -> void:
+	scripted_dialogue.clear()
 	if destination == "lounge" and not state.visited.has("almy"): return
 	if save or elapsed_travel: DayClock.advance(state,DayClock.travel_cost(state.world,destination))
 	if save and state.world == "estate" and destination == "town":
@@ -575,10 +560,11 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	else:
 		cough_player.stop()
 	state.world=destination
+	scripted_dialogue.populate(self)
 	player.position=spawn
 	player.velocity=Vector3.ZERO
 	yaw=view_yaw
-	pitch=0.38 if destination in ["estate","town"] else 0.48
+	pitch=0.85 if destination == "town" else (0.38 if destination == "estate" else 0.48)
 	distance=6.3 if destination in ["estate","town"] else 4.8
 	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-6,58,28) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
 	if destination in ["upper","business","lower"]:
@@ -630,31 +616,12 @@ func _town_interaction(id:String) -> bool:
 		"street_estate": _travel("estate",Vector3(0,0.1,35)); return true
 		"interior_exit":
 			var exits={"precinct":Vector3(-18,0.1,-4.5),"boardinghouse":Vector3(-1,0.1,-4.5),"room":Vector3(18,0.1,-4.5)}
-			_travel("town",exits.get(state.world,Vector3(0,0.1,17)),PI)
+			# Frame the arrival from the open street, not from inside the facade.
+			_travel("town",exits.get(state.world,Vector3(0,0.1,17)),0)
 			return true
 		"intake": _intake(); return true
 		"supplement": _supplement(); return true
 		"survey_drawer": _survey_drawer(); return true
-		"almy":
-			if state.visited.has("almy"):
-				_witness_menu()
-			else:
-				var scene="almy_plain" if state.coat=="Plain wool coat" else "almy_badge"
-				_cards(TownStory.SCENES[scene],func():
-					state.visited.append("almy")
-					_save_game()
-					_witness_menu())
-			return true
-		"behan":
-			if state.visited.has("behan"):
-				_behan_menu()
-			else:
-				_cards(TownStory.SCENES.behan,func():
-					state.visited.append("behan")
-					state.record("Father Behan discussed the six men's characters freely and himself not at all.")
-					_save_game()
-					_behan_menu())
-			return true
 		"board": _board(); return true
 	if TownStory.FACTS.has(id) and TownStory.SCENES.has(id):
 		if id=="lodging" and not state.evidence.has("naomi"):
@@ -667,6 +634,9 @@ func _town_interaction(id:String) -> bool:
 	return false
 
 func _town_observation(id:String,return_target:Variant=null) -> void:
+	if id == "old_woman": scripted_dialogue.interact(self,id); return
+	if id in ["lay_lead","service_work"]: scripted_dialogue.play_topic(self,"almy",id); return
+	if id == "behan_name": scripted_dialogue.play_topic(self,"behan",id); return
 	if id=="old_woman" and state.evidence.has(id): return
 	_cards(TownStory.SCENES[id],func():
 		state.discover(id)
@@ -730,44 +700,10 @@ func _intake() -> void:
 		_toast("Report received. Mrs. Almy keeps the boardinghouse on Pickman Street.",6))
 
 func _witness_menu() -> void:
-	_panel("witness","Mrs. Almy","PICKMAN STREET  /  ASK, LISTEN, RECORD")
-	if state.evidence.has("naomi"): _paragraph("Naomi Freeman.\nThe name is now in the notebook.\nThere is more you could ask.",24)
-	else: _paragraph("The room is quiet. Mrs. Almy waits for a question she can answer.",24)
-	_button("Ask for the woman's name"+("  · recorded" if state.evidence.has("naomi") else ""),func():
-		_cards(TownStory.SCENES.identify,func():
-			state.discover("naomi")
-			_save_game()
-			_witness_menu()))
-	if state.evidence.has("naomi"):
-		_button("Ask what brought Naomi to town"+("  · recorded" if state.evidence.has("lay_lead") else ""),func(): _town_observation("lay_lead",true))
-		_button("Ask about work at the estate"+("  · recorded" if state.evidence.has("service_work") else ""),func(): _town_observation("service_work",true))
-		_button("Ask to corroborate the visit in her ledger",func():
-			_cards([["MRS. ALMY","On the sideboard.\nCopy the entry, if you need it.\nThe book stays here."]],func(): _close(); _toast("The meal ledger is on the sideboard to your right.",5)))
-	if state.coat=="Plain wool coat" and not state.inquiry_topics.has("almy_trust"):
-		_button("Ask why the coat made a difference",func():
-			_cards([["MRS. ALMY","A uniform asks what belongs in a report.\nA man might still ask what happened.\n\nI haven't decided which you are yet."]],func():
-				state.inquiry_topics.append("almy_trust")
-				state.record("Mrs. Almy distinguished speaking to a uniform from speaking to a man. The name she supplied was the same.")
-				_save_game()
-				_witness_menu()))
-	_button("Thank her and leave the conversation",_close)
-	_focus_first()
+	scripted_dialogue.show_menu(self,"almy")
 
 func _behan_menu() -> void:
-	_panel("witness","Father Behan","PICKMAN STREET  /  BEHIND THE RECTORY")
-	_paragraph("He answers plainly, the way a man does who stopped being frightened of the truth a long time before Walter arrived.",22)
-	if not state.inquiry_topics.has("behan_invitation"):
-		_button("Ask why he declined the club's invitations",func():
-			_cards(TownStory.SCENES.behan_invitation,func():
-				state.inquiry_topics.append("behan_invitation")
-				state.record("Father Behan declined two invitations to the club and would not say why.")
-				_save_game()
-				_behan_menu()))
-	else:
-		_button("Ask about the meaning of the club's name"+("  · recorded" if state.evidence.has("behan_name") else ""),func():
-			_town_observation("behan_name",_behan_menu))
-	_button("Thank him and leave",_close)
-	_focus_first()
+	scripted_dialogue.show_menu(self,"behan")
 
 func _supplement() -> void:
 	_panel("report","A later page","PRECINCT 4  /  DATED SUPPLEMENT")
@@ -1014,6 +950,7 @@ func _session_snapshot() -> Dictionary:
 	state.position=player.position
 	state.yaw=yaw
 	var d=state.pack().duplicate(true)
+	d["dialogue_playback"]=scripted_dialogue.snapshot()
 	d["comfort_time"]=comfort_time
 	d["pitch"]=pitch
 	d["distance"]=distance
@@ -1025,6 +962,7 @@ func _session_snapshot() -> Dictionary:
 	return d
 
 func _restore_session(d:Dictionary) -> bool:
+	scripted_dialogue.clear()
 	var restored=CaseState.new()
 	if not restored.restore(d): return false
 	state=restored
@@ -1096,6 +1034,7 @@ func _normalize_snapshot(value:Variant) -> Dictionary:
 	var restored=CaseState.new()
 	if not restored.restore(value): return {}
 	var normalized=restored.pack().duplicate(true)
+	normalized["dialogue_playback"]=value.get("dialogue_playback",{}).duplicate(true)
 	for key in ["comfort_time","pitch","distance","aperture","aperture_target","hazard_clock","hazard_exposure"]:
 		if value.has(key): normalized[key]=float(value[key])
 	return normalized

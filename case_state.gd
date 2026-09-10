@@ -1,6 +1,6 @@
 extends RefCounted
 
-const VERSION = 8
+const VERSION = 9
 var dialogue_state = preload("res://scripts/shared/dialogue_state.gd").new()
 var evidence: Array[String] = []
 var links: Array[String] = []
@@ -109,7 +109,7 @@ func pack() -> Dictionary:
 		"ammo":ammo,"flask_spilled":flask_spilled,"flask_spill_amount":flask_spill_amount,"drowned_dead":drowned_dead}
 
 func restore(d: Dictionary) -> bool:
-	if int(d.get("version",0)) not in [1,2,3,4,5,6,7,VERSION]: return false
+	if int(d.get("version",0)) not in [1,2,3,4,5,6,7,8,VERSION]: return false
 	for key in ["evidence","links","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history","county_statements","timed_conversations"]:
 		if not d.get(key,[]) is Array: return false
 		if key!="supplement_history":
@@ -205,11 +205,12 @@ func restore(d: Dictionary) -> bool:
 	dialogue_state=preload("res://scripts/shared/dialogue_state.gd").new()
 	if not dialogue_payload.is_empty():
 		if not dialogue_state.restore(dialogue_payload): return false
-	else:
-		# Import earned milestones from pre-interpreter saves; never invent evidence.
+	if dialogue_payload.is_empty() or int(d.version) < 9:
+		# Version 8 could save an empty dialogue store while the legacy UI was live.
+		# Import earned milestones idempotently; never invent evidence.
 		for id in visited:
 			var npc="father_behan" if id=="behan" else ("steward" if id=="barman" else id)
-			dialogue_state.visit(npc)
+			dialogue_state.visit_counts[npc]=maxi(1,dialogue_state.visit_count(npc))
 			if id != "odell": dialogue_state.complete_topic(npc,"default")
 		for statement in statements:
 			if statement.begins_with("Walter told Odell to his face") or statement.begins_with("Walter wrote EIGHT"):

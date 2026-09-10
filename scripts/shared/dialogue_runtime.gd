@@ -5,7 +5,7 @@ extends RefCounted
 # an NPC's current default line and menu, and renders a chosen topic into
 # the same [speaker, text] card-array shape story.gd/town_story.gd already
 # use, so dialogue_sequence.gd/chapter_interface.gd need no changes to
-# consume it. Not wired into chapter_one.gd's _interact() yet — see
+# consume it. Live presentation is owned by ChapterOneDialogue; see
 # tests/dialogue_lang_flow.gd for a full standalone proof, and the note at
 # the bottom of this file for what remains to integrate it live.
 const Lang = preload("res://scripts/shared/dialogue_lang.gd")
@@ -45,7 +45,7 @@ static func make_context(state, dstate) -> Dictionary:
 			"visit_count": func(args): return dstate.visit_count(args[0]) if args.size() > 0 else 0,
 			"topic_count": func(args): return dstate.topic_count(args[0]) if args.size() > 0 else 0,
 			"spoken_to": func(args): return dstate.visit_count(args[0]) > 0 if args.size() > 0 else false,
-			"evidence": func(args): return state.evidence.has(args[0]) if args.size() > 0 else false,
+			"evidence": func(args): return has_evidence(state, args[0]) if args.size() > 0 else false,
 			"flag": func(args): return dstate.flag(args[0]) if args.size() > 0 else false,
 			"topic_done": func(args): return dstate.topic_done(args[0], args[1]) if args.size() > 1 else false,
 		},
@@ -57,6 +57,15 @@ static func make_context(state, dstate) -> Dictionary:
 			"steward_ready": func(): return state.steward_ready(),
 		}
 	}
+
+# Draft gate vocabulary mapped to the already-authored observations. These
+# aliases read existing records; they do not grant extra evidence or Perception.
+static func has_evidence(state, id: String) -> bool:
+	if state.evidence.has(id): return true
+	var aliases = {"ophion_name":["behan_name","ophion_myth_classical"], "kessler_standing":["kessler_carriages"]}
+	for source in aliases.get(id, []):
+		if state.evidence.has(source): return true
+	return false
 
 # Finds the winning `default` topic (first true GATE, file order) and every
 # other topic currently GATE-true, as menu entries. Does not render or
@@ -153,11 +162,13 @@ static func commit_through(result: Dictionary, state, dstate, count: int) -> boo
 		# TAG when one is authored, so the second variant isn't wrongly "already done".
 		var time_key = result.session.tag if not result.session.tag.is_empty() else result.session.topic
 		var first_completion = not dstate.topic_done(result.session.npc, time_key)
+		if state != null and not result.session.tag.is_empty() and state.timed_conversations.has(time_key): first_completion = false
 		dstate.complete_topic(result.session.npc, result.session.topic)
 		if not result.session.tag.is_empty(): dstate.complete_topic(result.session.npc, result.session.tag)
 		if first_completion and state != null:
 			var raw_minutes = String(result.session.timing)
 			DayClock.advance(state, float(raw_minutes) if raw_minutes.is_valid_float() else DEFAULT_MINUTES)
+			if not result.session.tag.is_empty() and not state.timed_conversations.has(time_key): state.timed_conversations.append(time_key)
 		result.finished = true
 		return true
 	return false
@@ -179,16 +190,5 @@ static func enter_by_path(path: String, state, dstate) -> Dictionary:
 static func play_topic_by_path(path: String, _state, dstate, topic_id: String) -> Dictionary:
 	return play_topic(load_npc(path), dstate, topic_id)
 
-# Not yet done, left for the live-integration pass:
-#  - chapter_one.gd's _interact()/_cards() need a branch that consults this
-#    module for NPCs authored in the new format, and DayClock.conversation_key()
-#    needs an explicit key (it currently detects a conversation by exact
-#    array-equality against Story.SCENES, which dynamically rendered cards
-#    will never match) instead of array-sniffing.
-#  - a real "pick one of N" UI widget for FORK, since dialogue_sequence.gd
-#    only auto-advances linearly today.
-#  - dialogue_state.gd is not yet part of the save payload (case_state.gd's
-#    pack()/restore()); it needs a slot there once real content ships.
-#  - SCHEDULE/{template} placeholder substitution for the ~50 background
-#    residents is intentionally unimplemented — this pass only proves the
-#    parser tolerates the syntax.
+# ChapterOneDialogue handles live menus, branching, effect mirroring and resumable saves.
+# Numeric TIME costs are committed here exactly once, not by the legacy card timer.

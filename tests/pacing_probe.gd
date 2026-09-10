@@ -81,7 +81,7 @@ func run() -> void:
 	speak("assistant")
 	await walk([Vector3(23,0,-3.3)])
 	speak("eight")
-	await walk([Vector3(25.6,0,-4)])
+	await walk([Vector3(19,0,-4)])
 	speak("shoes")
 	await walk([Vector3(12,0,-4),Vector3(10,0,-12),Vector3(4,0,-11.5)])
 	speak("odell")

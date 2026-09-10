@@ -1,5 +1,10 @@
 # Dialogue authoring system — implementation and QA
 
+**Current status:** the interpreter is now connected to live Chapter 1. See
+[DIALOGUE_LIVE_PASS.md](DIALOGUE_LIVE_PASS.md) for numeric TIME, schema-9 saves,
+resident placement, verification and provenance. Earlier future-work sections
+below are retained as implementation history, not current status.
+
 September 9, 2026. A custom flat-file dialogue format and interpreter, built instead of adopting a
 general-purpose Godot dialogue plugin, because the gating this project needs — location, time of
 day, and cross-NPC tallies ("ask four to six people about X before the historian will mention it")

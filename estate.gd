@@ -12,6 +12,7 @@ var scene_bodies: Array[Node3D] = []
 var gardener_actor: Node3D
 var groundskeeper_actor: Node3D
 var opening_knife: Node3D
+var birch_belongings: Node3D
 var opening_staff: Dictionary = {}
 var departure_leaves: Array[Node3D] = []
 
@@ -20,6 +21,7 @@ func sync_staging(st) -> void:
 		leaf.rotation.y = -float(leaf.get_meta("side"))*PI/2 if not st.report.is_empty() else 0.0
 	for corpse in rose_bodies: corpse.visible = not st.rose_bodies_removed
 	for corpse in birch_bodies: corpse.visible = not st.birch_bodies_removed
+	if is_instance_valid(birch_belongings): birch_belongings.visible = not st.birch_bodies_removed
 	for id in opening_staff:
 		opening_staff[id].visible = not st.estate_complete
 		if st.estate_complete: points.erase(id)
@@ -352,6 +354,19 @@ func _ready() -> void:
 	box(self,Vector3(20,-0.025,-4),Vector3(11,0.08,4),"8c9185")
 	body(Vector3(23,0,-5),0.6,true,false,"birch")
 	body(Vector3(24.6,0,-4.5),0.4,true,true,"birch")
+	# A visible inspection grouping on the approach from the assistant.
+	birch_belongings = Node3D.new()
+	birch_belongings.name = "BirchBelongings"
+	birch_belongings.position = Vector3(19,0,-4)
+	add_child(birch_belongings)
+	box(birch_belongings,Vector3(0,0.055,0),Vector3(1.5,0.03,1.25),"aaa28d")
+	box(birch_belongings,Vector3(-0.23,0.14,-0.12),Vector3(0.65,0.14,0.85),"65594f")
+	for x in [-0.64,0.18]:
+		var sleeve = box(birch_belongings,Vector3(x,0.13,-0.26),Vector3(0.22,0.1,0.55),"65594f")
+		sleeve.rotation.y = -0.35 if x < 0 else 0.35
+	for z in [0.12,0.43]:
+		box(birch_belongings,Vector3(0.48,0.10,z),Vector3(0.39,0.06,0.22),"9c8770")
+		box(birch_belongings,Vector3(0.48,0.18,z),Vector3(0.36,0.12,0.20),"40382f")
 	for p in [Vector3(20,0,-9),Vector3(26,0,-8),Vector3(27,0,-1),Vector3(22,0,1)]: tree(p,true)
 	# Kitchen wing yard: the grounds crew keeps a fixed distance from the service door.
 	box(self,Vector3(-13.4,0.35,-16.4),Vector3(0.55,0.5,0.55),"3b443b")
@@ -411,9 +426,11 @@ func _ready() -> void:
 	target("eight","Examine the birch grove",Vector3(23,0,-3.3))
 	target("knife","Examine beneath the hedge",Vector3(-7,0,-0.4))
 	target("watch","Examine the unidentified man",Vector3(-3.8,0,-3.1))
+	points["watch"]["marker"] = Vector3(-3.8,0.7,-3.1)
 	target("gas","Examine the terrace windows",Vector3(-8,0,-18.0))
 	target("register","Read the seating list",Vector3(7.4,0,-13.1))
-	target("shoes","Examine the belongings",Vector3(25.6,0,-4.0))
+	target("shoes","Examine the belongings",Vector3(19,0,-4))
+	points["shoes"]["marker"] = Vector3(19,0.32,-4)
 	target("assistant","Speak to the coroner's assistant",Vector3(12.5,0,-3.8))
 	target("gardener","Speak to the gardener",Vector3(-12,0,1))
 	target("odell","Speak to Captain Odell",Vector3(4,0,-11.5))
