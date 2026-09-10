@@ -15,6 +15,17 @@ TOPIC: default
   THE STEWARD: "I asked you to leave your badge behind."
 
 TOPIC: default
+  GATE: day < 3 AND evidence(service_work)
+  TAG: steward_first_lead
+  TIME: 4
+  WALTER CORWIN: "Mrs. Almy says a woman came around asking about work here. Cleaning, laundry, anything she could carry home."
+  THE STEWARD: "I heard the same, secondhand. Never caught a name.\n\nColored woman, I was told. That's the whole of what reached me."
+  WALTER CORWIN: "Who would have taken her name down, if anyone did?"
+  THE STEWARD: "Nobody who still owes you an answer tonight, Officer.\n\nGood evening. I have the room to put in order."
+  NOTEBOOK: steward_first_lead_1 | "The steward heard secondhand that a colored woman had asked about work at the estate; he never caught a name and won't say who told him."
+  EVIDENCE: steward_heard_secondhand
+
+TOPIC: default
   GATE: day < 3
   TAG: steward_first
   THE STEWARD: "Good evening, Officer. Nothing further tonight. I have the room to put in order."

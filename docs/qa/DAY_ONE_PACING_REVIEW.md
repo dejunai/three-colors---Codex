@@ -2,7 +2,10 @@
 
 9 September 2026. Codex review requested by Dejunai following the live dialogue integration and arrival polish. **Assessment and proposed changes only; no gameplay or authored dialogue changed in this pass.**
 
-**Update, same day (GitHub Copilot):** Findings 1–3 implemented and regression-tested (`--qa-phase2`, `--qa-staging`, `--qa-town`, `--qa-usability`, `--qa`). Finding 4 (the first steward visit) remains open — the review itself asks for the actual fact to be decided with Dejunai before writing it.
+**Update, same day (GitHub Copilot):** All four findings implemented and regression-tested
+(`--qa-phase2`, `--qa-staging`, `--qa-town`, `--qa-usability`, `--qa`, plus the dialogue catalog/live
+suites). Finding 4's actual fact (the steward heard secondhand of a colored woman asking about
+work, no name, won't say who told him) was decided with Dejunai before writing it.
 
 ## Recommendation
 
@@ -79,8 +82,11 @@ A compliant player can follow records and identify Naomi. A resistant player can
 
 ### 4. The required first steward trip currently ends with a near-empty refusal
 
-**Still open.** Pending the actual fact (what limited, mundane thing the steward says about the
-relevant staff record) being decided with Dejunai, per this section's own instruction below.
+**Resolved.** `steward.dialogue` gained a `day < 3 AND evidence(service_work)` variant of the first
+visit: brought Almy's estate-work lead, the steward confirms he'd heard, secondhand, that a colored
+woman had asked about work at the estate — no name reached him, and he won't say who told him —
+then the same brush-off as before. Gives a more precise next question (who told the steward)
+without moving the pantry/maternal material earlier or granting any evidence Walter hasn't earned.
 
 Sleep requires intake, Naomi's identification and a first steward visit. Yet the entire Day 1 steward exchange is currently: “Good evening, Officer. Nothing further tonight. I have the room to put in order.” It can occur before evening. The visit is counted and unlocks sleep, but the player receives almost no answer for the return walk. The groundskeeper becomes available afterward, which helps, but is optional and easy to miss.
 
