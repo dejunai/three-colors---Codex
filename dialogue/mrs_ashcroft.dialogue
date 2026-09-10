@@ -1,0 +1,37 @@
+NPC: miriam_ashcroft
+LOCATION: upper_residential_ridge
+SCHEDULE: dawn={garden_walk}, midday={ashcroft_house}, evening={sunroom}
+
+# Widow of a shipping family whose money predates the club but whose status
+# depends on staying adjacent to it.
+
+TOPIC: default
+  GATE: NOT topic_done(miriam_ashcroft, default)
+  MRS. ASHCROFT: "You have climbed a long way to ask a question, Officer."
+  MRS. ASHCROFT: "People generally come up here to avoid being asked one."
+
+TOPIC: town
+  GATE: always
+  TAG: ashcroft_town
+  LABEL: "Ask about the ridge"
+  MRS. ASHCROFT: "The town prefers to imagine the hill means something."
+  MRS. ASHCROFT: "It does not. The rich simply reached the top first and stayed."
+
+TOPIC: naomi
+  GATE: evidence(naomi)
+  TAG: ashcroft_naomi
+  LABEL: "Ask whether she knew Naomi Freeman"
+  MRS. ASHCROFT: "Knew? No."
+  MRS. ASHCROFT: "Saw? Yes."
+  MRS. ASHCROFT: "A woman asking directions to houses that had no intention of answering her."
+  NOTEBOOK: ashcroft_naomi_1 | "Mrs. Ashcroft recalls seeing Naomi Freeman on the ridge, turned away door to door."
+  EVIDENCE: ridge_sighting
+
+TOPIC: club
+  GATE: always
+  TAG: ashcroft_club
+  LABEL: "Ask about the Ophion Club"
+  MRS. ASHCROFT: "Men join clubs to hear themselves echoed."
+  WALTER CORWIN: "Did your husband belong?"
+  MRS. ASHCROFT: "For eighteen years."
+  MRS. ASHCROFT: "The club improved none of his opinions, but certainly increased his confidence in them."

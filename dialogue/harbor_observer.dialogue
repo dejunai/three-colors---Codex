@@ -1,0 +1,53 @@
+# Lower residential quay, stone-repair staging.
+# A harbor-side laborer: flat, unhurried refusal; the discipline of not looking.
+NPC: harbor_observer
+LOCATION: lower_residential
+SCHEDULE: morning=quay_repair, midday=quay_repair, evening=lower_house_3, night=lower_house_3
+
+TOPIC: default
+  GATE: NOT topic_done(harbor_observer, default)
+  TAG: observer_default
+  [The laborer chips mortar from a sea-wall block with a cold chisel, his ring flashing dull umber in the salt air.]
+  [He does not look up when Walter stops beside the staging.]
+  MASON: "High water comes at quarter past five.\nIf you're going to stand on that timber, watch your step."
+
+TOPIC: estate_grounds_crew
+  GATE: always
+  TAG: observer_estate_crew
+  LABEL: "Ask about the laborers who work the Ophion grounds"
+  TIME: 5
+  WALTER CORWIN: "The men who tend the hedges near the kitchen wing at the estate.\nThey come from down here."
+  MASON: "Harbor people work where there's coin."
+  WALTER CORWIN: "None of them would go within thirty feet of the pantry door."
+  [The chisel pauses on a granite edge, perfectly balanced.]
+  MASON: "A sensible man doesn't put his hand where the stone is soft."
+  WALTER CORWIN: "The stone wasn't soft. It was dry granite."
+  MASON: "Granite rots too, if you give it reasons.\nWe mend what holds boats. What sits beneath cellars isn't our trade."
+  NOTEBOOK: observer_pantry_refusal | "Harbor mason on grounds crew avoiding pantry: 'A sensible man doesn't put his hand where the stone is soft.'"
+  EVIDENCE: observer_stone_discipline
+
+TOPIC: drowned_island
+  GATE: evidence(observer_stone_discipline)
+  TAG: observer_island
+  LABEL: "Ask about the drowned island off the point"
+  TIME: 5
+  WALTER CORWIN: "Nobody takes dories out to the old whaling ruins anymore."
+  MASON: "Nothing out there to catch."
+  WALTER CORWIN: "The try-works buildings are still standing above the mud."
+  MASON: "Standing isn't the same as welcoming."
+  [He resumes chipping, steady, flat strikes without anger or haste.]
+  MASON: "Our grandfathers learned in a single night what looking at that water costs.\nThose who came back couldn't tell the same story twice.\nThe insurance paid the big houses on the hill; the sea kept the men.\nWe leave the mud where it settled."
+  NOTEBOOK: observer_island_1 | "Mason on the drowned island: 'Our grandfathers learned in a single night what looking at that water costs... We leave the mud where it settled.'"
+  EVIDENCE: island_memory
+
+TOPIC: the_ring
+  GATE: coat = plain AND NOT topic_done(harbor_observer, the_ring)
+  TAG: observer_ring
+  LABEL: "Ask about the copper ring on his hand"
+  WALTER CORWIN: "That band on your finger. It's not brass."
+  [The mason turns his hand slightly; the ring catches a reddish-brown gleam that seems to resist the grey fog.]
+  MASON: "It's an anchor link beaten flat. Worn since my father's time."
+  WALTER CORWIN: "Why wear it?"
+  MASON: "To remind the eye what belongs to the daylight.\n\nYou ask a great many questions, Officer.\nYou should ask yourself sometime whether you're trying to solve this town or just trying to become the next thing it forgets."
+  NOTEBOOK: observer_ring_1 | "The harbor laborers wear beaten anchor links to 'remind the eye what belongs to daylight.' Warned Walter against asking too far."
+  EVIDENCE: observer_color_tell

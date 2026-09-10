@@ -1,0 +1,47 @@
+# Lower residential street, doorstep of Dwelling No. 2.
+# Mrs. Peake: fisherman's wife, salt mender; neighbor to the boardinghouse and quay.
+NPC: salt_mender
+LOCATION: lower_residential
+SCHEDULE: morning=lower_house_2, midday=quay, evening=lower_house_2, night=lower_house_2
+
+TOPIC: default
+  GATE: NOT topic_done(salt_mender, default) AND coat = plain
+  TAG: mender_plain
+  MRS. PEAKE: "Watch where you step on that brine net. It's drying in the sun."
+  [She uses a bone netting needle to knot tarred cord with practiced, rhythmic snaps.]
+  MRS. PEAKE: "You've got the look of someone with a room that gets cold by midnight.\nIf you're looking for Mrs. Almy's, it's three doors up the hill."
+
+TOPIC: default
+  GATE: NOT topic_done(salt_mender, default)
+  TAG: mender_badge
+  MRS. PEAKE: "Nothing stolen on this alley, Officer.\nWe don't keep silver spoons to tempt anybody."
+  WALTER CORWIN: "I'm not looking for thieves, Mrs. Peake."
+  MRS. PEAKE: "Then you're looking for trouble.\nDown here, the two usually arrive in the same coat."
+
+TOPIC: night_sounds
+  GATE: always
+  TAG: mender_sounds
+  LABEL: "Ask about unusual sounds from the harbor at night"
+  TIME: 7
+  WALTER CORWIN: "Do you hear the water from this porch?"
+  MRS. PEAKE: "I've heard this harbor since eighteen eighty, Walter Corwin.\nI know what the swell sounds like against the breakwater."
+  WALTER CORWIN: "And lately?"
+  MRS. PEAKE: "Three nights back, just before the bells for three. The tide went dead flat.\nNo chop. No lap against the piles. Like grease on a skillet."
+  WALTER CORWIN: "And then?"
+  MRS. PEAKE: "A dragging sound. Heavy. Not a keel scraping mud.\nBeneath the pilings. Like something enormous being shifted through wet sand without a wave to move it.\nMy husband took his boots off and sat by the stove until daylight."
+  NOTEBOOK: mender_tide_silence | "Mrs. Peake: dead flat tide at 3:00 AM before the deaths, followed by an unnatural heavy dragging through silt beneath the harbor piles."
+  EVIDENCE: sub_harbor_drag
+
+TOPIC: naomi_and_the_boy
+  GATE: evidence(naomi)
+  TAG: mender_naomi
+  LABEL: "Ask if she spoke to Naomi Freeman"
+  TIME: 5
+  WALTER CORWIN: "Did Naomi come past your porch?"
+  MRS. PEAKE: "She brought me a tin of lard from town. Said the boy had torn his trouser knee on the rocks and asked if I had strong sailmaker's thread."
+  WALTER CORWIN: "Did she say why they were by the rocks?"
+  MRS. PEAKE: "Looking at the island. The boy asked if people lived out there.\nShe told him people used to work there, but the town had taken the timber away."
+  [She bites through the heavy twine with her teeth.]
+  MRS. PEAKE: "I told her nobody went out to that mud for sixty years.\nShe looked at me and said, 'The mud didn't make the debt, ma'am. Men did.'\nI couldn't find an argument to give her back."
+  NOTEBOOK: mender_naomi_quote | "Naomi Freeman on the drowned island: 'The mud didn't make the debt, ma'am. Men did.'"
+  EVIDENCE: naomi_moral_clarity

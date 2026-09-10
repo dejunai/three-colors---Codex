@@ -171,10 +171,11 @@ Three changes address the review findings:
    Out-of-range choices and repeated use of an old result return an empty dictionary
    without consuming the pending choice.
 3. Preparation no longer writes facts or completes topics. The playback owner calls
-   `commit_through(result, dialogue_state, count)` after consuming the first `count`
+   `commit_through(result, case_state, dialogue_state, count)` after consuming the first `count`
    cards of that segment. Effects commit at their authored card boundary. Completion
-   returns true exactly once, only after the final segment's last card. Use that
-   event for the future clock adapter, not render/preparation. Repeated acknowledgment
+   returns true exactly once, only after the final segment's last card. On that first
+   completion (never on a replay), `TIME:` minutes charge to the day clock via
+   `DayClock.advance()` — see "TIME: is minutes, not a key" below. Repeated acknowledgment
    does not repeat effects or completion. Abandoning an unread segment commits nothing;
    already acknowledged effects remain. A leading NOTEBOOK requires acknowledgment
    at count zero, including when a segment contains no cards.
@@ -184,7 +185,7 @@ Playback contract:
 ```gdscript
 var segment = Runtime.enter(definition, context, dialogue_state) # one visit
 # Display cards in order; after each card is consumed:
-var completed = Runtime.commit_through(segment, dialogue_state, consumed_count)
+var completed = Runtime.commit_through(segment, case_state, dialogue_state, consumed_count)
 # Once every card has been consumed, expose segment.fork.options if non-null.
 # After the player chooses, use the same result, not another enter():
 segment = Runtime.resume(segment, selected_index)
@@ -192,7 +193,7 @@ segment = Runtime.resume(segment, selected_index)
 ```
 
 Do not acknowledge a segment merely because it was prepared. Zero-card segments
-still need an explicit `commit_through(segment, dialogue_state, 0)` at playback.
+still need an explicit `commit_through(segment, case_state, dialogue_state, 0)` at playback.
 Refresh menus using `menu(definition, context)` after completion, since the entries
 returned by enter are a snapshot from before playback effects.
 
@@ -203,9 +204,37 @@ invalid/stale choices, and nested forks with parent tails. All three suites pass
 headless with Godot 4.7.2 on September 9, 2026.
 
 The runtime remains isolated from live Chapter 1 dispatch. No branch UI, automatic
-case-state evidence mapping, game-save integration, or clock adapter was added in
-this correction. Playback cursors are transient and are not packed by DialogueState;
-mid-conversation save/resume remains future work. Existing development-only dialogue
-state snapshots keep any old fact keys on restore; no released game saves contain
-this unintegrated state, and no speculative migration was introduced. The web build
-was not re-exported or published by this pass.
+case-state evidence mapping, or game-save integration was added in this correction.
+Playback cursors are transient and are not packed by DialogueState; mid-conversation
+save/resume remains future work. Existing development-only dialogue state snapshots
+keep any old fact keys on restore; no released game saves contain this unintegrated
+state, and no speculative migration was introduced. The web build was not re-exported
+or published by this pass.
+
+## TIME: is minutes, not a key (September 9, 2026)
+
+`TIME:` was originally authored as a string mirroring each topic's own id — parsed
+and threaded onto the session, but never read by anything (confirmed by grep: exactly
+one reference, the line storing it). It's now a plain number of minutes, sized per
+topic instead of `day_clock.gd`'s old blanket 30-minute `CONVERSATION_MINUTES`: a
+three-line exchange might cost 3–4, a long forked interrogation 7–10. `commit_through()`
+charges it to `state.clock_minutes` via `DayClock.advance()` at the exact moment a
+topic's own first completion fires — reusing the existing `topic_done()` check that
+already guards `complete_topic()`, not a separate tracking array. Because that check
+is per-topic, revisiting an NPC after a topic is already done (a repeat/"nothing more
+to say" state, or a different mutually-exclusive `default` variant sharing the same
+topic id) never advances time again; a topic with no `TIME:`, or one still holding a
+non-numeric legacy value, simply costs nothing (`str.is_valid_float()` guards it).
+This also means a `FORK`'s time is charged once, on the branch that actually finishes
+the topic, not per branch offered.
+
+All 55 `TIME:` occurrences across the 20 files that had them were converted from their
+old string-id values to numbers, sized by each topic's own dialogue length (roughly
+3 minutes for a short exchange up to 10 for the longest forked interrogations).
+`commit_through()`'s signature grew a leading `state` (case_state) parameter to reach
+`DayClock`; every call site in all three test suites and the pass doc's playback
+contract above were updated to match. `day_clock.gd`'s `CONVERSATION_COSTS` dict
+(previously empty, intended as the per-conversation override point) is now bypassed
+entirely for dialogue-system content — real integration will need to decide whether
+the old array-sniffed `Story.SCENES` conversations should move to this same per-topic
+`TIME:` model instead of the blanket 30-minute default they still use today.

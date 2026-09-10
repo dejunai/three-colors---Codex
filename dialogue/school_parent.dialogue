@@ -1,0 +1,52 @@
+# Schoolhouse Gate, Noon Interval.
+# Mrs. Teague: mother of two pupils, resident of Upper Ridge; defensive respectability.
+NPC: school_parent
+LOCATION: business_district
+SCHEDULE: morning=upper_house_3, midday=schoolhouse_gate, evening=upper_house_3, night=upper_house_3
+
+TOPIC: default
+  GATE: NOT topic_done(school_parent, default) AND coat = plain
+  TAG: parent_plain
+  MRS. TEAGUE: "The children will be out in five minutes."
+  [She pulls her wool shawl tighter against the harbor breeze, watching the schoolhouse doors.]
+  MRS. TEAGUE: "I don't care to have men loitering by the railing while classes let out, mister."
+
+TOPIC: default
+  GATE: NOT topic_done(school_parent, default)
+  TAG: parent_badge
+  MRS. TEAGUE: "Officer Corwin. I hope you're not here to question the little ones about the estate."
+  WALTER CORWIN: "I'm looking for anyone who saw visitors in town."
+  MRS. TEAGUE: "Visitors? This town has people who live here and people who ought not to be here.\nThat isn't complicated."
+
+TOPIC: the_stranger_woman
+  GATE: evidence(naomi)
+  TAG: parent_naomi_sighting
+  LABEL: "Ask if she saw Naomi Freeman and her boy"
+  TIME: 7
+  WALTER CORWIN: "You walk down from the ridge past the boardinghouse every noon.\nDid you see the colored woman and her son?"
+  MRS. TEAGUE: "I saw them sitting on the low wall by the apothecary three mornings running."
+  WALTER CORWIN: "Did they speak to anyone?"
+  MRS. TEAGUE: "The boy had a pocketful of smooth beach pebbles. He was lining them up in rows on the coping stones.\nMethodical little thing. Counting them in whisper."
+  WALTER CORWIN: "And the mother?"
+  MRS. TEAGUE: "She had an envelope tucked in her glove. Heavy paper, folded into four.\nShe didn't ask for charity. That's what bothered people, if you want the honest truth."
+  WALTER CORWIN: "Why would that bother anyone?"
+  MRS. TEAGUE: "Because a pauper asks, and you give them two pennies or you don't, and the matter is settled.\nShe walked like someone who had come to collect what was already hers. That makes people nervous, Officer."
+  NOTEBOOK: parent_naomi_attitude | "Mrs. Teague: Naomi Freeman 'walked like someone who had come to collect what was already hers. That makes people nervous.'"
+  EVIDENCE: naomi_unapologetic_presence
+
+TOPIC: the_estate_talk
+  GATE: always
+  TAG: parent_estate_rumor
+  LABEL: "Ask what the ridge families are saying about the club deaths"
+  TIME: 7
+  FORK:
+    CHOICE: "Ask about Judge Wexford."
+      MRS. TEAGUE: "Wexford was a stern magistrate. My husband sat on three grand juries with him.\nPeople say it was foul gas from the lower furnace pipes, but I know what Judge Wexford's parlor looked like last Sunday."
+      WALTER CORWIN: "What did it look like?"
+      MRS. TEAGUE: "The curtains were drawn black. At two in the afternoon. And every mirror in the entry hall had been turned with its glass to the wall."
+      NOTEBOOK: parent_wexford_mirrors | "Judge Wexford had drawn black parlor curtains and turned every hall mirror to the wall the Sunday before his death."
+      EVIDENCE: turned_mirrors
+    CHOICE: "Ask about Dr. Fenn."
+      MRS. TEAGUE: "Dr. Fenn delivered both my boys. A gentleman, though he grew peculiar after his sister passed.\nHe wouldn't prescribe camphor anymore. Said the smell 'attracted things from the cellar.'\nWe thought it was his age."
+      NOTEBOOK: parent_fenn_peculiar | "Dr. Fenn stopped prescribing camphor, claiming the odor 'attracted things from the cellar.'"
+      EVIDENCE: fennel_camphor_taboo

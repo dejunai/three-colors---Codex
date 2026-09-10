@@ -23,29 +23,29 @@ TOPIC: club_talk
   GATE: steward_ready
   TAG: club_talk
   LABEL: "Ask what the members used to talk about"
-  TIME: club_talk
+  TIME: 4
   THE SMOKING LOUNGE: "The steward sets a glass on the sideboard. Walter asks about the conversations he used to overhear while serving the members."
   THE STEWARD: "They stopped speaking of power, toward the end.\n\nStarted speaking, tenderly, of her."
-  WALTER'S NOTEBOOK: "Toward the end of what, he doesn't say.\nHer, he doesn't explain.\n\nWalter writes both down exactly as given."
+  NOTEBOOK: "Toward the end of what, he doesn't say.\nHer, he doesn't explain.\n\nWalter writes both down exactly as given."
   EVIDENCE: club_talk
 
 TOPIC: club_devotion
   GATE: steward_ready AND evidence(club_talk)
   TAG: club_devotion
   LABEL: "Ask what Kessler used to say"
-  TIME: club_devotion
+  TIME: 4
   THE STEWARD: "Kessler said it more than once. She'll have us home.\n\nSaid she's no different from any mother."
-  WALTER'S NOTEBOOK: "A butcher, a judge, a doctor, a district attorney, a man of property, all of them speaking the same sentence about the same absent woman.\n\nNone of them ever named her."
+  NOTEBOOK: "A butcher, a judge, a doctor, a district attorney, a man of property, all of them speaking the same sentence about the same absent woman.\n\nNone of them ever named her."
   EVIDENCE: club_devotion
 
 TOPIC: pantry_lead
   GATE: steward_ready AND evidence(club_devotion)
   TAG: pantry_lead
   LABEL: "Ask about the old pantry door"
-  TIME: pantry_lead
+  TIME: 5
   THE STEWARD: "There's gin left from before the war. Behind the old pantry door.\n\nThey boarded it up during a renovation and never finished unboarding it. Nobody goes back there. Nobody's gone back there in years."
   WALTER CORWIN: "Will you show me?"
   THE STEWARD: "No."
-  WALTER'S NOTEBOOK: "He won't say why. He also won't take back the direction he just gave.\n\nThe kitchen wing. The old pantry."
+  NOTEBOOK: "He won't say why. He also won't take back the direction he just gave.\n\nThe kitchen wing. The old pantry."
   EVIDENCE: pantry_lead
 

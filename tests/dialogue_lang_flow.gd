@@ -36,7 +36,7 @@ func _run() -> void:
 
 	# --- linear CHOICE content and inline NOTEBOOK effect ---
 	var invitation = Runtime.play_topic(behan_def, dstate, "club_invitation")
-	_play(invitation, dstate)
+	_play(invitation, state, dstate)
 	assert(invitation.fork == null, "club_invitation has no FORK, must resolve fully in one call")
 	var found_why = false
 	for card in invitation.cards:
@@ -49,19 +49,19 @@ func _run() -> void:
 
 	# --- cross-NPC tally: "ask N people about xyz" ---
 	assert(dstate.topic_count("bullets") == 0, "bullets topic not yet completed by anyone")
-	_play(Runtime.play_topic(behan_def, dstate, "bullets"), dstate)
+	_play(Runtime.play_topic(behan_def, dstate, "bullets"), state, dstate)
 	assert(dstate.topic_count("bullets") == 1, "one distinct NPC has completed the shared 'bullets' topic id")
 	var odell_def = Runtime.load_npc(odell_path)
 	assert(odell_def.errors.is_empty(), "odell.dialogue must parse without errors: %s" % str(odell_def.errors))
 
 	# --- FORK branching: halts for an unresolved choice, resumes once given ---
 	var first_pass = Runtime.play_topic(odell_def, dstate, "bullets")
-	_play(first_pass, dstate)
+	_play(first_pass, state, dstate)
 	assert(first_pass.fork != null, "the FORK must halt rendering until a choice is supplied")
 	assert(first_pass.fork.options == ["All six through the same spot? That's debris?", "Maybe you're right."], "fork options must be exposed in author order")
 	assert(dstate.topic_count("bullets") == 1, "an unresolved fork must not mark the topic complete or tally it yet")
 	var resumed = Runtime.resume(first_pass, 0)
-	_play(resumed, dstate)
+	_play(resumed, state, dstate)
 	assert(resumed.fork == null, "supplying a choice index must resume to completion")
 	var found_pressed = false
 	for card in resumed.cards:
@@ -72,7 +72,7 @@ func _run() -> void:
 		if card[1] == "Good. Keep thinking that.": found_other_branch = true
 	assert(not found_other_branch, "the unchosen branch's lines must not play")
 	assert(dstate.topic_count("bullets") == 2, "a second, distinct NPC completing the same topic id must grow the tally")
-	_play(Runtime.play_topic(behan_def, dstate, "bullets"), dstate)
+	_play(Runtime.play_topic(behan_def, dstate, "bullets"), state, dstate)
 	assert(dstate.topic_count("bullets") == 2, "re-completing the same NPC's topic must not double-count")
 
 	# --- doc-only topic must not surface, and empty steps ---
@@ -86,15 +86,15 @@ func _run() -> void:
 	assert(steward_def.errors.is_empty(), "steward.dialogue must parse without errors: %s" % str(steward_def.errors))
 	var stew_ctx = Runtime.make_context(state, dstate)
 	var early = Runtime.enter(steward_def, stew_ctx, dstate)
-	_play(early, dstate)
+	_play(early, state, dstate)
 	assert(early.cards[0][1] == "Polite. Attentive. Gives nothing.", "first visit must resolve to the low-visit-count default")
 	assert(dstate.visit_count("steward") == 1, "enter() must count the visit")
-	_play(Runtime.enter(steward_def, stew_ctx, dstate), dstate)
+	_play(Runtime.enter(steward_def, stew_ctx, dstate), state, dstate)
 	assert(dstate.visit_count("steward") == 2, "each enter() call counts a separate visit")
 	state.coat = "Plain wool coat"
 	dstate.visit("mrs_almy")
 	var opened_up = Runtime.enter(steward_def, stew_ctx, dstate)
-	_play(opened_up, dstate)
+	_play(opened_up, state, dstate)
 	assert(dstate.visit_count("steward") == 3, "third enter() reaches the threshold")
 	var found_return_line = false
 	for card in opened_up.cards:
@@ -111,5 +111,5 @@ func _run() -> void:
 	quit(0)
 
 # Test-only stand-in for consuming every displayed card in a segment.
-func _play(segment: Dictionary, dstate) -> void:
-	load("res://scripts/shared/dialogue_runtime.gd").commit_through(segment, dstate, segment.cards.size())
+func _play(segment: Dictionary, state, dstate) -> void:
+	load("res://scripts/shared/dialogue_runtime.gd").commit_through(segment, state, dstate, segment.cards.size())

@@ -1,0 +1,43 @@
+NPC: miss_wexley
+LOCATION: upper_residential_ridge
+SCHEDULE: morning=home, midday=museum_committee, evening=club_road, night=home
+
+TOPIC: default
+  GATE: NOT topic_done(miss_wexley, default) AND coat != plain
+  TAG: wexley_badge
+  MISS WEXLEY: "Officer."
+  [Miss Wexley smiles with the composed patience of a woman receiving an unavoidable tradesman.]
+  MISS WEXLEY: "I should hate to waste your morning with rumor when the town is already overfull of it."
+
+TOPIC: default
+  GATE: NOT topic_done(miss_wexley, default) AND coat = plain
+  TAG: wexley_plain
+  MISS WEXLEY: "Mr. Corwin, isn't it?"
+  [Her tone softens once she realizes he has come without the uniform.]
+  MISS WEXLEY: "That is better. A man in ordinary wool may still be answered as a neighbor, which is more than can usually be said for an officer."
+
+TOPIC: museum_story
+  GATE: always
+  TAG: wexley_museum
+  LABEL: "Ask why the museum omits certain families"
+  TIME: 4
+  WALTER CORWIN: "Your museum manages a very clean version of the town."
+  MISS WEXLEY: "A museum manages what can be displayed without becoming an argument."
+  WALTER CORWIN: "And what cannot?"
+  MISS WEXLEY: "Lives in ledgers, usually. Or kitchens. Or the sort of conversation people have only when they are unwise enough to feel guilty."
+  NOTEBOOK: wexley_curation | "Miss Wexley admitted the museum presents only what can be displayed without public argument; the rest remains in ledgers and private talk."
+  EVIDENCE: curated_history
+
+TOPIC: freeman_claim
+  GATE: coat = plain
+  TAG: wexley_claim
+  LABEL: "Ask whether she has heard of the Freeman wage claim"
+  TIME: 5
+  WALTER CORWIN: "Did you ever hear the name Freeman attached to an unpaid lay?"
+  MISS WEXLEY: "Yes."
+  [She answers too quickly, then looks past him toward the ridge road.]
+  MISS WEXLEY: "Not in committee, of course. In private. As one hears of many things this town prefers to inherit rather than settle."
+  WALTER CORWIN: "Who mentioned it?"
+  MISS WEXLEY: "A woman can remain welcome in a drawing room, Officer, or she can become useful to your case. Rarely both."
+  NOTEBOOK: wexley_freeman | "Miss Wexley recognized the Freeman wage claim and implied it was privately known among upper families, though never discussed in committee."
+  EVIDENCE: freeman_whisper

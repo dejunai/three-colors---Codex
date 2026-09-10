@@ -131,9 +131,14 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 	return result
 
 # Call only after the first count cards of this segment have been consumed.
-# Returns true exactly once when the whole topic finishes: the future UI can
-# use that event to charge conversation time once. Repeated calls are safe.
-static func commit_through(result: Dictionary, dstate, count: int) -> bool:
+# Returns true exactly once when the whole topic finishes: on that first
+# completion (and only then — repeats and "nothing more to say" replays
+# never re-fire this), TIME: minutes are charged to the day clock via
+# DayClock.advance(), giving each topic its own cost instead of a blanket
+# per-interaction charge. A topic with no TIME: (or a non-numeric one)
+# falls back to DEFAULT_MINUTES rather than silently costing nothing.
+const DEFAULT_MINUTES = 3.0
+static func commit_through(result: Dictionary, state, dstate, count: int) -> bool:
 	if result.session.is_empty() or result.resumed or result.finished: return false
 	if count < result.acknowledged or count > result.cards.size(): return false
 	result.acknowledged = count
@@ -143,8 +148,16 @@ static func commit_through(result: Dictionary, dstate, count: int) -> bool:
 			else: dstate.record_fact(effect.id, effect.text)
 			effect.applied = true
 	if count == result.cards.size() and result.fork == null:
+		# gardener_plain/gardener (etc.) share the reserved "default" topic id but
+		# are genuinely separate scenes distinguished only by TAG — charge time per
+		# TAG when one is authored, so the second variant isn't wrongly "already done".
+		var time_key = result.session.tag if not result.session.tag.is_empty() else result.session.topic
+		var first_completion = not dstate.topic_done(result.session.npc, time_key)
 		dstate.complete_topic(result.session.npc, result.session.topic)
 		if not result.session.tag.is_empty(): dstate.complete_topic(result.session.npc, result.session.tag)
+		if first_completion and state != null:
+			var raw_minutes = String(result.session.timing)
+			DayClock.advance(state, float(raw_minutes) if raw_minutes.is_valid_float() else DEFAULT_MINUTES)
 		result.finished = true
 		return true
 	return false

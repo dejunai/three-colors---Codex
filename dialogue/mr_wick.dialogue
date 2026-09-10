@@ -1,0 +1,38 @@
+NPC: sebastian_wick
+LOCATION: upper_residential_ridge
+SCHEDULE: dawn={veranda}, midday={study}, evening={club_carriage_stop}
+
+# Retired attorney. Not a cultist.
+# Knows procedure, records, omissions.
+
+TOPIC: default
+  GATE: NOT topic_done(sebastian_wick, default)
+  MR. WICK: "You are either here officially or personally."
+  MR. WICK: "The distinction matters more than most officers realize."
+
+TOPIC: records
+  GATE: always
+  TAG: wick_records
+  LABEL: "Ask about missing records"
+  WALTER CORWIN: "How does a document disappear?"
+  MR. WICK: "Usually without disappearing at all."
+  MR. WICK: "A filing decision here. A transfer there."
+  MR. WICK: "Eventually everyone involved can justify his own part in the loss."
+
+TOPIC: claim
+  GATE: evidence(lay_lead)
+  TAG: wick_claim
+  LABEL: "Ask about an old wage claim"
+  WALTER CORWIN: "Can a century-old debt still exist?"
+  MR. WICK: "Exist? Certainly."
+  MR. WICK: "Be collected? That depends which family owes it."
+  NOTEBOOK: wick_claim_1 | "Legal existence and practical enforceability are separate questions."
+  EVIDENCE: legal_claim
+
+TOPIC: filing
+  GATE: coat = plain AND NOT topic_done(sebastian_wick, filing)
+  TAG: wick_plain
+  LABEL: "Ask what he would do"
+  MR. WICK: "If I wished something buried, I would not destroy it."
+  WALTER CORWIN: "What would you do?"
+  MR. WICK: "I would ensure every surviving copy was perfectly filed."

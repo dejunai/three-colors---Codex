@@ -1,0 +1,79 @@
+# Miskatonic County Registrar's Office / Town Records.
+# The bureaucratic apparatus: reasonable men executing an absence.
+NPC: county_clerk
+LOCATION: town_hall
+SCHEDULE: morning=registrar, midday=registrar, evening=closed, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(county_clerk, default) AND coat = plain
+  TAG: clerk_plain
+  MR. PENCE: "Public inspection hours end at four."
+  [He moistens a fingertip on a porcelain sponge tray and turns a ledger leaf.]
+  MR. PENCE: "If this is genealogical, the fee is twenty cents per volume.\nIf this is municipal, state the parcel."
+
+TOPIC: default
+  GATE: NOT topic_done(county_clerk, default)
+  TAG: clerk_badge
+  MR. PENCE: "Officer Corwin. Captain Odell sent over the preliminary notices this morning."
+  WALTER CORWIN: "Did he send the full list?"
+  MR. PENCE: "He sent six notices of sudden decease for probate indexing.\nThe forms are standard."
+
+TOPIC: wage_claim_inquiry
+  GATE: evidence(lay_lead)
+  TAG: clerk_wage_claim
+  LABEL: "Attempt to file Naomi Freeman's wage claim"
+  TIME: 10
+  WALTER CORWIN: "I want to record an unpaid whaler's lay. Naomi Freeman, on behalf of an ancestor aboard the Ophion."
+  MR. PENCE: "You'd need a living claimant. A next of kin with legal standing."
+  WALTER CORWIN: "The mother is dead. The boy found with her is dead."
+  MR. PENCE: "Then the claim abates. An estate requires an administrator appointed by probate, and Judge Wexford's seat is vacant, as you know."
+  WALTER CORWIN: "There is another son. Surviving."
+  MR. PENCE: "How old is the boy?"
+  WALTER CORWIN: "Six years old. Ekon."
+  [Mr. Pence sets his dry pen into the brass stand without looking up.]
+  MR. PENCE: "Then you have brought me no claimant at all, Officer.\nHe could stand on this stool and reach across the counter with both hands; he could not tender an affidavit.\nThe Commonwealth has no mechanism for a child to petition for maritime debt, full stop."
+  MR. PENCE: "Until that boy is twenty-one, the law considers him incapable of being owed anything a court is obliged to see."
+  FORK:
+    CHOICE: "Ask what becomes of a child's debt for fifteen years."
+      WALTER CORWIN: "So a debt simply evaporates because the heir is small?"
+      MR. PENCE: "It does not evaporate, Corwin. It abates.\nIf a debt outlives the debtor and the creditor before standing arrives, that is the nature of time, not a flaw in the statute."
+      NOTEBOOK: clerk_claim_minor | "Registrar: categorical legal bar. A six-year-old child cannot petition for maritime debt even standing in the room. The claim abates until majority."
+      EVIDENCE: claim_minor_ineligible
+    CHOICE: "Insist on filing in triplicate under police authority."
+      WALTER CORWIN: "The boy is six. Enter the claim in triplicate under my name as reporting officer, to preserve the record until he's of age."
+      [Mr. Pence looks up over wire spectacles, pen poised.]
+      MR. PENCE: "I will stamp it as received correspondence, Officer.\nIt sits in the dead-records drawer. It creates no lien, and twenty years from now nobody will look in that drawer."
+      NOTEBOOK: clerk_claim_triplicate | "Wage claim submitted in triplicate as police correspondence to preserve for the minor child Ekon; filed inertly in county dead-records drawer."
+      EVIDENCE: claim_filed_inert
+
+TOPIC: ophion_settlement
+  GATE: evidence(ophion_name)
+  TAG: clerk_ophion_records
+  LABEL: "Request the 1820s Ophion insurance and probate filings"
+  TIME: 5
+  MR. PENCE: "Volume 14, Maritime Disbursements and Marine Underwriting, 1823–1828."
+  [He pulls a heavy sheepskin-bound folio with flaking spine.]
+  MR. PENCE: "Underwriters' draft paid out to Pruitt, Corliss, and Wexford syndicates. Eighty-four thousand dollars in gold specie."
+  WALTER CORWIN: "And the crew's families?"
+  MR. PENCE: "Noted as 'Lost at sea; accounts closed by total abandonment.' No lay shares were distributed."
+  WALTER CORWIN: "The same families bought the harbor mills eighteen months later."
+  MR. PENCE: "The ledger notes transactions, Officer. It does not pass moral judgments on timing."
+  NOTEBOOK: clerk_ophion_1 | "1820s probate records: ,000 insurance paid to Pruitt/Corliss/Wexford syndicates. Crew accounts closed as total loss; zero lays paid."
+  EVIDENCE: insurance_fraud_record
+
+TOPIC: sixth_member_deed
+# PERMANENT EXCLUSION — do not gate this live, see Design Law 5
+  GATE: never
+  #evidence(sixth_member) AND NOT topic_done(county_clerk, sixth_member_deed)
+  TAG: clerk_sixth_man
+  LABEL: "Check deeds and tax rolls for the Ophion Club property"
+  TIME: 5
+  MR. PENCE: "The estate deed is held in trust. Six shares of tenancy in common."
+  WALTER CORWIN: "Name the shareholders."
+  MR. PENCE: "Absalom Wexford. Aldous Fenn. Miles Corliss. Josiah Pruitt. Otto Kessler."
+  WALTER CORWIN: "That is five."
+  MR. PENCE: "The sixth share is recorded simply as 'The Overseer of the Line.' No individual surname registered since the 1850 re-charter."
+  WALTER CORWIN: "How does an unnameable title pay property tax?"
+  MR. PENCE: "The check arrives drawn on the Boston Marine Bank. It clears. The county does not return legal currency."
+  NOTEBOOK: clerk_sixth_man_1 | "The sixth Ophion Club share is deeded to 'The Overseer of the Line' without personal name; taxes paid via Boston Marine Bank."
+  EVIDENCE: overseer_deed

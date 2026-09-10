@@ -1,0 +1,39 @@
+NPC: mr_vane
+LOCATION: upper_residential_ridge
+SCHEDULE: morning=bank_walk, midday=business_district, evening=home, night=home
+
+TOPIC: default
+  GATE: NOT topic_done(mr_vane, default)
+  TAG: vane_default
+  MR. VANE: "Corwin."
+  [Mr. Vane folds a newspaper against his cane with slow, practiced precision.]
+  MR. VANE: "If this is about the dead men, I advise you to distinguish inconvenience from catastrophe while the town still can."
+
+TOPIC: subscriptions_and_credit
+  GATE: always
+  TAG: vane_credit
+  LABEL: "Ask why everyone keeps calling it arithmetic"
+  TIME: 4
+  WALTER CORWIN: "Every man I speak to gives me a different version of the same excuse."
+  MR. VANE: "Then you are hearing the truth from several angles at once."
+  WALTER CORWIN: "Truth."
+  MR. VANE: "Yes. Mills extend credit. Papers carry advertisers. Banks calm depositors. Houses keep staff employed. Remove confidence from a town this size and the rest follows it into the water."
+  NOTEBOOK: vane_confidence | "Vane described the town's silence as a defense of confidence: banks, papers, houses, and wages depend on keeping panic out of print."
+  EVIDENCE: civic_arithmetic
+
+TOPIC: name_the_dead
+  GATE: evidence(civic_arithmetic)
+  TAG: vane_dead
+  LABEL: "Ask whether confidence matters more than the dead"
+  TIME: 6
+  FORK:
+    CHOICE: "Say that eight people died, not six."
+      MR. VANE: "And if you print eight, do they revive?"
+      MR. VANE: "No. But the bank run becomes real, the paper goes under, and every laundress and porter paid from those accounts discovers that your honesty has a payroll attached to it."
+      NOTEBOOK: vane_eight_payroll | "Vane argued that acknowledging all eight dead would trigger wider economic harm the town's laboring people would bear."
+    CHOICE: "Say that silence is still a choice."
+      MR. VANE: "Of course it is."
+      [He taps the folded newspaper once against his glove.]
+      MR. VANE: "Adulthood consists largely of choosing which damage will be entered into the record and which will merely be survived."
+      NOTEBOOK: vane_silence_choice | "Vane openly described public silence as a deliberate civic choice, not an accident."
+      EVIDENCE: silence_is_choice

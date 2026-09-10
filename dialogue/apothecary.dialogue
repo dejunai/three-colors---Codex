@@ -1,0 +1,47 @@
+# Apothecary & Chemist, Business District.
+# Mr. Crane: dispenser of tinctures, camphor, and laudanum; observant of private domestic habits.
+NPC: apothecary
+LOCATION: business_district
+SCHEDULE: morning=apothecary, midday=apothecary, evening=apothecary, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(apothecary, default) AND coat = plain
+  TAG: apothecary_plain
+  MR. CRANE: "Cough syrups and carbolic soaps on the lower shelf."
+  [He washes a glass pestle in a pan of alcohol with methodical care.]
+  MR. CRANE: "If you have a toothache, oil of cloves is ten cents a dram.\nIf it's nerves, chamomile tea is cheaper than tincture of valerian."
+
+TOPIC: default
+  GATE: NOT topic_done(apothecary, default)
+  TAG: apothecary_badge
+  MR. CRANE: "Officer Corwin. I trust the precinct first-aid cabinet is adequately stocked with lint and bandages."
+  WALTER CORWIN: "I'm not here for bandages, Mr. Crane."
+  MR. CRANE: "Then please keep your voice down, Officer.\nPatrons in a chemist's shop are entitled to their privacy regarding remedies."
+
+TOPIC: fennel_laudanum
+  GATE: always
+  TAG: apothecary_fenn
+  LABEL: "Inquire about prescriptions filled for Dr. Aldous Fenn"
+  TIME: 5
+  WALTER CORWIN: "Dr. Fenn was a physician, but did he purchase pharmaceuticals here?"
+  MR. CRANE: "A physician can prescribe, Officer. He cannot compound bulk spirits on his own parlor rug."
+  WALTER CORWIN: "What did he purchase?"
+  MR. CRANE: "Crude gum opium. And grain alcohol in four-gallon carboys.\nHe claimed he was compounding strong sedatives for severe arthritic agitation."
+  WALTER CORWIN: "Four gallons of spirits is an excessive quantity for arthritis."
+  MR. CRANE: "Dr. Fenn had forty years of immaculate clinical standing in Miskatonic County, Walter.\nA chemist does not interrogate a senior fellow of the Massachusetts Medical Society regarding quantities."
+  NOTEBOOK: apothecary_fenn_supplies | "Apothecary provided Dr. Fenn with crude gum opium and 4-gallon carboys of grain alcohol for alleged 'arthritic sedatives.'"
+  EVIDENCE: bulk_opium_spirits
+
+TOPIC: the_stranger_remedies
+  GATE: evidence(naomi) AND NOT topic_done(apothecary, the_stranger_remedies)
+  TAG: apothecary_naomi
+  LABEL: "Ask if Naomi Freeman sought medicine for her son"
+  TIME: 5
+  WALTER CORWIN: "Did the colored woman come to your counter?"
+  MR. CRANE: "She did. The boy had angry red salt-hives along his shins from the weed on the low rocks."
+  WALTER CORWIN: "What did she buy?"
+  MR. CRANE: "Carbolic salve and zinc ointment.\nShe counted five copper pennies out of a handkerchief corner."
+  WALTER CORWIN: "Did she speak of anything else?"
+  MR. CRANE: "She asked if sea water in this bay caused iron to pit faster than in Buzzards Bay.\nI told her salt is salt everywhere along the Atlantic.\nShe looked out the glass toward the point and said, 'Some water has more appetite than others, mister.'"
+  NOTEBOOK: apothecary_naomi_salve | "Naomi bought carbolic salve for her son's salt-hives; observed that Widow's Bight seawater seemed to corrode iron unnaturally fast."
+  EVIDENCE: water_corrosion_inquiry

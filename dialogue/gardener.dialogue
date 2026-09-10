@@ -5,7 +5,7 @@ LOCATION: estate
 TOPIC: default
   GATE: estate_complete AND coat = plain
   TAG: gardener_plain
-  TIME: gardener_plain
+  TIME: 3
   THE GARDENER: "You took the badge off."
   WALTER CORWIN: "I'm still asking."
   THE GARDENER: "Then write this down as well. I saw the woman here before. Walking to the service door.\n\nI don't know her name. The steward might.\nAsk him as though an answer is required."
@@ -14,7 +14,7 @@ TOPIC: default
 TOPIC: default
   GATE: always
   TAG: gardener
-  TIME: gardener
+  TIME: 3
   THE GARDENER: "I keep the roses. I don't keep the hours of the men who walk among them."
   WALTER CORWIN: "You found both scenes?"
   THE GARDENER: "Yes.\n\nI sent for eight sheets.\nThey brought six the first time."

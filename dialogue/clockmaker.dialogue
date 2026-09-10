@@ -1,0 +1,50 @@
+# Clockmaker & Instrument Repair, Business District.
+# Mr. Vane: mechanical precision, repairs navigational compasses, escapements, and watches.
+NPC: clockmaker
+LOCATION: business_district
+SCHEDULE: morning=repairer, midday=repairer, evening=repairer, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(clockmaker, default) AND coat = plain
+  TAG: clockmaker_plain
+  MR. VANE: "Do not touch the regulator on the wall."
+  [The watchmaker works with an eyeglass screwed into his right orbit, tweezers poised over an open brass movement.]
+  MR. VANE: "The pendulum is calibrated to county mean time. If you have an uncoiled mainspring, set it in the tin dish by the lamp."
+
+TOPIC: default
+  GATE: NOT topic_done(clockmaker, default)
+  TAG: clockmaker_badge
+  MR. VANE: "Officer Corwin. I told Captain Odell two years ago that the precinct hall clock gains four minutes a week because of the coal stove beneath it."
+  WALTER CORWIN: "I'm not here about the hall clock, Mr. Vane."
+  MR. VANE: "Then state your gear, Officer. A balance wheel waits for no man."
+
+TOPIC: the_stopped_watch
+  GATE: evidence(watch)
+  TAG: clockmaker_watch
+  LABEL: "Show him the pocket watch stopped at seventeen past three"
+  TIME: 8
+  WALTER CORWIN: "A gold pocket watch. Found on a body in the rose garden.\nHands stopped at precisely 3:17."
+  [Mr. Vane takes the watch with jeweler's tissue, turns it under the magnifier, and taps the balance cock.]
+  MR. VANE: "English lever movement. London hallmark, circa 1840. The mainspring is fully wound."
+  WALTER CORWIN: "Then why did it stop?"
+  MR. VANE: "The balance staff didn't break, Walter. The hairspring fused."
+  WALTER CORWIN: "Fused?"
+  MR. VANE: "The blued steel coils welded together at three points, as if subjected to an instantaneous inductive charge.\nOr an abrupt cessation of local inertia. I've only seen that once before in my life."
+  WALTER CORWIN: "Where?"
+  MR. VANE: "A ship's chronometer brought back from the drowned reef in 1890. Every tooth intact, yet frozen solid in mid-tick."
+  NOTEBOOK: clockmaker_watch_1 | "Watchmaker: the gold watch stopped at 3:17 with a fully wound spring; blued steel hairspring fused identically to an 1890 reef chronometer."
+  EVIDENCE: fused_hairspring_anomaly
+
+TOPIC: tryworks_instruments
+  GATE: always
+  TAG: clockmaker_maritime
+  LABEL: "Ask about old navigational instruments from the fleet"
+  TIME: 6
+  WALTER CORWIN: "Do you ever see brass work from the 1823 whaling fleet?"
+  MR. VANE: "The Ophion carried sextants by Troughton of London. Very fine brass, hand-divided silver arcs."
+  [He sets down his tweezers and removes the loupe.]
+  MR. VANE: "A laborer brought me a vernier index two seasons back. Found in the silt off the point.\nHe asked me to polish the verdigris off."
+  WALTER CORWIN: "Did you?"
+  MR. VANE: "The acid wouldn't touch it. Salt water leaves green crust, Walter. This was dark grey, slick as oil, and smelled of sulphur.\nI gave it back to him. Some metals have had enough done to them."
+  NOTEBOOK: clockmaker_instruments_1 | "Watchmaker examined a fleet vernier index from the silt: coated in dark, acid-resistant grey patina that smelled of sulphur."
+  EVIDENCE: tryworks_metal_patina

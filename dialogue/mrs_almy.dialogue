@@ -19,10 +19,10 @@ TOPIC: identify
   GATE: always
   TAG: identify
   LABEL: "Ask for the woman's name"
-  TIME: identify
+  TIME: 4
   WALTER CORWIN: "I counted eight people.\nI would like to put a name beside each of them."
   MRS. ALMY: "Naomi Freeman.\n\nShe ate here. The boy too.\nHe waited for her to begin before touching his own plate."
-  WALTER'S NOTEBOOK: "NAOMI FREEMAN.\nIdentified by Mrs. Almy, Pickman Street.\nBoy accompanying her: name still to be established."
+  NOTEBOOK: "NAOMI FREEMAN.\nIdentified by Mrs. Almy, Pickman Street.\nBoy accompanying her: name still to be established."
   MRS. ALMY: "You can ask me again tomorrow.\nHer name will still be Naomi."
   EVIDENCE: naomi
 
@@ -30,18 +30,18 @@ TOPIC: lay_lead
   GATE: evidence(naomi)
   TAG: lay_lead
   LABEL: "Ask what brought Naomi to town"
-  TIME: lay_lead
+  TIME: 4
   MRS. ALMY: "She was looking for something owed.\nA whaler's wages. A share, she called it. A lay.\nFrom her family's time, long before hers."
   WALTER CORWIN: "Did you see the document?"
   MRS. ALMY: "No. She spoke of finding it.\nYou mustn't write that I saw it."
-  WALTER'S NOTEBOOK: "Possible wage claim. Document not examined.\nSource: Mrs. Almy's recollection.\n\nA question to pursue.\nNo conclusion about why Naomi died."
+  NOTEBOOK: "Possible wage claim. Document not examined.\nSource: Mrs. Almy's recollection.\n\nA question to pursue.\nNo conclusion about why Naomi died."
   EVIDENCE: lay_lead
 
 TOPIC: service_work
   GATE: evidence(naomi)
   TAG: service_work
   LABEL: "Ask about work at the estate"
-  TIME: service_work
+  TIME: 4
   MRS. ALMY: "She asked about work at the estate.\nCleaning, perhaps. They always need someone who can leave by the other door."
   WALTER CORWIN: "Who engaged her?"
   MRS. ALMY: "I don't know.\nThe steward has books enough.\nAsk him for one that contains her."

@@ -5,7 +5,7 @@ LOCATION: estate
 TOPIC: default
   GATE: always
   TAG: assistant
-  TIME: assistant
+  TIME: 5
   THE CORONER'S ASSISTANT: "I've counted them twice. Eight.\n\nThe captain wants the identified men prepared first."
   WALTER CORWIN: "Any sign of an explosion?"
   THE CORONER'S ASSISTANT: "None I can find. No burns. No broken glass.\n\nI can't tell you what happened. I can tell you what isn't here."

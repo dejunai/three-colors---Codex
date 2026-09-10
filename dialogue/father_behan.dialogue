@@ -5,34 +5,34 @@ LOCATION: town
 TOPIC: default
   GATE: NOT topic_done(father_behan, default)
   TAG: behan
-  TIME: behan
+  TIME: 4
   FATHER BEHAN: "Wexford's temper. Fenn's vanity. Kessler's grudges. Corliss's ambitions.\n\nI'll discuss any of it. None of it explains a hole above the bridge of a nose."
   WALTER CORWIN: "You knew all six."
   FATHER BEHAN: "I knew what men tell a priest, which is not the same as what they are.\n\nAsk your question, Officer. I've answered worse."
-  NOTEBOOK: introduction | "Father Behan discussed the six men's characters freely and himself not at all."
+  NOTEBOOK: introduction | "Father Behan discussed five of the men's characters freely and himself not at all."
 
 TOPIC: club_invitation
   GATE: NOT topic_done(father_behan, club_invitation)
   TAG: behan_invitation
   LABEL: "Ask why he declined the club's invitations"
-  TIME: behan_invitation
+  TIME: 5
   WALTER CORWIN: "You were invited to the club. Twice. You declined both times."
   FATHER BEHAN: "I did."
   WALTER CORWIN: "Why?"
   FATHER BEHAN: "[He says nothing further. The silence is not evasive. It is final.]"
-  WALTER'S NOTEBOOK: "A refusal offered without excuse.\nWalter has learned to trust a plain no more than a decorated one.\n\nHe does not press it a second time."
+  NOTEBOOK: "A refusal offered without excuse.\nWalter has learned to trust a plain no more than a decorated one.\n\nHe does not press it a second time."
   NOTEBOOK: club_invitation_1_1 | "Father Behan declined two invitations to the club and would not say why."
 
 TOPIC: behan_name
   GATE: topic_done(father_behan, club_invitation)
   TAG: behan_name
   LABEL: "Ask about the meaning of the club's name"
-  TIME: behan_name
+  TIME: 5
   WALTER CORWIN: "Do you know the meaning behind the club's name?"
   FATHER BEHAN: "They named the club after the ship."
   WALTER CORWIN: "Known."
   FATHER BEHAN: "They came to believe the ship had been chosen.\n\nIt wasn't. Men inherit money, and then invent a reason they deserved it."
-  WALTER'S NOTEBOOK: "A shipowner's classical flourish, nothing more, by the priest's own account.\n\nThe club's fortune has a human explanation. Walter intends to find it."
+  NOTEBOOK: "A shipowner's classical flourish, nothing more, by the priest's own account.\n\nThe club's fortune has a human explanation. Walter intends to find it."
   EVIDENCE: behan_name
 
 TOPIC: sixth_man

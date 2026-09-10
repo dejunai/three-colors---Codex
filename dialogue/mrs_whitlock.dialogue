@@ -1,0 +1,34 @@
+NPC: eleanor_whitlock
+LOCATION: upper_residential_ridge
+SCHEDULE: dawn={chapel_path}, midday={whitlock_orangery}, evening={charity_hall}
+
+# Philanthropist, donor, and social organizer.
+# Represents respectable civic power.
+
+TOPIC: default
+  GATE: NOT topic_done(eleanor_whitlock, default)
+  MRS. WHITLOCK: "If this concerns the garden party, Officer, I assure you the roses are innocent."
+
+TOPIC: charity
+  GATE: always
+  TAG: whitlock_charity
+  LABEL: "Ask about charitable work"
+  MRS. WHITLOCK: "Most people require help before they require dignity."
+  MRS. WHITLOCK: "The trouble is that institutions often provide one only after taking the other."
+
+TOPIC: strangers
+  GATE: evidence(naomi)
+  TAG: whitlock_strangers
+  LABEL: "Ask about newcomers"
+  WALTER CORWIN: "Did you notice a woman traveling with a young boy?"
+  MRS. WHITLOCK: "Yes."
+  MRS. WHITLOCK: "People always notice strangers."
+  WALTER CORWIN: "Then why does nobody seem to remember them?"
+  MRS. WHITLOCK: "Remembering and noticing are different acts."
+
+TOPIC: names
+  GATE: evidence(naomi) AND NOT topic_done(eleanor_whitlock, names)
+  TAG: whitlock_names
+  LABEL: "Ask why names matter"
+  MRS. WHITLOCK: "A town can misplace a person more easily than a name."
+  NOTEBOOK: whitlock_names_1 | "The distinction between an unnamed victim and a named victim remains central to the case."

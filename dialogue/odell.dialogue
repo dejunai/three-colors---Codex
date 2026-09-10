@@ -5,7 +5,7 @@ LOCATION: estate
 TOPIC: default
   GATE: NOT topic_done(odell, default)
   TAG: odell
-  TIME: odell
+  TIME: 8
   CAPTAIN ODELL: "A gas-main tragedy.\nOr something close enough for the morning edition."
   WALTER CORWIN: "There are eight bodies. Six club members. A woman and a boy beyond the birches.\n\nNobody has established an accident."
   CAPTAIN ODELL: "Six members, Corwin.\nThe other two are a filing matter."

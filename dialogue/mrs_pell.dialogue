@@ -1,0 +1,40 @@
+NPC: mrs_pell
+LOCATION: upper_residential_ridge
+SCHEDULE: morning=home, midday=club_road, evening=home, night=home
+
+TOPIC: default
+  GATE: NOT topic_done(mrs_pell, default) AND coat = plain
+  TAG: pell_plain
+  MRS. PELL: "You are not calling in any official capacity, then."
+  [Mrs. Pell keeps one gloved hand on the gate latch, studying Walter's coat before she studies his face.]
+  MRS. PELL: "That is almost a relief. Men with badges always arrive having already decided what sort of answer they mean to hear."
+
+TOPIC: default
+  GATE: NOT topic_done(mrs_pell, default) AND coat != plain
+  TAG: pell_badge
+  MRS. PELL: "Officer Corwin."
+  [Her expression does not change; only the gate remains half-closed.]
+  MRS. PELL: "If this concerns the club, I imagine Captain Odell has already received whatever statement the town requires of me."
+
+TOPIC: club_guests
+  GATE: always
+  TAG: pell_guests
+  LABEL: "Ask who visited the ridge after dark"
+  TIME: 4
+  WALTER CORWIN: "There were carriages on this road after midnight."
+  MRS. PELL: "There are always carriages on this road after midnight. That is half the point of having a ridge to climb to."
+  WALTER CORWIN: "I only need to know whose."
+  MRS. PELL: "No, Officer. You need a world in which the right names make the wrong night simpler. That is not the same thing."
+  NOTEBOOK: pell_ridge_traffic | "Mrs. Pell would not name late-night visitors to the ridge; she treated such traffic as routine among the upper houses."
+
+TOPIC: servant_talk
+  GATE: coat = plain
+  TAG: pell_servants
+  LABEL: "Ask whether her maid heard anything from the club road"
+  TIME: 4
+  WALTER CORWIN: "Your maid keeps the back rooms facing the club road."
+  MRS. PELL: "She keeps my rooms, Officer. She is not an extension of your precinct."
+  WALTER CORWIN: "Did she hear anything?"
+  MRS. PELL: "She heard men arriving too confident and leaving too quickly. In this town that narrows nothing."
+  NOTEBOOK: pell_maid_heard | "Mrs. Pell admitted her maid heard men arriving and departing the ridge in haste, but gave no names."
+  EVIDENCE: ridge_haste
