@@ -18,38 +18,38 @@ const LINKS := {
 	"lodging|naomi": {
 		"id": "naomi_address",
 		"title": "TWO RECORDS, ONE WOMAN",
-		"summary": "Mrs. Almy's statement and the meal ledger name the same woman. Two independent records agree.",
-		"deduction": "Mrs. Almy identified her boarder as Naomi Freeman. The ledger at the diner records Naomi Freeman having breakfast at seven every morning for a week. These are two completely independent witnesses placing the same living woman in town right up to the night of the murders. The unidentified woman on the estate now has an address and a daily routine."
+		"summary": "Mrs. Almy's statement and the meal ledger name the same woman. The ledger corroborates her account rather than standing apart from it.",
+		"deduction": "Mrs. Almy identified her boarder as Naomi Freeman. The meal ledger, kept at Almy's own establishment, records two meals and a small carried balance under the same name. It is not an independent witness — it is Almy's own book — but it is a second, physical record agreeing with her word."
 	},
 	"lay_lead|naomi": {
 		"id": "naomi_lay",
 		"title": "THE CLAIM HAS A NAME NOW",
 		"summary": "The wage claim belongs to a woman with a name now. It still does not establish why she was killed.",
-		"deduction": "The handwritten claim found in the satchel concerns an unpaid whaling lay owed to a Freeman ancestor from the Ophion's loss. Tying this document to Naomi Freeman explains what brought an outsider to Widow's Bight — not chance or vagrancy, but an inherited financial demand leveled directly at the club's founding fortune."
+		"deduction": "Mrs. Almy recalls Naomi speaking of a whaler's lay owed to a Freeman ancestor lost with the Ophion. Almy never saw the document herself — this ties a name to the claim, not a document to Walter's own hand. What brought Naomi to Widow's Bight now has a name attached to it; why she died still does not."
 	},
 	"eight|intake": {
 		"id": "count_disagreement",
 		"title": "THE HEADING DISAGREES WITH THE COUNT",
 		"summary": "The precinct's own heading disagrees with Walter's report. The disagreement has a source on each side; neither page replaces the other.",
-		"deduction": "The desk sergeant's heading clearly specifies 'Six male victims; members of the Ophion Club.' But Walter's field survey documents eight bodies — including the woman and boy behind the birches. The discrepancy is not clerical error; the precinct deliberately omitted two victims from the official count before the investigation even opened."
+		"deduction": "The desk sergeant's heading specifies 'Six male victims; members of the Ophion Club.' Walter's own field survey documents eight bodies, including the woman and boy behind the birches. The two records disagree before the investigation is even filed. Whether the omission was a deliberate choice or the reflexive shape the town gives everything is not something these two pages can settle by themselves."
 	},
 	"lower_foundation|municipal_foundation": {
 		"id": "two_drawings",
 		"title": "TWO DRAWINGS, ONE LIMIT",
 		"summary": "The service plan and the municipal sheet agree on where the foundation ends. The passage does not. The extension remains unexplained.",
-		"deduction": "The municipal survey of 1888 and the estate's private architectural drawings align stone-for-stone along the cellar perimeter. Both declare the bedrock boundary reached. Yet Walter's pacing through the passage continues twelve yards past that boundary. The passage was cut without civic permission — a private tunnel leading under the waterline."
+		"deduction": "The municipal survey and the estate's own service plan agree, stone for stone, on where the cellar's foundation ends. Walter's own paced measurement continues well past that shared limit. Both drawings agree on a boundary the passage itself does not respect; neither page explains what lies beyond it."
 	},
 	"behan_name|old_woman": {
 		"id": "chosen_delusion",
 		"title": "A DELUSION OF BEING CHOSEN",
 		"summary": "A priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making.",
-		"deduction": "Father Behan dismisses the Ophion founders as vain men intoxicated by their own wealth, convinced they had made a covenant with Providence. The woman outside Kessler's shop gives the counterweight: they did make a covenant, but with an ancient hunger that cares nothing for human pride. Two halves of an argument neither speaker knew the other was making."
+		"deduction": "Father Behan dismisses the Ophion founders' belief that they were chosen as a vain man's flattering delusion — classical vanity, nothing more. The woman outside Kessler's shop warns that whatever answered them was never a chosen relationship at all, only appetite. Neither speaker knew the other had said anything. Walter is left holding both halves of an argument he cannot yet resolve on his own."
 	},
 	"crew|pantry_lead": {
 		"id": "same_door",
 		"title": "THE GROUNDSKEEPER AND THE STEWARD",
 		"summary": "One keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why.",
-		"deduction": "The groundskeeper outside refuses to turn his back on the kitchen wing service door, giving it a deliberate berth in broad daylight. Behind that very same door inside the hall, the steward refuses to glance toward the boarded pantry. Two men separated by stone and position, united by the same silent terror of what lies behind that threshold."
+		"deduction": "The groundskeeper keeps a fixed, deliberate distance from the kitchen wing's service door, the same distance every time, never explained beyond an uneven step. Behind that same door, the steward will not go near the boarded pantry either. Neither man reads as frightened — both are simply certain, in the same unhurried way, that the door isn't theirs to open."
 	}
 }
 
@@ -221,10 +221,24 @@ func _board(g:Node) -> void:
 			confirmed=true
 		g._paragraph(str(entry.title)+"\n"+str(entry.summary),22)
 	var p = g.state.perception()
+	# The spine's clauses are earned individually; Perception only gates *when*
+	# the board can start asserting a shape, never *which* claims it's allowed
+	# to make. A high Perception reached through unrelated evidence must not
+	# announce a passage or a presence nobody has actually found yet.
+	var fortune = g.state.evidence.has("register") or g.state.evidence.has("ophion_myth_classical") or g.state.evidence.has("insurance_fraud_record") or g.state.evidence.has("behan_name")
+	var passage = g.state.evidence.has("lower_foundation") or g.state.tunnel_complete or g.state.evidence.has("municipal_foundation")
+	var presence = g.state.evidence.has("club_devotion") or g.state.evidence.has("maternal_delusion") or g.state.has_link("chosen_delusion") or g.state.has_link("same_maternal_words")
+	var clauses:Array[String] = ["SIX MEN IN EVENING DRESS"]
+	if fortune: clauses.append("THE OPHION'S SINKING")
+	if passage: clauses.append("AN UNDERSEA PASSAGE")
+	if presence: clauses.append("A SUMMONED PRESENCE")
+	var spine_line = "  ═  ".join(clauses)
 	if p >= 5:
-		g._paragraph("THE CAUSAL SPINE — COMPLETE  (PERCEPTION %d)\nSIX MEN IN EVENING DRESS  ═  THE OPHION'S SINKING  ═  AN UNDERSEA PASSAGE  ═  A SUMMONED PRESENCE\nEvery fact has found its parent. The twine connects the rose garden to the cellar without an empty card between them. Walter did not choose the moment the board went whole; the shape closed itself." % p,22)
+		var closing = "Every fact has found its parent. The twine connects the rose garden to the cellar without an empty card between them. Walter did not choose the moment the board went whole; the shape closed itself." if (fortune and passage and presence) else "The board is well corroborated for what it currently holds. Whatever still connects beneath the house is not yet Walter's to claim."
+		g._paragraph("THE CAUSAL SPINE — COMPLETE  (PERCEPTION %d)\n%s\n%s" % [p,spine_line,closing],22)
 	elif p >= 4:
-		g._paragraph("THE CAUSAL SPINE — FORMING  (PERCEPTION %d)\nTHE SIX VICTIMS  ═  THE INHERITED FORTUNE  —  AN UNEXPLAINED PASSAGE\nTwine stretches across the center of the board. The line between the insurance fortune and the murders is visible, but the final connection beneath the house still lacks its last link." % p,21)
+		var closing = "Twine stretches across the center of the board. The line between the insurance fortune and the murders is visible, but the final connection beneath the house still lacks its last link." if fortune else "Twine stretches across the center of the board. The six dead men are accounted for; what ties them to anything larger is not yet in evidence."
+		g._paragraph("THE CAUSAL SPINE — FORMING  (PERCEPTION %d)\n%s\n%s" % [p,spine_line,closing],21)
 	else:
 		g._paragraph("THE CAUSAL SPINE — UNRESOLVED  (PERCEPTION %d)\nA scatter of individual cards. Twine hangs loose between the columns. The board waits for more of the case to be seen before the underlying spine can connect." % p,19)
 	g._button("Read the complete notebook",g._journal)

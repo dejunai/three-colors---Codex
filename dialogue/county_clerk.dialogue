@@ -27,20 +27,20 @@ TOPIC: wage_claim_inquiry
   MR. PENCE: "You'd need a living claimant. A next of kin with legal standing."
   WALTER CORWIN: "The mother is dead. The boy found with her is dead."
   MR. PENCE: "Then the claim abates. An estate requires an administrator appointed by probate, and Judge Wexford's seat is vacant, as you know."
-  WALTER CORWIN: "There is another son. Surviving."
-  MR. PENCE: "How old is the boy?"
-  WALTER CORWIN: "Six years old. Ekon."
+  WALTER CORWIN: "There is another child. Grown, and gone off on his own account, by her landlady's telling. Surviving."
+  MR. PENCE: "Where is he?"
+  WALTER CORWIN: "I don't know."
   [Mr. Pence sets his dry pen into the brass stand without looking up.]
-  MR. PENCE: "Then you have brought me no claimant at all, Officer.\nHe could stand on this stool and reach across the counter with both hands; he could not tender an affidavit.\nThe Commonwealth has no mechanism for a child to petition for maritime debt, full stop."
-  MR. PENCE: "Until that boy is twenty-one, the law considers him incapable of being owed anything a court is obliged to see."
+  MR. PENCE: "Then you have brought me no claimant at all, Officer.\nA next of kin with no fixed address cannot tender an affidavit, and a court will not seat a claim on a name alone."
+  MR. PENCE: "Find him standing in this room, or the claim has no one to belong to."
   FORK:
-    CHOICE: "Ask what becomes of a child's debt for fifteen years."
-      WALTER CORWIN: "So a debt simply evaporates because the heir is small?"
-      MR. PENCE: "It does not evaporate, Corwin. It abates.\nIf a debt outlives the debtor and the creditor before standing arrives, that is the nature of time, not a flaw in the statute."
-      NOTEBOOK: clerk_claim_minor | "Registrar: categorical legal bar. A six-year-old child cannot petition for maritime debt even standing in the room. The claim abates until majority."
-      EVIDENCE: claim_minor_ineligible
+    CHOICE: "Ask what becomes of a debt with no claimant to stand for it."
+      WALTER CORWIN: "So a debt simply evaporates because nobody's found?"
+      MR. PENCE: "It does not evaporate, Corwin. It abates.\nIf a debt outlives the men who could press it before anyone stands to claim it, that is the nature of time, not a flaw in the statute."
+      NOTEBOOK: clerk_claim_minor | "Registrar: a wage claim requires a living claimant physically present. Naomi's surviving son is grown and gone off on his own account, whereabouts unknown; the claim has no one to stand for it."
+      EVIDENCE: claim_no_claimant
     CHOICE: "Insist on filing in triplicate under police authority."
-      WALTER CORWIN: "The boy is six. Enter the claim in triplicate under my name as reporting officer, to preserve the record until he's of age."
+      WALTER CORWIN: "Enter the claim in triplicate under my name as reporting officer, to preserve the record until he's found."
       [Mr. Pence looks up over wire spectacles, pen poised.]
       MR. PENCE: "I will stamp it as received correspondence, Officer.\nIt sits in the dead-records drawer. It creates no lien, and twenty years from now nobody will look in that drawer."
       NOTEBOOK: clerk_claim_triplicate | "Wage claim submitted in triplicate as police correspondence to preserve for the minor child Ekon; filed inertly in county dead-records drawer."
@@ -58,7 +58,7 @@ TOPIC: ophion_settlement
   MR. PENCE: "Noted as 'Lost at sea; accounts closed by total abandonment.' No lay shares were distributed."
   WALTER CORWIN: "The same families bought the harbor mills eighteen months later."
   MR. PENCE: "The ledger notes transactions, Officer. It does not pass moral judgments on timing."
-  NOTEBOOK: clerk_ophion_1 | "1820s probate records: ,000 insurance paid to Pruitt/Corliss/Wexford syndicates. Crew accounts closed as total loss; zero lays paid."
+  NOTEBOOK: clerk_ophion_1 | "1820s probate records: $84,000 insurance paid to Pruitt/Corliss/Wexford syndicates. Crew accounts closed as total loss; zero lays paid."
   EVIDENCE: insurance_fraud_record
 
 TOPIC: sixth_member_deed

@@ -4,7 +4,7 @@ extends RefCounted
 # to existing rooms/frontages; they do not silently create new buildings.
 const Runtime = preload("res://scripts/shared/dialogue_runtime.gd")
 const BASE = {"business_district":"business", "upper_residential_ridge":"upper", "lower_residential":"lower", "pickman_street":"town", "town_hall":"precinct"}
-const HOME = {"miss_wexley":"upper_house_1", "mrs_pell":"upper_house_2", "mr_vane":"upper_house_3", "miriam_ashcroft":"upper_house_4", "sebastian_wick":"upper_house_5", "eleanor_whitlock":"upper_house_6", "gazette_editor":"printer"}
+const HOME = {"miss_wexley":"upper_house_1", "mrs_pell":"upper_house_2", "mr_whitehouse":"upper_house_3", "miriam_ashcroft":"upper_house_4", "sebastian_wick":"upper_house_5", "eleanor_whitlock":"upper_house_6", "gazette_editor":"printer"}
 const SLOTS = {
 	"museum":["museum",Vector3(2,0,-4)], "museum_committee":["museum",Vector3(-2,0,-4)],
 	"stationer":["stationer",Vector3(3,0,-3)], "haberdasher":["haberdasher",Vector3(3,0,-3)],

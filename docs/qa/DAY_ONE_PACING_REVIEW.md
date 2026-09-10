@@ -2,6 +2,8 @@
 
 9 September 2026. Codex review requested by Dejunai following the live dialogue integration and arrival polish. **Assessment and proposed changes only; no gameplay or authored dialogue changed in this pass.**
 
+**Update, same day (GitHub Copilot):** Findings 1–3 implemented and regression-tested (`--qa-phase2`, `--qa-staging`, `--qa-town`, `--qa-usability`, `--qa`). Finding 4 (the first steward visit) remains open — the review itself asks for the actual fact to be decided with Dejunai before writing it.
+
 ## Recommendation
 
 The opening already has a strong investigation: eight deaths, an official account that privileges six, and a woman whose name Walter can recover through ordinary police work. Make that work rewarding before the game explains its horror.
@@ -29,6 +31,14 @@ This is a spine to support, not a forced itinerary. A fast player may finish it 
 
 ### 1. The board can disclose the chapter's explanation before its evidence exists
 
+**Resolved.** `chapter_one_archive.gd::_board()` now builds the spine's clauses from actual evidence
+(`register`/`ophion_myth_classical`/`insurance_fraud_record`/`behan_name` for the fortune clause,
+`lower_foundation`/`tunnel_complete`/`municipal_foundation` for the passage clause,
+`club_devotion`/`maternal_delusion`/the `chosen_delusion`/`same_maternal_words` links for the
+presence clause) instead of asserting all four unconditionally at Perception 5. The tier headers
+(UNRESOLVED/FORMING/COMPLETE) still key off Perception, per the bible's own "window onto the
+mechanic, never the mechanic's gate" rule; only the *content* of each tier is now evidence-gated.
+
 `case_state.gd::perception()` returns `2 + min(3, evidence_count / 3) + min(3, link_count)`. `chapter_one_archive.gd::_board()` displays the COMPLETE causal-spine paragraph at Perception 5, without checking the underlying discoveries or tunnel progress. Eight opening observations plus `intake` give nine records and Perception 5 with zero manual links. Opening the board then announces an undersea passage and a summoned presence. At six observations, its FORMING paragraph can already assert an inherited fortune and unexplained passage.
 
 **Proposed first fix:** retain Perception rewards and progression; make board prose evidence-aware. An early, well-supported case can be described as well corroborated while its cause remains unresolved. Only display relationships supported by the player's actual records. Do not solve this by arbitrarily raising the stat threshold or requiring manual linking. Bible v15 explicitly rejects forcing an unearned theological summary into a minimally engaged player's head.
@@ -36,6 +46,11 @@ This is a spine to support, not a forced itinerary. A fast player may finish it 
 Acceptance: open the board with (a) six estate records, (b) eight estate records plus intake, and (c) early records plus valid links. None may introduce a passage, summoned presence, or historical causal claim absent from those records. Later supported discoveries must still appear, and the minimal progression route must remain playable.
 
 ### 2. Several older successful-link paragraphs invent facts or upgrade testimony into certainty
+
+**Resolved.** All six flagged `deduction` texts (`naomi_lay`, `naomi_address`, `count_disagreement`,
+`chosen_delusion`, `same_door`, `two_drawings`) in `chapter_one_archive.gd`'s `LINKS` table were
+rewritten to match only what their two linked observations actually establish — no invented
+documents, no upgraded witness counts, no confirmed supernatural covenant, no terrified staging.
 
 The connection-result screen renders both `summary` and `deduction`. This is player-facing text, not dormant commentary.
 
@@ -50,6 +65,12 @@ The connection-result screen renders both `summary` and `deduction`. This is pla
 
 ### 3. The objective text rushes past the best new investigation
 
+**Resolved.** `chapter_one.gd` gained `_open_lead()`, appended to the two objective lines the review
+flagged. It only ever names a lead the player has already opened (`service_work` → the steward's
+staff records, `lay_lead` → the registrar, `press_suppression` → the Gazette editor), falling back
+to a generic pointer at Almy's ledger/account when none of those are in evidence yet — never naming
+a fact or witness Walter hasn't actually learned.
+
 After Naomi is identified, `_objective()` directs Walter straight back to the steward. After that first visit it says there is nothing more from him tonight and directs Walter to sleep. This bypasses the ledger, wage inquiry, estate-work question and most new residents as far as the main guidance is concerned. The content remains available, but the guidance suggests that the day's useful work is over.
 
 **Proposed fix:** show a short, evidence-dependent open lead alongside the required appointment. Prioritize Almy's ledger, the source of the official account, or the estate-work inquiry according to what the player has heard. Name no witness or fact Walter has not learned. Keep a clear route to the steward and sleep; do not turn optional witnesses into a checklist or add another gate.
@@ -57,6 +78,9 @@ After Naomi is identified, `_objective()` directs Walter straight back to the st
 A compliant player can follow records and identify Naomi. A resistant player can challenge the heading or editor and preserve a contested account. A mixed player can do either in either order. These are emphases of the same investigation, not moral categories or separate locked tracks.
 
 ### 4. The required first steward trip currently ends with a near-empty refusal
+
+**Still open.** Pending the actual fact (what limited, mundane thing the steward says about the
+relevant staff record) being decided with Dejunai, per this section's own instruction below.
 
 Sleep requires intake, Naomi's identification and a first steward visit. Yet the entire Day 1 steward exchange is currently: “Good evening, Officer. Nothing further tonight. I have the room to put in order.” It can occur before evening. The visit is counted and unlocks sleep, but the player receives almost no answer for the return walk. The groundskeeper becomes available afterward, which helps, but is optional and easy to miss.
 

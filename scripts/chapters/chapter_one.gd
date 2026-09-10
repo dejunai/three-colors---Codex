@@ -367,6 +367,15 @@ func _estate_observation(id:String,return_to_barman:bool=false) -> void:
 		else: _close(); _toast("Recorded in Walter's case file.  [ Tab ]",4)
 	)
 
+func _open_lead() -> String:
+	# Names only what Walter has actually learned; never a witness or fact he
+	# hasn't earned yet. Priority favors whichever thread the player already
+	# opened, so the guidance reads as a continuation, not a checklist.
+	if state.evidence.has("service_work"): return " The steward keeps the estate's staff records; he may say who engaged her."
+	if state.evidence.has("lay_lead"): return " The county registrar can say whether her old wage claim could still be pressed."
+	if state.evidence.has("press_suppression"): return " The Gazette's own editor has already admitted what his paper left out."
+	return " Mrs. Almy's meal ledger, or her own account of why Naomi came to town, remain open questions."
+
 func _objective() -> String:
 	if state.world == "tunnel":
 		return "Return to the service stair with the measurements." if state.evidence.has("lower_foundation") else "Compare the lower support with the service plan. The outer service walk remains open."
@@ -374,8 +383,8 @@ func _objective() -> String:
 		if not state.intake_done: return "Submit your estate report at the precinct intake counter on Pickman Street."
 		if not state.evidence.has("naomi"): return "Speak to Mrs. Almy at her boardinghouse on Pickman Street. Ask who the woman was."
 		if not state.finished:
-			if state.steward_visits == 0: return "Return to the estate. Speak to the steward inside the smoking lounge, through the service entrance."
-			if state.day < 3: return "There is nothing more from the steward tonight. Return to your room above the cobbler's and sleep."
+			if state.steward_visits == 0: return "Return to the estate. Speak to the steward inside the smoking lounge, through the service entrance." + _open_lead()
+			if state.day < 3: return "There is nothing more from the steward tonight. Return to your room above the cobbler's and sleep." + _open_lead()
 			if state.steward_visits < 3: return "Return to the smoking lounge. The steward asked you to leave your badge behind."
 		if state.finished: return "The first town inquiry is recorded. You can revisit witnesses, file a supplement, or review Walter's board."
 		return "Continue questioning Mrs. Almy or file a dated supplement at the precinct. Set the notebook on your desk above the cobbler's when ready to end the day."
