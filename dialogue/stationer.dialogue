@@ -31,7 +31,7 @@ TOPIC: the_corkboard_twine
   MR. FINCH: "Facts don't drift, Walter. Men do.\nWhen my ledger shows an inventory deficit, I don't string twine across the shelves. I look at who holds the key."
   NOTEBOOK: stationer_twine_1 | "Mr. Finch: 'Facts don't drift, Walter. Men do.' Observed that only Walter uses merchant twine to bind cards."
 
-TOPIC: fennel_orders
+TOPIC: fenn_orders
   GATE: evidence(knife)
   TAG: stationer_parchment
   LABEL: "Ask about Dr. Fenn's stationery orders"

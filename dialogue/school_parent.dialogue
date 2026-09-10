@@ -49,4 +49,4 @@ TOPIC: the_estate_talk
     CHOICE: "Ask about Dr. Fenn."
       MRS. TEAGUE: "Dr. Fenn delivered both my boys. A gentleman, though he grew peculiar after his sister passed.\nHe wouldn't prescribe camphor anymore. Said the smell 'attracted things from the cellar.'\nWe thought it was his age."
       NOTEBOOK: parent_fenn_peculiar | "Dr. Fenn stopped prescribing camphor, claiming the odor 'attracted things from the cellar.'"
-      EVIDENCE: fennel_camphor_taboo
+      EVIDENCE: fenn_camphor_taboo
