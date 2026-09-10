@@ -29,10 +29,10 @@ TOPIC: the_stopped_watch
   WALTER CORWIN: "Then why did it stop?"
   MR. VANE: "The balance staff didn't break, Walter. The hairspring fused."
   WALTER CORWIN: "Fused?"
-  MR. VANE: "The blued steel coils welded together at three points, as if subjected to an instantaneous inductive charge.\nOr an abrupt cessation of local inertia. I've only seen that once before in my life."
-  WALTER CORWIN: "Where?"
-  MR. VANE: "A ship's chronometer brought back from the drowned reef in 1890. Every tooth intact, yet frozen solid in mid-tick."
-  NOTEBOOK: clockmaker_watch_1 | "Watchmaker: the gold watch stopped at 3:17 with a fully wound spring; blued steel hairspring fused identically to an 1890 reef chronometer."
+  MR. VANE: "The blued steel coils appear joined at three points. I can show you under the glass. I cannot tell you what joined them."
+  WALTER CORWIN: "Does that tell you when it stopped?"
+  MR. VANE: "It tells me why it cannot run now. The hands are not a certificate of the hour it failed."
+  NOTEBOOK: clockmaker_watch_1 | "Vane examined the fully wound watch and showed three joined points in its hairspring. He could not establish their cause or when the mechanism stopped."
   EVIDENCE: fused_hairspring_anomaly
 
 TOPIC: tryworks_instruments

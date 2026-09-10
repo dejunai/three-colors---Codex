@@ -8,6 +8,9 @@ extends RefCounted
 # One's own content and deliberately does not live in case_state.gd, which
 # stays chapter-agnostic and only counts confirmed link ids.
 const LINKS := {
+	"estate_day_book|service_work": {"id":"staff_book_entry", "title":"AN ENTRY IN THE STAFF BOOK", "summary":"Almy recalls Naomi asking about estate work. The staff book records N. Freeman doing day work in the kitchen wing. The entry is consistent with her account, without establishing why Naomi died."},
+	"curriculum_abridgment|reader_omission_letter": {"id":"reader_omission", "title":"THE ABRIDGMENT IN WRITING", "summary":"Abernathy describes omitting the crew list. The school's covering letter records that instruction and committee approval. The document corroborates the decision he acknowledged."},
+
 	"eight|press_suppression": {"id": "press_count", "title": "THE PAPER CHOSE SIX", "summary": "Walter counted eight dead. The editor admits that his paper reported six subscribers. The omission is acknowledged by its source.", "deduction": "Walter counted eight dead. The editor admits that his paper reported six subscribers. The omission is acknowledged by its source."},
 	"kessler_knife_confirmed|knife": {"id": "knife_owner", "title": "A TOOL WITH AN OWNER", "summary": "The knife observed at the estate now has an identified owner: Mrs. Kessler recognizes Otto's tool and says he carried it to the club.", "deduction": "The knife observed at the estate now has an identified owner: Mrs. Kessler recognizes Otto's tool and says he carried it to the club."},
 	"fused_hairspring_anomaly|watch": {"id": "watch_examination", "title": "THE STOPPED MOVEMENT", "summary": "The watch found in the garden has been examined by the clockmaker. His account of its fused hairspring adds a mechanical observation; it does not establish the cause.", "deduction": "The watch found in the garden has been examined by the clockmaker. His account of its fused hairspring adds a mechanical observation; it does not establish the cause."},
@@ -18,38 +21,38 @@ const LINKS := {
 	"lodging|naomi": {
 		"id": "naomi_address",
 		"title": "TWO RECORDS, ONE WOMAN",
-		"summary": "Mrs. Almy's statement and the meal ledger name the same woman. The ledger corroborates her account rather than standing apart from it.",
-		"deduction": "Mrs. Almy identified her boarder as Naomi Freeman. The meal ledger, kept at Almy's own establishment, records two meals and a small carried balance under the same name. It is not an independent witness — it is Almy's own book — but it is a second, physical record agreeing with her word."
+		"summary": "Almy identifies Naomi Freeman. Her meal ledger records N. Freeman and two meals, with a balance carried forward. The contemporary entry corroborates her recollection; it does not establish the boy's name.",
+		"deduction": "Almy identifies Naomi Freeman. Her meal ledger records N. Freeman and two meals, with a balance carried forward. The contemporary entry corroborates her recollection; it does not establish the boy's name."
 	},
 	"lay_lead|naomi": {
 		"id": "naomi_lay",
 		"title": "THE CLAIM HAS A NAME NOW",
-		"summary": "The wage claim belongs to a woman with a name now. It still does not establish why she was killed.",
-		"deduction": "Mrs. Almy recalls Naomi speaking of a whaler's lay owed to a Freeman ancestor lost with the Ophion. Almy never saw the document herself — this ties a name to the claim, not a document to Walter's own hand. What brought Naomi to Widow's Bight now has a name attached to it; why she died still does not."
+		"summary": "Almy identifies Naomi Freeman and recalls her seeking an unpaid whaling lay. Walter has not examined the claim. This is an account of what brought Naomi to town, not an explanation for her death.",
+		"deduction": "Almy identifies Naomi Freeman and recalls her seeking an unpaid whaling lay. Walter has not examined the claim. This is an account of what brought Naomi to town, not an explanation for her death."
 	},
 	"eight|intake": {
 		"id": "count_disagreement",
 		"title": "THE HEADING DISAGREES WITH THE COUNT",
-		"summary": "The precinct's own heading disagrees with Walter's report. The disagreement has a source on each side; neither page replaces the other.",
-		"deduction": "The desk sergeant's heading specifies 'Six male victims; members of the Ophion Club.' Walter's own field survey documents eight bodies, including the woman and boy behind the birches. The two records disagree before the investigation is even filed. Whether the omission was a deliberate choice or the reflexive shape the town gives everything is not something these two pages can settle by themselves."
+		"summary": "Walter's recorded count is eight. The captain's heading received at intake names six club members and an apparent accident. Both records are preserved; the heading does not account for the other two deaths.",
+		"deduction": "Walter's recorded count is eight. The captain's heading received at intake names six club members and an apparent accident. Both records are preserved; the heading does not account for the other two deaths."
 	},
 	"lower_foundation|municipal_foundation": {
 		"id": "two_drawings",
 		"title": "TWO DRAWINGS, ONE LIMIT",
-		"summary": "The service plan and the municipal sheet agree on where the foundation ends. The passage does not. The extension remains unexplained.",
-		"deduction": "The municipal survey and the estate's own service plan agree, stone for stone, on where the cellar's foundation ends. Walter's own paced measurement continues well past that shared limit. Both drawings agree on a boundary the passage itself does not respect; neither page explains what lies beyond it."
+		"summary": "The municipal sheet and service plan end at the same support. Walter's measured passage continues beyond it. Their agreement corroborates the discrepancy, not its date, purpose or maker.",
+		"deduction": "The municipal sheet and service plan end at the same support. Walter's measured passage continues beyond it. Their agreement corroborates the discrepancy, not its date, purpose or maker."
 	},
 	"behan_name|old_woman": {
 		"id": "chosen_delusion",
 		"title": "A DELUSION OF BEING CHOSEN",
-		"summary": "A priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making.",
-		"deduction": "Father Behan dismisses the Ophion founders' belief that they were chosen as a vain man's flattering delusion — classical vanity, nothing more. The woman outside Kessler's shop warns that whatever answered them was never a chosen relationship at all, only appetite. Neither speaker knew the other had said anything. Walter is left holding both halves of an argument he cannot yet resolve on his own."
+		"summary": "Behan describes the club's belief in being chosen. An unnamed woman warns Walter about the old gods. Their statements can be compared; neither establishes the existence or nature of a covenant.",
+		"deduction": "Behan describes the club's belief in being chosen. An unnamed woman warns Walter about the old gods. Their statements can be compared; neither establishes the existence or nature of a covenant."
 	},
 	"crew|pantry_lead": {
 		"id": "same_door",
 		"title": "THE GROUNDSKEEPER AND THE STEWARD",
-		"summary": "One keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why.",
-		"deduction": "The groundskeeper keeps a fixed, deliberate distance from the kitchen wing's service door, the same distance every time, never explained beyond an uneven step. Behind that same door, the steward will not go near the boarded pantry either. Neither man reads as frightened — both are simply certain, in the same unhurried way, that the door isn't theirs to open."
+		"summary": "The groundskeeper keeps a precise distance from the kitchen-wing service entrance. The steward names a boarded pantry door in that wing and refuses to show it. Both accounts draw attention to the wing; neither explains the behavior or makes the two doors identical.",
+		"deduction": "The groundskeeper keeps a precise distance from the kitchen-wing service entrance. The steward names a boarded pantry door in that wing and refuses to show it. Both accounts draw attention to the wing; neither explains the behavior or makes the two doors identical."
 	}
 }
 
@@ -220,27 +223,11 @@ func _board(g:Node) -> void:
 			g._paragraph("CONNECTIONS DRAWN",14)
 			confirmed=true
 		g._paragraph(str(entry.title)+"\n"+str(entry.summary),22)
-	var p = g.state.perception()
-	# The spine's clauses are earned individually; Perception only gates *when*
-	# the board can start asserting a shape, never *which* claims it's allowed
-	# to make. A high Perception reached through unrelated evidence must not
-	# announce a passage or a presence nobody has actually found yet.
-	var fortune = g.state.evidence.has("register") or g.state.evidence.has("ophion_myth_classical") or g.state.evidence.has("insurance_fraud_record") or g.state.evidence.has("behan_name")
-	var passage = g.state.evidence.has("lower_foundation") or g.state.tunnel_complete or g.state.evidence.has("municipal_foundation")
-	var presence = g.state.evidence.has("club_devotion") or g.state.evidence.has("maternal_delusion") or g.state.has_link("chosen_delusion") or g.state.has_link("same_maternal_words")
-	var clauses:Array[String] = ["SIX MEN IN EVENING DRESS"]
-	if fortune: clauses.append("THE OPHION'S SINKING")
-	if passage: clauses.append("AN UNDERSEA PASSAGE")
-	if presence: clauses.append("A SUMMONED PRESENCE")
-	var spine_line = "  ═  ".join(clauses)
-	if p >= 5:
-		var closing = "Every fact has found its parent. The twine connects the rose garden to the cellar without an empty card between them. Walter did not choose the moment the board went whole; the shape closed itself." if (fortune and passage and presence) else "The board is well corroborated for what it currently holds. Whatever still connects beneath the house is not yet Walter's to claim."
-		g._paragraph("THE CAUSAL SPINE — COMPLETE  (PERCEPTION %d)\n%s\n%s" % [p,spine_line,closing],22)
-	elif p >= 4:
-		var closing = "Twine stretches across the center of the board. The line between the insurance fortune and the murders is visible, but the final connection beneath the house still lacks its last link." if fortune else "Twine stretches across the center of the board. The six dead men are accounted for; what ties them to anything larger is not yet in evidence."
-		g._paragraph("THE CAUSAL SPINE — FORMING  (PERCEPTION %d)\n%s\n%s" % [p,spine_line,closing],21)
-	else:
-		g._paragraph("THE CAUSAL SPINE — UNRESOLVED  (PERCEPTION %d)\nA scatter of individual cards. Twine hangs loose between the columns. The board waits for more of the case to be seen before the underlying spine can connect." % p,19)
+	g._paragraph("CAUSE UNRESOLVED  (PERCEPTION %d)\nA fuller record sharpens the questions. It does not supply an answer absent from the evidence." % g.state.perception(),22)
+	if g.state.evidence.has("eight") and g.state.evidence.has("intake"):
+		g._paragraph("THE RECORDED COUNT\nEight deaths in Walter's notes; six club members in the captain's heading. Both sources remain on file.",20)
+	if g.state.evidence.has("lower_foundation"):
+		g._paragraph("THE MEASURED PASSAGE\nWalter measured a passage beyond the recorded foundation. Its cause remains unestablished.",20)
 	g._button("Read the complete notebook",g._journal)
 	g._button("Step away from the board",g._close)
 	g._focus_first()
@@ -327,7 +314,7 @@ func _link_result(g:Node,first_id:String,second_id:String) -> void:
 		g._paragraph("Nothing changed. No evidence or Perception was lost.",18)
 	else:
 		g._paragraph(str(link.title)+"\n"+str(link.summary),24)
-		if link.has("deduction"):
+		if link.has("deduction") and str(link.deduction) != str(link.summary):
 			g._paragraph(str(link.deduction),21)
 		var after = g.state.perception()
 		if not already: g._save_game()

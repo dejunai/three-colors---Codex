@@ -65,3 +65,15 @@ TOPIC: holding_the_letters
   MR. CRUMP: "The United States Post Office does not alter postal statutes because a patron suffered a misfortune, Corwin.\nBring me a federal order, or leave the window."
   NOTEBOOK: postal_refusal_1 | "Postmaster refused to surrender Naomi's letters from her six-year-old son, citing federal postal statute Section 3891."
   EVIDENCE: postal_bureaucracy_refusal
+
+# Shared inquiry: four different completed refusals make the question travel.
+TOPIC: crew_omission
+  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(post_office_clerk, crew_omission)
+  TAG: post_office_clerk_crew_omission
+  LABEL: "Ask why the town's history leaves out the crew's names"
+  TIME: 3
+  WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  MR. CRUMP: "I deliver the Historical Society's circulars. I don't compose them."
+  WALTER CORWIN: "You have never wondered whose names are missing?"
+  MR. CRUMP: "I have a queue, Officer. The museum can answer for its own envelopes."
+  NOTEBOOK: crew_omission_refusal | "Asked Mr. Crump why the crew's names are missing from the town's history. No explanation supplied; the question remains open."

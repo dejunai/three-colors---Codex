@@ -26,16 +26,16 @@ TOPIC: ship_origin
   WALTER CORWIN: "The flagship Ophion. Who named her?"
   MR. ABERNATHY: "Elias Pruitt, 1819. A gentleman of classical discernment, educated at Harvard College."
   [He taps a framed pen-and-ink rendering of the three-masted bark on the wood-paneled wall.]
-  MR. ABERNATHY: "In Orphic cosmogony, Ophion was the primordial serpent who ruled Mount Olympus alongside Eurynome before being cast down into Tartarus by Kronos."
-  WALTER CORWIN: "A serpent cast down."
+  MR. ABERNATHY: "Ophion is a name from Greek mythology. Classical names were fashionable among the merchant families."
+  WALTER CORWIN: "A classical name for a commercial vessel."
   MR. ABERNATHY: "A respectable classical flourish, Officer! It was fashionable among Federalist merchant families to bestow Greek and Roman names upon commercial ventures. Nothing more sinister than an educated man's literary vanity."
   WALTER CORWIN: "The club kept the name."
-  MR. ABERNATHY: "To honor their forebears' enterprise. Though I confess... Dr. Fenn and Judge Wexford began collecting later theological interpretations that modern scholarship finds quite absurd."
-  NOTEBOOK: historian_ophion_1 | "Historian explains the Ophion was named in 1819 from Orphic cosmogony (primordial serpent overthrown); insists it was mere classical vanity by merchants."
+  MR. ABERNATHY: "To honor their forebears' enterprise. That is the Society's account."
+  NOTEBOOK: historian_ophion_1 | "Abernathy attributes the ship's name to Elias Pruitt's classical tastes in 1819. He says the club retained it to honor the owners' enterprise."
   EVIDENCE: ophion_myth_classical
 
 TOPIC: dr_fenn_library
-  GATE: evidence(ophion_myth_classical)
+  GATE: evidence(ophion_myth_classical) AND evidence(club_talk)
   TAG: historian_fenn_books
   LABEL: "Ask what Dr. Fenn was researching in the archives"
   TIME: 6
@@ -53,7 +53,7 @@ TOPIC: dr_fenn_library
       EVIDENCE: estate_conduit_map
 
 TOPIC: the_free_crew
-  GATE: evidence(lay_lead) AND NOT topic_done(local_historian, the_free_crew)
+  GATE: evidence(lay_lead) AND topic_done(local_historian, crew_omission_followup) AND NOT topic_done(local_historian, the_free_crew)
   TAG: historian_crew_lineage
   LABEL: "Ask about free Black whalemen aboard the 1823 voyage"
   TIME: 5
@@ -65,3 +65,30 @@ TOPIC: the_free_crew
   MR. ABERNATHY: "Because a town registry is written by living clerks to serve living landowners, Officer.\nPaper forgets whatever it is inconvenient to remember."
   NOTEBOOK: historian_crew_1 | "Historian confirms the Freeman whaling lineage was free by Massachusetts law since 1780s; calls town's 'transient' label a living clerk's convenience."
   EVIDENCE: freeman_lineage_free
+
+TOPIC: crew_omission_official
+  GATE: (evidence(lay_lead) OR evidence(sanitized_textbook)) AND NOT topic_done(local_historian, crew_omission_official)
+  TAG: historian_crew_official
+  LABEL: "Ask why the town's history leaves out the crew's names"
+  TIME: 4
+  WALTER CORWIN: "The town remembers the estates that paid for its recovery. Where are the names of the men who sailed?"
+  MR. ABERNATHY: "A civic history concerns the town's recovery, Officer. A crew list concerns a ship. Different documents serve different purposes."
+  WALTER CORWIN: "Who decided which people belonged in which document?"
+  MR. ABERNATHY: "The Society stands by its account. I have nothing to add."
+  NOTEBOOK: crew_official | "Abernathy defended separating the crew list from the civic history. He would not explain the editorial decision. Other people in town may remember how the account was circulated."
+
+TOPIC: crew_omission_followup
+  GATE: topic_done(local_historian, crew_omission_official) AND topic_count(crew_omission) >= 4 AND NOT topic_done(local_historian, crew_omission_followup)
+  TAG: historian_crew_followup
+  LABEL: "Return to the question of the missing crew names"
+  TIME: 6
+  MR. ABERNATHY: "I hear you've been asking why the crew's names are missing."
+  [He closes the museum visitor book.]
+  WALTER CORWIN: "I have been asking the same question. I haven't had an answer."
+  MR. ABERNATHY: "The question has been repeated to me rather less politely. If the Society is to be accused of an omission, I would prefer it described accurately."
+  WALTER CORWIN: "Then describe it."
+  MR. ABERNATHY: "I prepared the abridgment for the school reader. The committee asked for the rebuilding of the town. I retained the subscriptions and left out the crew list."
+  WALTER CORWIN: "Your decision?"
+  MR. ABERNATHY: "My pencil, Officer. The committee approved the page. Miss Hallowell received the covering letter with her copies. Ask her for the letter before you assign anyone else's hand to it."
+  NOTEBOOK: reader_source | "Abernathy says he omitted the crew list when abridging the civic history for the school reader. He says the committee approved it and Hallowell received a covering letter. The letter has not yet been examined."
+  EVIDENCE: curriculum_abridgment

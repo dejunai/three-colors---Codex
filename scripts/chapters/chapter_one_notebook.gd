@@ -3,8 +3,7 @@ extends RefCounted
 # Render detached values only. No CaseState reference, discovery, linking, or save API.
 func render(view:CanvasLayer,snapshot:Dictionary,facts:Dictionary,links:Dictionary,close:Callable) -> void:
 	var p = int(snapshot.perception)
-	var spine = "COMPLETE" if p >= 5 else ("FORMING" if p >= 4 else "UNRESOLVED")
-	view._paragraph("THE CAUSAL SPINE — %s  (PERCEPTION %d)" % [spine,p],22)
+	view._paragraph("CAUSE UNRESOLVED  (PERCEPTION %d)" % p,22)
 	if snapshot.evidence.is_empty(): view._paragraph("No observations recorded yet.")
 	for id in snapshot.evidence:
 		if not facts.has(id): continue

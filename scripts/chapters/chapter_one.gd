@@ -383,8 +383,12 @@ func _objective() -> String:
 		if not state.intake_done: return "Submit your estate report at the precinct intake counter on Pickman Street."
 		if not state.evidence.has("naomi"): return "Speak to Mrs. Almy at her boardinghouse on Pickman Street. Ask who the woman was."
 		if not state.finished:
-			if state.steward_visits == 0: return "Return to the estate. Speak to the steward inside the smoking lounge, through the service entrance." + _open_lead()
-			if state.day < 3: return "There is nothing more from the steward tonight. Return to your room above the cobbler's and sleep." + _open_lead()
+			if state.steward_visits == 0:
+				return "Return to the estate's smoking lounge through the service entrance. You can also corroborate Naomi's visit in Almy's meal ledger." if not state.evidence.has("lodging") else "Ask Almy about Naomi's work at the estate, then visit the steward through the service entrance." if not state.evidence.has("service_work") else "Ask the steward about the staff records inside the smoking lounge, through the service entrance."
+			if state.day < 3:
+				if state.evidence.has("curriculum_abridgment") and not state.evidence.has("reader_omission_letter"): return "Hallowell has the covering letter Abernathy mentioned. Ask at the school. You may return to your room and sleep when ready."
+				if state.dialogue_state.topic_count("crew_omission") >= 4 and not state.evidence.has("curriculum_abridgment"): return "The question about the crew has met several refusals. Return to Abernathy at the museum, or sleep when ready."
+				return "The steward has deferred your questions. You can continue investigating or sleep when ready." + _open_lead()
 			if state.steward_visits < 3: return "Return to the smoking lounge. The steward asked you to leave your badge behind."
 		if state.finished: return "The first town inquiry is recorded. You can revisit witnesses, file a supplement, or review Walter's board."
 		return "Continue questioning Mrs. Almy or file a dated supplement at the precinct. Set the notebook on your desk above the cobbler's when ready to end the day."

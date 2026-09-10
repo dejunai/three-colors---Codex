@@ -104,10 +104,10 @@ func run(g:Node) -> void:
 	assert(g.page == "board")
 	var found_spine_forming = false
 	for child in g.content.find_children("*", "Label", true, false):
-		if child.text.contains("CAUSAL SPINE — FORMING"):
+		if child.text.contains("CAUSE UNRESOLVED"):
 			found_spine_forming = true
 			break
-	assert(found_spine_forming, "Corkboard must display forming causal spine at Perception 4")
+	assert(found_spine_forming, "Evidence count must not establish the cause")
 
 	# Walter connects NAOMI FREEMAN and A LOCAL ADDRESS -> confirms naomi_address link
 	var link = g.archive._try_link(g, "lodging", "naomi")
@@ -119,10 +119,10 @@ func run(g:Node) -> void:
 	g._board()
 	var found_spine_complete = false
 	for child in g.content.find_children("*", "Label", true, false):
-		if child.text.contains("CAUSAL SPINE — COMPLETE"):
+		if child.text.contains("CAUSE UNRESOLVED"):
 			found_spine_complete = true
 			break
-	assert(found_spine_complete, "Corkboard must display complete causal spine when Perception reaches 5 via drawn link")
+	assert(found_spine_complete, "A valid link increases Perception without inventing an explanation")
 	g._close()
 
 	print("PHASE 2 PASS: forced spill, inspectable loss, combat stagger, ammo spending, Strength scaling, drowned defeat, corkboard causal spine")

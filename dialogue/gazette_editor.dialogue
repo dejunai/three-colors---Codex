@@ -62,3 +62,15 @@ TOPIC: gas_main_origin
   MR. HALLECK: "He said an accidental expansion of foul air in the lower conduit caused sudden asphyxia.\nIt sounded Latin. It sounded respectable. It filled the column."
   NOTEBOOK: editor_gas_origin_1 | "Dr. Fenn's associate phoned the 'gas-main/foul air' explanation to the Gazette before dawn, prior to any autopsy."
   EVIDENCE: fabricated_foul_air
+
+# Shared inquiry: four different completed refusals make the question travel.
+TOPIC: crew_omission
+  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(gazette_editor, crew_omission)
+  TAG: gazette_editor_crew_omission
+  LABEL: "Ask why the town's history leaves out the crew's names"
+  TIME: 3
+  WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  MR. HALLECK: "A commemorative column is not a passenger manifest."
+  WALTER CORWIN: "They were the crew. Why leave their names out?"
+  MR. HALLECK: "Because a column has a bottom, Corwin. Take your complaint to the Historical Society."
+  NOTEBOOK: crew_omission_refusal | "Asked Mr. Halleck why the crew's names are missing from the town's history. No explanation supplied; the question remains open."

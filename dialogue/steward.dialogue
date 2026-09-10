@@ -21,14 +21,32 @@ TOPIC: default
   WALTER CORWIN: "Mrs. Almy says a woman came around asking about work here. Cleaning, laundry, anything she could carry home."
   THE STEWARD: "I heard the same, secondhand. Never caught a name.\n\nColored woman, I was told. That's the whole of what reached me."
   WALTER CORWIN: "Who would have taken her name down, if anyone did?"
-  THE STEWARD: "Nobody who still owes you an answer tonight, Officer.\n\nGood evening. I have the room to put in order."
+  THE STEWARD: "If a name was taken, it would be in the staff day book. The dining-room list is no use to you.\n\nNot now, Officer. I have the room to put in order."
   NOTEBOOK: steward_first_lead_1 | "The steward heard secondhand that a colored woman had asked about work at the estate; he never caught a name and won't say who told him."
   EVIDENCE: steward_heard_secondhand
 
 TOPIC: default
   GATE: day < 3
   TAG: steward_first
-  THE STEWARD: "Good evening, Officer. Nothing further tonight. I have the room to put in order."
+  WALTER CORWIN: "I need to ask about the people who came through the service entrance."
+  THE STEWARD: "Then ask for the day book. The seating list is for the dining room. It won't tell you who came to work."
+  WALTER CORWIN: "May I see the day book?"
+  THE STEWARD: "Not while I'm putting this room in order, Officer. Come back another day."
+  NOTEBOOK: first_day_book | "The steward distinguishes the staff day book from the dining-room seating list. He has not produced it. Ask for the day book on returning."
+
+TOPIC: day_book
+  GATE: steward_ready AND evidence(service_work) AND NOT topic_done(steward, day_book)
+  TAG: steward_day_book
+  LABEL: "Ask for the staff day book he mentioned"
+  TIME: 4
+  WALTER CORWIN: "You said the staff had a separate book. Mrs. Almy remembers Naomi asking for work here."
+  [The steward takes a narrow ruled book from beneath the sideboard.]
+  THE DAY BOOK: "N. FREEMAN — DAY WORK — KITCHEN WING."
+  THE STEWARD: "That is the entry. Copy it as it stands. I did not write her full name."
+  WALTER CORWIN: "Who can identify her?"
+  THE STEWARD: "The woman at the boardinghouse knew her. You have already spoken to her."
+  NOTEBOOK: day_book_entry | "Examined the staff day book: N. Freeman, day work, kitchen wing. Initial and surname are consistent with Almy's account; the entry alone does not identify its subject or explain the deaths."
+  EVIDENCE: estate_day_book
 
 TOPIC: club_talk
   GATE: steward_ready

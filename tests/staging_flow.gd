@@ -184,7 +184,7 @@ func run(g:Node) -> void:
 		g._notebook()
 		var label_text=""
 		for label in g.content.find_children("*","Label",true,false): label_text+=label.text
-		assert(label_text.contains("UNRESOLVED" if count==0 else ("FORMING" if count==6 else "COMPLETE")))
+		assert(label_text.contains("CAUSE UNRESOLVED"))
 		var buttons=g.content.find_children("*","Button",true,false)
 		assert(buttons.size()==1)
 		buttons[0].pressed.emit()

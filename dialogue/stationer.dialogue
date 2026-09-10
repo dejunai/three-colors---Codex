@@ -56,3 +56,15 @@ TOPIC: naomi_supplies
   MR. FINCH: "She wasn't writing a letter, Walter. She was copying a diagram.\nHer hands were steady. Steadier than mine."
   NOTEBOOK: stationer_naomi_linen | "Naomi Freeman bought drafting linen tested against salt-water damp to copy a diagram, using a graphite pencil."
   EVIDENCE: drafting_linen_diagram
+
+# Shared inquiry: four different completed refusals make the question travel.
+TOPIC: crew_omission
+  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(stationer, crew_omission)
+  TAG: stationer_crew_omission
+  LABEL: "Ask why the town's history leaves out the crew's names"
+  TIME: 3
+  WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  MR. FINCH: "I sell the school reader as it comes from the printer."
+  WALTER CORWIN: "No one asked why it names the benefactors and not the crew?"
+  MR. FINCH: "No one asked me. If you want the wording changed, you need someone other than a stationer."
+  NOTEBOOK: crew_omission_refusal | "Asked Mr. Finch why the crew's names are missing from the town's history. No explanation supplied; the question remains open."

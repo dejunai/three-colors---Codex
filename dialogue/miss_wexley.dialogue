@@ -41,3 +41,14 @@ TOPIC: freeman_claim
   MISS WEXLEY: "A woman can remain welcome in a drawing room, Officer, or she can become useful to your case. Rarely both."
   NOTEBOOK: wexley_freeman | "Miss Wexley recognized the Freeman wage claim and implied it was privately known among upper families, though never discussed in committee."
   EVIDENCE: freeman_whisper
+# Shared inquiry: four different completed refusals make the question travel.
+TOPIC: crew_omission
+  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(miss_wexley, crew_omission)
+  TAG: miss_wexley_crew_omission
+  LABEL: "Ask why the town's history leaves out the crew's names"
+  TIME: 3
+  WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  MISS WEXLEY: "A memorial cannot be expected to reproduce every ledger."
+  WALTER CORWIN: "It found room for the families who received the money."
+  MISS WEXLEY: "I shall not discuss the Society's editorial decisions on a doorstep. Mr. Abernathy has an office for that."
+  NOTEBOOK: crew_omission_refusal | "Asked Miss Wexley why the crew's names are missing from the town's history. No explanation supplied; the question remains open."

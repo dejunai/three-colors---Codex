@@ -117,3 +117,20 @@
 # **Part Six — Next Steps**
 
 **In rough priority order: build the ontological break — glass-shatter cue, aspect-ratio widening, color bleed, and the entity's manifestation — and the fatal-comprehension ending. This has been the single largest remaining piece of Chapter One for several revisions running, and none of this revision's work touches it. A genuine human playthrough of the expanded neighborhoods and the new dialogue corpus is the next most useful validation available — the project's own handoff document is explicit that a browser startup check is not a substitute for this, and none has yet happened. Fix the `CHOICE:`/`FORK:` hardcoded-speaker defect in `dialogue_lang.gd` before any Chapter Two `.dialogue` content is authored. Confirm the `Mr. Vane` rename and the `$84,000` formatting defect against actual current source. Decide the clockmaker/historian revelation-pacing question. Identify the specific "repeatable fork" topics the project's own handoff flagged as candidates for permanent exclusivity. Sweep the barman→steward, bar→smoking lounge terminology correction through this document and `ARCHITECTURE.md` themselves — player-facing text and most of the dialogue corpus already use the corrected terms, but this document's own Part Two/Three prose above and its prior revisions still say "barman." Confirm the day-clock's period-name vocabulary (`dawn`/`midday`/`dusk`/`night` vs. `morning`/`midday`/`evening`/`night`) is consistent between authored `SCHEDULE:` content and the runtime that reads it. Rebuild and publish the Web export once the above is settled — GitHub Pages has not been updated since before this pass's work. Give the Part Five material (per-protagonist presentation scheme, Chapter Two/Three audio plan, Ekon's ending) an actual bible/TDD pass before it's needed for production rather than after.**  
+
+
+## Implementation addendum — 10 September 2026: questions travel
+
+Dejunai authorized dialogue revision and cross-NPC consequences. Codex connected
+the historian's crew-list refusal to four distinct witnesses out of six; returning
+to him supplies the source for the schoolteacher's covering letter and unlocks her
+personal accounts. This uses the existing saved topic-source tally, with no new
+morality meter, time farming, save schema, or mandatory progression gate.
+
+The same pass removes unsupported causal conclusions from the early board and
+notebook, corrects older link results, improves optional-lead guidance, and gives
+the first steward appointment a day-book lead with a third-visit payoff.
+Full route, authoring convention, provenance, limitations and test results:
+[Social inquiry pass](../qa/SOCIAL_INQUIRY_PASS.md).
+The Grok case-file and intro remain visual references; no Grok code or assets
+were imported. Perception calculations and the Day 2 montage remain unchanged.

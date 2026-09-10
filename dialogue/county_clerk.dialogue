@@ -77,3 +77,15 @@ TOPIC: sixth_member_deed
   MR. PENCE: "The check arrives drawn on the Boston Marine Bank. It clears. The county does not return legal currency."
   NOTEBOOK: clerk_sixth_man_1 | "The sixth Ophion Club share is deeded to 'The Overseer of the Line' without personal name; taxes paid via Boston Marine Bank."
   EVIDENCE: overseer_deed
+
+# Shared inquiry: four different completed refusals make the question travel.
+TOPIC: crew_omission
+  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(county_clerk, crew_omission)
+  TAG: county_clerk_crew_omission
+  LABEL: "Ask why the town's history leaves out the crew's names"
+  TIME: 3
+  WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  MR. PENCE: "Crew names belong in a shipping list, Officer. This is a county office."
+  WALTER CORWIN: "I asked why the town's account leaves them out."
+  MR. PENCE: "Then ask whoever composed the account. I certify records. I do not improve them."
+  NOTEBOOK: crew_omission_refusal | "Asked Mr. Pence why the crew's names are missing from the town's history. No explanation supplied; the question remains open."

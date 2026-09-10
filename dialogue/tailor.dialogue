@@ -59,3 +59,15 @@ TOPIC: coat_lining
   MR. KREBS: "A black silk cord sewn into the inner breast hem. Shaped like a coiled eel.\nOr a worm. Not decorative. Tucked where only the wearer's hand would brush it when reaching for a pocket."
   NOTEBOOK: tailor_serpent_hem | "All club evening jackets contained a black silk cord stitched inside the inner breast hem, shaped like a coiled eel or worm."
   EVIDENCE: serpent_hem_motif
+
+# Shared inquiry: four different completed refusals make the question travel.
+TOPIC: crew_omission
+  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(tailor, crew_omission)
+  TAG: tailor_crew_omission
+  LABEL: "Ask why the town's history leaves out the crew's names"
+  TIME: 3
+  WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  MR. KREBS: "I remember the subscribers' names from the commemorative dinner. That is all."
+  WALTER CORWIN: "And the men who sailed?"
+  MR. KREBS: "I wasn't making their coats, Officer. I have no answer for you."
+  NOTEBOOK: crew_omission_refusal | "Asked Mr. Krebs why the crew's names are missing from the town's history. No explanation supplied; the question remains open."
