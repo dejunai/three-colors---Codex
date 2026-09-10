@@ -142,10 +142,10 @@ must be used if stdout needs to be read from a non-headless run.
 
 ## Explicit placeholders and future work
 
-- Not wired into `chapter_one.gd`'s real `_interact()`/`_town_interaction()` dispatch. The existing
-  hand-coded menus (`_witness_menu()`, `_barman_menu()`, `_behan_menu()`) remain authoritative in
-  play; these files and tests only prove the new system in isolation.
-- `dialogue_state.gd` is not yet part of `case_state.gd`'s save payload (`pack()`/`restore()`).
+- **Superseded:** live wiring into `chapter_one.gd` and `dialogue_state.gd` joining the save payload
+  both happened in the September 9, 2026 live-integration pass — see `docs/qa/DIALOGUE_LIVE_PASS.md`
+  and `docs/ARCHITECTURE.md`'s "Live dialogue integration" section, not this file, for their current
+  state. This file now documents only the grammar/interpreter itself as it stood before that pass.
 - `case_state.gd` distinguishes `evidence` (ids resolved against a separate `FACTS` table) from
   `statements` (free text); `dialogue_state.gd` currently collapses both into one `facts` dict of
   free text. Fine for proving the grammar; real integration needs to decide whether to keep that

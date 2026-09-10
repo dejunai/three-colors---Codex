@@ -1,6 +1,6 @@
 # Three Colors of Madness — No Exit Wound
 
-Native third-person 3D opening prototype aligned with Design Bible v15 and TDD v11. This is a playable blockout, with primitive art and provisional writing. Roughly ten minutes is an exploratory pacing target, not a measured playtime or a forced timer.
+Native third-person 3D opening prototype aligned with Design Bible v15 and TDD v12. This is a playable blockout, with primitive art and provisional writing. Roughly ten minutes is an exploratory pacing target, not a measured playtime or a forced timer.
 
 ## Current staging pass
 
@@ -13,6 +13,10 @@ See `docs/qa/STAGING_PASS.md` for the precise flow, version-5 save migration, te
 ## Town expansion pass
 
 Pickman Street's opposite frontage now leads to three neighborhoods — a business district, an upper residential quarter, and a lower residential quarter — plus the post office, for eighteen buildings and twelve accessible interiors in total. Precinct intake also leads to a morgue with a coroner. Only the stationer, Residence No. 1, and Dwelling No. 1 hold a placeholder resident with a single dismissive line; the rest are empty interiors or exterior-only fronts. Departing the estate for town clears the rose garden's six bodies; returning from town on Day 3 after two completed estate visits silently clears the birches too, with no accompanying scene. See `docs/qa/TOWN_EXPANSION_PASS.md` for the geography table and verification. There is no dedicated launcher script yet; run the check directly with the engine's `--headless --path . --fixed-fps 60 --script res://tests/town_expansion_flow.gd` arguments.
+
+## Live dialogue and town residents
+
+Chapter One's dialogue now runs on an authored, data-driven system instead of hand-coded per-NPC menus. `scripts/chapters/chapter_one_dialogue.gd` reads all 30 `.dialogue` files under `dialogue/` (29 concrete NPCs plus a background template) — 119 authored topics in total — resolving each NPC's current line or menu from location, time of day, and prior conversations, with real FORK choice buttons and mid-conversation save/resume. `scripts/chapters/dialogue_catalog.gd` places roughly two dozen scheduled residents (shopkeepers, clerks, the historian, the clockmaker, Widow Kessler, and other named townsfolk) into their morning/midday/evening/night positions across the estate, precinct, and the expanded town neighborhoods. See `docs/qa/DIALOGUE_LIVE_PASS.md` for the full integration record and provisional placements, `docs/qa/DIALOGUE_LANG_PASS.md` for the underlying grammar, `docs/qa/DAY_CLOCK_PASS.md` and `docs/qa/ARRIVAL_POLISH.md` for the day clock and presentation passes from the same day, and `docs/qa/DAY_ONE_PACING_REVIEW.md` for a strategic, code-free review flagging four opening-flow rough edges still open.
 
 ## Play
 
@@ -38,7 +42,7 @@ The town includes optional witness questions, a meal ledger, a newspaper, a pers
 
 ## Saves and accessibility
 
-The launcher stores Godot's user data in `.runtime-data` inside the project. Saves occur after interactions, every 20 seconds of exploration, on pause and on exit. Continue restores position, camera, evidence, statements, links, clothing, report copies, flask supply, ammunition, the day clock, and presentation relief. QA uses a separate save. Earlier opening saves migrate automatically; completed opening saves continue into town. Continue also looks for the newest save from a previous editor launch.
+The launcher stores Godot's user data in `.runtime-data` inside the project. Saves occur after interactions, every 20 seconds of exploration, on pause and on exit. Continue restores position, camera, evidence, statements, links, clothing, report copies, flask supply, ammunition, the day clock, dialogue progress, and presentation relief. QA uses a separate save. Earlier opening saves migrate automatically; completed opening saves continue into town. Continue also looks for the newest save from a previous editor launch.
 
 Accessibility is available before play: static grain by default, distortion intensity, grain, contrast, text size up to 130%, mouse sensitivity/inversion, and optional interaction markers. Text stays above all film effects; long menus scroll. The service passage includes a provisional synthetic cough with a matching readable caption. Full audio design remains unfinished.
 
@@ -79,6 +83,8 @@ Live renderer captures use `-- --capture=` followed by a mode name: `world`, `ti
 - `scripts/chapters/chapter_one_staging.gd`: day/visit progression, sleep gate, and montage intertitles.
 - `scripts/chapters/chapter_one_notebook.gd`: read-only detached notebook.
 - `scripts/chapters/montage_still.gd`: procedural storyboard intertitles.
+- `scripts/chapters/chapter_one_dialogue.gd`: connects the dialogue grammar to live NPC menus, branches, and saves.
+- `scripts/chapters/dialogue_catalog.gd`: scheduled resident registry and placement.
 - `scripts/shared/`: reusable interface, dialogue sequence, save store, accessibility settings, film presentation, the day/night clock, its lighting presentation, and the Chapter Two trinket generator.
 - `tests/`: extracted traversal and integration checks.
 - `tunnel.gd` / `tunnel_story.gd`: service passage encounter and provisional text.
