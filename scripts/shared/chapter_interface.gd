@@ -102,7 +102,7 @@ func _panel(kind:String,heading:String,kicker:String = "",wide:bool = false) -> 
 	if is_instance_valid(modal):
 		ui.remove_child(modal)
 		modal.queue_free()
-	case_palette = kind in ["board","notebook","journal","fact"]
+	case_palette = kind in ["board","notebook","journal","fact","examine"]
 	modal = Control.new()
 	modal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	ui.add_child(modal)
@@ -117,17 +117,39 @@ func _panel(kind:String,heading:String,kicker:String = "",wide:bool = false) -> 
 	panel.offset_top = 150 if kind == "dialogue" else 60
 	panel.offset_bottom = -150 if kind == "dialogue" else -60
 	panel.add_theme_stylebox_override("panel",_style(Color("111914"),Color("727b66")))
-	if case_palette:
+	if kind == "examine":
+		panel.offset_left = 40
+		panel.offset_right = -40
+		panel.offset_top = 32
+		panel.offset_bottom = -32
+		var wood = _style(Color("241609"),Color("140b04"))
+		wood.set_border_width_all(14)
+		wood.set_corner_radius_all(2)
+		panel.add_theme_stylebox_override("panel",wood)
+	elif case_palette:
 		panel.offset_left = 40
 		panel.offset_right = -40
 		panel.offset_top = 32
 		panel.offset_bottom = -32
 		panel.add_theme_stylebox_override("panel",_style(Color("ead9b4"),Color("976838")))
 	modal.add_child(panel)
+	# Object-examination frames get a brass inlay strip between the wood and the parchment.
+	var inner: Container = panel
+	if kind == "examine":
+		var brass_margin = MarginContainer.new()
+		for side in ["left","right","top","bottom"]: brass_margin.add_theme_constant_override("margin_"+side,8)
+		panel.add_child(brass_margin)
+		var brass = PanelContainer.new()
+		var brass_style = _style(Color("d8c39a"),Color("b08d3e"))
+		brass_style.set_border_width_all(3)
+		brass.add_theme_stylebox_override("panel",brass_style)
+		brass_margin.add_child(brass)
+		inner = brass
 	var scroll = ScrollContainer.new()
-	panel.add_child(scroll)
+	inner.add_child(scroll)
 	content = VBoxContainer.new()
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation",18)
 	scroll.add_child(content)
 	if not kicker.is_empty():

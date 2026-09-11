@@ -87,6 +87,7 @@ var hazard_caption: Label:
 	get: return interface.hazard_caption
 var cough_player: AudioStreamPlayer
 var last_hazard_phase = ""
+var card_kind := "dialogue"
 
 func start(player_rig:Node3D) -> void:
 	rig=player_rig
@@ -150,11 +151,11 @@ func _style(bg:Color,border:Color=Color("626d5b")) -> StyleBoxFlat:
 func _button(text:String,callback:Callable,parent:Node=null) -> Button:
 	return interface._button(text,callback,parent)
 
-func _panel(kind:String,heading:String,kicker:String="",wide:bool=false) -> void:
+func _panel(kind:String,heading:String,kicker:String="",wide:bool=false,visual_kind:String="") -> void:
 	page=kind
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 	marker.visible=false
-	interface._panel(kind,heading,kicker,wide)
+	interface._panel(visual_kind if not visual_kind.is_empty() else kind,heading,kicker,wide)
 
 func _paragraph(text:String,size:int=23) -> void:
 	interface._paragraph(text,size)
@@ -201,8 +202,9 @@ func _new_game() -> void:
 		_save_game()
 	)
 
-func _cards(cards:Array,after:Callable) -> void:
+func _cards(cards:Array,after:Callable,kind:String="dialogue") -> void:
 	scripted_dialogue.clear()
+	card_kind = kind
 	var timing_key=DayClock.conversation_key(self,cards)
 	dialogue.start(cards,_draw_card,func():
 		var charged=DayClock.complete_conversation(state,timing_key)
@@ -212,10 +214,11 @@ func _cards(cards:Array,after:Callable) -> void:
 		if charged: _save_game())
 
 func _draw_card(card:Array,index:int) -> void:
-	_panel("dialogue",str(card[0]),"NO EXIT WOUND  /  %02d" % (index+1))
+	var kicker = "PHYSICAL EVIDENCE  /  %02d" % (index+1) if card_kind == "examine" else "NO EXIT WOUND  /  %02d" % (index+1)
+	_panel("dialogue",str(card[0]),kicker,false,card_kind)
 	_paragraph(str(card[1]),27)
 	var space = Control.new()
-	space.custom_minimum_size.y = 30
+	space.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_child(space)
 	_button("Continue",_next_card)
 	for child in content.get_children():
@@ -344,7 +347,7 @@ func _interact(id:String) -> void:
 		else:
 			_save_game()
 			_toast("Recorded in Walter's case file.  [ Tab ]",4)
-	)
+	, "examine" if id in ["wounds","eight","knife","watch","gas","register","shoes"] else "dialogue")
 
 func _odell_response() -> void:
 	scripted_dialogue.show_menu(self,"odell")
@@ -678,7 +681,8 @@ func _town_observation(id:String,return_target:Variant=null) -> void:
 			_witness_menu()
 		else:
 			_close()
-			_toast("Source recorded in Walter's notebook.  [ J ]",4))
+			_toast("Source recorded in Walter's notebook.  [ J ]",4)
+	, "examine" if id in ["gazette","lodging","exemption"] else "dialogue")
 
 func _survey_drawer(index_open:bool=false) -> void:
 	_panel("case","The survey drawer","PRECINCT 4  /  MUNICIPAL RECORDS")
@@ -815,7 +819,8 @@ func _tunnel_interaction(id:String) -> bool:
 				state.discover("lower_foundation")
 				state.record("Walter measured a passage beyond the recorded foundation; the service plan is the comparison source.")
 				_save_game()
-				_toast("Measurement recorded. Return to the service stair.",5))
+				_toast("Measurement recorded. Return to the service stair.",5)
+			, "examine")
 		"tunnel_descent":
 			_tunnel_descent()
 		"drowned_remains":
