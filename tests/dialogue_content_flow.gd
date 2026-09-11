@@ -39,6 +39,10 @@ func _run() -> void:
 		"school_parent": "res://dialogue/school_parent.dialogue",
 		"salt_mender": "res://dialogue/salt_mender.dialogue",
 		"apothecary": "res://dialogue/apothecary.dialogue",
+		"net_seller": "res://dialogue/net_seller.dialogue",
+		"quay_docker": "res://dialogue/quay_docker.dialogue",
+		"ropewalk_foreman": "res://dialogue/ropewalk_foreman.dialogue",
+		"chandlers_boy": "res://dialogue/chandlers_boy.dialogue",
 	}
 	var defs = {}
 	for key in paths:

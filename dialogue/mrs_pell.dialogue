@@ -39,7 +39,7 @@ TOPIC: servant_talk
   NOTEBOOK: pell_maid_heard | "Mrs. Pell admitted her maid heard men arriving and departing the ridge in haste, but gave no names."
   EVIDENCE: ridge_haste
   
- TOPIC: crew_omission
+TOPIC: crew_omission
   GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(mrs_pell, crew_omission)
   TAG: mrs_pell_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"

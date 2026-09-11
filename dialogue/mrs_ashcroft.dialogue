@@ -36,7 +36,7 @@ TOPIC: club
   MRS. ASHCROFT: "For eighteen years."
   MRS. ASHCROFT: "The club improved none of his opinions, but certainly increased his confidence in them."
   
- TOPIC: crew_omission
+TOPIC: crew_omission
   GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(miriam_ashcroft, crew_omission)
   TAG: mrs_ashcroft_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
