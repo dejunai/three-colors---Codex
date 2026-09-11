@@ -77,7 +77,7 @@ TOPIC: the_mother
   EVIDENCE: maternal_delusion
 
 TOPIC: coat_difference
-  GATE: coat = plain AND evidence(kessler_standing) AND NOT topic_done(widow_kessler, coat_difference)
+  GATE: coat = plain AND (evidence(kessler_carriages) OR topic_done(widow_kessler, club_standing)) AND NOT topic_done(widow_kessler, coat_difference)
   TAG: kessler_coat
   LABEL: "Ask why she told Walter instead of Odell"
   MRS. KESSLER: "Odell looked at my shop and saw six paragraphs for the Gazette.\nYou came in a coat that smells like damp wool and rain, same as Otto's work coat.\n\nA woman knows when a man is looking for a corpse instead of an excuse."

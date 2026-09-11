@@ -47,7 +47,7 @@ TOPIC: wage_claim_inquiry
       EVIDENCE: claim_filed_inert
 
 TOPIC: ophion_settlement
-  GATE: evidence(ophion_name)
+  GATE: evidence(behan_name) OR evidence(ophion_myth_classical)
   TAG: clerk_ophion_records
   LABEL: "Request the 1820s Ophion insurance and probate filings"
   TIME: 5
