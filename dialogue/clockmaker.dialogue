@@ -36,7 +36,7 @@ TOPIC: the_stopped_watch
   EVIDENCE: fused_hairspring_anomaly
 
 TOPIC: tryworks_instruments
-  GATE: always
+  GATE: evidence(watch)
   TAG: clockmaker_maritime
   LABEL: "Ask about old navigational instruments from the fleet"
   TIME: 6

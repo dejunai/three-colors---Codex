@@ -64,7 +64,7 @@ TOPIC: butcher_parcels
       EVIDENCE: tryworks_silt
 
 TOPIC: the_mother
-  GATE: evidence(kessler_knife_confirmed) AND NOT topic_done(widow_kessler, the_mother)
+  GATE: evidence(club_devotion) AND NOT topic_done(widow_kessler, the_mother)
   TAG: kessler_mother
   LABEL: "Ask how Otto spoke about the club at the end"
   TIME: 5

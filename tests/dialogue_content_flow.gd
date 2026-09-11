@@ -97,14 +97,6 @@ func _run() -> void:
 	_play(gardener_after, state, dstate)
 	assert(gardener_after.cards[0][1] == "You took the badge off.", "estate_complete + plain coat must unlock the later gardener scene")
 
-	# --- old woman: one-shot, gated purely on the evidence() the scene itself implies ---
-	var woman_menu_before = Runtime.menu(defs.old_woman, ctx)
-	assert(woman_menu_before.default_topic != null, "the scene must be available before it has ever been recorded")
-	_play(Runtime.enter(defs.old_woman, ctx, dstate), state, dstate)
-	state.discover("old_woman")
-	var woman_menu_after = Runtime.menu(defs.old_woman, ctx)
-	assert(woman_menu_after.default_topic == null, "once evidence(old_woman) is true, the one-shot scene must no longer resolve")
-
 	# --- Mrs. Almy: coat-gated intro, evidence-gated menu, disappearing topic ---
 	state.coat = "Police coat" # undo the gardener section's coat change above
 	var almy_badge_intro = Runtime.enter(defs.almy, ctx, dstate)
@@ -131,6 +123,14 @@ func _run() -> void:
 	var almy_ids_after_trust = []
 	for entry in almy_menu_after_trust.entries: almy_ids_after_trust.append(entry.id)
 	assert(not almy_ids_after_trust.has("almy_trust"), "answering almy_trust once must remove it from the menu, via topic_done")
+
+	# --- old woman: one-shot, gated on evidence(naomi) (known via almy above) plus the scene's own evidence() ---
+	var woman_menu_before = Runtime.menu(defs.old_woman, ctx)
+	assert(woman_menu_before.default_topic != null, "the scene must be available once naomi is known, before it has ever been recorded")
+	_play(Runtime.enter(defs.old_woman, ctx, dstate), state, dstate)
+	state.discover("old_woman")
+	var woman_menu_after = Runtime.menu(defs.old_woman, ctx)
+	assert(woman_menu_after.default_topic == null, "once evidence(old_woman) is true, the one-shot scene must no longer resolve")
 
 	# --- Odell: the real branching response, ported alongside the invented 'bullets' demo ---
 	var odell_ctx = Runtime.make_context(state, dstate)

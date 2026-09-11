@@ -3,7 +3,7 @@ NPC: old_woman
 LOCATION: town
 
 TOPIC: default
-  GATE: NOT evidence(old_woman)
+  GATE: evidence(naomi) AND NOT evidence(old_woman)
   TAG: old_woman
   TIME: 6
   OUTSIDE THE SHUTTERED SHOP: "An old woman waits by Kessler's boarded windows. She has been waiting, Walter suspects, for someone in a coat like his."
