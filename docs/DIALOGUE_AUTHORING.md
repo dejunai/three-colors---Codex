@@ -70,7 +70,7 @@ Use `always`, `never`, `NOT`, `AND`, `OR`, parentheses, and `<`, `<=`, `>`, `>=`
 
 These are the full exposed runtime fields/functions. Clock minutes, Perception, and arbitrary case-state members are not gate fields. Unknown names are not extensions. Check the actual dependency ID before using a gate.
 
-`=` and `!=` use case-insensitive **substring containment in either direction**, including for numbers converted to text. They are not strict equality. This lets `coat = plain` match `Plain wool coat`; it also means `day = 3` could match 13. Relational comparisons are numeric. For exact integer day 3 use `day >= 3 AND day <= 3`.
+`=` and `!=` use case-insensitive **substring containment in either direction**, including for numbers converted to text. They are not strict equality. This lets `coat = plain` match `Plain wool coat`; it also means `day = 3` could match 13. Relational comparisons are numeric. For exact integer day 3 use `day >= 3 AND day <= 3`. For `phase`, compare against the runtime's actual gate values (`morning`, `noon`, `evening`, `night`) — for example `phase = noon`; schedule-only words like `midday` do not match `phase`.
 
 Examples:
 

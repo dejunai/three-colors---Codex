@@ -64,10 +64,17 @@ static func make_context(state, dstate) -> Dictionary:
 # Read received snapshots, never the player's current unsubmitted observations.
 # This gate changes no copy and grants no evidence or Perception.
 static func has_filed_evidence(state, id: String) -> bool:
-	if state.intake_done and state.report_evidence.has(id): return true
-	if state.supplement_filed and state.supplement_evidence.has(id): return true
-	for supplement in state.supplement_history:
-		if supplement.get("evidence", []).has(id): return true
+	if state == null: return false
+	var report = state.get("report_evidence")
+	if bool(state.get("intake_done")) and report is Array and report.has(id): return true
+	var current = state.get("supplement_evidence")
+	if bool(state.get("supplement_filed")) and current is Array and current.has(id): return true
+	var history = state.get("supplement_history")
+	if history is Array:
+		for supplement in history:
+			if not supplement is Dictionary: continue
+			var filed = supplement.get("evidence", [])
+			if filed is Array and filed.has(id): return true
 	return false
 
 static func has_evidence(state, id: String) -> bool:
