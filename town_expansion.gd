@@ -5,10 +5,7 @@ const Places = preload("res://scripts/chapters/town_places.gd")
 func _ready() -> void:
 	rng.seed=1925
 	_lighting(not Places.BUILDINGS.has(location) and location != "waterfront")
-	if location == "waterfront":
-		preload("res://scripts/chapters/waterfront_district.gd").new().build(self)
-		return
-	if Places.BUILDINGS.has(location):
+	if Places.BUILDINGS.has(location) or location == "waterfront":
 		_neighborhood()
 		return
 	_room_shell()
@@ -36,6 +33,9 @@ func _exit_to(destination:String,spawn:Vector3,label:String,angle:float=0.0) -> 
 	routes["route_return"]=[destination,spawn,angle]
 
 func _neighborhood() -> void:
+	if location == "waterfront":
+		preload("res://scripts/chapters/waterfront_district.gd").new().build(self)
+		return
 	if location == "business":
 		preload("res://scripts/chapters/business_street.gd").new().build(self)
 		return
