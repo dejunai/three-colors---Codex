@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Three Colors of Madness — NPC Dialogue Tree</title>
+<style>
+:root {
+  --bg: #0d0c0b;
+  --surface: #141310;
+  --surface2: #1a1816;
+  --surface3: #211f1c;
+  --border: #2e2b27;
+  --text: #ccc9c2;
+  --text-muted: #7a7770;
+  --text-faint: #4a4845;
+  --accent: #b08050;
+  --accent-glow: #b08050aa;
+  --plain-color: #5fa88a;
+  --badge-color: #a85f5f;
+  --evidence-color: #8888cc;
+  --fork-color: #c9a03a;
+  --gate-color: #6a9a6a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Georgia', serif; }
+
+/* HEADER */
+header {
+  padding: 24px 32px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+header h1 { font-size: 1.1rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: normal; }
+header p { font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-top: 4px; }
+
+.legend { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.leg { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--text-muted); }
+.leg-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.leg-badge { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+/* LAYOUT */
+.wrapper { display: flex; height: calc(100vh - 80px); overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px; min-width: 200px; flex-shrink: 0;
+  overflow-y: auto; border-right: 1px solid var(--border);
+  background: var(--surface);
+  padding: 12px 0;
+}
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.loc-group { margin-bottom: 4px; }
+.loc-header {
+  padding: 6px 16px; font-size: 0.68rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-faint);
+  cursor: pointer; user-select: none;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: color 0.15s;
+}
+.loc-header:hover { color: var(--text-muted); }
+.loc-header .arrow { transition: transform 0.2s; }
+.loc-group.collapsed .arrow { transform: rotate(-90deg); }
+.loc-group.collapsed .loc-npcs { display: none; }
+
+.npc-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 16px 7px 24px; width: 100%; text-align: left;
+  background: none; border: none; color: var(--text-muted);
+  font-family: inherit; font-size: 0.82rem; cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  border-left: 2px solid transparent;
+}
+.npc-btn:hover { background: var(--surface2); color: var(--text); }
+.npc-btn.active { background: var(--surface3); color: var(--text); border-left-color: var(--accent); }
+.npc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.topic-count { margin-left: auto; font-size: 0.68rem; color: var(--text-faint); }
+
+/* MAIN PANEL */
+.main { flex: 1; overflow-y: auto; padding: 28px 36px; }
+.main::-webkit-scrollbar { width: 6px; }
+.main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.placeholder {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 60vh; gap: 12px; color: var(--text-faint);
+  text-align: center;
+}
+.placeholder svg { opacity: 0.2; }
+.placeholder p { font-size: 0.85rem; font-style: italic; max-width: 320px; line-height: 1.6; }
+
+/* NPC HEADER */
+.npc-header {
+  display: flex; align-items: flex-start; gap: 16px;
+  margin-bottom: 24px; padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.npc-color-bar { width: 4px; flex-shrink: 0; border-radius: 2px; align-self: stretch; min-height: 40px; }
+.npc-title { font-size: 1.3rem; color: var(--text); letter-spacing: 0.04em; }
+.npc-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-style: italic; }
+.npc-id { font-size: 0.68rem; color: var(--text-faint); margin-top: 2px; letter-spacing: 0.08em; font-family: 'Courier New', monospace; }
+
+/* TOPIC TREE */
+.topic-tree { display: flex; flex-direction: column; gap: 10px; }
+
+.topic-node {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden;
+  transition: border-color 0.15s;
+}
+.topic-node:hover { border-color: #4a4640; }
+.topic-node.has-evidence { border-left: 3px solid var(--evidence-color); }
+.topic-node.has-fork { border-left: 3px solid var(--fork-color); }
+.topic-node.coat-plain { border-left: 3px solid var(--plain-color); }
+.topic-node.coat-badge { border-left: 3px solid var(--badge-color); }
+.topic-node.never { opacity: 0.45; border-left: 3px solid var(--text-faint); }
+
+.topic-head {
+  padding: 10px 14px; display: flex; align-items: center; gap: 10px;
+  cursor: pointer; user-select: none;
+}
+.topic-name { font-size: 0.88rem; color: var(--text); flex: 1; }
+.topic-tag { font-size: 0.68rem; color: var(--text-faint); font-family: 'Courier New', monospace; }
+.topic-badges { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+.pill {
+  font-size: 0.62rem; padding: 2px 7px; border-radius: 3px;
+  font-family: 'Courier New', monospace; letter-spacing: 0.04em; flex-shrink: 0;
+}
+.pill-plain { background: #1a3028; color: var(--plain-color); border: 1px solid #2a4a3a; }
+.pill-badge { background: #301818; color: var(--badge-color); border: 1px solid #4a2828; }
+.pill-evidence { background: #1a1a2e; color: var(--evidence-color); border: 1px solid #2a2a4e; }
+.pill-gate { background: #1a2a1a; color: var(--gate-color); border: 1px solid #2a3a2a; }
+.pill-fork { background: #2e2010; color: var(--fork-color); border: 1px solid #4a3818; }
+.pill-never { background: #1a1a1a; color: var(--text-faint); border: 1px solid #2a2a2a; }
+.pill-out { background: #1e1e30; color: #9999ee; border: 1px solid #2e2e50; }
+
+.topic-body {
+  padding: 0 14px 12px; display: none;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem; color: var(--text-muted); line-height: 1.7;
+}
+.topic-body.open { display: block; }
+.topic-body .gate-text { font-style: italic; color: var(--text-faint); margin-bottom: 6px; font-size: 0.75rem; }
+.topic-body .ev-label { font-size: 0.72rem; color: var(--evidence-color); margin-top: 8px; }
+.ev-list { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+
+.toggle-arrow { font-size: 0.7rem; color: var(--text-faint); transition: transform 0.15s; }
+.topic-head.open .toggle-arrow { transform: rotate(90deg); }
+
+/* SECTION LABEL */
+.section-label {
+  font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-faint); margin: 20px 0 8px;
+  padding-bottom: 4px; border-bottom: 1px solid var(--border);
+}
+
+/* ALL NPCs VIEW */
+.all-npc-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px; margin-top: 8px;
+}
+.npc-card {
+  background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+  padding: 14px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+  border-left: 3px solid transparent;
+}
+.npc-card:hover { border-color: #4a4640; background: var(--surface3); }
+.npc-card-title { font-size: 0.88rem; color: var(--text); }
+.npc-card-loc { font-size: 0.7rem; color: var(--text-faint); margin-top: 3px; font-style: italic; }
+.npc-card-meta { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; }
+
+/* SEARCH */
+.search-bar {
+  padding: 8px 16px 0;
+}
+.search-bar input {
+  width: 100%; padding: 6px 10px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 4px;
+  color: var(--text); font-size: 0.78rem; font-family: inherit;
+  outline: none;
+}
+.search-bar input::placeholder { color: var(--text-faint); }
+.search-bar input:focus { border-color: var(--accent); }
+
+/* STATS BAR */
+.stats-bar {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  padding: 14px 0 18px; font-size: 0.72rem; color: var(--text-muted);
+}
+.stat { display: flex; flex-direction: column; gap: 2px; }
+.stat-n { font-size: 1rem; color: var(--text); }
+</style>
+<script type="text/javascript" nonce="70ff16c18c0c4826be25b76a723" src="//local.adguard.org?ts=1789096948019&amp;type=content-script&amp;dmn=ppl-ai-code-interpreter-files.s3.us-east-1.amazonaws.com&amp;url=https%3A%2F%2Fppl-ai-code-interpreter-files.s3.us-east-1.amazonaws.com%2Fweb%2Fdirect-files%2F117265a428bc7d0dc51c614f990a3836%2F90ad1f11-e926-4aea-85b2-77995cc39b37%2Fd0a0c652.html%3FX-Amz-Algorithm%3DAWS4-HMAC-SHA256%26X-Amz-Checksum-Mode%3DENABLED%26X-Amz-Credential%3DASIA2F3EMEYE4V45MW4F%252F20260911%252Fus-east-1%252Fs3%252Faws4_request%26X-Amz-Date%3D20260911T045939Z%26X-Amz-Expires%3D2156%26X-Amz-Security-Token%3DIQoJb3JpZ2luX2VjEM3%252F%252F%252F%252F%252F%252F%252F%252F%252F%252FwEaCXVzLWVhc3QtMSJGMEQCIGXkx4tlVdgEJ8DVqCb5G0E5W5ChxxVg6AmckCvybYFwAiA11UlJeQMWfTp16zABBKXW%252BLo%252FkihJBt8YxaQR3Y%252FMeSqJBQiV%252F%252F%252F%252F%252F%252F%252F%252F%252F%252F8BEAEaDDY5OTc1MzMwOTcwNSIMimiLDT4ahSBzx3t7Kt0EtBWmqbYiD3XjV5FOXm86SdksyvdvrVdHcEP47kyvuFzRpL7nG4CxIPl0fti%252BVjILg59W2Ak55DuKzR2Uylg8m%252BdsDdDYbIZHdarp6hKczpdMLx7iV7%252BjsRZoDg%252BJ8TYIb0f7DQVsElyY3a31JamxNBRmZrwJfj0AOIKnjXz%252FQhrL%252FCregnMWGQK16zfLJayluARBHjaIxe%252BKXkyLKsAziz3i5fvADwQPw%252BKwpLzsRkEezqwJOXEz7rMZSn5eZiprTPOFaHODWWTXscBdjUvEJwFEOolIh1Rk78FEsKJFcyt5R%252Bfxa79Yk%252FOi5S%252FRfXiNQBTpRujvEMymUff2hyb2Esn7f5d6z8kp3MdZu1Tt02kbKmB0H1My90PHWTwN9ft6%252FIBiZl9BmuM1Ab22W5MrzDIjrhahdj6cN1puZcu1IZHmLtL05xsMQw9McTRMoQ3fbJLf0EnntQ5zt5fLzX9GRyIaz1ODCdjQNSTEaWlvNg1b7xSrQLwRa0XPi0HlgN64am7LuRpA9%252Bn6IJt0Lne0SndlyM95mEGzUqyUojxTS3WB0tTFaQUtPbQnhfen06Z7qpkC2Z31zjaDhEucIzgLCfzE8AOk33HfFHTXFdBLITjccfMxx8tQS%252BELF17dIfZQqJIeDAomplO1FELr%252FFrqIRnIkzyR3k9GUcbVhJ1FbNwWoC%252F0QdtO5UvyZZpWOOqP5sEdkKsqRj1uV6skkaSfPfvjpvEagRO4QArZPBBSeQwmPDMJ0xrwQEbsLD2VcAKWkIoKj1RLfK1Ve%252FHyDGrn9OzLus%252F6bjTsGTiJKs4w1IqO1QY6mQF4TizHOggckhIqHCTorIs%252BcQSJ8n8%252BOYHuSSn1ojIe0Cg1KFfS%252BPpCzI7vIuIGNyhvin78uQjbW9VrLyun1%252B0kF5UyLUyTy%252FYSnpLGKquJQsItTh%252FsN10NLQS1mMtOGduPIgfyiT%252BeWwsoWmpthx06F1ubT6KMq0mvux5O0cUds0O9P4IFJT%252FLDX9xpvjcuqutJvvvEMYHCWY%253D%26X-Amz-SignedHeaders%3Dhost%26response-content-disposition%3Dattachment%253B%2520filename%253D%2522npc-tree.html%2522%253B%2520filename%252A%253DUTF-8%2527%2527npc-tree.html%26x-id%3DGetObject%26X-Amz-Signature%3Da56087c67825cbc4d20bec0569c881562b6994d2f5120e8a02cafec298cf02f1&amp;app=comet.exe&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-dnt"></script><script type="text/javascript" nonce="70ff16c18c0c4826be25b76a723" src="//local.adguard.org?ts=1789096948019&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script></head>
+<body>
+
+<header>
+  <div>
+    <h1>Three Colors of Madness — NPC Dialogue Tree</h1>
+    <p>Chapter 1 · Widows Bight · Walter Corwin</p>
+  </div>
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#5fa88a"></div> coat = plain</div>
+    <div class="leg"><div class="leg-dot" style="background:#a85f5f"></div> coat ≠ plain</div>
+    <div class="leg"><div class="leg-dot" style="background:#8888cc"></div> evidence gate</div>
+    <div class="leg"><div class="leg-dot" style="background:#c9a03a"></div> fork</div>
+    <div class="leg"><div class="leg-dot" style="background:#6a9a6a"></div> always</div>
+    <div class="leg"><div class="leg-dot" style="background:#444"></div> never / locked</div>
+  </div>
+</header>
+
+<div class="wrapper">
+  <nav class="sidebar" id="sidebar">
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="Search NPCs…" autocomplete="off">
+    </div>
+    <div style="height:10px"></div>
+    <div id="nav-tree"></div>
+  </nav>
+
+  <main class="main" id="main-panel">
+    <div class="placeholder" id="placeholder">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+        <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+      </svg>
+      <p>Select an NPC from the sidebar to view their dialogue tree, topics, and evidence gates.</p>
+    </div>
+    <div id="npc-detail" style="display:none"></div>
+  </main>
+</div>
+
+<script>
+const NPCS = {"odell": {"label": "Captain Odell", "location": "estate", "color": "#c0392b", "topics": [{"id": "default", "label": "default", "gate": "always (first visit)", "evidence_out": ["eight"], "fork": true}]}, "assistant": {"label": "Coroner's Assistant", "location": "estate", "color": "#c0392b", "topics": [{"id": "default", "label": "default", "gate": "always", "evidence_out": ["testimony", "eight"], "fork": false}]}, "gardener": {"label": "Gardener", "location": "estate", "color": "#c0392b", "topics": [{"id": "default (badge)", "label": "default [badge]", "gate": "always", "evidence_out": [], "fork": false}, {"id": "default (plain)", "label": "default [plain]", "gate": "estate_complete + coat=plain", "evidence_out": ["service_door"], "fork": false}]}, "boy": {"label": "Gatehouse Boy", "location": "estate", "color": "#c0392b", "topics": [{"id": "default", "label": "default", "gate": "always / visit_count\u22652 / estate_complete", "evidence_out": [], "fork": false}]}, "crew": {"label": "Groundskeeper", "location": "estate", "color": "#c0392b", "topics": [{"id": "default", "label": "default", "gate": "always", "evidence_out": ["crew"], "fork": false}]}, "steward": {"label": "Club Steward", "location": "estate / lounge", "color": "#c0392b", "topics": [{"id": "default", "label": "default [steward_ready]", "gate": "steward_ready", "evidence_out": [], "fork": false}, {"id": "default_badge", "label": "default [day=3, badge]", "gate": "day=3 + coat\u2260plain", "evidence_out": [], "fork": false}, {"id": "steward_first_lead", "label": "first lead", "gate": "day<3 + evidence(service_work)", "evidence_out": ["steward_heard_secondhand"], "fork": false}, {"id": "steward_first", "label": "first [day<3]", "gate": "day<3", "evidence_out": [], "fork": false}, {"id": "day_book", "label": "day book", "gate": "steward_ready + evidence(service_work)", "evidence_out": ["estate_day_book"], "fork": false}, {"id": "club_talk", "label": "club talk", "gate": "steward_ready", "evidence_out": ["club_talk"], "fork": false}, {"id": "club_devotion", "label": "club devotion", "gate": "steward_ready + evidence(club_talk)", "evidence_out": ["club_devotion"], "fork": false}, {"id": "pantry_lead", "label": "pantry lead", "gate": "steward_ready + evidence(club_devotion)", "evidence_out": ["pantry_lead"], "fork": false}]}, "almy": {"label": "Mrs. Almy", "location": "boardinghouse", "color": "#8e44ad", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "identify", "label": "identify Naomi", "gate": "always", "evidence_out": ["naomi"], "fork": false}, {"id": "lay_lead", "label": "lay lead", "gate": "evidence(naomi)", "evidence_out": ["lay_lead"], "fork": false}, {"id": "service_work", "label": "service work", "gate": "evidence(naomi)", "evidence_out": ["service_work"], "fork": false}, {"id": "almy_ledger", "label": "ledger", "gate": "evidence(naomi)", "evidence_out": [], "fork": false}, {"id": "almy_trust", "label": "trust [plain only]", "gate": "coat=plain", "evidence_out": [], "fork": false}]}, "father_behan": {"label": "Father Behan", "location": "town", "color": "#2c3e50", "topics": [{"id": "default", "label": "default", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "club_invitation", "label": "club invitation", "gate": "always", "evidence_out": [], "fork": false}, {"id": "behan_name", "label": "club name", "gate": "topic_done(club_invitation)", "evidence_out": ["behan_name"], "fork": false}, {"id": "sixth_man", "label": "sixth man", "gate": "NEVER (unauthored)", "evidence_out": [], "fork": false}]}, "old_woman": {"label": "Old Woman", "location": "town", "color": "#2c3e50", "topics": [{"id": "default", "label": "default", "gate": "NOT evidence(old_woman)", "evidence_out": ["old_woman"], "fork": false}]}, "local_historian": {"label": "Mr. Abernathy (Historian)", "location": "business_district", "color": "#27ae60", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "ship_origin", "label": "ship origin", "gate": "always", "evidence_out": ["ophion_myth_classical"], "fork": false}, {"id": "dr_fenn_library", "label": "Dr. Fenn's research", "gate": "evidence(ophion_myth_classical) + evidence(club_talk)", "evidence_out": ["displaced_god_doctrine", "estate_conduit_map"], "fork": true}, {"id": "crew_omission_official", "label": "crew omission [official]", "gate": "evidence(lay_lead) OR evidence(sanitized_textbook)", "evidence_out": [], "fork": false}, {"id": "crew_omission_followup", "label": "crew omission [followup]", "gate": "topic_done(crew_omission_official) + topic_count(crew_omission)\u22654", "evidence_out": ["curriculum_abridgment"], "fork": false}, {"id": "the_free_crew", "label": "free crew lineage", "gate": "evidence(lay_lead) + followup_done + topic_done(the_free_crew)=false", "evidence_out": ["freeman_lineage_free"], "fork": false}]}, "schoolteacher": {"label": "Miss Hallowell (Teacher)", "location": "business_district", "color": "#27ae60", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "town_founding", "label": "town founding", "gate": "always", "evidence_out": ["sanitized_textbook"], "fork": false}, {"id": "reader_letter", "label": "reader letter", "gate": "evidence(curriculum_abridgment)", "evidence_out": ["reader_omission_letter"], "fork": false}, {"id": "the_drowned_island", "label": "drowned island", "gate": "evidence(sanitized_textbook) + evidence(reader_omission_letter)", "evidence_out": ["harbor_children_discipline"], "fork": false}, {"id": "the_slain_boy", "label": "slain boy", "gate": "evidence(naomi) + evidence(reader_omission_letter)", "evidence_out": ["boy_century_slate", "boy_district_refusal"], "fork": true}, {"id": "personal_questions", "label": "personal refusal", "gate": "evidence(naomi) + NOT evidence(reader_omission_letter)", "evidence_out": [], "fork": false}]}, "school_parent": {"label": "Mrs. Teague (Parent)", "location": "business_district", "color": "#27ae60", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "the_stranger_woman", "label": "Naomi sighting", "gate": "evidence(naomi)", "evidence_out": ["naomi_unapologetic_presence"], "fork": false}, {"id": "the_estate_talk", "label": "estate rumours", "gate": "always", "evidence_out": ["turned_mirrors", "fenn_camphor_taboo"], "fork": true}]}, "gazette_editor": {"label": "Mr. Halleck (Editor)", "location": "business_district", "color": "#27ae60", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "the_omitted_two", "label": "omitted two", "gate": "always", "evidence_out": ["press_suppression"], "fork": false}, {"id": "press_the_arithmetic", "label": "arithmetic / retraction", "gate": "evidence(press_suppression)", "evidence_out": ["gazette_leverage", "lay_publicity_refused"], "fork": true}, {"id": "gas_main_origin", "label": "gas-main source", "gate": "evidence(press_suppression)", "evidence_out": ["fabricated_foul_air"], "fork": false}, {"id": "crew_omission", "label": "crew omission [shared]", "gate": "topic_done(historian crew_omission_official)", "evidence_out": [], "fork": false}]}, "stationer": {"label": "Mr. Finch (Stationer)", "location": "business_district", "color": "#27ae60", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "the_corkboard_twine", "label": "twine & pins", "gate": "always", "evidence_out": [], "fork": false}, {"id": "fenn_orders", "label": "Fenn's orders", "gate": "evidence(knife)", "evidence_out": ["cellar_candles"], "fork": false}, {"id": "naomi_supplies", "label": "Naomi's supplies", "gate": "evidence(naomi)", "evidence_out": ["drafting_linen_diagram"], "fork": false}, {"id": "crew_omission", "label": "crew omission [shared]", "gate": "topic_done(historian crew_omission_official)", "evidence_out": [], "fork": false}]}, "tailor": {"label": "Mr. Krebs (Tailor)", "location": "business_district", "color": "#27ae60", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "cut_jackets", "label": "five jackets", "gate": "always", "evidence_out": ["five_tailored_coats"], "fork": false}, {"id": "the_sixth_jacket", "label": "sixth jacket", "gate": "NEVER (Design Law 5)", "evidence_out": ["ancestral_sixth_coat"], "fork": false}, {"id": "coat_lining", "label": "coat lining", "gate": "always (gate commented out)", "evidence_out": ["serpent_hem_motif"], "fork": false}, {"id": "crew_omission", "label": "crew omission [shared]", "gate": "topic_done(historian crew_omission_official)", "evidence_out": [], "fork": false}]}, "apothecary": {"label": "Mr. Crane (Apothecary)", "location": "business_district", "color": "#27ae60", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "fenn_laudanum", "label": "Fenn's laudanum", "gate": "always", "evidence_out": ["bulk_opium_spirits"], "fork": false}, {"id": "the_stranger_remedies", "label": "Naomi's remedies", "gate": "evidence(naomi)", "evidence_out": ["water_corrosion_inquiry"], "fork": false}]}, "clockmaker": {"label": "Mr. Vane (Clockmaker)", "location": "business_district", "color": "#27ae60", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "the_stopped_watch", "label": "stopped watch", "gate": "evidence(watch)", "evidence_out": ["fused_hairspring_anomaly"], "fork": false}, {"id": "tryworks_instruments", "label": "tryworks instruments", "gate": "always", "evidence_out": ["tryworks_metal_patina"], "fork": false}]}, "county_clerk": {"label": "Mr. Pence (County Clerk)", "location": "town_hall", "color": "#27ae60", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "wage_claim_inquiry", "label": "wage claim", "gate": "evidence(lay_lead)", "evidence_out": ["claim_no_claimant", "claim_filed_inert"], "fork": true}, {"id": "ophion_settlement", "label": "Ophion settlement", "gate": "evidence(ophion_name)", "evidence_out": ["insurance_fraud_record"], "fork": false}, {"id": "sixth_member_deed", "label": "sixth member deed", "gate": "NEVER (Design Law 5)", "evidence_out": ["overseer_deed"], "fork": false}, {"id": "crew_omission", "label": "crew omission [shared]", "gate": "topic_done(historian crew_omission_official)", "evidence_out": [], "fork": false}]}, "post_office_clerk": {"label": "Mr. Crump (Post Office)", "location": "post_office", "color": "#27ae60", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "naomi_letters", "label": "Naomi's letters", "gate": "evidence(naomi)", "evidence_out": ["new_bedford_letters"], "fork": false}, {"id": "ophion_club_mail", "label": "club mail", "gate": "always", "evidence_out": ["club_foreign_freight", "postal_overseer_statements"], "fork": true}, {"id": "holding_the_letters", "label": "seize letters", "gate": "evidence(new_bedford_letters)", "evidence_out": ["postal_bureaucracy_refusal"], "fork": false}, {"id": "crew_omission", "label": "crew omission [shared]", "gate": "topic_done(historian crew_omission_official)", "evidence_out": [], "fork": false}]}, "salt_mender": {"label": "Mrs. Peake (Salt Mender)", "location": "lower_residential", "color": "#2980b9", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "night_sounds", "label": "night sounds", "gate": "always", "evidence_out": ["sub_harbor_drag"], "fork": false}, {"id": "naomi_and_the_boy", "label": "Naomi & boy", "gate": "evidence(naomi)", "evidence_out": ["naomi_moral_clarity"], "fork": false}]}, "harbor_observer": {"label": "Harbor Mason", "location": "lower_residential", "color": "#2980b9", "topics": [{"id": "default", "label": "default", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "estate_grounds_crew", "label": "pantry avoidance", "gate": "always", "evidence_out": ["observer_stone_discipline"], "fork": false}, {"id": "drowned_island", "label": "drowned island", "gate": "evidence(observer_stone_discipline)", "evidence_out": ["island_memory"], "fork": false}, {"id": "the_ring", "label": "anchor ring [plain]", "gate": "coat=plain", "evidence_out": ["observer_color_tell"], "fork": false}]}, "quay_bookkeeper": {"label": "Mr. Vale (Bookkeeper)", "location": "business_district", "color": "#2980b9", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "work", "label": "records & work", "gate": "always", "evidence_out": [], "fork": false}, {"id": "unfamiliar_woman", "label": "Naomi at office", "gate": "evidence(naomi)", "evidence_out": ["quay_inquiry"], "fork": false}, {"id": "old_lay", "label": "old lay method", "gate": "evidence(lay_lead) + evidence(quay_inquiry)", "evidence_out": ["lay_record_method"], "fork": false}, {"id": "estate_freight", "label": "estate freight", "gate": "evidence(service_work)", "evidence_out": ["estate_freight"], "fork": false}, {"id": "missing_cart", "label": "missing cart", "gate": "evidence(estate_freight)", "evidence_out": ["cart_record_missing", "cart_unsigned"], "fork": true}, {"id": "records", "label": "records disappear", "gate": "evidence(quay_inquiry)", "evidence_out": [], "fork": false}, {"id": "coat", "label": "coat explanation [plain]", "gate": "coat=plain + evidence(quay_inquiry)", "evidence_out": [], "fork": false}]}, "miss_wexley": {"label": "Miss Wexley", "location": "upper_residential_ridge", "color": "#d35400", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "museum_story", "label": "museum story", "gate": "always", "evidence_out": ["curated_history"], "fork": false}, {"id": "freeman_claim", "label": "Freeman claim [plain]", "gate": "coat=plain", "evidence_out": ["freeman_whisper"], "fork": false}, {"id": "crew_omission", "label": "crew omission [shared]", "gate": "topic_done(historian crew_omission_official)", "evidence_out": [], "fork": false}]}, "mr_whitehouse": {"label": "Mr. Whitehouse", "location": "upper_residential_ridge", "color": "#d35400", "topics": [{"id": "default", "label": "default", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "subscriptions_and_credit", "label": "civic arithmetic", "gate": "always", "evidence_out": ["civic_arithmetic"], "fork": false}, {"id": "name_the_dead", "label": "name the dead", "gate": "evidence(civic_arithmetic)", "evidence_out": ["silence_is_choice"], "fork": true}]}, "mrs_pell": {"label": "Mrs. Pell", "location": "upper_residential_ridge", "color": "#d35400", "topics": [{"id": "default", "label": "default [plain/badge]", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "club_guests", "label": "ridge visitors", "gate": "always", "evidence_out": [], "fork": false}, {"id": "servant_talk", "label": "servant talk [plain]", "gate": "coat=plain", "evidence_out": ["ridge_haste"], "fork": false}]}, "miriam_ashcroft": {"label": "Mrs. Ashcroft", "location": "upper_residential_ridge", "color": "#d35400", "topics": [{"id": "default", "label": "default", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "town", "label": "the ridge", "gate": "always", "evidence_out": [], "fork": false}, {"id": "naomi", "label": "Naomi sighting", "gate": "evidence(naomi)", "evidence_out": ["ridge_sighting"], "fork": false}, {"id": "club", "label": "Ophion Club", "gate": "always", "evidence_out": [], "fork": false}]}, "sebastian_wick": {"label": "Mr. Wick (Atty.)", "location": "upper_residential_ridge", "color": "#d35400", "topics": [{"id": "default", "label": "default", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "records", "label": "missing records", "gate": "always", "evidence_out": [], "fork": false}, {"id": "claim", "label": "old wage claim", "gate": "evidence(lay_lead)", "evidence_out": ["legal_claim"], "fork": false}, {"id": "filing", "label": "filing [plain]", "gate": "coat=plain", "evidence_out": [], "fork": false}]}, "eleanor_whitlock": {"label": "Mrs. Whitlock", "location": "upper_residential_ridge", "color": "#d35400", "topics": [{"id": "default", "label": "default", "gate": "first visit", "evidence_out": [], "fork": false}, {"id": "charity", "label": "charity work", "gate": "always", "evidence_out": [], "fork": false}, {"id": "strangers", "label": "strangers", "gate": "evidence(naomi)", "evidence_out": [], "fork": false}, {"id": "names", "label": "names matter", "gate": "evidence(naomi)", "evidence_out": [], "fork": false}]}, "widow_kessler": {"label": "Widow Kessler", "location": "upper_residential", "color": "#d35400", "topics": []}};
+
+const LOCATIONS = {
+  "estate":                  { label: "The Estate",        color: "#9a3030" },
+  "estate / lounge":         { label: "Estate / Lounge",   color: "#9a3030" },
+  "boardinghouse":           { label: "Boardinghouse",     color: "#7a40a0" },
+  "town":                    { label: "Town",               color: "#4060a0" },
+  "business_district":       { label: "Business District", color: "#2a7050" },
+  "town_hall":               { label: "Town Hall",         color: "#2a7050" },
+  "post_office":             { label: "Post Office",       color: "#2a7050" },
+  "lower_residential":       { label: "Lower Quarter",     color: "#3a5880" },
+  "upper_residential_ridge": { label: "Upper Ridge",       color: "#a05830" },
+  "upper_residential":       { label: "Upper Residential", color: "#a05830" },
+};
+
+// Group by location maintaining order
+const LOC_ORDER = ["estate","estate / lounge","boardinghouse","town","business_district","town_hall","post_office","lower_residential","upper_residential_ridge","upper_residential"];
+const byLoc = {};
+LOC_ORDER.forEach(l => byLoc[l] = []);
+Object.entries(NPCS).forEach(([id, npc]) => {
+  if (!byLoc[npc.location]) byLoc[npc.location] = [];
+  byLoc[npc.location].push(id);
+});
+
+let activeNpc = null;
+
+function buildNav(filter = "") {
+  const nav = document.getElementById("nav-tree");
+  nav.innerHTML = "";
+  LOC_ORDER.forEach(loc => {
+    const ids = byLoc[loc] || [];
+    const filtered = filter ? ids.filter(id => NPCS[id].label.toLowerCase().includes(filter.toLowerCase())) : ids;
+    if (!filtered.length) return;
+    const locInfo = LOCATIONS[loc] || { label: loc, color: "#888" };
+    const grp = document.createElement("div");
+    grp.className = "loc-group";
+    grp.innerHTML = `<div class="loc-header" onclick="toggleLoc(this)">
+      <span>${locInfo.label}</span><span class="arrow">▾</span>
+    </div><div class="loc-npcs">` +
+      filtered.map(id => {
+        const npc = NPCS[id];
+        const tc = npc.topics ? npc.topics.length : 0;
+        return `<button class="npc-btn${activeNpc===id?' active':''}" onclick="showNpc('${id}')" data-id="${id}">
+          <span class="npc-dot" style="background:${npc.color}"></span>
+          <span>${npc.label}</span>
+          <span class="topic-count">${tc}T</span>
+        </button>`;
+      }).join("") + `</div>`;
+    nav.appendChild(grp);
+  });
+}
+
+function toggleLoc(el) {
+  el.parentElement.classList.toggle("collapsed");
+}
+
+function gateClass(gate) {
+  if (!gate) return "";
+  const g = gate.toLowerCase();
+  if (g.includes("never")) return "never";
+  if (g.includes("coat=plain") || g.includes("coat = plain")) return "coat-plain";
+  if (g.includes("coat!=plain") || g.includes("coat≠plain") || g.includes("coat != plain")) return "coat-badge";
+  if (g.includes("evidence(")) return "has-evidence";
+  return "";
+}
+
+function gatePills(gate) {
+  if (!gate) return "";
+  const g = gate;
+  const pills = [];
+  if (g.toLowerCase().includes("never")) pills.push(`<span class="pill pill-never">NEVER</span>`);
+  if (g.toLowerCase().includes("coat=plain") || g.toLowerCase().includes("coat = plain")) pills.push(`<span class="pill pill-plain">coat = plain</span>`);
+  if (g.toLowerCase().includes("coat!=plain") || g.toLowerCase().includes("coat≠plain") || g.toLowerCase().includes("coat != plain")) pills.push(`<span class="pill pill-badge">coat ≠ plain</span>`);
+  const evMatches = [...g.matchAll(/evidence\(([^)]+)\)/gi)];
+  evMatches.forEach(m => pills.push(`<span class="pill pill-gate">need: ${m[1]}</span>`));
+  if (g.toLowerCase().includes("always") && !pills.length) pills.push(`<span class="pill pill-gate">always</span>`);
+  if (g.toLowerCase().includes("first visit") && !pills.some(p=>p.includes("always"))) pills.push(`<span class="pill pill-gate">first visit</span>`);
+  return pills.join(" ");
+}
+
+function showNpc(id) {
+  activeNpc = id;
+  buildNav(document.getElementById("search").value);
+  const npc = NPCS[id];
+  const detail = document.getElementById("npc-detail");
+  const locInfo = LOCATIONS[npc.location] || { label: npc.location, color: npc.color };
+
+  const topics = npc.topics || [];
+  const evidenceOut = [...new Set(topics.flatMap(t => t.evidence_out || []))];
+  const forkCount = topics.filter(t => t.fork).length;
+  const plainCount = topics.filter(t => t.gate && (t.gate.includes("coat=plain") || t.gate.includes("coat = plain"))).length;
+  const badgeCount = topics.filter(t => t.gate && (t.gate.includes("coat!=plain") || t.gate.includes("coat !=") || t.gate.includes("coat≠"))).length;
+
+  detail.innerHTML = `
+    <div class="npc-header">
+      <div class="npc-color-bar" style="background:${npc.color}"></div>
+      <div>
+        <div class="npc-title">${npc.label}</div>
+        <div class="npc-meta">${locInfo.label}</div>
+        <div class="npc-id">npc: ${id}</div>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat"><span class="stat-n">${topics.length}</span>topics</div>
+      <div class="stat"><span class="stat-n">${evidenceOut.length}</span>evidence out</div>
+      <div class="stat"><span class="stat-n">${forkCount}</span>forks</div>
+      <div class="stat"><span class="stat-n" style="color:#5fa88a">${plainCount}</span>plain-only</div>
+      <div class="stat"><span class="stat-n" style="color:#a85f5f">${badgeCount}</span>badge-only</div>
+    </div>
+
+    <div class="section-label">Topics</div>
+    <div class="topic-tree">
+      ${topics.map((t, i) => {
+        const gc = gateClass(t.gate);
+        const evOut = (t.evidence_out || []);
+        return `<div class="topic-node ${gc}${t.fork ? " has-fork" : ""}${gc === "never" ? " never" : ""}">
+          <div class="topic-head" onclick="toggleTopic(this)">
+            <span class="toggle-arrow">▶</span>
+            <span class="topic-name">${t.label || t.id}</span>
+            <div class="topic-badges">
+              ${gatePills(t.gate)}
+              ${t.fork ? '<span class="pill pill-fork">fork</span>' : ""}
+              ${evOut.map(e => `<span class="pill pill-out">→ ${e}</span>`).join("")}
+            </div>
+          </div>
+          <div class="topic-body">
+            <div class="gate-text">Gate: ${t.gate || "—"}</div>
+            ${t.id !== t.label ? `<div class="gate-text" style="margin-bottom:0">ID: <code>${t.id}</code></div>` : ""}
+            ${evOut.length ? `<div class="ev-label">Evidence produced:</div><div class="ev-list">${evOut.map(e=>`<span class="pill pill-out">${e}</span>`).join("")}</div>` : ""}
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+  `;
+
+  document.getElementById("placeholder").style.display = "none";
+  detail.style.display = "block";
+}
+
+function toggleTopic(el) {
+  el.classList.toggle("open");
+  const body = el.nextElementSibling;
+  body.classList.toggle("open");
+}
+
+document.getElementById("search").addEventListener("input", e => {
+  buildNav(e.target.value);
+});
+
+buildNav();
+</script>
+</body>
+</html>
