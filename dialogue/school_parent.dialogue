@@ -35,7 +35,7 @@ TOPIC: the_stranger_woman
   EVIDENCE: naomi_unapologetic_presence
 
 TOPIC: the_estate_talk
-  GATE: always
+  GATE: evidence(naomi)
   TAG: parent_estate_rumor
   LABEL: "Ask what the ridge families are saying about the club deaths"
   TIME: 7

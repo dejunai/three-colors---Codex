@@ -19,7 +19,7 @@ TOPIC: default
   MR. CRANE: "Then please keep your voice down, Officer.\nPatrons in a chemist's shop are entitled to their privacy regarding remedies."
 
 TOPIC: fenn_laudanum
-  GATE: always
+  GATE: evidence(naomi)
   TAG: apothecary_fenn
   LABEL: "Inquire about prescriptions filled for Dr. Aldous Fenn"
   TIME: 5
