@@ -40,7 +40,9 @@ func _ready() -> void:
 	add_child(music)
 
 func _clear() -> void:
-	for child in root.get_children(): child.queue_free()
+	for child in root.get_children():
+		root.remove_child(child)
+		child.queue_free()
 
 func _tracked_font(base: FontFile, glyph_spacing: int) -> FontVariation:
 	var variation = FontVariation.new()
@@ -166,6 +168,8 @@ func _background(image: Texture2D) -> TextureRect:
 # Prologue slide: kicker/title/body over a photo, a single ghost "Continue" advances.
 func show_slide(image: Texture2D, kicker: String, heading: String, body: String, after: Callable) -> void:
 	_clear()
+	root.show()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if not music.playing: music.play()
 	root.add_child(_background(image))
 	root.add_child(_scrim())
@@ -189,6 +193,8 @@ func show_slide(image: Texture2D, kicker: String, heading: String, body: String,
 # Title screen: tagline over club-night.jpg, primary/ghost buttons in a row.
 func show_title(image: Texture2D, heading: String, tagline: String, flavor: String, buttons: Array) -> void:
 	_clear()
+	root.show()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	if not music.playing: music.play()
 	root.add_child(_background(image))
 	root.add_child(_scrim())
@@ -225,3 +231,4 @@ func stop_music() -> void:
 
 func hide_all() -> void:
 	_clear()
+	root.hide()
