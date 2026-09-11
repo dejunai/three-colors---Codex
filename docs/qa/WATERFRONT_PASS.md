@@ -32,6 +32,6 @@ Do not give multiple residents the same slot in the same phase without intention
 
 ## Validation
 
-`tests/waterfront_flow.gd`: entry/return, travel cost, outdoor daylight setup, island scenery without route, all seven waterfront residents' live interaction focus, evening/night schedules, and save restoration. `tests/dialogue_catalog_flow.gd`: updated resident/topic totals, effects, timing, links, and reachable placements. `tests/town_expansion_flow.gd`: existing neighborhoods, rooms, morgue, post office, and body timeline. All passed. The older expansion test was corrected to check a placeholder resident only when its interaction actually exists; the stationer's named dialogue already replaces that placeholder.
+`tests/waterfront_flow.gd`: entry/return, travel cost, outdoor daylight setup, island scenery without route, all seven waterfront residents' live interaction focus, evening/night schedules, and save restoration. `tests/dialogue_catalog_flow.gd`: 33 NPCs / 157 nonempty topics, effects, timing, links, and reachable placements. `tests/town_expansion_flow.gd`: existing neighborhoods, rooms, morgue, post office, and body timeline. All passed. The older expansion test was corrected to check a placeholder resident only when its interaction actually exists; the stationer's named dialogue already replaces that placeholder.
 
 A rendered Godot view was inspected. Primitive geometry remains deliberate. Water and island are scenery beyond the playable seawall; no swimming, boats, island exploration, new interior, or night venue is implied by this pass.

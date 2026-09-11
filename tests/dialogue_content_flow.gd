@@ -165,6 +165,7 @@ func _run() -> void:
 	assert(dstate.evidence.has("behan_name"), "the real ship-naming fact must be recorded")
 
 	# --- County clerk: postal details must be earned before the wage-claim filing topic appears ---
+	state.discover("lay_lead")
 	var clerk_ctx = Runtime.make_context(state, dstate)
 	var clerk_menu_before = Runtime.menu(defs.county_clerk, clerk_ctx)
 	var clerk_ids_before = []

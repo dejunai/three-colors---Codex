@@ -41,7 +41,7 @@ The earlier wage-publicity fork retains its evidence ID for saved records, now r
 ## Verification
 
 - `press_correction_flow.gd`: held/draft evidence is insufficient; received original and historical supplements qualify; later discoveries do not appear retroactively; both filing choices work; partial dialogue does not print the slip; a live mid-print save resumes; time is charged once; original report/county/supplement snapshots remain unchanged; the newspaper keeps its original cards and adds a separate slip; the optional link and Almy response work.
-- Catalog check: 29 concrete NPCs, 135 nonempty topics, parsing, numeric timing, repeat handling, evidence descriptions, all actor interaction targets and links.
+- Catalog check: 33 concrete NPCs, 157 nonempty topics, parsing, numeric timing, repeat handling, evidence descriptions, all actor interaction targets and links.
 - Social inquiry, live dialogue/save, town traversal/minimal progression, and staging/body/montage checks passed in an isolated current-project Godot copy.
 - The sandboxed Godot checks emit a Windows root-certificate-store warning at shutdown; the test assertions pass. No network functionality is involved.
 
