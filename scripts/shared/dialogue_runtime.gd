@@ -57,6 +57,7 @@ static func make_context(state, dstate) -> Dictionary:
 			"estate_complete": func(): return state.estate_complete,
 			"steward_ready": func(): return state.steward_ready(),
 		}
+
 	}
 
 # Draft gate vocabulary mapped to the already-authored observations. These
@@ -65,9 +66,10 @@ static func make_context(state, dstate) -> Dictionary:
 # This gate changes no copy and grants no evidence or Perception.
 static func has_filed_evidence(state, id: String) -> bool:
 	if state == null: return false
-	var report = state.get("report_evidence")
-	if bool(state.get("intake_done")) and report is Array and report.has(id): return true
-	var history = state.get("supplement_history")
+	var report = state.get("report_evidence", []) if state is Dictionary else state.report_evidence
+	var intake_done = state.get("intake_done", false) if state is Dictionary else state.intake_done
+	if bool(intake_done) and report is Array and report.has(id): return true
+	var history = state.get("supplement_history", []) if state is Dictionary else state.supplement_history
 	if history is Array:
 		for supplement in history:
 			if not supplement is Dictionary: continue
