@@ -1,18 +1,130 @@
-# ============================================
-# background_npc_template.dialogue
-# ============================================
-# Template, not a concrete NPC: {generated}/{assigned by schedule}/{home}/
-# {workplace}/{home_or_speakeasy} are placeholder tokens for a future
-# resident generator to substitute per instance (e.g. against
-# scripts/chapters/town_places.gd's building registry). The parser treats
-# them as opaque literal text today — no substitution happens yet. This
-# file exists to prove the grammar tolerates the shape; wiring up the
-# generator is a separate, later pass.
+# DIALOGUE AUTHORING TEMPLATE / COOKBOOK — updated 2026-09-10 by Codex
+# Reference: docs/DIALOGUE_AUTHORING.md (runtime behavior and writer handoff).
+# Examples only: these statements and identifiers are NOT new story canon.
+# Copy this file, replace {generated} with your lowercase_snake_case NPC id,
+# and replace every example_witness reference with that SAME id. Remove
+# unused example topics and replace all example_* notes/evidence/dependencies.
+# Braces do not interpolate. This placeholder header keeps the template out
+# of the live NPC catalog. A new real NPC also needs a verified world slot.
+# Use two spaces per indent, uppercase directives, full-line comments only.
 NPC: {generated}
-LOCATION: {assigned by schedule}
-SCHEDULE: dawn={home}, midday={workplace}, dusk={home}, night={home_or_speakeasy}
+LOCATION: museum
+SCHEDULE: morning=museum, midday=museum, evening=closed, night=closed
+# Optional, repeatable header; uncomment only when the real file exists:
+# INCLUDE: shared_rebuffs.dialogue
+
+# All metadata precedes dialogue. Defaults are automatic, first eligible wins.
+# Put specific defaults before the catch-all. TAGs distinguish their timing.
+TOPIC: default
+  GATE: coat = plain AND visit_count(example_witness) >= 2
+  TAG: example_witness_plain_return
+  TIME: 0
+  EXAMPLE WITNESS: "Back again, Mr. Corwin?"
 
 TOPIC: default
   GATE: always
-  NPC: "I've got nothing to say about it."
-  # placeholder for all ~50 background residents until the NPC-content pass
+  TAG: example_witness_greeting
+  TIME: 0
+  EXAMPLE WITNESS: "Good morning. What can I do for you?"
+
+# Normal menu topic. LABEL is optional; the topic id supplies a fallback label.
+# NOTEBOOK writes prose; EVIDENCE creates a separately linkable observation.
+# New evidence does not automatically create valid links to other evidence.
+TOPIC: example_account
+  GATE: NOT topic_done(example_witness, example_account)
+  LABEL: "Ask what the witness actually saw"
+  TAG: example_witness_account
+  TIME: 12.5
+  [The witness puts down a folded newspaper.]
+  EXAMPLE WITNESS: "I saw someone waiting by the door.
+    I couldn't tell you who it was."
+  CHOICE: "You saw them, but you couldn't identify them?"
+    EXAMPLE WITNESS: "Exactly. I said \"someone\", not a name."
+    NOTEBOOK: example_account_note | "The witness reports an unidentified person by a door.\n\nIdentity remains unconfirmed."
+    EVIDENCE: example_door_account
+
+# CHOICE above is linear speech. Only a FORK makes selectable alternatives.
+# This topic closes after completion; without NOT topic_done it can be replayed
+# and another branch chosen. Nested FORKs work. The parent tail always resumes.
+TOPIC: example_approach
+  GATE: evidence(example_door_account) AND NOT topic_done(example_witness, example_approach)
+  LABEL: "Press for a clearer account"
+  TAG: example_witness_approach
+  TIME: 15
+  FORK:
+    CHOICE: "Take your time."
+      EXAMPLE WITNESS: "Thank you. What do you need to know?"
+      FORK:
+        CHOICE: "Where were you standing?"
+          EXAMPLE WITNESS: "At the window."
+          NOTEBOOK: example_window_note | "The witness says they watched from a window."
+          EVIDENCE: example_window_account
+        CHOICE: "Could you see their face?"
+          EXAMPLE WITNESS: "No."
+          NOTEBOOK: example_face_note | "The witness could not see the person's face."
+          EVIDENCE: example_face_unseen
+    CHOICE: "I need certainty, not guesses."
+      EXAMPLE WITNESS: "Then I have nothing further to offer."
+      NOTEBOOK: example_rebuff_note | "The witness withdrew when pressed for certainty."
+      EVIDENCE: example_pressure_rebuff
+  [The witness folds the newspaper again.]
+
+# Shared TOPIC across different NPCs counts DISTINCT completed sources.
+# Keep each NPC's TAG unique. Repeating this NPC never increases the tally.
+TOPIC: example_shared_question
+  GATE: always
+  LABEL: "Ask about the missing entry"
+  TAG: example_witness_shared_question
+  TIME: 5
+  EXAMPLE WITNESS: "I can't help you with that."
+
+TOPIC: example_word_spreads
+  GATE: topic_count(example_shared_question) >= 4 AND NOT topic_done(example_witness, example_word_spreads)
+  LABEL: "Return to the missing entry"
+  TAG: example_witness_word_spreads
+  TIME: 10
+  EXAMPLE WITNESS: "I hear you've been asking about that entry."
+
+# Cross-NPC dependency: use actual ids from the other writer's file.
+# spoken_to only means an interaction began; topic_done means it completed.
+TOPIC: example_referral
+  GATE: spoken_to(example_historian) AND topic_done(example_historian, example_referral_given)
+  LABEL: "Mention the historian's referral"
+  TAG: example_witness_referral
+  TIME: 5
+  EXAMPLE WITNESS: "If they sent you, I can spare a moment."
+
+# filed() checks RECEIVED report pages, not the current evidence inventory.
+TOPIC: example_received_record
+  GATE: filed(example_door_account) AND (day >= 2 OR estate_complete)
+  LABEL: "Discuss the filed account"
+  TAG: example_witness_received_record
+  TIME: 5
+  EXAMPLE WITNESS: "Then my account is on the record."
+
+# Schedule uses midday; GATE phase uses noon. These are currently different.
+TOPIC: example_midday
+  GATE: phase = noon AND day >= 1 AND day <= 3 AND coat != plain
+  LABEL: "Ask during the midday break"
+  TAG: example_witness_midday
+  TIME: 3
+  EXAMPLE WITNESS: "A short question, then."
+
+# Flags are read-only here: game code must set an actual flag first.
+# steward_ready is an existing Chapter One story check, not a generic field.
+TOPIC: example_code_gate
+  GATE: flag(example_permission) AND steward_ready
+  LABEL: "Ask about the agreed meeting"
+  TAG: example_witness_code_gate
+  TIME: 0
+  EXAMPLE WITNESS: "We can speak now."
+
+# never disables a populated topic; a metadata-only stub is also invisible.
+TOPIC: example_disabled
+  GATE: never
+  EXAMPLE WITNESS: "Draft dialogue; unavailable in play."
+
+TOPIC: example_unwritten
+  GATE: always
+  LABEL: "Unwritten topic"
+  # Add steps when ready; no menu entry exists until then.
