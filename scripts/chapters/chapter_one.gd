@@ -564,7 +564,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 		estate.location=destination
 	add_child(estate)
 	daylight=null
-	if destination in ["estate","town","business","upper","lower"]:
+	if destination in ["estate","town","business","upper","lower","waterfront"]:
 		daylight=preload("res://scripts/shared/daylight.gd").new()
 		estate.add_child(daylight)
 		daylight.setup(estate)
@@ -587,10 +587,13 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	pitch=0.85 if destination == "town" else (0.38 if destination == "estate" else 0.48)
 	distance=6.3 if destination in ["estate","town"] else 4.8
 	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-6,58,28) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
-	if destination in ["upper","business","lower"]:
+	if destination in ["upper","business","lower","waterfront"]:
 		movement_bounds=Rect2(-29,-7,58,36)
 		distance=6.3
 		pitch=0.38
+	if destination == "waterfront":
+		movement_bounds=Rect2(-30,-10,60,35)
+		pitch=0.48
 	if destination == "tunnel":
 		movement_bounds=Rect2(-8.6,-33,14.2,42)
 		distance=5.3

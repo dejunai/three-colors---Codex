@@ -35,3 +35,16 @@ TOPIC: club
   WALTER CORWIN: "Did your husband belong?"
   MRS. ASHCROFT: "For eighteen years."
   MRS. ASHCROFT: "The club improved none of his opinions, but certainly increased his confidence in them."
+  
+ TOPIC: crew_omission
+  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(miriam_ashcroft, crew_omission)
+  TAG: mrs_ashcroft_crew_omission
+  LABEL: "Ask why the town's history leaves out the crew's names"
+  TIME: 3
+  WALTER CORWIN: "The crew who drowned in 1823. Their names don't appear anywhere."
+  MRS. ASHCROFT: "No."
+  WALTER CORWIN: "You've never wondered why."
+  MRS. ASHCROFT: "I have wondered about a great many things this town has decided not to write down.\nWondering has not changed any of them."
+  [She turns back toward the garden as if the conversation has already concluded.]
+  MRS. ASHCROFT: "My husband attended eighteen years of dinners at that club.\nHe came home from each one entirely satisfied.\nI have learned to read satisfaction carefully."
+  NOTEBOOK: ashcroft_crew_omission | "Mrs. Ashcroft offered no explanation for the crew's absence from the record. She implied her husband's club membership made him comfortable with what was omitted."

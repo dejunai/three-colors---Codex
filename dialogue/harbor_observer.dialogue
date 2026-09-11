@@ -1,7 +1,7 @@
-# Lower residential quay, stone-repair staging.
+# Waterfront quay, stone-repair staging; evening return to the lower quarter.
 # A harbor-side laborer: flat, unhurried refusal; the discipline of not looking.
 NPC: harbor_observer
-LOCATION: lower_residential
+LOCATION: waterfront
 SCHEDULE: morning=quay_repair, midday=quay_repair, evening=lower_house_3, night=lower_house_3
 
 TOPIC: default

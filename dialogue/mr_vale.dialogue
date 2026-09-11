@@ -1,7 +1,8 @@
 # Generic Chapter 1 town NPC.
 # A quay bookkeeper who supplies corroboration rather than revelation.
 NPC: quay_bookkeeper
-LOCATION: business_district
+LOCATION: waterfront
+SCHEDULE: morning=quay_office, midday=quay_office, evening=closed, night=closed
 
 TOPIC: default
   GATE: NOT topic_done(quay_bookkeeper, default) AND coat = plain

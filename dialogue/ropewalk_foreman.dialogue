@@ -1,0 +1,21 @@
+NPC: ropewalk_foreman
+LOCATION: quayside_works
+SCHEDULE: morning=quayside_works, midday=quayside_works, evening=closed, night=closed
+
+TOPIC: default
+  GATE: always
+  TAG: ropewalk_foreman_default
+  TIME: 2
+  ROPEWALK FOREMAN: "If you're not buying cord or waiting on a coil, the quay wall's that way."
+
+TOPIC: island_supply
+  GATE: evidence(naomi) AND NOT topic_done(ropewalk_foreman, island_supply)
+  TAG: ropewalk_foreman_island_supply
+  LABEL: "Ask about supply runs to the offshore island"
+  TIME: 5
+  WALTER CORWIN: "The whaling station on the island. When did it last take a supply run?"
+  ROPEWALK FOREMAN: "That station's been dead ground since the flood.\nNothing goes out there on my log."
+  WALTER CORWIN: "Nothing official."
+  [He sets down the wooden spool he was threading. Meets Walter's eye for the first time.]
+  ROPEWALK FOREMAN: "A private boat doesn't need my log.\nA private boat doesn't need anyone's log.\nThat's the point of a private boat."
+  NOTEBOOK: foreman_island_supply | "The rope-walk foreman confirmed no supply run to the island appears in his ledger. He acknowledged that a private boat would leave no record. He did not say one had gone."

@@ -1,0 +1,35 @@
+NPC: chandlers_boy
+LOCATION: chandlery
+SCHEDULE: morning=chandlery, midday=chandlery, evening=closed, night=closed
+
+TOPIC: default
+  GATE: always
+  TAG: chandlers_boy_default
+  TIME: 2
+  CHANDLER'S BOY: "We've got sperm oil, colza, and tallow.\nMr. Hitch says the colza's best for reading lamps but everyone buys the tallow anyway."
+
+TOPIC: lamp_question
+  GATE: visit_count(chandlers_boy) >= 2 AND NOT topic_done(chandlers_boy, lamp_question)
+  TAG: chandlers_boy_lamp_question
+  LABEL: "Ask about the chandlery's customers"
+  TIME: 3
+  WALTER CORWIN: "Who keeps the largest order standing?"
+  CHANDLER'S BOY: "The estate takes six crates of sperm oil a month.\nMr. Hitch says it's for the reading room but I've seen the invoices.\nThat's enough for every room in the house to burn all night."
+  [He glances toward the back room, then lowers his voice.]
+  CHANDLER'S BOY: "Last month they ordered an extra four crates.\nMr. Hitch said not to note it separately.\nSo I didn't."
+  NOTEBOOK: chandlers_boy_lamp | "The chandler's boy mentioned the estate's standing oil order increased by four crates last month. He was instructed not to record it separately."
+
+TOPIC: island_delivery
+  GATE: coat = plain AND evidence(naomi_quay_inquiry) AND NOT topic_done(chandlers_boy, island_delivery)
+  TAG: chandlers_boy_island_delivery
+  LABEL: "Ask if oil was ever delivered to the island station"
+  TIME: 6
+  WALTER CORWIN: "Has anyone ever ordered a delivery out to the old whaling station? On the island."
+  [A long pause. He straightens the lamp wicks on the counter without looking up.]
+  CHANDLER'S BOY: "Once.\nMaybe eight weeks ago.\nNot through the shop.\nA man came to the yard entrance and paid Mr. Hitch directly.\nCash, not account."
+  WALTER CORWIN: "What did he take?"
+  CHANDLER'S BOY: "Two crates sperm oil and a box of long tapers.\nThe good ones, not the household grade.\nMr. Hitch told me it was a private matter and I should finish sweeping."
+  WALTER CORWIN: "Can you describe the man?"
+  CHANDLER'S BOY: "Tall. Good coat. He didn't look at me once."
+  NOTEBOOK: chandlers_boy_island | "A man in a good coat made a cash purchase at the chandlery yard eight weeks ago — two crates of sperm oil and long tapers, not household grade. The transaction was not entered on account. The chandler's boy was told it was a private matter."
+  EVIDENCE: chandlery_island_delivery

@@ -1,0 +1,23 @@
+NPC: quay_docker
+LOCATION: quay_wall
+SCHEDULE: morning=quay_wall, midday=quay_wall, evening=closed, night=closed
+
+TOPIC: default
+  GATE: always
+  TAG: quay_docker_default
+  TIME: 2
+  QUAY DOCKER: "Tide's been slack since six. Nothing's moving today that wasn't stuck yesterday."
+
+TOPIC: naomi_sighting
+  GATE: evidence(naomi) AND NOT topic_done(quay_docker, naomi_sighting)
+  TAG: quay_docker_naomi_sighting
+  LABEL: "Ask if anyone saw Naomi Freeman near the water"
+  TIME: 5
+  WALTER CORWIN: "A woman named Naomi Freeman. Did you see her here recently?"
+  QUAY DOCKER: "Small? Quick? Carried a satchel like it had opinions?"
+  WALTER CORWIN: "That would be her."
+  QUAY DOCKER: "Three days back, maybe four.\nShe was asking about the mud calendar.\nWho tracks the tidal drift, that sort of thing.\nI told her Peake would know."
+  WALTER CORWIN: "Did she go to Peake?"
+  QUAY DOCKER: "Couldn't say.\nShe wrote something down and left.\nShe always wrote something down."
+  NOTEBOOK: docker_naomi_sighting | "The quay docker saw Naomi Freeman three or four days before the inquiry. She was asking about tidal drift records and the mud calendar. He directed her to Peake. He noted she was always writing."
+  EVIDENCE: naomi_quay_inquiry
