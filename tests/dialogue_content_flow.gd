@@ -172,11 +172,13 @@ func _run() -> void:
 	for entry in clerk_menu_before.entries: clerk_ids_before.append(entry.id)
 	assert(not clerk_ids_before.has("wage_claim_inquiry"), "lay_lead alone must not surface postal details or the county filing topic")
 	state.discover("new_bedford_letters")
+	clerk_ctx = Runtime.make_context(state, dstate)
 	var clerk_menu_letters = Runtime.menu(defs.county_clerk, clerk_ctx)
 	var clerk_ids_letters = []
 	for entry in clerk_menu_letters.entries: clerk_ids_letters.append(entry.id)
 	assert(not clerk_ids_letters.has("wage_claim_inquiry"), "the filing topic must still stay hidden until the postmaster refusal establishes the minor-son detail")
 	state.discover("postal_bureaucracy_refusal")
+	clerk_ctx = Runtime.make_context(state, dstate)
 	var clerk_menu_after = Runtime.menu(defs.county_clerk, clerk_ctx)
 	var clerk_ids_after = []
 	for entry in clerk_menu_after.entries: clerk_ids_after.append(entry.id)
