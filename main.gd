@@ -15,11 +15,15 @@ const MOVE_LATCH_MIN = 0.15
 var move_latch_timer = {"walk_forward":0.0,"walk_back":0.0,"walk_left":0.0,"walk_right":0.0}
 # Click-to-move waypoint: accessibility/automation fallback for players who can't sustain a held key.
 var move_target = null
+var phone_controls: CanvasLayer
 
 func _ready() -> void:
 	_setup_inputs()
 	chapter=get_node(chapter_path)
 	chapter.start(self)
+	phone_controls = preload("res://scripts/shared/phone_controls.gd").new()
+	add_child(phone_controls)
+	phone_controls.setup(self)
 
 func _setup_inputs() -> void:
 	var keys = {"walk_forward":[KEY_W,KEY_UP],"walk_back":[KEY_S,KEY_DOWN],"walk_left":[KEY_A,KEY_LEFT],"walk_right":[KEY_D,KEY_RIGHT],"use":[KEY_E,KEY_F],"case":[KEY_TAB,KEY_I],"journal":[KEY_J],"pause_game":[KEY_ESCAPE],"brisk":[KEY_SHIFT],"camera_left":[KEY_Q],"camera_right":[KEY_R]}
@@ -133,16 +137,6 @@ func _unhandled_input(event:InputEvent) -> void:
 		if event is InputEventMouseButton and event.pressed:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP: distance = maxf(3.2,distance-0.5)
 			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN: distance = minf(9,distance+0.5)
-			# Click-to-move: not gated on pointer-lock, so it works whether or not mouse capture is available (accessibility/automation fallback).
-			if event.button_index == MOUSE_BUTTON_LEFT:
-				var from = camera.project_ray_origin(event.position)
-				var to = from+camera.project_ray_normal(event.position)*100
-				var query = PhysicsRayQueryParameters3D.create(from,to,1)
-				var hit = get_world_3d().direct_space_state.intersect_ray(query)
-				if not hit.is_empty():
-					move_target = Vector3(
-						clampf(hit.position.x,movement_bounds.position.x,movement_bounds.end.x),
-						hit.position.y,
-						clampf(hit.position.z,movement_bounds.position.y,movement_bounds.end.y)
-					)
+			if event.button_index == MOUSE_BUTTON_LEFT and event.device != InputEvent.DEVICE_ID_EMULATION:
+				phone_controls.tap(event.position)
 	chapter.handle_input(event)

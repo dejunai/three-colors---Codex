@@ -26,8 +26,8 @@ func _ready() -> void:
 	prompt = _label("",22,false)
 	prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	prompt.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	prompt.offset_top = -96
-	prompt.offset_bottom = -52
+	prompt.offset_top = -68
+	prompt.offset_bottom = -12
 	ui.add_child(prompt)
 	location_label = _label("",22,false)
 	location_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -38,8 +38,8 @@ func _ready() -> void:
 	toast_label = _label("",19,false)
 	toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	toast_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	toast_label.offset_top = -153
-	toast_label.offset_bottom = -105
+	toast_label.offset_top = -260
+	toast_label.offset_bottom = -205
 	ui.add_child(toast_label)
 	hazard_caption = _label("",21,false)
 	hazard_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -74,7 +74,8 @@ func _button(text:String, callback:Callable, parent:Node = null) -> Button:
 	var b = Button.new()
 	b.text = text
 	b.set_meta("base_font_size",18)
-	b.custom_minimum_size.y = 48
+	b.custom_minimum_size.y = 58
+	b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	b.add_theme_font_override("font",sans)
 	b.add_theme_font_size_override("font_size",int(18*float(settings.text_scale)))
 	b.add_theme_color_override("font_color",PAPER)
@@ -101,10 +102,10 @@ func _panel(kind:String,heading:String,kicker:String = "",wide:bool = false) -> 
 	modal.add_child(dark)
 	var panel = PanelContainer.new()
 	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	panel.offset_left = 170 if wide else 320
-	panel.offset_right = -170 if wide else -320
-	panel.offset_top = 150 if kind == "dialogue" else 60
-	panel.offset_bottom = -150 if kind == "dialogue" else -60
+	panel.offset_left = 12
+	panel.offset_right = -12
+	panel.offset_top = 12
+	panel.offset_bottom = -12
 	panel.add_theme_stylebox_override("panel",_style(Color("111914"),Color("727b66")))
 	modal.add_child(panel)
 	var scroll = ScrollContainer.new()

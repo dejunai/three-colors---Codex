@@ -166,13 +166,13 @@ func _close() -> void:
 	scripted_dialogue.clear()
 	interface.close()
 	page="play"
-	Input.mouse_mode=Input.MOUSE_MODE_CAPTURED
+	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 
 func _title() -> void:
 	_panel("title","No Exit Wound","THREE COLORS OF MADNESS  /  CHAPTER ONE")
 	_paragraph("Widow's Bight, 1923",24)
 	_paragraph("Eight people are dead at the Ophion estate.\nThe town is prepared to account for six.",28)
-	_paragraph("The estate, Pickman Street, and the service passage\nThird-person 3D prototype",16)
+	_paragraph("PHONE VISIT — turn your phone sideways.\nTap ground to walk; tap a person to approach. Drag to look.\nUse the arrow buttons around obstacles, then Interact.",16)
 	if not _available_save_path().is_empty(): _button("Continue investigation",_load_game)
 	_button("Begin at the estate",_new_game)
 	_button("Accessibility & controls",func(): return_page="title"; _settings())
@@ -197,7 +197,7 @@ func _new_game() -> void:
 	_cards(Story.INTROS,func():
 		state.started = true
 		_close()
-		_toast("WASD move · Mouse look · E examine · Tab case file · Esc pause",10)
+		_toast("Tap ground to walk · Drag to look · Arrows around obstacles · Interact nearby",10)
 		_save_game()
 	)
 
@@ -306,7 +306,7 @@ func _find_focus() -> void:
 			if get_world_3d().direct_space_state.intersect_ray(query).is_empty():
 				best=d
 				focused=id
-	prompt.text = "" if focused.is_empty() else "[ E ]  "+str(estate.points[focused].title)
+	prompt.text = "" if focused.is_empty() else "[ TAP INTERACT ]  "+str(estate.points[focused].title)
 	marker.visible = not focused.is_empty() and bool(settings.hints)
 	if marker.visible: marker.position = estate.points[focused].get("marker",estate.points[focused].pos)+Vector3(0,0.06,0)
 
