@@ -32,7 +32,7 @@ The editor's old refusal topics stop replaying after the correction. His unanswe
 
 Built on Dejunai's Almy/editor dialogue, the existing report/supplement system, and the earlier Codex dialogue adapter. New dialogue in this pass is Codex-authored under Dejunai's permission to revise and interlink NPCs.
 
-`dialogue_runtime.gd` adds a read-only gate function, `filed(evidence_id)`. It reads the received original report or received supplement snapshots/history. It does not treat currently held evidence as submitted, change any snapshot, or grant evidence/Perception. Existing save fields suffice; no schema migration is required.
+`dialogue_runtime.gd` adds a read-only gate function, `filed(evidence_id)`. It reads the received original report or historical filed supplement snapshots. It does not treat currently held evidence as submitted, change any snapshot, or grant evidence/Perception. Existing save fields suffice; no schema migration is required.
 
 The correction records `gazette_correction_terms` and `gazette_correction_printed`. Their descriptions come from authored NOTEBOOK text through the existing catalog. The later link is `public_count_corrected`. The original Gazette FACTS/SCENES and all received report copies remain unchanged. Later correction material is appended only when inspecting the newspaper after acquiring it.
 

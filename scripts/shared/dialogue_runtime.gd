@@ -67,8 +67,6 @@ static func has_filed_evidence(state, id: String) -> bool:
 	if state == null: return false
 	var report = state.get("report_evidence")
 	if bool(state.get("intake_done")) and report is Array and report.has(id): return true
-	var current = state.get("supplement_evidence")
-	if bool(state.get("supplement_filed")) and current is Array and current.has(id): return true
 	var history = state.get("supplement_history")
 	if history is Array:
 		for supplement in history:
