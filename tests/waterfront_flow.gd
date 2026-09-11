@@ -72,6 +72,7 @@ func run() -> void:
 	assert(restored.restore(g.state.pack()))
 	assert(restored.world=="waterfront")
 	g._interact("route_pickman")
+	g = scene.chapter
 	assert(g.state.world=="town")
 	if OS.get_cmdline_user_args().has("--view"):
 		g.state.clock_minutes=720
