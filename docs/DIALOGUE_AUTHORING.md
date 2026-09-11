@@ -64,7 +64,7 @@ Use `always`, `never`, `NOT`, `AND`, `OR`, parentheses, and `<`, `<=`, `>`, `>=`
 | --- | --- |
 | `coat` | Stored clothing description; `coat = plain` is the customary plain-coat test. |
 | `day` | Day number. |
-| `phase` | `morning`, **`noon`**, `evening`, `night`. |
+| `phase` | `morning`, **`noon`**, `evening`, `night` in GATE expressions. Schedule headers still use `midday`, not `noon`. |
 | `estate_complete` | Existing estate investigation completion state. |
 | `steward_ready` | Existing story predicate: Almy visited, Day 3, sufficient steward visits, and plain coat. |
 
