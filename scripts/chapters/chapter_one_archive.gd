@@ -8,6 +8,7 @@ extends RefCounted
 # One's own content and deliberately does not live in case_state.gd, which
 # stays chapter-agnostic and only counts confirmed link ids.
 const LINKS := {
+	"gazette|gazette_correction_printed": {"id":"public_count_corrected", "title":"A CORRECTION BESIDE THE ORIGINAL", "summary":"The morning edition reports six. A later printed slip records the police count of eight and names Naomi with its identification sources. The correction supplements the account; it does not erase the copies already sold."},
 	"estate_day_book|service_work": {"id":"staff_book_entry", "title":"AN ENTRY IN THE STAFF BOOK", "summary":"Almy recalls Naomi asking about estate work. The staff book records N. Freeman doing day work in the kitchen wing. The entry is consistent with her account, without establishing why Naomi died."},
 	"curriculum_abridgment|reader_omission_letter": {"id":"reader_omission", "title":"THE ABRIDGMENT IN WRITING", "summary":"Abernathy describes omitting the crew list. The school's covering letter records that instruction and committee approval. The document corroborates the decision he acknowledged."},
 

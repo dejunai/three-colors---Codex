@@ -38,3 +38,17 @@ TOPIC: servant_talk
   MRS. PELL: "She heard men arriving too confident and leaving too quickly. In this town that narrows nothing."
   NOTEBOOK: pell_maid_heard | "Mrs. Pell admitted her maid heard men arriving and departing the ridge in haste, but gave no names."
   EVIDENCE: ridge_haste
+  
+TOPIC: crew_omission
+  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(mrs_pell, crew_omission)
+  TAG: mrs_pell_crew_omission
+  LABEL: "Ask why the town's history leaves out the crew's names"
+  TIME: 4
+  WALTER CORWIN: "The memorial on the common lists every owner who subscribed to the rebuilding fund.\nIt does not list the men who drowned."
+  MRS. PELL: "A subscription is a matter of public record.\nA drowning is a matter of the sea."
+  WALTER CORWIN: "The sea didn't write the memorial. The committee did."
+  [She releases the gate latch and lets it click shut between them.]
+  MRS. PELL: "My grandfather sat on that committee, Officer.\nHe was not a cruel man.\nHe was a practical one.\nThere is a difference, and it has served this ridge for a hundred years."
+  WALTER CORWIN: "It served the ridge. I'm asking about the crew."
+  MRS. PELL: "Then ask the harbor. The harbor keeps its own account."
+  NOTEBOOK: pell_crew_omission | "Mrs. Pell acknowledged her grandfather sat on the memorial committee. Framed the omission as practical rather than cruel. Referred to 'the harbor' as the keeper of a different account."

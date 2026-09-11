@@ -1,0 +1,56 @@
+NPC: net_seller
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_net_loft, midday=waterfront_net_loft, evening=closed, night=closed
+
+TOPIC: default
+  GATE: coat = plain AND visit_count(net_seller) >= 2
+  TAG: net_seller_plain_repeat
+  TIME: 0
+  NET SELLER: "Still walking the timbers without the brass, Officer?\nMind the tar bucket by the bench."
+
+TOPIC: default
+  GATE: always
+  TAG: net_seller_default
+  TIME: 2
+  NET SELLER: "Nets, lines, or crabbing pots. Otherwise you're in my light."
+
+TOPIC: crew_omission
+  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(net_seller, crew_omission)
+  TAG: net_seller_crew_omission
+  LABEL: "Ask why the town's history leaves out the crew's names"
+  TIME: 4
+  WALTER CORWIN: "The men who drowned in 1823 — their names aren't in any record."
+  NET SELLER: "Ours are."
+  WALTER CORWIN: "Where?"
+  NET SELLER: "In the families. In the boats we named after them.\nIn the berths we don't give to strangers."
+  [She does not look up from the netting needle.]
+  NET SELLER: "You're asking why the town didn't write them down.\nThe town didn't lose them.\nWe did."
+  NOTEBOOK: net_seller_crew_omission | "The net seller said the drowned crew's names are preserved in the harbor families, not in civic records. She drew a clear line between 'the town' and 'we.'"
+
+TOPIC: harbor_currents
+  GATE: evidence(sub_harbor_drag) AND NOT topic_done(net_seller, harbor_currents)
+  TAG: net_seller_currents
+  LABEL: "Ask about the unnatural stillness before the murders"
+  TIME: 4
+  WALTER CORWIN: "Mrs. Peake said the tide went dead flat at three in the morning, three nights back."
+  NET SELLER: "Lydia Peake hears with her ears. I watch the lead weights."
+  [She holds up a hemp line strung with grey lead sinkers.]
+  NET SELLER: "A flat surface is a trick for men in rowboats, Officer.\nDown twelve fathoms, the water was running inland. Not toward the bay. Toward the hill."
+  WALTER CORWIN: "Toward the hill?"
+  NET SELLER: "Toward the bluff where the estates sit. The line didn't drift east on the ebb.\nIt pulled straight into the rock beneath the kitchen wing."
+  NOTEBOOK: net_seller_currents_1 | "Net seller observed deep harbor currents running unnaturally inland toward the estate bluff rather than out with the ebb tide."
+  EVIDENCE: inland_subsea_current
+
+TOPIC: copper_rings
+  GATE: coat = plain AND evidence(observer_color_tell) AND NOT topic_done(net_seller, copper_rings)
+  TAG: net_seller_rings
+  LABEL: "Ask why the harbor people wear beaten copper rings"
+  TIME: 5
+  WALTER CORWIN: "The mason on the sea wall wore an anchor link beaten into a copper band.\nI've seen three others on the quay with the same metal."
+  NET SELLER: "You have sharp eyes for a man who doesn't fish."
+  [She pauses, setting her thumb against a flat brass gauge.]
+  NET SELLER: "When you haul nets in November fog, everything turns the same color.\nGrey water, grey sky, grey hands. A man can stare so long he forgets which way the daylight sits."
+  WALTER CORWIN: "And the ring?"
+  NET SELLER: "It reminds your eye where the world ends and you begin.\nYou don't look directly at the water when the grey gets heavy, Walter.\nYou look down at your hand."
+  NOTEBOOK: net_seller_ring_discipline | "Net seller on the copper bands: worn to anchor the eye in heavy fog, warning against looking directly into the water."
+  EVIDENCE: eye_anchoring_discipline

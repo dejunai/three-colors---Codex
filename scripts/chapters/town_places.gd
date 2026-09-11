@@ -24,7 +24,7 @@ const BUILDINGS = {
 		["lower_house_5","DWELLING No. 5","home","exterior"],
 		["lower_house_6","DWELLING No. 6","home","exterior"]]
 }
-const HUB_TITLES = {"upper":"Upper residential quarter","business":"Business district","lower":"Lower residential quarter","morgue":"Precinct morgue","post_office":"Pickman Street post office"}
+const HUB_TITLES = {"waterfront":"The waterfront","upper":"Upper residential quarter","business":"Business district","lower":"Lower residential quarter","morgue":"Precinct morgue","post_office":"Pickman Street post office"}
 
 static func entry(id:String) -> Array:
 	for hub in BUILDINGS:

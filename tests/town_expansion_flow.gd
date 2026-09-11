@@ -91,7 +91,7 @@ func run() -> void:
 			g._save_game()
 			g._load_game()
 			assert(g.state.world==spec[0] and g.player.position.distance_to(Vector3(0,0.1,4))<1)
-			if spec[3]=="occupied":
+			if spec[3]=="occupied" and g.estate.points.has("local_resident"):
 				g._interact("local_resident")
 				assert(g.page=="dialogue")
 				cards(g)

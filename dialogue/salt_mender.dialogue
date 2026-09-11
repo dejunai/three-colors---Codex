@@ -45,3 +45,19 @@ TOPIC: naomi_and_the_boy
   MRS. PEAKE: "I told her nobody went out to that mud for sixty years.\nShe looked at me and said, 'The mud didn't make the debt, ma'am. Men did.'\nI couldn't find an argument to give her back."
   NOTEBOOK: mender_naomi_quote | "Naomi Freeman on the drowned island: 'The mud didn't make the debt, ma'am. Men did.'"
   EVIDENCE: naomi_moral_clarity
+
+TOPIC: crew_omission
+  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(salt_mender, crew_omission)
+  TAG: salt_mender_crew_omission
+  LABEL: "Ask why the town's history leaves out the crew's names"
+  TIME: 5
+  WALTER CORWIN: "The men who drowned in 1823. Why aren't their names anywhere?"
+  [Mrs. Peake does not look up from the net.]
+  MRS. PEAKE: "They are."
+  WALTER CORWIN: "Where?"
+  MRS. PEAKE: "Down here.\nEvery family on this alley has a name from that water.\nWe don't need a committee to spell it for us."
+  WALTER CORWIN: "I mean in the record. In the memorial. In the school reader."
+  MRS. PEAKE: "I know what you mean."
+  [She bites through the twine and begins the next row.]
+  MRS. PEAKE: "The hill decides what goes in the reader.\nWe decided a long time ago that it wasn't worth the argument.\nNaomi Freeman hadn't made that decision yet.\nYou can see how that went for her."
+  NOTEBOOK: peake_crew_omission | "Mrs. Peake says the drowned crew's names are preserved in the lower harbor families, not in any official record. The hill's version was not worth fighting. Naomi Freeman had not accepted that. Mrs. Peake did not say this as an accusation."

@@ -1,0 +1,53 @@
+NPC: ropewalk_foreman
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_fish_stores, midday=waterfront_fish_stores, evening=closed, night=closed
+
+TOPIC: default
+  GATE: coat = plain AND visit_count(ropewalk_foreman) >= 2
+  TAG: ropewalk_plain_repeat
+  TIME: 0
+  ROPEWALK FOREMAN: "Still got tar on your trouser hem, Corwin.\nMind the spinning jack if you're coming down the walk."
+
+TOPIC: default
+  GATE: always
+  TAG: ropewalk_foreman_default
+  TIME: 2
+  ROPEWALK FOREMAN: "If you're not buying cord or waiting on a coil, the quay wall's that way."
+
+TOPIC: island_supply
+  GATE: evidence(naomi) AND NOT topic_done(ropewalk_foreman, island_supply)
+  TAG: ropewalk_foreman_island_supply
+  LABEL: "Ask about supply runs to the offshore island"
+  TIME: 5
+  WALTER CORWIN: "The whaling station on the island. When did it last take a supply run?"
+  ROPEWALK FOREMAN: "That station's been dead ground since the flood.\nNothing goes out there on my log."
+  WALTER CORWIN: "Nothing official."
+  [He sets down the wooden spool he was threading. Meets Walter's eye for the first time.]
+  ROPEWALK FOREMAN: "A private boat doesn't need my log.\nA private boat doesn't need anyone's log.\nThat's the point of a private boat."
+  NOTEBOOK: foreman_island_supply | "The rope-walk foreman confirmed no supply run to the island appears in his ledger. He acknowledged that a private boat would leave no record. He did not say one had gone."
+
+TOPIC: cellar_salt
+  GATE: evidence(gray_salt_cakes) AND NOT topic_done(ropewalk_foreman, cellar_salt)
+  TAG: ropewalk_salt
+  LABEL: "Ask why someone would carry harbor curing salt inland"
+  TIME: 5
+  WALTER CORWIN: "Otto Kessler carried cakes of gray harbor curing salt to the estate.\nWhy would kitchen cellars need harbor salt?"
+  ROPEWALK FOREMAN: "Curing salt isn't for kitchens, Walter. Kitchen salt is fine white grain."
+  [He wipes powdered pitch from his palms onto a leather apron.]
+  ROPEWALK FOREMAN: "Grey harbor salt is packed with bitumen and dried brine scum.\nYou lay three-pound cakes along door joints and stone foundations to pull moisture out of sealed seams so timber doesn't swell shut."
+  WALTER CORWIN: "To keep a door from sticking?"
+  ROPEWALK FOREMAN: "Or to keep whatever is on the damp side of the stone from leaking through the mortar."
+  NOTEBOOK: ropewalk_salt_purpose | "Foreman explains gray harbor salt cakes are used to desiccate stone seams and keep sealed cellar doors from swelling shut."
+  EVIDENCE: cellar_desiccation_practice
+
+TOPIC: estate_mooring_cable
+  GATE: evidence(estate_conduit_map) AND NOT topic_done(ropewalk_foreman, estate_mooring_cable)
+  TAG: ropewalk_cable
+  LABEL: "Ask about heavy hawser supplied to the estate bluff"
+  TIME: 6
+  WALTER CORWIN: "Did the estate order heavy marine cordage recently?"
+  ROPEWALK FOREMAN: "Two hundred fathoms of four-inch tarred Manila.\nHeavy enough to anchor an eighty-ton schooner against a nor'easter."
+  WALTER CORWIN: "For what purpose?"
+  ROPEWALK FOREMAN: "Billed to Elias Pruitt's account as 'bluff retaining tackle.'\nDelivered straight to the kitchen cartway three weeks before the deaths.\nYou don't hold up a flower bed with four-inch Manila, Officer."
+  NOTEBOOK: ropewalk_estate_hawser | "Foreman confirms two hundred fathoms of 4-inch tarred Manila hawser delivered to estate kitchen cartway three weeks prior."
+  EVIDENCE: heavy_subterranean_tackle

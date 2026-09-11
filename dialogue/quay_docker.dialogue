@@ -1,0 +1,49 @@
+NPC: quay_docker
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_moorings, midday=waterfront_moorings, evening=closed, night=closed
+
+TOPIC: default
+  GATE: coat = plain AND visit_count(quay_docker) >= 2
+  TAG: quay_docker_plain_repeat
+  TIME: 0
+  QUAY DOCKER: "Look at that — Officer Corwin looking like he might actually haul a rope.\nDon't drop your boots in the scum, Corwin."
+
+TOPIC: default
+  GATE: always
+  TAG: quay_docker_default
+  TIME: 2
+  QUAY DOCKER: "Tide's been slack since six. Nothing's moving today that wasn't stuck yesterday."
+
+TOPIC: naomi_sighting
+  GATE: evidence(naomi) AND NOT topic_done(quay_docker, naomi_sighting)
+  TAG: quay_docker_naomi_sighting
+  LABEL: "Ask if anyone saw Naomi Freeman near the water"
+  TIME: 5
+  WALTER CORWIN: "A woman named Naomi Freeman. Did you see her here recently?"
+  QUAY DOCKER: "Small? Quick? Carried a satchel like it had opinions?"
+  WALTER CORWIN: "That would be her."
+  QUAY DOCKER: "Three days back, maybe four.\nShe was asking about the mud calendar.\nWho tracks the tidal drift, that sort of thing.\nI told her Peake would know."
+  WALTER CORWIN: "Did she go to Peake?"
+  QUAY DOCKER: "Couldn't say.\nShe wrote something down and left.\nShe always wrote something down."
+  NOTEBOOK: docker_naomi_sighting | "The quay docker saw Naomi Freeman three or four days before the inquiry. She was asking about tidal drift records and the mud calendar. He directed her to Peake. He noted she was always writing."
+  EVIDENCE: naomi_quay_inquiry
+
+TOPIC: estate_freight_carts
+  GATE: evidence(estate_freight) AND NOT topic_done(quay_docker, estate_freight_carts)
+  TAG: quay_docker_freight
+  LABEL: "Ask about the three carts of stone sent to the estate"
+  TIME: 6
+  WALTER CORWIN: "Mr. Vale says three carts of stone crossed the quay to the estate, but only two were billed."
+  QUAY DOCKER: "Vale sits on a stool and pushes a pencil. I muscled the tailboards."
+  WALTER CORWIN: "What was on the third cart?"
+  FORK:
+    CHOICE: "Ask about the weight of the load."
+      QUAY DOCKER: "Granite's heavy, but granite doesn't squelch when you drop it on the planks."
+      WALTER CORWIN: "Squelch?"
+      QUAY DOCKER: "Wet timber. Old balks wrapped in burlap, soaked through with grease and black mud.\nSmelled like the old try-works flats after a three-day blowout."
+      NOTEBOOK: docker_cart_weight | "Quay docker confirms third unbilled cart held waterlogged, muddy timber from try-works flats rather than kitchen stone."
+      EVIDENCE: tryworks_timber_freight
+    CHOICE: "Ask who took the reins."
+      QUAY DOCKER: "Not one of our teamsters.\nA man from the estate stables in black driver's serge.\nHe wouldn't let any docker touch the tail-rope. Handed me a half-dollar and told me to take my smoke behind the coal bins."
+      NOTEBOOK: docker_cart_driver | "Quay docker: the unbilled third cart was driven by estate staff in black serge, who bribed dockers to look away."
+      EVIDENCE: estate_private_driver

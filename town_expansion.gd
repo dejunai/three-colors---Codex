@@ -4,7 +4,10 @@ const Places = preload("res://scripts/chapters/town_places.gd")
 
 func _ready() -> void:
 	rng.seed=1925
-	_lighting(not Places.BUILDINGS.has(location))
+	_lighting(not Places.BUILDINGS.has(location) and location != "waterfront")
+	if location == "waterfront":
+		preload("res://scripts/chapters/waterfront_district.gd").new().build(self)
+		return
 	if Places.BUILDINGS.has(location):
 		_neighborhood()
 		return
