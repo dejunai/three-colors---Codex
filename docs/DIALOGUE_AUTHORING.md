@@ -64,7 +64,7 @@ Use `always`, `never`, `NOT`, `AND`, `OR`, parentheses, and `<`, `<=`, `>`, `>=`
 | --- | --- |
 | `coat` | Stored clothing description; `coat = plain` is the customary plain-coat test. |
 | `day` | Day number. |
-| `phase` | `morning`, **`noon`**, `evening`, `night` in GATE expressions. Schedule headers still use `midday`, not `noon`. |
+| `phase` | `morning`, **`noon`**, `evening`, `night` in GATE expressions. At 12:00 the runtime reports `phase = noon`; schedule headers for that same slot still use `midday`, not `noon`. |
 | `estate_complete` | Existing estate investigation completion state. |
 | `steward_ready` | Existing story predicate: Almy visited, Day 3, sufficient steward visits, and plain coat. |
 
@@ -96,11 +96,11 @@ Keep NPC, topic, TAG, note, and evidence identities stable through prose edits: 
 
 ## Scheduling and placement: current limitations
 
-Author schedule keys as **morning, midday, evening, night**. Runtime GATE phase uses **noon**, while schedule lookup uses **midday**. `dawn` currently serves as a fallback when the phase key is missing; it is not a fully normalized morning alias. `dusk` is not recognized. This documentation update does not implement alias normalization.
+Author schedule keys as **morning, midday, evening, night**. Runtime GATE phase uses **noon**, while schedule lookup uses **midday** for that same 12:00 daytime slot. Use `phase = noon` in a GATE, but `midday=...` in `SCHEDULE:`. `dawn` currently serves as a fallback when the phase key is missing; it is not a fully normalized morning alias. `dusk` is not recognized. This documentation update does not implement alias normalization.
 
 The additional-resident catalog hides its NPCs at night regardless of their authored night destination; individual night schedules are not enacted yet. `closed` hides a resident. `home` needs a HOME mapping or falls back to LOCATION. A destination must resolve through existing slots, buildings, or hubs in [dialogue_catalog.gd](../scripts/chapters/dialogue_catalog.gd) and [town_places.gd](../scripts/chapters/town_places.gd). Inspect those registries instead of inventing a location string. Phase changes reposition residents; they do not imply a simulated walk. Core story actors retain separate staging rules, and opening hours do not override every story gate.
 
-Current phase boundaries are 06:00 morning, 12:00 noon, 17:00 evening, 20:00 night. A new `.dialogue` file alone does not guarantee a well-positioned avatar: check its actual slot, overlaps, approach directions, and visibility at each phase.
+Current phase boundaries are 06:00 morning, 12:00 noon / schedule `midday`, 17:00 evening, 20:00 night. A new `.dialogue` file alone does not guarantee a well-positioned avatar: check its actual slot, overlaps, approach directions, and visibility at each phase.
 
 ## Validation and provenance
 
