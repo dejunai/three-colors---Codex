@@ -24,6 +24,8 @@ func run() -> void:
 	assert(R.has_filed_evidence(draft,"naomi"))
 	draft.supplement_filed=false
 	assert(R.has_filed_evidence(draft,"naomi"))
+	draft.intake_done=false
+	assert(R.has_filed_evidence(draft,"naomi"))
 	var restored=C.new();assert(restored.restore(draft.pack()))
 	assert(R.has_filed_evidence(restored,"naomi"))
 	var scene=load("res://main.tscn").instantiate();root.add_child(scene)

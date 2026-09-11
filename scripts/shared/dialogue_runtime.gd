@@ -65,7 +65,6 @@ static func make_context(state, dstate) -> Dictionary:
 # This gate changes no copy and grants no evidence or Perception.
 static func has_filed_evidence(state, id: String) -> bool:
 	if state.intake_done and state.report_evidence.has(id): return true
-	if not state.intake_done: return false
 	if state.supplement_filed and state.supplement_evidence.has(id): return true
 	for supplement in state.supplement_history:
 		if supplement.get("evidence", []).has(id): return true
