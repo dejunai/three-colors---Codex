@@ -147,7 +147,7 @@ func _segment_done(g: Node) -> void:
 	var tag = String(segment.session.tag)
 	if not g.state.visited.has(actor): g.state.visited.append(actor)
 	if actor == "barman":
-		if tag == "steward_first" and g.state.steward_visits == 0: g.state.steward_visits = 1
+		if tag in ["steward_first", "steward_first_lead"] and g.state.steward_visits == 0: g.state.steward_visits = 1
 		elif tag == "steward_open": g.state.steward_visits = 3
 		g.state.dialogue_state.visit_counts["steward"] = g.state.steward_visits
 	if tag in ["almy_trust", "behan_invitation", "lay_lead", "service_work", "behan_name", "old_woman", "club_talk", "club_devotion", "pantry_lead"]:

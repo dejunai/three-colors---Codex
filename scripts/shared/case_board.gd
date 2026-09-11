@@ -80,6 +80,8 @@ func configure(view:CanvasLayer,evidence:Array,facts:Dictionary,confirmed:Array,
 	thread_layer.board = self
 	thread_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(thread_layer)
+	# ScrollContainer culls Controls by their rect, including custom drawing.
+	thread_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	resized.connect(_layout)
 
 func _ready() -> void:
