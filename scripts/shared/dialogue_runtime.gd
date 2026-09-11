@@ -72,8 +72,11 @@ static func has_filed_evidence(state, id: String) -> bool:
 	var history = state.get("supplement_history", []) if state is Dictionary else state.supplement_history
 	if history is Array:
 		for supplement in history:
-			if not supplement is Dictionary: continue
-			var filed = supplement.get("evidence", [])
+			var filed = []
+			if supplement is Dictionary:
+				filed = supplement.get("evidence", [])
+			elif supplement is Object:
+				filed = supplement.get("evidence")
 			if filed is Array and filed.has(id): return true
 	return false
 
