@@ -19,7 +19,7 @@ TOPIC: default
   MR. PENCE: "He sent six notices of sudden decease for probate indexing.\nThe forms are standard."
 
 TOPIC: wage_claim_inquiry
-  GATE: evidence(lay_lead)
+  GATE: evidence(lay_lead) AND evidence(new_bedford_letters) AND evidence(postal_bureaucracy_refusal)
   TAG: clerk_wage_claim
   LABEL: "Attempt to file Naomi Freeman's wage claim"
   TIME: 10

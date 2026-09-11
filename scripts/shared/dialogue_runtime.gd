@@ -63,13 +63,28 @@ static func make_context(state, dstate) -> Dictionary:
 # aliases read existing records; they do not grant extra evidence or Perception.
 # Read received snapshots, never the player's current unsubmitted observations.
 # This gate changes no copy and grants no evidence or Perception.
+# History is authoritative when present. The latest-snapshot fallback is only
+# for accepted older saves without history. Intake remains mandatory, and IDs
+# remain exact: having filed a related observation is not filing this record.
 static func has_filed_evidence(state, id: String) -> bool:
-	if state.intake_done and state.report_evidence.has(id): return true
-	if not state.intake_done or not state.supplement_filed: return false
-	if state.supplement_evidence.has(id): return true
-	for supplement in state.supplement_history:
-		if supplement.get("evidence", []).has(id): return true
-	return false
+	if state == null: return false
+	var snapshot: Dictionary
+	if state is Dictionary: snapshot = state
+	elif state is Object and state.has_method("pack"): snapshot = state.pack()
+	else: return false
+	if not bool(snapshot.get("intake_done", false)): return false
+	var report = snapshot.get("report_evidence", [])
+	if report is Array and report.has(id): return true
+	var history = snapshot.get("supplement_history", [])
+	if not history is Array: return false
+	if not history.is_empty():
+		for supplement in history:
+			if not supplement is Dictionary: continue
+			var received = supplement.get("evidence", [])
+			if received is Array and received.has(id): return true
+		return false
+	var legacy = snapshot.get("supplement_evidence", [])
+	return bool(snapshot.get("supplement_filed", false)) and legacy is Array and legacy.has(id)
 
 static func has_evidence(state, id: String) -> bool:
 	if state.evidence.has(id): return true

@@ -164,6 +164,24 @@ func _run() -> void:
 	_play(Runtime.play_topic(defs.father_behan, dstate, "behan_name"), state, dstate)
 	assert(dstate.evidence.has("behan_name"), "the real ship-naming fact must be recorded")
 
+	# --- County clerk: postal details must be earned before the wage-claim filing topic appears ---
+	state.discover("lay_lead")
+	var clerk_ctx = Runtime.make_context(state, dstate)
+	var clerk_menu_before = Runtime.menu(defs.county_clerk, clerk_ctx)
+	var clerk_ids_before = []
+	for entry in clerk_menu_before.entries: clerk_ids_before.append(entry.id)
+	assert(not clerk_ids_before.has("wage_claim_inquiry"), "lay_lead alone must not surface postal details or the county filing topic")
+	state.discover("new_bedford_letters")
+	var clerk_menu_letters = Runtime.menu(defs.county_clerk, clerk_ctx)
+	var clerk_ids_letters = []
+	for entry in clerk_menu_letters.entries: clerk_ids_letters.append(entry.id)
+	assert(not clerk_ids_letters.has("wage_claim_inquiry"), "the filing topic must still stay hidden until the postmaster refusal establishes the minor-son detail")
+	state.discover("postal_bureaucracy_refusal")
+	var clerk_menu_after = Runtime.menu(defs.county_clerk, clerk_ctx)
+	var clerk_ids_after = []
+	for entry in clerk_menu_after.entries: clerk_ids_after.append(entry.id)
+	assert(clerk_ids_after.has("wage_claim_inquiry"), "the county filing topic must appear once the wage lead and postal trail are both in evidence")
+
 	print("DIALOGUE CONTENT PASS: gatehouse_boy/coroners_assistant/groundskeeper/gardener/old_woman/mrs_almy/odell/father_behan all reverse-engineered, parsing clean and gating correctly against real game state")
 	quit(0)
 

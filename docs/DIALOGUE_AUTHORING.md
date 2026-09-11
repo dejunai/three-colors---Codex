@@ -57,7 +57,7 @@ Use `always`, `never`, `NOT`, `AND`, `OR`, parentheses, and `<`, `<=`, `>`, `>=`
 | `topic_done(npc_id, topic_or_tag)` | Whether that NPC's topic or TAG completed. |
 | `topic_count(shared_topic_or_tag)` | Number of distinct NPCs completing that identity; repeats with one NPC add nothing. |
 | `evidence(evidence_id)` | Current recorded evidence, with the small existing alias map in the runtime. |
-| `filed(evidence_id)` | Evidence in a received initial report or filed supplement/history, after intake. Possession alone is insufficient. No alias expansion. |
+| `filed(evidence_id)` | Evidence in received records after intake. Supplement history is authoritative when present; older saves without history may use the filed supplement snapshot. Possession alone is insufficient. No alias expansion. |
 | `flag(flag_id)` | Boolean set by game code; unknown flags are false. Dialogue has no command to set one. |
 
 | Field | Values/meaning |

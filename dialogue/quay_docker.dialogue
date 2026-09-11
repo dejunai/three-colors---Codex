@@ -1,6 +1,6 @@
 NPC: quay_docker
-LOCATION: quay_wall
-SCHEDULE: morning=quay_wall, midday=quay_wall, evening=closed, night=closed
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_moorings, midday=waterfront_moorings, evening=closed, night=closed
 
 TOPIC: default
   GATE: coat = plain AND visit_count(quay_docker) >= 2

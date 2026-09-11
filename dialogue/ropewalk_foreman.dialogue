@@ -1,6 +1,6 @@
 NPC: ropewalk_foreman
-LOCATION: quayside_works
-SCHEDULE: morning=quayside_works, midday=quayside_works, evening=closed, night=closed
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_fish_stores, midday=waterfront_fish_stores, evening=closed, night=closed
 
 TOPIC: default
   GATE: coat = plain AND visit_count(ropewalk_foreman) >= 2

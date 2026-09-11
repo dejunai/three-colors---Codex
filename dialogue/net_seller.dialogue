@@ -1,6 +1,6 @@
 NPC: net_seller
-LOCATION: quay_market
-SCHEDULE: morning=quay_market, midday=quay_market, evening=closed, night=closed
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_net_loft, midday=waterfront_net_loft, evening=closed, night=closed
 
 TOPIC: default
   GATE: coat = plain AND visit_count(net_seller) >= 2
@@ -46,11 +46,11 @@ TOPIC: copper_rings
   TAG: net_seller_rings
   LABEL: "Ask why the harbor people wear beaten copper rings"
   TIME: 5
-  WALTER CORWIN: "The mason on the sea wall wore an anchor link beaten into a copper band.\nI've seen three others on the quay with the same metal."
-  NET SELLER: "You have sharp eyes for a man who doesn't fish."
-  [She pauses, setting her thumb against a flat brass gauge.]
-  NET SELLER: "When you haul nets in November fog, everything turns the same color.\nGrey water, grey sky, grey hands. A man can stare so long he forgets which way the daylight sits."
-  WALTER CORWIN: "And the ring?"
-  NET SELLER: "It reminds your eye where the world ends and you begin.\nYou don't look directly at the water when the grey gets heavy, Walter.\nYou look down at your hand."
-  NOTEBOOK: net_seller_ring_discipline | "Net seller on the copper bands: worn to anchor the eye in heavy fog, warning against looking directly into the water."
+  WALTER CORWIN: "The mason wears a band made from an anchor link. Is that common here?"
+  NET SELLER: "You'll have to ask him about his belongings."
+  [She lifts a snagged loop clear of the needle. Her thumb rests briefly against the worn metal of her gauge.]
+  WALTER CORWIN: "I thought you might know him."
+  NET SELLER: "I know this net wants finishing."
+  NOTEBOOK: net_seller_ring_discipline | "The net seller declined to discuss the mason's band and returned to repairing her net. She offered no explanation for it."
+  # Historical evidence ID retained; this records a refusal, not an explained technique.
   EVIDENCE: eye_anchoring_discipline
