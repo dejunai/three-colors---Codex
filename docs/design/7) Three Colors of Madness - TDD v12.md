@@ -134,3 +134,15 @@ Full route, authoring convention, provenance, limitations and test results:
 [Social inquiry pass](../qa/SOCIAL_INQUIRY_PASS.md).
 The Grok case-file and intro remain visual references; no Grok code or assets
 were imported. Perception calculations and the Day 2 montage remain unchanged.
+
+
+## Development addendum — 10 September 2026: the printed correction
+
+On dev/day-one-followups, Walter can bring received identification records back
+to the Gazette editor and obtain a narrowly sourced correction slip. The original
+edition remains intact; Almy responds when shown the slip. A read-only filed(id)
+dialogue gate checks received report/supplement snapshots, not current inventory.
+This optional consequence works with either filing choice and without manual links.
+See [Day One follow-ups](../qa/DAY_ONE_FOLLOWUPS_PASS.md) for the route, provenance
+and tests. The playtest Web artifacts remain frozen; no export or publication is
+authorized by this development pass.

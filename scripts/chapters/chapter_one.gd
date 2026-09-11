@@ -368,6 +368,11 @@ func _estate_observation(id:String,return_to_barman:bool=false) -> void:
 	)
 
 func _open_lead() -> String:
+	if state.evidence.has("gazette_correction_terms") and not state.evidence.has("gazette_correction_printed"):
+		if not state.evidence.has("lodging"): return " Copy Naomi's entry in Almy's meal ledger for the correction."
+		var runtime=preload("res://scripts/shared/dialogue_runtime.gd")
+		if not (runtime.has_filed_evidence(state,"eight") and runtime.has_filed_evidence(state,"naomi") and runtime.has_filed_evidence(state,"lodging")): return " File the identification and ledger source in a dated supplement at the precinct, then return to the editor."
+		return " Halleck can now read the received count and identification sources. Return to the Gazette editor."
 	# Names only what Walter has actually learned; never a witness or fact he
 	# hasn't earned yet. Priority favors whichever thread the player already
 	# opened, so the guidance reads as a continuation, not a checklist.
@@ -383,6 +388,8 @@ func _objective() -> String:
 		if not state.intake_done: return "Submit your estate report at the precinct intake counter on Pickman Street."
 		if not state.evidence.has("naomi"): return "Speak to Mrs. Almy at her boardinghouse on Pickman Street. Ask who the woman was."
 		if not state.finished:
+			if state.steward_visits == 0 and state.evidence.has("gazette_correction_terms") and not state.evidence.has("gazette_correction_printed"):
+				return "The first appointment with the steward remains open at the estate." + _open_lead()
 			if state.steward_visits == 0:
 				return "Return to the estate's smoking lounge through the service entrance. You can also corroborate Naomi's visit in Almy's meal ledger." if not state.evidence.has("lodging") else "Ask Almy about Naomi's work at the estate, then visit the steward through the service entrance." if not state.evidence.has("service_work") else "Ask the steward about the staff records inside the smoking lounge, through the service entrance."
 			if state.day < 3:
@@ -651,7 +658,10 @@ func _town_observation(id:String,return_target:Variant=null) -> void:
 	if id in ["lay_lead","service_work"]: scripted_dialogue.play_topic(self,"almy",id); return
 	if id == "behan_name": scripted_dialogue.play_topic(self,"behan",id); return
 	if id=="old_woman" and state.evidence.has(id): return
-	_cards(TownStory.SCENES[id],func():
+	var observation_cards=TownStory.SCENES[id].duplicate(true)
+	if id == "gazette" and state.evidence.has("gazette_correction_printed"):
+		observation_cards.append(["THE CORRECTION SLIP",facts["gazette_correction_printed"][1]])
+	_cards(observation_cards,func():
 		state.discover(id)
 		if estate and estate.has_method("sync_actors"):
 			estate.sync_actors(state)

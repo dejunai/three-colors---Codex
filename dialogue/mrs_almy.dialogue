@@ -60,3 +60,16 @@ TOPIC: almy_trust
   MRS. ALMY: "A uniform asks what belongs in a report.\nA man might still ask what happened.\n\nI haven't decided which you are yet."
   NOTEBOOK: almy_trust_1_1 | "Mrs. Almy distinguished speaking to a uniform from speaking to a man. The name she supplied was the same."
 
+
+TOPIC: show_printed_correction
+  GATE: evidence(gazette_correction_printed) AND NOT topic_done(almy, show_printed_correction)
+  TAG: almy_printed_correction
+  LABEL: "Show her the correction with Naomi's name"
+  TIME: 3
+  [Almy reads the narrow slip without sitting down.]
+  MRS. ALMY: "They have put her name in it."
+  WALTER CORWIN: "It goes with the copies they haven't sold."
+  MRS. ALMY: "Leave it beside the book a moment."
+  [She lays the slip by the meal ledger, then returns it to Walter.]
+  MRS. ALMY: "You brought back something I can read. Thank you."
+  NOTEBOOK: correction_seen | "Showed Almy the printed correction. She read Naomi's name and set it beside the meal ledger before returning the slip."

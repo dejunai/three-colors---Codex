@@ -19,7 +19,7 @@ TOPIC: default
   MR. HALLECK: "Captain Odell doesn't edit this paper, Officer.\nHe merely provides the facts the municipality is prepared to vouch for."
 
 TOPIC: the_omitted_two
-  GATE: always
+  GATE: evidence(eight) AND NOT evidence(gazette_correction_printed)
   TAG: editor_omitted
   LABEL: "Confront him about omitting the mother and boy"
   TIME: 5
@@ -29,11 +29,11 @@ TOPIC: the_omitted_two
   MR. HALLECK: "A colored woman and a minor with no local address, no coroner's identification, and no estate in probate.\nWhat headline would you have me set? 'Transients Perish Near Club'?"
   WALTER CORWIN: "They were murdered."
   MR. HALLECK: "A word like murder requires an indictment. A D.A.'s signature.\nOur District Attorney is currently lying on a marble slab in the precinct cellar."
-  NOTEBOOK: editor_omitted_1 | "Miskatonic Gazette editor admitted suppressing the deaths of Naomi and her son: 'Six subscribers died... A word like murder requires an indictment.'"
+  NOTEBOOK: editor_omitted_1 | "Miskatonic Gazette editor defended omitting the woman and boy from the reported count: 'Six subscribers died... A word like murder requires an indictment.'"
   EVIDENCE: press_suppression
 
 TOPIC: press_the_arithmetic
-  GATE: evidence(press_suppression)
+  GATE: evidence(press_suppression) AND evidence(lay_lead) AND NOT evidence(gazette_correction_printed)
   TAG: editor_arithmetic
   LABEL: "Demand an honest retraction"
   TIME: 6
@@ -44,7 +44,7 @@ TOPIC: press_the_arithmetic
       MR. HALLECK: "Josiah Pruitt owns the mortgage on this building. Corliss's firm writes our libel insurance.\nI have eleven men working those flatbed presses who have children to feed on Saturday. That isn't conspiracy. That's arithmetic."
       NOTEBOOK: editor_mortgage | "Pruitt and Corliss held the Gazette's building mortgage and libel bond; the paper cannot print allegations against the club."
       EVIDENCE: gazette_leverage
-    CHOICE: "Offer the documented wage claim as proof."
+    CHOICE: "Describe Almy's account of the wage inquiry."
       MR. HALLECK: "A hundred-year-old whaler's claim from before the Civil War?"
       [He shakes his head, lighting a stub of a cigar.]
       MR. HALLECK: "Nobody in Miskatonic County buys a newspaper to read about century-old whaling debt.\nThey buy it to know which bank is solvent."
@@ -74,3 +74,43 @@ TOPIC: crew_omission
   WALTER CORWIN: "They were the crew. Why leave their names out?"
   MR. HALLECK: "Because a column has a bottom, Corwin. Take your complaint to the Historical Society."
   NOTEBOOK: crew_omission_refusal | "Asked Mr. Halleck why the crew's names are missing from the town's history. No explanation supplied; the question remains open."
+
+# An optional return inquiry: the counter's received pages change what he will print.
+TOPIC: correction_terms
+  GATE: evidence(press_suppression) AND evidence(naomi) AND NOT topic_done(gazette_editor, correction_terms)
+  TAG: editor_correction_terms
+  LABEL: "Ask what he needs to correct the count and print Naomi's name"
+  TIME: 4
+  WALTER CORWIN: "Mrs. Almy identifies the woman as Naomi Freeman. Will you print her name beside the count?"
+  MR. HALLECK: "Her word, and what else?"
+  WALTER CORWIN: "She keeps a meal ledger."
+  MR. HALLECK: "Then copy the entry. Put the identification and its source into a report the precinct has received. Bring those pages back."
+  WALTER CORWIN: "You would print eight?"
+  MR. HALLECK: "As the number in your received report. No murder weapon, no culprit, no sermon. A correction with a source."
+  NOTEBOOK: correction_terms | "Halleck will consider a sourced correction: eight deaths, Almy's identification of Naomi, and her meal-ledger entry must be in received report pages. Copy the ledger at the boardinghouse, file any later discoveries as a precinct supplement, then return to the editor."
+  EVIDENCE: gazette_correction_terms
+
+TOPIC: correction_pending
+  GATE: evidence(gazette_correction_terms) AND NOT (filed(eight) AND filed(naomi) AND filed(lodging)) AND NOT topic_done(gazette_editor, correction_pending)
+  TAG: editor_correction_pending
+  LABEL: "Ask whether the correction can go ahead yet"
+  TIME: 0
+  MR. HALLECK: "The count, the identification, and the ledger entry, Corwin. All in received pages. Your notebook is yours; it is not the precinct's receipt."
+  NOTEBOOK: correction_pending | "Halleck still requires the count and both identification sources in received paperwork. A discovery made after filing needs a dated supplement."
+
+TOPIC: print_correction
+  GATE: evidence(gazette_correction_terms) AND filed(eight) AND filed(naomi) AND filed(lodging) AND NOT topic_done(gazette_editor, print_correction)
+  TAG: editor_print_correction
+  LABEL: "Lay out the received pages and request the correction"
+  TIME: 8
+  [Halleck lays the received pages side by side. His finger stops on the entry from Almy's book.]
+  MR. HALLECK: "The first heading remains six."
+  WALTER CORWIN: "Read the pages underneath it."
+  [He turns the page. Then he draws a rule across a scrap of copy paper.]
+  MR. HALLECK: "Eight reported deaths. Naomi Freeman, identified by the boardinghouse keeper and her meal record. Cause unestablished. That is what these pages support."
+  WALTER CORWIN: "Print that."
+  [The small proof press gives a dry knock. Halleck sets a narrow correction slip beside the morning paper.]
+  THE GAZETTE — CORRECTION: "The received police report records eight deaths at the Ophion estate. Mrs. Almy identifies the woman as Naomi Freeman; her meal ledger corroborates the account. The boy's name remains unestablished. No cause has been established in the report."
+  MR. HALLECK: "This goes with the copies still on the counter. I can't call back the ones already sold."
+  NOTEBOOK: printed_correction | "Collected a printed Gazette correction slip: eight reported deaths; Naomi Freeman identified by Almy and corroborated by her ledger; boy unnamed and cause unestablished. It accompanies unsold copies. The original six-person edition and captain's heading remain unchanged."
+  EVIDENCE: gazette_correction_printed

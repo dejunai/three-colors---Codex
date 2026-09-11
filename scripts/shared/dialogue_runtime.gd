@@ -46,6 +46,7 @@ static func make_context(state, dstate) -> Dictionary:
 			"topic_count": func(args): return dstate.topic_count(args[0]) if args.size() > 0 else 0,
 			"spoken_to": func(args): return dstate.visit_count(args[0]) > 0 if args.size() > 0 else false,
 			"evidence": func(args): return has_evidence(state, args[0]) if args.size() > 0 else false,
+			"filed": func(args): return has_filed_evidence(state, args[0]) if args.size() > 0 else false,
 			"flag": func(args): return dstate.flag(args[0]) if args.size() > 0 else false,
 			"topic_done": func(args): return dstate.topic_done(args[0], args[1]) if args.size() > 1 else false,
 		},
@@ -60,6 +61,16 @@ static func make_context(state, dstate) -> Dictionary:
 
 # Draft gate vocabulary mapped to the already-authored observations. These
 # aliases read existing records; they do not grant extra evidence or Perception.
+# Read received snapshots, never the player's current unsubmitted observations.
+# This gate changes no copy and grants no evidence or Perception.
+static func has_filed_evidence(state, id: String) -> bool:
+	if state.intake_done and state.report_evidence.has(id): return true
+	if not state.intake_done or not state.supplement_filed: return false
+	if state.supplement_evidence.has(id): return true
+	for supplement in state.supplement_history:
+		if supplement.get("evidence", []).has(id): return true
+	return false
+
 static func has_evidence(state, id: String) -> bool:
 	if state.evidence.has(id): return true
 	var aliases = {"ophion_name":["behan_name","ophion_myth_classical"], "kessler_standing":["kessler_carriages"]}
