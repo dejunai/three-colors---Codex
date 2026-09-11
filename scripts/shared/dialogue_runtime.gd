@@ -10,6 +10,7 @@ extends RefCounted
 # the bottom of this file for what remains to integrate it live.
 const Lang = preload("res://scripts/shared/dialogue_lang.gd")
 const DayClock = preload("res://scripts/shared/day_clock.gd")
+const EVIDENCE_ALIASES = {"ophion_name":["behan_name","ophion_myth_classical"], "kessler_standing":["kessler_carriages"]}
 
 static var _cache: Dictionary = {}
 
@@ -68,7 +69,12 @@ static func has_filed_evidence(state, id: String) -> bool:
 	if state == null: return false
 	var report = state.get("report_evidence", []) if state is Dictionary else state.report_evidence
 	var intake_done = state.get("intake_done", false) if state is Dictionary else state.intake_done
-	if bool(intake_done) and report is Array and report.has(id): return true
+	var ids = [id]
+	for alias_id in EVIDENCE_ALIASES.get(id, []):
+		ids.append(alias_id)
+	if bool(intake_done) and report is Array:
+		for candidate in ids:
+			if report.has(candidate): return true
 	var history = state.get("supplement_history", []) if state is Dictionary else state.supplement_history
 	if history is Array:
 		for supplement in history:
@@ -77,13 +83,14 @@ static func has_filed_evidence(state, id: String) -> bool:
 				filed = supplement.get("evidence", [])
 			elif supplement is Object:
 				filed = supplement.get("evidence")
-			if filed is Array and filed.has(id): return true
+			if filed is Array:
+				for candidate in ids:
+					if filed.has(candidate): return true
 	return false
 
 static func has_evidence(state, id: String) -> bool:
 	if state.evidence.has(id): return true
-	var aliases = {"ophion_name":["behan_name","ophion_myth_classical"], "kessler_standing":["kessler_carriages"]}
-	for source in aliases.get(id, []):
+	for source in EVIDENCE_ALIASES.get(id, []):
 		if state.evidence.has(source): return true
 	return false
 
