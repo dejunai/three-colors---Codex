@@ -593,6 +593,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 		pitch=0.38
 	if destination == "waterfront":
 		movement_bounds=Rect2(-30,-10,60,35)
+		distance=6.3
 		pitch=0.48
 	if destination == "tunnel":
 		movement_bounds=Rect2(-8.6,-33,14.2,42)
