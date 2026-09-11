@@ -32,7 +32,11 @@ TOPIC: the_stopped_watch
   MR. VANE: "The blued steel coils appear joined at three points. I can show you under the glass. I cannot tell you what joined them."
   WALTER CORWIN: "Does that tell you when it stopped?"
   MR. VANE: "It tells me why it cannot run now. The hands are not a certificate of the hour it failed."
-  NOTEBOOK: clockmaker_watch_1 | "Vane examined the fully wound watch and showed three joined points in its hairspring. He could not establish their cause or when the mechanism stopped."
+  [He pauses, looking up from the loupe with pale, watering eyes.]
+  MR. VANE: "Though if you want an hour, ask why Judge Wexford, Mr. Corliss, and Dr. Fenn brought me their watches last Thursday."
+  WALTER CORWIN: "To be cleaned?"
+  MR. VANE: "To have the second hands removed. Plucked out with tweezers and left in my scrap bin.\nThree men on the same afternoon. They said the jumping of the hand made their parlors too loud."
+  NOTEBOOK: clockmaker_watch_1 | "Vane showed fused hairspring in the stopped watch. Revealed Wexford, Corliss, and Fenn had their watches' second hands removed last Thursday: 'the jumping of the hand made their parlors too loud.'"
   EVIDENCE: fused_hairspring_anomaly
 
 TOPIC: tryworks_instruments

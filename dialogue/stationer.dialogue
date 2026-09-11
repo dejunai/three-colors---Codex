@@ -53,8 +53,8 @@ TOPIC: naomi_supplies
   WALTER CORWIN: "What did she buy?"
   MR. FINCH: "A one-cent graphite pencil. And two sheets of heavy draughting linen.\nShe asked if linen would rot if kept in oilskin near salt water. I told her linen outlasts paper three to one in the damp."
   [He pauses, resting both palms on the polished counter.]
-  MR. FINCH: "She wasn't writing a letter, Walter. She was copying a diagram.\nHer hands were steady. Steadier than mine."
-  NOTEBOOK: stationer_naomi_linen | "Naomi Freeman bought drafting linen tested against salt-water damp to copy a diagram, using a graphite pencil."
+  MR. FINCH: "She wasn't writing a letter, Walter. She was copying a diagram.\nShe asked if I carried red transfer wax to take an impression of an engraved brass maker's plate.\nSaid she needed to lift the serial mark off an old boiler without damaging the patina."
+  NOTEBOOK: stationer_naomi_linen | "Naomi Freeman bought drafting linen and asked for transfer wax to take an impression of an engraved brass plate on an old boiler without damaging patina."
   EVIDENCE: drafting_linen_diagram
 
 # Shared inquiry: four different completed refusals make the question travel.

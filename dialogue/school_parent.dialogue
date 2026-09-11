@@ -41,10 +41,12 @@ TOPIC: the_estate_talk
   TIME: 7
   FORK:
     CHOICE: "Ask about Judge Wexford."
-      MRS. TEAGUE: "Wexford was a stern magistrate. My husband sat on three grand juries with him.\nPeople say it was foul gas from the lower furnace pipes, but I know what Judge Wexford's parlor looked like last Sunday."
-      WALTER CORWIN: "What did it look like?"
-      MRS. TEAGUE: "The curtains were drawn black. At two in the afternoon. And every mirror in the entry hall had been turned with its glass to the wall."
-      NOTEBOOK: parent_wexford_mirrors | "Judge Wexford had drawn black parlor curtains and turned every hall mirror to the wall the Sunday before his death."
+      MRS. TEAGUE: "Wexford was a stern magistrate. My husband sat on three grand juries with him.\nPeople say it was foul gas from the lower furnace pipes, but I know what Judge Wexford's housemaid found last Sunday."
+      WALTER CORWIN: "What did she find?"
+      MRS. TEAGUE: "Every mirror in the entry hall turned with its glass to the wall. And thirty pounds of coarse sea salt swept under the parlor rug.\nShe quit her place because she found the Judge sleeping upright in his library armchair with his boots tied together at the laces."
+      WALTER CORWIN: "Tied together?"
+      MRS. TEAGUE: "Knotted with heavy hemp, Officer. So he wouldn't sleepwalk toward the cliff in the dark."
+      NOTEBOOK: parent_wexford_mirrors | "Judge Wexford's housemaid quit after finding mirrors turned to the wall, 30 lbs of salt under carpets, and Wexford sleeping upright with boots tied together to prevent sleepwalking to the cliff."
       EVIDENCE: turned_mirrors
     CHOICE: "Ask about Dr. Fenn."
       MRS. TEAGUE: "Dr. Fenn delivered both my boys. A gentleman, though he grew peculiar after his sister passed.\nHe wouldn't prescribe camphor anymore. Said the smell 'attracted things from the cellar.'\nWe thought it was his age."

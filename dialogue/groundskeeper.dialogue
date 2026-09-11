@@ -11,3 +11,16 @@ TOPIC: default
   WALTER'S NOTEBOOK: "The distance he keeps is exact, not nervous. He named a reason before Walter asked for one, then went back to the crates without slowing down.\n\nThe observation is exact. The reason he gave may not be."
   EVIDENCE: crew
 
+TOPIC: perimeter_trench
+  GATE: evidence(crew) AND NOT topic_done(crew, perimeter_trench)
+  TAG: groundskeeper_perimeter
+  LABEL: "Ask about the white powder trenched into the soil thirty paces from the door"
+  TIME: 4
+  WALTER CORWIN: "There's a shallow furrow scored into the dirt thirty paces back from the kitchen door. Ground oyster shell and yellow brimstone."
+  [The groundskeeper drops a crate onto the stack with a sharp, hollow hollow clatter.]
+  THE GROUNDSKEEPER: "Grange orders. Slugs in the rhododendrons."
+  WALTER CORWIN: "Slugs don't cross thirty yards of open carriage gravel in November."
+  THE GROUNDSKEEPER: "They don't cross that line either, Officer. That's why it's there.\nNow step back on the gravel path. You're kicking the lime into the grass."
+  NOTEBOOK: groundskeeper_perimeter_line | "A furrow packed with crushed oyster shell and brimstone sulfur rings the kitchen yard thirty paces out. Groundskeeper claimed it was for garden slugs, but insisted Walter not disturb the boundary."
+  EVIDENCE: sulfur_shell_perimeter
+

@@ -40,11 +40,14 @@ TOPIC: naomi_and_the_boy
   WALTER CORWIN: "Did Naomi come past your porch?"
   MRS. PEAKE: "She brought me a tin of lard from town. Said the boy had torn his trouser knee on the rocks and asked if I had strong sailmaker's thread."
   WALTER CORWIN: "Did she say why they were by the rocks?"
-  MRS. PEAKE: "Looking at the island. The boy asked if people lived out there.\nShe told him people used to work there, but the town had taken the timber away."
+  MRS. PEAKE: "Looking at the island. The boy had his pockets full of round beach stones. He was setting them out in a straight line on the sand, twenty paces apart."
+  WALTER CORWIN: "Twenty paces?"
+  MRS. PEAKE: "Counting his strides under his breath like a clerk. Then he'd look up at the try-works masonry on the spit, squint over a pencil stub, and move a pebble two inches left.\nNot child's play. He was drafting a survey map on the mud."
   [She bites through the heavy twine with her teeth.]
-  MRS. PEAKE: "I told her nobody went out to that mud for sixty years.\nShe looked at me and said, 'The mud didn't make the debt, ma'am. Men did.'\nI couldn't find an argument to give her back."
-  NOTEBOOK: mender_naomi_quote | "Naomi Freeman on the drowned island: 'The mud didn't make the debt, ma'am. Men did.'"
+  MRS. PEAKE: "I told Naomi nobody went out to that mud for sixty years.\nShe looked at me and said, 'The mud didn't make the debt, ma'am. Men did.'\nI couldn't find an argument to give her back."
+  NOTEBOOK: mender_naomi_quote | "Mrs. Peake: Naomi and her boy were pacing distances and setting pebbles twenty strides apart to map the try-works masonry against the bluff. Naomi: 'The mud didn't make the debt, ma'am. Men did.'"
   EVIDENCE: naomi_moral_clarity
+  EVIDENCE: boy_pebble_survey
 
 TOPIC: crew_omission
   GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(salt_mender, crew_omission)

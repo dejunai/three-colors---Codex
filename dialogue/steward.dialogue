@@ -45,7 +45,12 @@ TOPIC: day_book
   THE STEWARD: "That is the entry. Copy it as it stands. I did not write her full name."
   WALTER CORWIN: "Who can identify her?"
   THE STEWARD: "The woman at the boardinghouse knew her. You have already spoken to her."
-  NOTEBOOK: day_book_entry | "Examined the staff day book: N. Freeman, day work, kitchen wing. Initial and surname are consistent with Almy's account; the entry alone does not identify its subject or explain the deaths."
+  WALTER CORWIN: "And the seventh place setting? You always laid seven chairs for six men."
+  [The steward wipes the rim of an empty wine goblet with slow, circular strokes.]
+  THE STEWARD: "Standing instruction from Judge Wexford. Fork to the right, knife edge turned outward.\nOld whaler's custom for a man lost at sea whose body never came home."
+  WALTER CORWIN: "They were setting a plate for a drowned man?"
+  THE STEWARD: "They were setting a plate for whoever was willing to sit in the chair, Officer.\nToward the end, nobody asked who it was."
+  NOTEBOOK: day_book_entry | "Staff day book records 'N. Freeman — Day Work — Kitchen Wing.' Steward revealed the seventh place setting was laid with inverted cutlery—an old whaler's table setting for unrecovered drowned dead."
   EVIDENCE: estate_day_book
 
 TOPIC: club_talk

@@ -41,6 +41,18 @@ TOPIC: harbor_currents
   NOTEBOOK: net_seller_currents_1 | "Net seller observed deep harbor currents running unnaturally inland toward the estate bluff rather than out with the ebb tide."
   EVIDENCE: inland_subsea_current
 
+TOPIC: stone_sinkers
+  GATE: NOT topic_done(net_seller, stone_sinkers)
+  TAG: net_seller_sinkers
+  LABEL: "Ask why the skiffs by the slipway use grooved stones instead of iron anchors"
+  TIME: 4
+  WALTER CORWIN: "I noticed three dories tied at the slip with grooved granite stones for anchors. Iron's cheap enough at the chandlery."
+  NET SELLER: "Iron rings."
+  WALTER CORWIN: "Rings?"
+  NET SELLER: "Drop a five-prong iron grapnel on the ledge out past the point at three in the morning, and the clatter travels three miles through the granite shelf like a tapped telegraph line.\nGranite against granite makes a thud. Nothing wakes up.\nDown here, we like what's quiet."
+  NOTEBOOK: net_seller_stone_sinkers | "Net seller explained the dories use grooved granite stones instead of iron grapnels because iron striking the undersea granite shelf rings like a tapped telegraph wire across the bay."
+  EVIDENCE: stone_sinker_discipline
+
 TOPIC: copper_rings
   GATE: coat = plain AND evidence(observer_color_tell) AND NOT topic_done(net_seller, copper_rings)
   TAG: net_seller_rings

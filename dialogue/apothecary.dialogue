@@ -29,7 +29,9 @@ TOPIC: fenn_laudanum
   MR. CRANE: "Crude gum opium. And grain alcohol in four-gallon carboys.\nHe claimed he was compounding strong sedatives for severe arthritic agitation."
   WALTER CORWIN: "Four gallons of spirits is an excessive quantity for arthritis."
   MR. CRANE: "Dr. Fenn had forty years of immaculate clinical standing in Miskatonic County, Walter.\nA chemist does not interrogate a senior fellow of the Massachusetts Medical Society regarding quantities."
-  NOTEBOOK: apothecary_fenn_supplies | "Apothecary provided Dr. Fenn with crude gum opium and 4-gallon carboys of grain alcohol for alleged 'arthritic sedatives.'"
+  [The chemist lowers his voice, adjusting a blue glass reagent bottle.]
+  MR. CRANE: "Though he ceased looking at his patients' eyes three months ago. Only their wrists and ankles.\nHe would press his thumb into the joint and ask them: 'Does the bone feel heavier to you when the tide comes in?'"
+  NOTEBOOK: apothecary_fenn_supplies | "Apothecary: Fenn bought bulk opium and spirits; stopped looking patients in the eye, only examining wrists and ankles to ask if 'the bone feels heavier when the tide comes in.'"
   EVIDENCE: bulk_opium_spirits
 
 TOPIC: the_stranger_remedies
