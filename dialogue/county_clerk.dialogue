@@ -27,23 +27,23 @@ TOPIC: wage_claim_inquiry
   MR. PENCE: "You'd need a living claimant. A next of kin with legal standing."
   WALTER CORWIN: "The mother is dead. The boy found with her is dead."
   MR. PENCE: "Then the claim abates. An estate requires an administrator appointed by probate, and Judge Wexford's seat is vacant, as you know."
-  WALTER CORWIN: "There is another child. Grown, and gone off on his own account, by her landlady's telling. Surviving."
-  MR. PENCE: "Where is he?"
-  WALTER CORWIN: "I don't know."
+  WALTER CORWIN: "There is another child. A boy, six years old, kept at a mission in New Bedford. Surviving."
+  MR. PENCE: "Who stands as his guardian?"
+  WALTER CORWIN: "No one of record. The mission, as far as I can tell."
   [Mr. Pence sets his dry pen into the brass stand without looking up.]
-  MR. PENCE: "Then you have brought me no claimant at all, Officer.\nA next of kin with no fixed address cannot tender an affidavit, and a court will not seat a claim on a name alone."
-  MR. PENCE: "Find him standing in this room, or the claim has no one to belong to."
+  MR. PENCE: "Then you have brought me no claimant at all, Officer.\nA minor cannot tender his own affidavit, and no guardian of record stands to tender it for him."
+  MR. PENCE: "Find a guardian appointed to stand for him, or the claim has no one to belong to."
   FORK:
     CHOICE: "Ask what becomes of a debt with no claimant to stand for it."
-      WALTER CORWIN: "So a debt simply evaporates because nobody's found?"
-      MR. PENCE: "It does not evaporate, Corwin. It abates.\nIf a debt outlives the men who could press it before anyone stands to claim it, that is the nature of time, not a flaw in the statute."
-      NOTEBOOK: clerk_claim_minor | "Registrar: a wage claim requires a living claimant physically present. Naomi's surviving son is grown and gone off on his own account, whereabouts unknown; the claim has no one to stand for it."
+      WALTER CORWIN: "So a debt simply evaporates because a six-year-old can't sign for it?"
+      MR. PENCE: "It does not evaporate, Corwin. It abates.\nA minor cannot stand for himself, and until someone is appointed to stand for him, that is the nature of the statute, not a flaw in it."
+      NOTEBOOK: clerk_claim_minor | "Registrar: a wage claim requires a living claimant able to stand for himself, or a guardian appointed to stand for him. Naomi's surviving son is a minor at a New Bedford mission with no guardian of record; the claim has no one to stand for it."
       EVIDENCE: claim_no_claimant
     CHOICE: "Insist on filing in triplicate under police authority."
-      WALTER CORWIN: "Enter the claim in triplicate under my name as reporting officer, to preserve the record until he's found."
+      WALTER CORWIN: "Enter the claim in triplicate under my name as reporting officer, to preserve the record until a guardian is appointed."
       [Mr. Pence looks up over wire spectacles, pen poised.]
       MR. PENCE: "I will stamp it as received correspondence, Officer.\nIt sits in the dead-records drawer. It creates no lien, and twenty years from now nobody will look in that drawer."
-      NOTEBOOK: clerk_claim_triplicate | "Wage claim submitted in triplicate as police correspondence to preserve for the minor child Ekon; filed inertly in county dead-records drawer."
+      NOTEBOOK: clerk_claim_triplicate | "Wage claim submitted in triplicate as police correspondence to preserve the record for Naomi's surviving son, a minor with no guardian of record; filed inertly in county dead-records drawer."
       EVIDENCE: claim_filed_inert
 
 TOPIC: ophion_settlement
