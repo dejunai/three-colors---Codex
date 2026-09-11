@@ -16,6 +16,7 @@ var presentation: CanvasLayer
 var staging=preload("res://scripts/chapters/chapter_one_staging.gd").new()
 var scripted_dialogue=preload("res://scripts/chapters/chapter_one_dialogue.gd").new()
 var archive=preload("res://scripts/chapters/chapter_one_archive.gd").new()
+var prologue=preload("res://scripts/shared/prologue_presentation.gd").new()
 var rig: Node3D
 var state = CaseState.new()
 var estate: Node3D
@@ -139,6 +140,8 @@ func _build_ui() -> void:
 	presentation=preload("res://scripts/shared/film_presentation.gd").new()
 	presentation.shader=preload("res://film.gdshader")
 	add_child(presentation)
+	prologue.layer=20
+	add_child(prologue)
 	_build_cough()
 	_apply_settings()
 
@@ -170,15 +173,15 @@ func _close() -> void:
 	Input.mouse_mode=Input.MOUSE_MODE_CAPTURED
 
 func _title() -> void:
-	_panel("title","No Exit Wound","THREE COLORS OF MADNESS  /  CHAPTER ONE")
-	_paragraph("Widow's Bight, 1923",24)
-	_paragraph("Eight people are dead at the Ophion estate.\nThe town is prepared to account for six.",28)
-	_paragraph("The estate, Pickman Street, and the service passage\nThird-person 3D prototype",16)
-	if not _available_save_path().is_empty(): _button("Continue investigation",_load_game)
-	_button("Begin at the estate",_new_game)
-	_button("Accessibility & controls",func(): return_page="title"; _settings())
-	_button("Quit",func(): get_tree().quit())
-	_focus_first()
+	page="title"
+	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
+	marker.visible=false
+	var buttons=[]
+	if not _available_save_path().is_empty(): buttons.append(["Continue investigation",_load_game])
+	buttons.append(["Begin at the estate",_new_game])
+	buttons.append(["Accessibility & controls",func(): return_page="title"; _settings(),true])
+	buttons.append(["Quit",func(): get_tree().quit(),true])
+	prologue.show_title(preload("res://assets/prologue/club-night.jpg"),"Three Colors of Madness","Competence delays the end. It never prevents it.","A man does not interrogate the shape of his own eye.",buttons)
 
 func _new_game() -> void:
 	tunnel_checkpoint.clear()
@@ -195,12 +198,29 @@ func _new_game() -> void:
 	aperture_target = 0.51
 	last_region = ""
 	_update_camera(1)
-	_cards(Story.INTROS,func():
+	_prologue_slide(0)
+
+const PROLOGUE_SLIDES = [
+	["res://assets/prologue/harbor-civic.jpg","Widow's Bight Historical Society · A Civic Reel"],
+	["res://assets/prologue/town-dusk.jpg","From the underwriters' own abstracts"],
+	["res://assets/prologue/club-night.jpg","Widow's Bight Historical Society · A Civic Reel"]]
+
+func _prologue_slide(index:int) -> void:
+	page="title"
+	if index >= Story.INTROS.size():
+		prologue.hide_all()
+		prologue.stop_music()
 		state.started = true
 		_close()
 		_toast("WASD move · Mouse look · E examine · Tab case file · Esc pause",10)
 		_save_game()
-	)
+		return
+	var card = Story.INTROS[index]
+	var slide = PROLOGUE_SLIDES[index]
+	prologue.show_slide(preload_texture(slide[0]),slide[1],card[0],card[1],func(): _prologue_slide(index+1))
+
+func preload_texture(path:String) -> Texture2D:
+	return load(path)
 
 func _cards(cards:Array,after:Callable,kind:String="dialogue") -> void:
 	scripted_dialogue.clear()
@@ -509,6 +529,8 @@ func _save_game() -> bool:
 func _load_game() -> void:
 	var d=save_store.read(_available_save_path())
 	if d.is_empty() or not state.restore(d): _toast("The save could not be read. Begin a new investigation.",5); return
+	prologue.hide_all()
+	prologue.stop_music()
 	tunnel_checkpoint=_normalize_snapshot(d.get("tunnel_checkpoint",{}))
 	_restore_session(d)
 	tunnel_dead=bool(d.get("tunnel_dead",false))
