@@ -7,15 +7,19 @@ SCHEDULE: morning=kessler_shop, midday=kessler_shop, evening=kessler_parlor, nig
 TOPIC: default
   GATE: NOT topic_done(widow_kessler, default) AND coat = plain
   TAG: kessler_plain
+  VOICE: violin_neutral_short_v1
   MRS. KESSLER: "The shop is shut. The ice went yesterday."
   [She looks past Walter's shoulder toward the street before meeting his eyes.]
+  VOICE: violin_neutral_medium_v2
   MRS. KESSLER: "You're not wearing the brass. That's something, at least.\n\nCome inside before the flies find the counter."
 
 TOPIC: default
   GATE: NOT topic_done(widow_kessler, default)
   TAG: kessler_badge
+  VOICE: violin_bureaucratic_medium_v1
   MRS. KESSLER: "Captain Odell already steered me down the steps once this morning, Officer."
   WALTER CORWIN: "I'm not Captain Odell."
+  VOICE: violin_bureaucratic_long_v2
   MRS. KESSLER: "You wear the same tin on your pocket.\n\nIf you're here to ask what Otto paid to sit with those gentlemen, look at the books yourself. I never saw a penny of it come back."
 
 TOPIC: the_knife
@@ -24,8 +28,10 @@ TOPIC: the_knife
   LABEL: "Ask about Otto's boning knife"
   TIME: 4
   WALTER CORWIN: "I found a boning knife beneath a hedge root. Wiped clean.\nMaker's stamp matches the blades on your rack."
+  VOICE: violin_neutral_medium_v1
   MRS. KESSLER: "Otto's good knife. Carbon steel. Kept it in grease under the counter."
   WALTER CORWIN: "It hadn't touched meat."
+  VOICE: violin_neutral_long_v1
   MRS. KESSLER: "Not hog meat. Not beef.\n\nHe wrapped it in oilcloth three weeks back and put it in his breast pocket like a fountain pen. A butcher carrying his trade into an evening room. He thought that made him their equal."
   NOTEBOOK: kessler_knife_1 | "Mrs. Kessler confirms the boning knife belonged to Otto. He carried it to the Ophion estate three weeks ago, wrapped in oilcloth."
   EVIDENCE: kessler_knife_confirmed
@@ -36,10 +42,13 @@ TOPIC: club_standing
   LABEL: "Ask how Otto came to join the club"
   TIME: 5
   WALTER CORWIN: "Judge Wexford, Dr. Fenn, Corliss, Pruitt. Men of property.\nHow did Kessler join them?"
+  VOICE: violin_neutral_short_v2
   MRS. KESSLER: "They needed someone who didn't flinch at gristle."
   [She wipes an already scrubbed butcher block with a dry rag.]
+  VOICE: violin_neutral_long_v1
   MRS. KESSLER: "Wexford called him 'tradesman' to his face. Corliss wouldn't take a cigar from his case.\nBut on the last Thursday of the month, a carriage came to the alley behind this shop. Not the front door. Never the front."
   WALTER CORWIN: "And he went willingly?"
+  VOICE: violin_pleading_medium_v2
   MRS. KESSLER: "He wore his wedding suit. God forgive him, he thought they were inviting him into the county."
   NOTEBOOK: kessler_standing_1 | "Otto Kessler was excluded socially by the club's elite members, but collected via carriage at his rear shop entrance every last Thursday."
   EVIDENCE: kessler_carriages
@@ -51,33 +60,41 @@ TOPIC: butcher_parcels
   TIME: 6
   FORK:
     CHOICE: "Ask about meat deliveries."
+      VOICE: violin_happy_medium_v1
       MRS. KESSLER: "It wasn't beef he carried in butcher paper. We hadn't slaughtered that morning."
       WALTER CORWIN: "What was it?"
+      VOICE: violin_neutral_medium_v2
       MRS. KESSLER: "Salt. Coarse gray curing salt from the harbor sheds, three pounds at a time, pressed into cakes.\nHe said the kitchen cellar required it dry."
       NOTEBOOK: kessler_salt_parcels | "Kessler carried parcels of coarse gray harbor salt to the estate meetings, ostensibly for the kitchen cellar."
       EVIDENCE: gray_salt_cakes
     CHOICE: "Ask about what he carried away."
+      VOICE: violin_neutral_medium_v1
       MRS. KESSLER: "He came back with empty pockets and dirt under his nails."
       WALTER CORWIN: "Earth?"
+      VOICE: violin_neutral_long_v2
       MRS. KESSLER: "Wet sand. Sea silt. It smelled like the low-tide flats behind the old try-works.\nI washed his cuffs myself. You don't get that stink from river mud."
       NOTEBOOK: kessler_silt_cuffs | "Kessler returned from meetings with sea silt and low-tide try-works stench beneath his nails and cuffs."
       EVIDENCE: tryworks_silt
 
 TOPIC: the_mother
-  GATE: evidence(kessler_knife_confirmed) AND NOT topic_done(widow_kessler, the_mother)
+  GATE: evidence(club_devotion) AND NOT topic_done(widow_kessler, the_mother)
   TAG: kessler_mother
   LABEL: "Ask how Otto spoke about the club at the end"
   TIME: 5
+  VOICE: violin_neutral_medium_v2
   MRS. KESSLER: "Toward the end, he stopped bragging about the dinners."
   WALTER CORWIN: "What did he speak about?"
+  VOICE: violin_neutral_medium_v1
   MRS. KESSLER: "'She'll have us home,' he told me. Right there by the stove, taking off his boots."
   [Her voice drops, thin and unsteady.]
+  VOICE: violin_haunting_long_v2
   MRS. KESSLER: "'She's no different from any mother,' he said. As if he were comforting a child with a fever.\nI asked him whose mother. He looked at me like he couldn't remember where he'd learned the word."
   NOTEBOOK: kessler_mother_1 | "Kessler spoke of a maternal power toward the end: 'She'll have us home... She's no different from any mother.'"
   EVIDENCE: maternal_delusion
 
 TOPIC: coat_difference
-  GATE: coat = plain AND evidence(kessler_standing) AND NOT topic_done(widow_kessler, coat_difference)
+  GATE: coat = plain AND (evidence(kessler_carriages) OR topic_done(widow_kessler, club_standing)) AND NOT topic_done(widow_kessler, coat_difference)
   TAG: kessler_coat
   LABEL: "Ask why she told Walter instead of Odell"
+  VOICE: violin_neutral_long_v1
   MRS. KESSLER: "Odell looked at my shop and saw six paragraphs for the Gazette.\nYou came in a coat that smells like damp wool and rain, same as Otto's work coat.\n\nA woman knows when a man is looking for a corpse instead of an excuse."

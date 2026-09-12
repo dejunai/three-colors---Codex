@@ -2,6 +2,7 @@ extends CanvasLayer
 
 const PAPER = Color("d6d2bd")
 const MUTED = Color("a6aa9b")
+var case_palette := false
 var settings: Dictionary
 var ui: Control
 var modal: Control
@@ -54,7 +55,7 @@ func _label(text:String, size:int = 24, literary:bool = true) -> Label:
 	l.set_meta("base_font_size",size)
 	l.add_theme_font_override("font",serif if literary else sans)
 	l.add_theme_font_size_override("font_size",int(size*float(settings.text_scale)))
-	l.add_theme_color_override("font_color",PAPER)
+	l.add_theme_color_override("font_color",Color("302519") if case_palette else PAPER)
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	return l
@@ -77,12 +78,21 @@ func _button(text:String, callback:Callable, parent:Node = null) -> Button:
 	b.custom_minimum_size.y = 48
 	b.add_theme_font_override("font",sans)
 	b.add_theme_font_size_override("font_size",int(18*float(settings.text_scale)))
-	b.add_theme_color_override("font_color",PAPER)
+	b.add_theme_color_override("font_color",Color("302519") if case_palette else PAPER)
 	b.add_theme_color_override("font_hover_color",Color.WHITE)
 	b.add_theme_stylebox_override("normal",_style(Color("18201b")))
 	b.add_theme_stylebox_override("hover",_style(Color("303a2e"),PAPER))
 	b.add_theme_stylebox_override("pressed",_style(Color("3d4938"),PAPER))
 	b.add_theme_stylebox_override("focus",_style(Color(0,0,0,0),PAPER))
+	if case_palette:
+		b.add_theme_color_override("font_color",Color("352719"))
+		b.add_theme_color_override("font_hover_color",Color("251910"))
+		b.add_theme_color_override("font_pressed_color",Color("251910"))
+		b.add_theme_color_override("font_focus_color",Color("251910"))
+		b.add_theme_stylebox_override("normal",_style(Color("e5cf9e"),Color("98713d")))
+		b.add_theme_stylebox_override("hover",_style(Color("f5e5bb"),Color("974735")))
+		b.add_theme_stylebox_override("pressed",_style(Color("c9ad79"),Color("74392f")))
+		b.add_theme_stylebox_override("focus",_style(Color(0,0,0,0),Color("9b382d")))
 	b.pressed.connect(callback)
 	if parent == null: content.add_child(b)
 	else: parent.add_child(b)
@@ -92,30 +102,71 @@ func _panel(kind:String,heading:String,kicker:String = "",wide:bool = false) -> 
 	if is_instance_valid(modal):
 		ui.remove_child(modal)
 		modal.queue_free()
+	var conversation_frame = kind == "dialogue"
+	var object_frame = kind == "examine"
+	case_palette = kind in ["board","notebook","journal","fact","dialogue","examine"]
 	modal = Control.new()
 	modal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	ui.add_child(modal)
 	var dark = ColorRect.new()
-	dark.color = Color(0.025,0.035,0.03,0.9 if kind == "dialogue" else 0.84)
+	dark.color = Color(0.025,0.035,0.03,0.9 if conversation_frame else 0.84)
 	dark.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	modal.add_child(dark)
 	var panel = PanelContainer.new()
 	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	panel.offset_left = 170 if wide else 320
 	panel.offset_right = -170 if wide else -320
-	panel.offset_top = 150 if kind == "dialogue" else 60
-	panel.offset_bottom = -150 if kind == "dialogue" else -60
+	panel.offset_top = 150 if conversation_frame else 60
+	panel.offset_bottom = -150 if conversation_frame else -60
 	panel.add_theme_stylebox_override("panel",_style(Color("111914"),Color("727b66")))
+	if conversation_frame:
+		panel.offset_left = 40
+		panel.offset_right = -40
+		panel.offset_top = 32
+		panel.offset_bottom = -32
+		var wood = _style(Color("241609"),Color("140b04"))
+		wood.set_border_width_all(14)
+		wood.set_corner_radius_all(2)
+		panel.add_theme_stylebox_override("panel",wood)
+	elif object_frame:
+		panel.offset_left = 80
+		panel.offset_right = -80
+		panel.offset_top = 54
+		panel.offset_bottom = -54
+		var archive = _style(Color("d9d5c7"),Color("52636a"))
+		archive.set_border_width_all(5)
+		archive.set_corner_radius_all(2)
+		panel.add_theme_stylebox_override("panel",archive)
+	elif case_palette:
+		panel.offset_left = 40
+		panel.offset_right = -40
+		panel.offset_top = 32
+		panel.offset_bottom = -32
+		panel.add_theme_stylebox_override("panel",_style(Color("ead9b4"),Color("976838")))
 	modal.add_child(panel)
+	# Conversations use a warm theatrical frame; examined objects use the
+	# quieter archival frame above so the player can identify each at a glance.
+	var inner: Container = panel
+	if conversation_frame:
+		var brass_margin = MarginContainer.new()
+		for side in ["left","right","top","bottom"]: brass_margin.add_theme_constant_override("margin_"+side,8)
+		panel.add_child(brass_margin)
+		var brass = PanelContainer.new()
+		var brass_style = _style(Color("d8c39a"),Color("b08d3e"))
+		brass_style.set_border_width_all(3)
+		brass.add_theme_stylebox_override("panel",brass_style)
+		brass_margin.add_child(brass)
+		inner = brass
 	var scroll = ScrollContainer.new()
-	panel.add_child(scroll)
+	inner.add_child(scroll)
 	content = VBoxContainer.new()
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation",18)
 	scroll.add_child(content)
 	if not kicker.is_empty():
 		var k = _label(kicker,13,false)
-		k.add_theme_color_override("font_color",MUTED)
+		k.add_theme_color_override("font_color",Color("745138") if case_palette else MUTED)
 		content.add_child(k)
 	content.add_child(_label(heading,38))
 	var sep = HSeparator.new()
@@ -136,6 +187,7 @@ func _focus_first() -> void:
 func close() -> void:
 	if is_instance_valid(modal): modal.queue_free()
 	modal=null
+	case_palette=false
 	prompt.visible=true
 	toast_label.visible=true
 	location_label.visible=true

@@ -5,22 +5,64 @@ LOCATION: lounge
 TOPIC: default
   GATE: steward_ready AND NOT topic_done(steward, steward_open)
   TAG: steward_open
+  VOICE: trombone_bureaucratic_medium_v2
   THE CLUB'S STEWARD: "He sets down the glass he was drying.\n\nNot used to seeing you without the badge, Officer."
   WALTER CORWIN: "I'm not asking as the badge today."
+  VOICE: trombone_neutral_medium_v1
   THE CLUB'S STEWARD: "Didn't figure you were.\n\nAsk, then. I'll keep drying these."
 
 TOPIC: default
   GATE: day = 3 AND coat != plain
   TAG: steward_badge
+  VOICE: trombone_neutral_short_v1
   THE STEWARD: "I asked you to leave your badge behind."
+
+TOPIC: default
+  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead))
+  TAG: steward_repeat_sideboard
+  WEIGHT: 3
+  [The steward continues wiping down the mahogany sideboard with slow, circular strokes.]
+  VOICE: trombone_neutral_medium_v1
+  THE STEWARD: "Ask what you came to ask, Walter. The glasses don't dry themselves."
+
+TOPIC: default
+  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead))
+  TAG: steward_repeat_quiet
+  WEIGHT: 2
+  VOICE: trombone_bureaucratic_short_v1
+  THE STEWARD: "The room is quiet today. State your business."
+
+TOPIC: default
+  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead))
+  TAG: steward_repeat_hall
+  WEIGHT: 1
+  VOICE: trombone_cautious_short_v1
+  THE STEWARD: "Speak low, Officer. Sound carries in an empty hall."
+
+TOPIC: default
+  GATE: topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead)
+  TAG: steward_exhausted_doors
+  WEIGHT: 3
+  VOICE: trombone_neutral_short_v1
+  THE STEWARD: "The household has answered enough questions, Walter. Some doors remain service doors."
+
+TOPIC: default
+  GATE: topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead)
+  TAG: steward_exhausted_goblet
+  WEIGHT: 2
+  [He sets down a dry wine goblet, perfectly aligned with the row behind it.]
+  VOICE: trombone_dismissive_short_v2
+  THE STEWARD: "You have the day-book entry and the direction to the pantry. I have nothing further to offer a policeman."
 
 TOPIC: default
   GATE: day < 3 AND evidence(service_work)
   TAG: steward_first_lead
   TIME: 4
   WALTER CORWIN: "Mrs. Almy says a woman came around asking about work here. Cleaning, laundry, anything she could carry home."
+  VOICE: trombone_neutral_medium_v2
   THE STEWARD: "I heard the same, secondhand. Never caught a name.\n\nColored woman, I was told. That's the whole of what reached me."
   WALTER CORWIN: "Who would have taken her name down, if anyone did?"
+  VOICE: trombone_bureaucratic_long_v1
   THE STEWARD: "If a name was taken, it would be in the staff day book. The dining-room list is no use to you.\n\nNot now, Officer. I have the room to put in order."
   NOTEBOOK: steward_first_lead_1 | "The steward heard secondhand that a colored woman had asked about work at the estate; he never caught a name and won't say who told him."
   EVIDENCE: steward_heard_secondhand
@@ -29,8 +71,10 @@ TOPIC: default
   GATE: day < 3
   TAG: steward_first
   WALTER CORWIN: "I need to ask about the people who came through the service entrance."
+  VOICE: trombone_haunting_medium_v2
   THE STEWARD: "Then ask for the day book. The seating list is for the dining room. It won't tell you who came to work."
   WALTER CORWIN: "May I see the day book?"
+  VOICE: trombone_bureaucratic_medium_v2
   THE STEWARD: "Not while I'm putting this room in order, Officer. Come back another day."
   NOTEBOOK: first_day_book | "The steward distinguishes the staff day book from the dining-room seating list. He has not produced it. Ask for the day book on returning."
 
@@ -42,10 +86,19 @@ TOPIC: day_book
   WALTER CORWIN: "You said the staff had a separate book. Mrs. Almy remembers Naomi asking for work here."
   [The steward takes a narrow ruled book from beneath the sideboard.]
   THE DAY BOOK: "N. FREEMAN — DAY WORK — KITCHEN WING."
+  VOICE: trombone_neutral_medium_v1
   THE STEWARD: "That is the entry. Copy it as it stands. I did not write her full name."
   WALTER CORWIN: "Who can identify her?"
+  VOICE: trombone_neutral_medium_v1
   THE STEWARD: "The woman at the boardinghouse knew her. You have already spoken to her."
-  NOTEBOOK: day_book_entry | "Examined the staff day book: N. Freeman, day work, kitchen wing. Initial and surname are consistent with Almy's account; the entry alone does not identify its subject or explain the deaths."
+  WALTER CORWIN: "And the seventh place setting? You always laid seven chairs for six men."
+  [The steward wipes the rim of an empty wine goblet with slow, circular strokes.]
+  VOICE: trombone_haunting_long_v2
+  THE STEWARD: "Standing instruction from Judge Wexford. Fork to the right, knife edge turned outward.\nOld whaler's custom for a man lost at sea whose body never came home."
+  WALTER CORWIN: "They were setting a plate for a drowned man?"
+  VOICE: trombone_bureaucratic_medium_v2
+  THE STEWARD: "They were setting a plate for whoever was willing to sit in the chair, Officer.\nToward the end, nobody asked who it was."
+  NOTEBOOK: day_book_entry | "Staff day book records 'N. Freeman — Day Work — Kitchen Wing.' Steward revealed the seventh place setting was laid with inverted cutlery—an old whaler's table setting for unrecovered drowned dead."
   EVIDENCE: estate_day_book
 
 TOPIC: club_talk
@@ -54,6 +107,7 @@ TOPIC: club_talk
   LABEL: "Ask what the members used to talk about"
   TIME: 4
   THE SMOKING LOUNGE: "The steward sets a glass on the sideboard. Walter asks about the conversations he used to overhear while serving the members."
+  VOICE: trombone_neutral_medium_v1
   THE STEWARD: "They stopped speaking of power, toward the end.\n\nStarted speaking, tenderly, of her."
   NOTEBOOK: "Toward the end of what, he doesn't say.\nHer, he doesn't explain.\n\nWalter writes both down exactly as given."
   EVIDENCE: club_talk
@@ -63,6 +117,7 @@ TOPIC: club_devotion
   TAG: club_devotion
   LABEL: "Ask what Kessler used to say"
   TIME: 4
+  VOICE: trombone_haunting_medium_v2
   THE STEWARD: "Kessler said it more than once. She'll have us home.\n\nSaid she's no different from any mother."
   NOTEBOOK: "A butcher, a judge, a doctor, a district attorney, a man of property, all of them speaking the same sentence about the same absent woman.\n\nNone of them ever named her."
   EVIDENCE: club_devotion
@@ -72,8 +127,10 @@ TOPIC: pantry_lead
   TAG: pantry_lead
   LABEL: "Ask about the old pantry door"
   TIME: 5
+  VOICE: trombone_neutral_long_v1
   THE STEWARD: "There's gin left from before the war. Behind the old pantry door.\n\nThey boarded it up during a renovation and never finished unboarding it. Nobody goes back there. Nobody's gone back there in years."
   WALTER CORWIN: "Will you show me?"
+  VOICE: trombone_dismissive_short_v2
   THE STEWARD: "No."
   NOTEBOOK: "He won't say why. He also won't take back the direction he just gave.\n\nThe kitchen wing. The old pantry."
   EVIDENCE: pantry_lead

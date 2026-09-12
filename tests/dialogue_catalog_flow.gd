@@ -27,7 +27,7 @@ func run() -> void:
 				if result.fork==null: break
 				result=R.resume(result,0)
 			var raw=String(topic.get("timing",""))
-			var expected=float(raw) if raw.is_valid_float() else R.DEFAULT_MINUTES
+			var expected=float(raw) if raw.is_valid_float() else (0.0 if topic.id=="default" else R.DEFAULT_MINUTES)
 			assert(is_equal_approx(state.clock_minutes,360+maxf(0,expected)), npc+":"+topic.id)
 			for id in ds.evidence: assert(g.facts.has(id), "Missing case description: "+id)
 			var repeat=R.render(npc,topic,ds)
@@ -39,6 +39,9 @@ func run() -> void:
 			count+=1
 	# Every added resident has at least one reachable location and real interaction.
 	for actor in g.scripted_dialogue.extra_actors:
+		if catalog.RETURNING_STAFF.has(actor):
+			g.state.day=3
+			g.state.estate_complete=true
 		g.state.clock_minutes=360
 		var spot=catalog.slot(actor,g.state)
 		assert(not spot.is_empty())
@@ -71,5 +74,5 @@ func run() -> void:
 		g.state.discover(pair[1])
 		assert(not g.archive._try_link(g,pair[0],pair[1]).is_empty())
 		assert(g.facts.has(pair[0]) and g.facts.has(pair[1]))
-	print("DIALOGUE CATALOG PASS: ",catalog.definitions.size()," NPCs, ",count," topics; numeric minutes, default cost, no repeat farming, evidence descriptions, reachable scheduled actors, notebook, links and save")
+	print("DIALOGUE CATALOG PASS: ",catalog.definitions.size()," NPCs, ",count," topics; numeric minutes, free unpriced greetings, no repeat farming, evidence descriptions, reachable scheduled actors, notebook, links and save")
 	quit()

@@ -1,0 +1,66 @@
+NPC: chandlers_boy
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_chandlery, midday=waterfront_chandlery, evening=closed, night=closed
+
+TOPIC: default
+  GATE: coat = plain AND visit_count(chandlers_boy) >= 2
+  TAG: chandlers_boy_plain_repeat
+  TIME: 0
+  VOICE: violin_weary_medium_v2
+  CHANDLER'S BOY: "Back again, sir? Mr. Hitch is in the cellar tallying casks."
+
+TOPIC: default
+  GATE: always
+  TAG: chandlers_boy_default
+  TIME: 2
+  VOICE: violin_neutral_medium_v2
+  CHANDLER'S BOY: "We've got sperm oil, colza, and tallow.\nMr. Hitch says the colza's best for reading lamps but everyone buys the tallow anyway."
+
+TOPIC: lamp_question
+  GATE: visit_count(chandlers_boy) >= 2 AND NOT topic_done(chandlers_boy, lamp_question)
+  TAG: chandlers_boy_lamp_question
+  LABEL: "Ask about the chandlery's customers"
+  TIME: 3
+  WALTER CORWIN: "Who keeps the largest order standing?"
+  VOICE: violin_weary_long_v1
+  CHANDLER'S BOY: "The estate takes six crates of sperm oil a month.\nMr. Hitch says it's for the reading room but I've seen the invoices.\nThat's enough for every room in the house to burn all night."
+  [He glances toward the back room, then lowers his voice.]
+  VOICE: violin_neutral_medium_v2
+  CHANDLER'S BOY: "Last month they ordered an extra four crates.\nMr. Hitch said not to note it separately.\nSo I didn't."
+  NOTEBOOK: chandlers_boy_lamp | "The chandler's boy mentioned the estate's standing oil order increased by four crates last month. He was instructed not to record it separately."
+
+# Historical IDs retained for save/dependency compatibility; no island delivery is established.
+TOPIC: island_delivery
+  GATE: coat = plain AND evidence(naomi_quay_inquiry) AND NOT topic_done(chandlers_boy, island_delivery)
+  TAG: chandlers_boy_island_delivery
+  LABEL: "Ask if oil was ever delivered to the island station"
+  TIME: 6
+  WALTER CORWIN: "Has anyone ever ordered a delivery out to the old whaling station? On the island."
+  [A long pause. He straightens the lamp wicks on the counter without looking up.]
+  VOICE: violin_cautious_long_v1
+  CHANDLER'S BOY: "Not to the island. I've never loaded anything for there.\nThere was a cash buyer at the yard entrance, maybe eight weeks ago.\nHe paid Mr. Hitch directly, not on account."
+  WALTER CORWIN: "Where was his purchase going?"
+  VOICE: violin_neutral_medium_v2
+  CHANDLER'S BOY: "He didn't say. I didn't see it leave the yard."
+  WALTER CORWIN: "What did he take?"
+  VOICE: violin_neutral_long_v1
+  CHANDLER'S BOY: "Two crates sperm oil and a box of long tapers.\nThe good ones, not the household grade.\nMr. Hitch told me it was a private matter and I should finish sweeping."
+  WALTER CORWIN: "Can you describe the man?"
+  VOICE: violin_neutral_medium_v1
+  CHANDLER'S BOY: "Tall. Good coat. He didn't look at me once."
+  NOTEBOOK: chandlers_boy_island | "A man in a good coat made a cash purchase at the chandlery yard eight weeks ago — two crates of sperm oil and long tapers, not household grade. The transaction was not entered on account. Its destination is unknown; the boy reports no island delivery."
+  EVIDENCE: chandlery_island_delivery
+
+TOPIC: cash_buyer_details
+  GATE: evidence(chandlery_island_delivery) AND NOT topic_done(chandlers_boy, cash_buyer_details)
+  TAG: chandlers_boy_buyer
+  LABEL: "Ask what else he noticed about the cash buyer"
+  TIME: 4
+  WALTER CORWIN: "The tall man in the good coat. Did you smell anything on him?"
+  VOICE: violin_neutral_medium_v2
+  CHANDLER'S BOY: "Cedar shavings. Very sharp, like a chest that's been locked up in an attic for fifty years.\nAnd camphor."
+  WALTER CORWIN: "Like the apothecary's camphor?"
+  VOICE: violin_neutral_medium_v2
+  CHANDLER'S BOY: "Stronger. Like the parcels that come off foreign barks at the quay. He set the money down in five-dollar gold eagles, minted before the war."
+  NOTEBOOK: chandlers_boy_buyer_1 | "Chandler's boy notes the cash buyer smelled of cedar and heavy foreign camphor, paying with pre-war gold coin."
+  EVIDENCE: cedar_camphor_buyer

@@ -123,6 +123,7 @@ func run(g:Node) -> void:
 	cards(g)
 	assert(g.state.evidence.has("behan_name"))
 	g._close()
+	g.state.discover("naomi")
 	await g._walk_to(Vector3(-19.2,0,11.2))
 	assert(g.focused=="old_woman","The woman outside Kessler's shop must be reachable on the street")
 	g._interact("old_woman")

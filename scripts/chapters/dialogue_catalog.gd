@@ -13,7 +13,12 @@ const SLOTS = {
 	"apothecary":["business",Vector3(-26,0,8)], "registrar":["precinct",Vector3(5,0,-3)],
 	"post_office":["post_office",Vector3(4,0,-2)],
 	"kessler_shop":["town",Vector3(9,0,-2)], "kessler_parlor":["town",Vector3(12,0,-2)],
-	"quay":["lower",Vector3(-8,0,13)], "quay_repair":["lower",Vector3(8,0,13)],
+	"quay":["waterfront",Vector3(-23,0,2)], "quay_repair":["waterfront",Vector3(20,0,-0.5)],
+	"quay_office":["waterfront",Vector3(-7,0,10)],
+	"waterfront_chandlery":["waterfront",Vector3(-22,0,10)],
+	"waterfront_net_loft":["waterfront",Vector3(8,0,10)],
+	"waterfront_fish_stores":["waterfront",Vector3(23,0,10)],
+	"waterfront_moorings":["waterfront",Vector3(3,0,-7)],
 	"bank_walk":["upper",Vector3(25,0,7)], "business_district":["business",Vector3(25,0,10)],
 	"club_road":["upper",Vector3(-12,0,11)], "tavern":["business",Vector3(7,0,18)],
 	"garden_walk":["upper",Vector3(-24,0,11)], "ashcroft_house":["upper_house_4",Vector3(3,0,0)],
@@ -22,6 +27,7 @@ const SLOTS = {
 	"chapel_path":["upper",Vector3(17,0,12)], "whitlock_orangery":["upper",Vector3(22,0,18)],
 	"charity_hall":["upper",Vector3(20,0,16)]
 }
+const RETURNING_STAFF = {"odell_precinct":["precinct",Vector3(3.8,0,1)], "coroners_assistant_morgue":["morgue",Vector3(1.6,0,-1)]}
 var definitions: Dictionary = {}
 var paths: Dictionary = {}
 var titles: Dictionary = {}
@@ -57,6 +63,7 @@ func _collect(steps: Array, facts: Dictionary, source: String, previous: String)
 			for option in step.options: _collect(option.steps, facts, source, previous)
 
 func slot(npc: String, state) -> Array:
+	if RETURNING_STAFF.has(npc) and (state.day < 2 or not state.estate_complete): return []
 	var def = definitions[npc]
 	var phase = Runtime.DayClock.phase(state.clock_minutes)
 	if phase == "night": return []
@@ -65,6 +72,7 @@ func slot(npc: String, state) -> Array:
 	where = where.trim_prefix("{").trim_suffix("}")
 	if where == "closed": return []
 	if where == "home": where = HOME.get(npc, def.location)
+	if RETURNING_STAFF.has(npc) and where == RETURNING_STAFF[npc][0]: return RETURNING_STAFF[npc]
 	if SLOTS.has(where): return SLOTS[where]
 	var places = preload("res://scripts/chapters/town_places.gd")
 	if where.begins_with("upper_house_") or where.begins_with("lower_house_"):

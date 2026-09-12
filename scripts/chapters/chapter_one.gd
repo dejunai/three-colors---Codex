@@ -16,6 +16,7 @@ var presentation: CanvasLayer
 var staging=preload("res://scripts/chapters/chapter_one_staging.gd").new()
 var scripted_dialogue=preload("res://scripts/chapters/chapter_one_dialogue.gd").new()
 var archive=preload("res://scripts/chapters/chapter_one_archive.gd").new()
+var prologue=preload("res://scripts/shared/prologue_presentation.gd").new()
 var rig: Node3D
 var state = CaseState.new()
 var estate: Node3D
@@ -86,7 +87,9 @@ var tunnel_dead = false
 var hazard_caption: Label:
 	get: return interface.hazard_caption
 var cough_player: AudioStreamPlayer
+var instrument_voice_player: AudioStreamPlayer
 var last_hazard_phase = ""
+var card_kind := "dialogue"
 
 func start(player_rig:Node3D) -> void:
 	rig=player_rig
@@ -138,7 +141,12 @@ func _build_ui() -> void:
 	presentation=preload("res://scripts/shared/film_presentation.gd").new()
 	presentation.shader=preload("res://film.gdshader")
 	add_child(presentation)
+	prologue.layer=20
+	add_child(prologue)
 	_build_cough()
+	instrument_voice_player=AudioStreamPlayer.new()
+	instrument_voice_player.bus="Master"
+	add_child(instrument_voice_player)
 	_apply_settings()
 
 func _label(text:String,size:int=24,literary:bool=true) -> Label:
@@ -150,11 +158,11 @@ func _style(bg:Color,border:Color=Color("626d5b")) -> StyleBoxFlat:
 func _button(text:String,callback:Callable,parent:Node=null) -> Button:
 	return interface._button(text,callback,parent)
 
-func _panel(kind:String,heading:String,kicker:String="",wide:bool=false) -> void:
+func _panel(kind:String,heading:String,kicker:String="",wide:bool=false,visual_kind:String="") -> void:
 	page=kind
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 	marker.visible=false
-	interface._panel(kind,heading,kicker,wide)
+	interface._panel(visual_kind if not visual_kind.is_empty() else kind,heading,kicker,wide)
 
 func _paragraph(text:String,size:int=23) -> void:
 	interface._paragraph(text,size)
@@ -163,21 +171,29 @@ func _focus_first() -> void:
 	interface._focus_first()
 
 func _close() -> void:
+	_stop_instrument_voice()
 	scripted_dialogue.clear()
 	interface.close()
 	page="play"
 	Input.mouse_mode=Input.MOUSE_MODE_CAPTURED
 
 func _title() -> void:
-	_panel("title","No Exit Wound","THREE COLORS OF MADNESS  /  CHAPTER ONE")
-	_paragraph("Widow's Bight, 1923",24)
-	_paragraph("Eight people are dead at the Ophion estate.\nThe town is prepared to account for six.",28)
-	_paragraph("The estate, Pickman Street, and the service passage\nThird-person 3D prototype",16)
-	if not _available_save_path().is_empty(): _button("Continue investigation",_load_game)
-	_button("Begin at the estate",_new_game)
-	_button("Accessibility & controls",func(): return_page="title"; _settings())
-	_button("Quit",func(): get_tree().quit())
-	_focus_first()
+	page="title"
+	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
+	marker.visible=false
+	var buttons=[]
+	if not _available_save_path().is_empty(): buttons.append(["Continue investigation",_load_game])
+	buttons.append(["Begin at the estate",_new_game])
+	buttons.append(["Accessibility & controls",_title_settings,true])
+	buttons.append(["Quit",func(): get_tree().quit(),true])
+	prologue.show_title(preload("res://assets/prologue/club-night.jpg"),"Three Colors of Madness","Competence delays the end. It never prevents it.","A man does not interrogate the shape of his own eye.",buttons)
+
+func _title_settings() -> void:
+	return_page="title"
+	# The photographic title lives above the ordinary interface. Remove it
+	# before constructing settings so the visible title cannot intercept input.
+	prologue.hide_all()
+	_settings()
 
 func _new_game() -> void:
 	tunnel_checkpoint.clear()
@@ -194,15 +210,33 @@ func _new_game() -> void:
 	aperture_target = 0.51
 	last_region = ""
 	_update_camera(1)
-	_cards(Story.INTROS,func():
+	_prologue_slide(0)
+
+const PROLOGUE_SLIDES = [
+	["res://assets/prologue/harbor-civic.jpg","Widow's Bight Historical Society · A Civic Reel"],
+	["res://assets/prologue/town-dusk.jpg","From the underwriters' own abstracts"],
+	["res://assets/prologue/club-night.jpg","Widow's Bight Historical Society · A Civic Reel"]]
+
+func _prologue_slide(index:int) -> void:
+	page="title"
+	if index >= Story.INTROS.size():
+		prologue.hide_all()
+		prologue.stop_music()
 		state.started = true
 		_close()
 		_toast("WASD move · Mouse look · E examine · Tab case file · Esc pause",10)
 		_save_game()
-	)
+		return
+	var card = Story.INTROS[index]
+	var slide = PROLOGUE_SLIDES[index]
+	prologue.show_slide(preload_texture(slide[0]),slide[1],card[0],card[1],func(): _prologue_slide(index+1))
 
-func _cards(cards:Array,after:Callable) -> void:
+func preload_texture(path:String) -> Texture2D:
+	return load(path)
+
+func _cards(cards:Array,after:Callable,kind:String="dialogue") -> void:
 	scripted_dialogue.clear()
+	card_kind = kind
 	var timing_key=DayClock.conversation_key(self,cards)
 	dialogue.start(cards,_draw_card,func():
 		var charged=DayClock.complete_conversation(state,timing_key)
@@ -212,17 +246,36 @@ func _cards(cards:Array,after:Callable) -> void:
 		if charged: _save_game())
 
 func _draw_card(card:Array,index:int) -> void:
-	_panel("dialogue",str(card[0]),"NO EXIT WOUND  /  %02d" % (index+1))
+	_stop_instrument_voice()
+	var kicker = "PHYSICAL EVIDENCE  /  %02d" % (index+1) if card_kind == "examine" else "NO EXIT WOUND  /  %02d" % (index+1)
+	_panel("dialogue",str(card[0]),kicker,false,card_kind)
 	_paragraph(str(card[1]),27)
 	var space = Control.new()
-	space.custom_minimum_size.y = 30
+	space.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	content.add_child(space)
 	_button("Continue",_next_card)
 	for child in content.get_children():
 		if child is Label: child.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_focus_first()
+	if card.size() > 2: _play_instrument_voice(str(card[2]))
+
+func _play_instrument_voice(cue:String) -> void:
+	if cue.is_empty() or not cue.is_valid_identifier(): return
+	var path="res://assets/audio/instrument_voices/"+cue+".wav"
+	if not ResourceLoader.exists(path):
+		push_warning("Missing instrument voice cue: "+cue)
+		return
+	instrument_voice_player.stream=load(path)
+	var level=clampf(float(settings.instrument_voice_volume),0.0,1.0)
+	if is_zero_approx(level): return
+	instrument_voice_player.volume_db=linear_to_db(level)
+	instrument_voice_player.play()
+
+func _stop_instrument_voice() -> void:
+	if is_instance_valid(instrument_voice_player): instrument_voice_player.stop()
 
 func _next_card() -> void:
+	_stop_instrument_voice()
 	if not scripted_dialogue.active.is_empty(): scripted_dialogue.next(self)
 	else: dialogue.next()
 
@@ -344,7 +397,7 @@ func _interact(id:String) -> void:
 		else:
 			_save_game()
 			_toast("Recorded in Walter's case file.  [ Tab ]",4)
-	)
+	, "examine" if id in ["wounds","eight","knife","watch","gas","register","shoes"] else "dialogue")
 
 func _odell_response() -> void:
 	scripted_dialogue.show_menu(self,"odell")
@@ -368,6 +421,11 @@ func _estate_observation(id:String,return_to_barman:bool=false) -> void:
 	)
 
 func _open_lead() -> String:
+	if state.evidence.has("gazette_correction_terms") and not state.evidence.has("gazette_correction_printed"):
+		if not state.evidence.has("lodging"): return " Copy Naomi's entry in Almy's meal ledger for the correction."
+		var runtime=preload("res://scripts/shared/dialogue_runtime.gd")
+		if not (runtime.has_filed_evidence(state,"eight") and runtime.has_filed_evidence(state,"naomi") and runtime.has_filed_evidence(state,"lodging")): return " File the identification and ledger source in a dated supplement at the precinct, then return to the editor."
+		return " Halleck can now read the received count and identification sources. Return to the Gazette editor."
 	# Names only what Walter has actually learned; never a witness or fact he
 	# hasn't earned yet. Priority favors whichever thread the player already
 	# opened, so the guidance reads as a continuation, not a checklist.
@@ -383,6 +441,8 @@ func _objective() -> String:
 		if not state.intake_done: return "Submit your estate report at the precinct intake counter on Pickman Street."
 		if not state.evidence.has("naomi"): return "Speak to Mrs. Almy at her boardinghouse on Pickman Street. Ask who the woman was."
 		if not state.finished:
+			if state.steward_visits == 0 and state.evidence.has("gazette_correction_terms") and not state.evidence.has("gazette_correction_printed"):
+				return "The first appointment with the steward remains open at the estate." + _open_lead()
 			if state.steward_visits == 0:
 				return "Return to the estate's smoking lounge through the service entrance. You can also corroborate Naomi's visit in Almy's meal ledger." if not state.evidence.has("lodging") else "Ask Almy about Naomi's work at the estate, then visit the steward through the service entrance." if not state.evidence.has("service_work") else "Ask the steward about the staff records inside the smoking lounge, through the service entrance."
 			if state.day < 3:
@@ -441,7 +501,7 @@ func _settings() -> void:
 	_panel("settings","Accessibility & controls","AVAILABLE BEFORE PLAY",true)
 	_paragraph("WASD / arrows: move · Mouse: look · Q / R: orbit camera\nWheel: camera distance · Shift: walk briskly · E / F: interact\nTab / I: personal effects · J: case file · Esc: pause · F11: fullscreen\nMenus: Tab to focus · Enter / Space to select · Mouse also supported",18)
 	_paragraph("Clue text and intertitles remain outside all film effects.\nThe service passage uses a provisional cough cue with a protected caption. No spoken dialogue is omitted.",18)
-	for item in [["distortion","Distortion intensity",0.0,1.0,0.05],["grain","Film grain",0.0,0.06,0.005],["contrast","Scene contrast",0.8,1.4,0.05],["text_scale","Text size",0.9,1.3,0.1],["sensitivity","Mouse sensitivity",0.001,0.006,0.0005]]:
+	for item in [["distortion","Distortion intensity",0.0,1.0,0.05],["grain","Film grain",0.0,0.06,0.005],["contrast","Scene contrast",0.8,1.4,0.05],["text_scale","Text size",0.9,1.3,0.1],["sensitivity","Mouse sensitivity",0.001,0.006,0.0005],["instrument_voice_volume","Instrument voices",0.0,1.0,0.05]]:
 		var key:String = item[0]
 		var row = HBoxContainer.new()
 		content.add_child(row)
@@ -499,6 +559,8 @@ func _save_game() -> bool:
 func _load_game() -> void:
 	var d=save_store.read(_available_save_path())
 	if d.is_empty() or not state.restore(d): _toast("The save could not be read. Begin a new investigation.",5); return
+	prologue.hide_all()
+	prologue.stop_music()
 	tunnel_checkpoint=_normalize_snapshot(d.get("tunnel_checkpoint",{}))
 	_restore_session(d)
 	tunnel_dead=bool(d.get("tunnel_dead",false))
@@ -557,7 +619,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 		estate.location=destination
 	add_child(estate)
 	daylight=null
-	if destination in ["estate","town","business","upper","lower"]:
+	if destination in ["estate","town","business","upper","lower","waterfront"]:
 		daylight=preload("res://scripts/shared/daylight.gd").new()
 		estate.add_child(daylight)
 		daylight.setup(estate)
@@ -580,10 +642,13 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	pitch=0.85 if destination == "town" else (0.38 if destination == "estate" else 0.48)
 	distance=6.3 if destination in ["estate","town"] else 4.8
 	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-6,58,28) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
-	if destination in ["upper","business","lower"]:
+	if destination in ["upper","business","lower","waterfront"]:
 		movement_bounds=Rect2(-29,-7,58,36)
 		distance=6.3
 		pitch=0.38
+	if destination == "waterfront":
+		movement_bounds=Rect2(-30,-10,60,35)
+		pitch=0.48
 	if destination == "tunnel":
 		movement_bounds=Rect2(-8.6,-33,14.2,42)
 		distance=5.3
@@ -651,7 +716,10 @@ func _town_observation(id:String,return_target:Variant=null) -> void:
 	if id in ["lay_lead","service_work"]: scripted_dialogue.play_topic(self,"almy",id); return
 	if id == "behan_name": scripted_dialogue.play_topic(self,"behan",id); return
 	if id=="old_woman" and state.evidence.has(id): return
-	_cards(TownStory.SCENES[id],func():
+	var observation_cards=TownStory.SCENES[id].duplicate(true)
+	if id == "gazette" and state.evidence.has("gazette_correction_printed"):
+		observation_cards.append(["THE CORRECTION SLIP",facts["gazette_correction_printed"][1]])
+	_cards(observation_cards,func():
 		state.discover(id)
 		if estate and estate.has_method("sync_actors"):
 			estate.sync_actors(state)
@@ -665,7 +733,8 @@ func _town_observation(id:String,return_target:Variant=null) -> void:
 			_witness_menu()
 		else:
 			_close()
-			_toast("Source recorded in Walter's notebook.  [ J ]",4))
+			_toast("Source recorded in Walter's notebook.  [ J ]",4)
+	, "examine" if id in ["gazette","lodging","exemption"] else "dialogue")
 
 func _survey_drawer(index_open:bool=false) -> void:
 	_panel("case","The survey drawer","PRECINCT 4  /  MUNICIPAL RECORDS")
@@ -802,7 +871,8 @@ func _tunnel_interaction(id:String) -> bool:
 				state.discover("lower_foundation")
 				state.record("Walter measured a passage beyond the recorded foundation; the service plan is the comparison source.")
 				_save_game()
-				_toast("Measurement recorded. Return to the service stair.",5))
+				_toast("Measurement recorded. Return to the service stair.",5)
+			, "examine")
 		"tunnel_descent":
 			_tunnel_descent()
 		"drowned_remains":

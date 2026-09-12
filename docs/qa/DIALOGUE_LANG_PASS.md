@@ -5,6 +5,8 @@
 resident placement, verification and provenance. Earlier future-work sections
 below are retained as implementation history, not current status.
 
+**Current-language addendum — September 12, 2026:** The live corpus now contains 35 concrete NPC definitions and 217 nonempty topics. `VOICE:` carries validated instrumental cue IDs; omitted NPC cues warn and receive a neutral fallback. Multiple eligible `default` topics may use positive relative `WEIGHT:` values, with immediate-repeat avoidance; unpriced defaults cost zero minutes while other unpriced topics retain the three-minute fallback. Consequential fork branches may use `OUTCOME: decision_id = value_id`; the chosen value commits only after complete playback, is immutable and saved, automatically retires its source topic, and is readable through `outcome()` / `outcome_is()`. Existing forks without outcomes remain replayable. `docs/DIALOGUE_AUTHORING.md` is the canonical complete syntax reference.
+
 September 9, 2026. A custom flat-file dialogue format and interpreter, built instead of adopting a
 general-purpose Godot dialogue plugin, because the gating this project needs — location, time of
 day, and cross-NPC tallies ("ask four to six people about X before the historian will mention it")

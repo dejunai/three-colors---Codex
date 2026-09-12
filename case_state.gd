@@ -220,4 +220,9 @@ func restore(d: Dictionary) -> bool:
 		if steward_visits>=3: dialogue_state.complete_topic("steward","steward_open")
 		for id in ["club_talk","club_devotion","pantry_lead"]:
 			if evidence.has(id): dialogue_state.complete_topic("steward",id)
+	# Repair completed first-day lead conversations saved before both default
+	# branches credited the visit. Merely opening/interruption is not completion.
+	if day < 3 and steward_visits == 0 and visited.has("barman") and dialogue_state.topic_done("steward","default"):
+		steward_visits = 1
+		dialogue_state.visit_counts["steward"] = 1
 	return true

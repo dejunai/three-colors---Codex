@@ -8,6 +8,7 @@ const FACTS = {
 	"lay_lead": ["AN UNPAID LAY", "Mrs. Almy recalls Naomi asking about wages owed to a whaling ancestor. She does not hold the wage document and cannot verify the claim. This is a lead, not proof of a debt or a motive for the killings.", "Mrs. Almy · account of Naomi's inquiry"],
 	"service_work": ["THE SERVICE DOOR", "Mrs. Almy says Naomi sought domestic work at the estate. Neither the dates nor an employer's name is confirmed. Ask the steward for employment records.", "Mrs. Almy · boardinghouse statement"],
 	"gazette": ["THE MORNING EDITION", "The paper names six club members and describes an apparent accident. It names neither the woman nor the boy. Its report supplies no independent explanation of the wounds.", "Gazette · morning edition"],
+	"gazette_correction_printed": ["THE CORRECTION SLIP", "A later printed slip records the police count of eight and names Naomi with its identification sources. The correction supplements the morning edition; it does not replace the copies already sold.", "Gazette · printed correction slip"],
 	"exemption": ["THE EXEMPTION NOTICE", "Walter's old exemption notice records the need to care for Constance Corwin. It concerns his life before the case. It supplies no evidence about the deaths at the estate.", "Walter's dresser · personal correspondence"],
 	"behan_name": ["NAMED AFTER THE SHIP", "The Ophion Club was named for a vessel lost with its crew a century ago. Father Behan calls the members' belief that the ship had been chosen a delusion, not a fact: men inherit money, then invent a reason they deserved it.", "Father Behan · rectory conversation"],
 	"old_woman": ["BEWARE THE OLD GODS", "An unnamed woman outside Kessler's shuttered shop tells Walter to look at what the six men looked at, not at the men themselves. Pressed to explain, she warns him of something with no boundaries and no need of them, then leaves before he finishes writing it down.", "Kessler's shuttered shop · unnamed witness"]
@@ -20,17 +21,17 @@ const ARRIVAL = [
 
 const SCENES = {
 	"intake": [
-		["THE INTAKE CLERK", "Ophion Club. Six members. Apparent accident.\n\nThe captain's heading, Officer.\nYour report goes underneath."],
+		["THE INTAKE CLERK", "Ophion Club. Six members. Apparent accident.\n\nThe captain's heading, Officer.\nYour report goes underneath.", "trombone_bureaucratic_medium_v1"],
 		["WALTER CORWIN", "Eight deaths.\nCause unestablished."],
-		["THE INTAKE CLERK", "Then that is what your report will say.\n\nI'm receiving it, not deciding it."]],
+		["THE INTAKE CLERK", "Then that is what your report will say.\n\nI'm receiving it, not deciding it.", "trombone_bureaucratic_medium_v2"]],
 	"intake_county": [
 		["THE OUTGOING TRAY", "The county copy Walter prepared at the estate is stamped for dispatch.\n\nThe clerk makes no promise about who will read it."],
 		["WALTER'S NOTEBOOK", "County copy dispatched with the observations recorded at the estate.\n\nA later discovery will need another page.\nIt cannot have been in a letter already sent."]],
 	"intake_thin": [
-		["THE INTAKE CLERK", "You have the count.\nWhat else did you establish?"],
+		["THE INTAKE CLERK", "You have the count.\nWhat else did you establish?", "trombone_questioning_short_v1"],
 		["WALTER'S REPORT", "The clerk leaves room for observations Walter did not make.\n\nThe blank space is accurate.\nThere is work left to do."]],
 	"intake_rich": [
-		["THE INTAKE CLERK", "Wounds without powder marks. Intact windows.\nYou want both observations attached?"],
+		["THE INTAKE CLERK", "Wounds without powder marks. Intact windows.\nYou want both observations attached?", "trombone_questioning_medium_v1"],
 		["WALTER CORWIN", "They already are.\nKeep them together."]],
 	"almy_badge": [
 		["MRS. ALMY", "If you've come to tell me what the paper says, Officer,\nI have already read it."],
@@ -88,7 +89,7 @@ const SCENES = {
 		["WALTER'S NOTEBOOK", "She is gone before he finishes the sentence.\n\nHe writes what he remembers of it, exactly as given. He does not yet have a place on the board where it belongs."]],
 	"supplement": [
 		["THE INTAKE COUNTER", "Walter files the witness's name, the source of the identification, and only the additional observations he has actually recorded.\n\nThe original report remains as received."],
-		["THE INTAKE CLERK", "Received as a supplement.\n\nI can stamp it.\nI can't make the captain read it."]],
+		["THE INTAKE CLERK", "Received as a supplement.\n\nI can stamp it.\nI can't make the captain read it.", "trombone_bureaucratic_medium_v2"]],
 	"county_supplement": [
 		["THE OUTGOING TRAY", "A second envelope. A later date.\n\nWalter sends what he knows now.\nWhatever was sent earlier remains what he knew then."]],
 	"close_day": [

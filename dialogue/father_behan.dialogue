@@ -6,8 +6,10 @@ TOPIC: default
   GATE: NOT topic_done(father_behan, default)
   TAG: behan
   TIME: 4
+  VOICE: trombone_neutral_medium_v2
   FATHER BEHAN: "Wexford's temper. Fenn's vanity. Kessler's grudges. Corliss's ambitions.\n\nI'll discuss any of it. None of it explains a hole above the bridge of a nose."
   WALTER CORWIN: "You knew all six."
+  VOICE: trombone_bureaucratic_medium_v1
   FATHER BEHAN: "I knew what men tell a priest, which is not the same as what they are.\n\nAsk your question, Officer. I've answered worse."
   NOTEBOOK: introduction | "Father Behan discussed five of the men's characters freely and himself not at all."
 
@@ -17,8 +19,10 @@ TOPIC: club_invitation
   LABEL: "Ask why he declined the club's invitations"
   TIME: 5
   WALTER CORWIN: "You were invited to the club. Twice. You declined both times."
+  VOICE: trombone_neutral_short_v1
   FATHER BEHAN: "I did."
   WALTER CORWIN: "Why?"
+  VOICE: trombone_dismissive_medium_v1
   FATHER BEHAN: "[He says nothing further. The silence is not evasive. It is final.]"
   NOTEBOOK: "A refusal offered without excuse.\nWalter has learned to trust a plain no more than a decorated one.\n\nHe does not press it a second time."
   NOTEBOOK: club_invitation_1_1 | "Father Behan declined two invitations to the club and would not say why."
@@ -29,8 +33,10 @@ TOPIC: behan_name
   LABEL: "Ask about the meaning of the club's name"
   TIME: 5
   WALTER CORWIN: "Do you know the meaning behind the club's name?"
+  VOICE: trombone_neutral_short_v1
   FATHER BEHAN: "They named the club after the ship."
   WALTER CORWIN: "Known."
+  VOICE: trombone_neutral_medium_v2
   FATHER BEHAN: "They came to believe the ship had been chosen.\n\nIt wasn't. Men inherit money, and then invent a reason they deserved it."
   NOTEBOOK: "A shipowner's classical flourish, nothing more, by the priest's own account.\n\nThe club's fortune has a human explanation. Walter intends to find it."
   EVIDENCE: behan_name

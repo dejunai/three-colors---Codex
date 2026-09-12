@@ -1,0 +1,626 @@
+
+========================================
+NPC: almy
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(almy, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(almy, default)
+  TOPIC: identify (LABEL: "Ask for the woman's name")
+    GATE: always
+    EVIDENCE: naomi
+    NOTEBOOK: "NAOMI FREEMAN.\nIdentified by Mrs. Almy, Pickman Street.\nBoy accompanying her: name still to be es...
+  TOPIC: lay_lead (LABEL: "Ask what brought Naomi to town")
+    GATE: evidence(naomi)
+    EVIDENCE: lay_lead
+    NOTEBOOK: "Possible wage claim. Document not examined.\nSource: Mrs. Almy's recollection.\n\nA question to pur...
+  TOPIC: service_work (LABEL: "Ask about work at the estate")
+    GATE: evidence(naomi)
+    EVIDENCE: service_work
+  TOPIC: almy_ledger (LABEL: "Ask to corroborate the visit in her ledger")
+    GATE: evidence(naomi)
+  TOPIC: almy_trust (LABEL: "Ask why the coat made a difference")
+    GATE: coat = plain AND NOT topic_done(almy, almy_trust)
+    NOTEBOOK: almy_trust_1_1 | "Mrs. Almy distinguished speaking to a uniform from speaking to a man. The name she...
+  TOPIC: show_printed_correction (LABEL: "Show her the correction with Naomi's name")
+    GATE: evidence(gazette_correction_printed) AND NOT topic_done(almy, show_printed_correction)
+    NOTEBOOK: correction_seen | "Showed Almy the printed correction. She read Naomi's name and set it beside the m...
+
+========================================
+NPC: apothecary
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(apothecary, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(apothecary, default)
+  TOPIC: fenn_laudanum (LABEL: "Inquire about prescriptions filled for Dr. Aldous Fenn")
+    GATE: evidence(naomi)
+    EVIDENCE: bulk_opium_spirits
+    NOTEBOOK: apothecary_fenn_supplies | "Apothecary: Fenn bought bulk opium and spirits; stopped looking patients...
+  TOPIC: the_stranger_remedies (LABEL: "Ask if Naomi Freeman sought medicine for her son")
+    GATE: evidence(naomi) AND NOT topic_done(apothecary, the_stranger_remedies)
+    EVIDENCE: water_corrosion_inquiry
+    NOTEBOOK: apothecary_naomi_salve | "Naomi bought carbolic salve for her son's salt-hives; observed that Widow'...
+
+========================================
+NPC: assistant
+  TOPIC: default (LABEL: )
+    GATE: always
+    EVIDENCE: testimony, eight
+
+========================================
+NPC: boy
+  TOPIC: default (LABEL: )
+    GATE: estate_complete
+  TOPIC: default (LABEL: )
+    GATE: visit_count(boy) >= 2
+  TOPIC: default (LABEL: )
+    GATE: always
+
+========================================
+NPC: chandlers_boy
+  TOPIC: default (LABEL: )
+    GATE: coat = plain AND visit_count(chandlers_boy) >= 2
+  TOPIC: default (LABEL: )
+    GATE: always
+  TOPIC: lamp_question (LABEL: "Ask about the chandlery's customers")
+    GATE: visit_count(chandlers_boy) >= 2 AND NOT topic_done(chandlers_boy, lamp_question)
+    NOTEBOOK: chandlers_boy_lamp | "The chandler's boy mentioned the estate's standing oil order increased by four...
+  TOPIC: island_delivery (LABEL: "Ask if oil was ever delivered to the island station")
+    GATE: coat = plain AND evidence(naomi_quay_inquiry) AND NOT topic_done(chandlers_boy, island_delivery)
+    EVIDENCE: chandlery_island_delivery
+    NOTEBOOK: chandlers_boy_island | "A man in a good coat made a cash purchase at the chandlery yard eight weeks ...
+  TOPIC: cash_buyer_details (LABEL: "Ask what else he noticed about the cash buyer")
+    GATE: evidence(chandlery_island_delivery) AND NOT topic_done(chandlers_boy, cash_buyer_details)
+    EVIDENCE: cedar_camphor_buyer
+    NOTEBOOK: chandlers_boy_buyer_1 | "Chandler's boy notes the cash buyer smelled of cedar and heavy foreign camp...
+
+========================================
+NPC: clockmaker
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(clockmaker, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(clockmaker, default)
+  TOPIC: the_stopped_watch (LABEL: "Show him the pocket watch stopped at seventeen past three")
+    GATE: evidence(watch)
+    EVIDENCE: fused_hairspring_anomaly
+    NOTEBOOK: clockmaker_watch_1 | "Vane showed fused hairspring in the stopped watch. Revealed Wexford, Corliss, ...
+  TOPIC: tryworks_instruments (LABEL: "Ask about old navigational instruments from the fleet")
+    GATE: evidence(watch)
+    EVIDENCE: tryworks_metal_patina
+    NOTEBOOK: clockmaker_instruments_1 | "Watchmaker examined a fleet vernier index from the silt: coated in dark,...
+
+========================================
+NPC: coroners_assistant_morgue
+  TOPIC: day_two_table (LABEL: "Return to the morgue")
+    GATE: day >= 2 AND NOT topic_done(coroners_assistant_morgue, day_two_table)
+    EVIDENCE: no_water_lungs
+    NOTEBOOK: assistant_day_two | "The coroner's assistant is barred from filing cause of death for Naomi and the ...
+  TOPIC: day_three_table (LABEL: "Ask what the registrar's disposition found")
+    GATE: day >= 3 AND evidence(no_water_lungs) AND NOT topic_done(coroners_assistant_morgue, day_three_table)
+    NOTEBOOK: assistant_day_three | "Naomi and the boy were removed from the morgue on a registrar's order with no...
+
+========================================
+NPC: county_clerk
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(county_clerk, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(county_clerk, default)
+  TOPIC: wage_claim_inquiry (LABEL: "Attempt to file Naomi Freeman's wage claim")
+    GATE: evidence(lay_lead) AND evidence(new_bedford_letters) AND evidence(postal_bureaucracy_refusal)
+    EVIDENCE: claim_no_claimant, claim_filed_inert
+    NOTEBOOK: clerk_claim_minor | "Registrar: a wage claim requires a living claimant able to stand for himself, o...
+    NOTEBOOK: clerk_claim_triplicate | "Wage claim submitted in triplicate as police correspondence to preserve th...
+  TOPIC: ophion_settlement (LABEL: "Request the 1820s Ophion insurance and probate filings")
+    GATE: evidence(behan_name) OR evidence(ophion_myth_classical)
+    EVIDENCE: insurance_fraud_record
+    NOTEBOOK: clerk_ophion_1 | "1820s probate records: $84,000 insurance paid to Pruitt/Corliss/Wexford syndicates...
+  TOPIC: sixth_member_deed (LABEL: "Check deeds and tax rolls for the Ophion Club property")
+    GATE: never
+    EVIDENCE: overseer_deed
+    NOTEBOOK: clerk_sixth_man_1 | "The sixth Ophion Club share is deeded to 'The Overseer of the Line' without per...
+  TOPIC: crew_omission (LABEL: "Ask why the town's history leaves out the crew's names")
+    GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(county_clerk, crew_omission)
+    NOTEBOOK: crew_omission_refusal | "Asked Mr. Pence why the crew's names are missing from the town's history. N...
+
+========================================
+NPC: crew
+  TOPIC: default (LABEL: )
+    GATE: always
+    EVIDENCE: crew
+  TOPIC: perimeter_trench (LABEL: "Ask about the white powder trenched into the soil thirty paces from the door")
+    GATE: evidence(crew) AND NOT topic_done(crew, perimeter_trench)
+    EVIDENCE: sulfur_shell_perimeter
+    NOTEBOOK: groundskeeper_perimeter_line | "A furrow packed with crushed oyster shell and brimstone sulfur rings...
+
+========================================
+NPC: eleanor_whitlock
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(eleanor_whitlock, default)
+  TOPIC: charity (LABEL: "Ask about charitable work")
+    GATE: always
+  TOPIC: strangers (LABEL: "Ask about newcomers")
+    GATE: evidence(naomi)
+  TOPIC: names (LABEL: "Ask why names matter")
+    GATE: evidence(naomi) AND NOT topic_done(eleanor_whitlock, names)
+    NOTEBOOK: whitlock_names_1 | "The distinction between an unnamed victim and a named victim remains central to ...
+
+========================================
+NPC: father_behan
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(father_behan, default)
+    NOTEBOOK: introduction | "Father Behan discussed five of the men's characters freely and himself not at all."...
+  TOPIC: club_invitation (LABEL: "Ask why he declined the club's invitations")
+    GATE: NOT topic_done(father_behan, club_invitation)
+    NOTEBOOK: "A refusal offered without excuse.\nWalter has learned to trust a plain no more than a decorated one...
+    NOTEBOOK: club_invitation_1_1 | "Father Behan declined two invitations to the club and would not say why."...
+  TOPIC: behan_name (LABEL: "Ask about the meaning of the club's name")
+    GATE: topic_done(father_behan, club_invitation)
+    EVIDENCE: behan_name
+    NOTEBOOK: "A shipowner's classical flourish, nothing more, by the priest's own account.\n\nThe club's fortune ...
+  TOPIC: sixth_man (LABEL: )
+    GATE: never
+
+========================================
+NPC: gardener
+  TOPIC: default (LABEL: )
+    GATE: estate_complete AND coat = plain
+    NOTEBOOK: service_door | "The gardener saw the woman at the service door. Ask the steward."...
+  TOPIC: default (LABEL: )
+    GATE: always
+    NOTEBOOK: eight_sheets | "The gardener requested eight sheets. Six arrived first."...
+
+========================================
+NPC: gazette_editor
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(gazette_editor, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(gazette_editor, default)
+  TOPIC: the_omitted_two (LABEL: "Confront him about omitting the mother and boy")
+    GATE: evidence(eight) AND NOT evidence(gazette_correction_printed)
+    EVIDENCE: press_suppression
+    NOTEBOOK: editor_omitted_1 | "Miskatonic Gazette editor defended omitting the woman and boy from the reported ...
+  TOPIC: press_the_arithmetic (LABEL: "Demand an honest retraction")
+    GATE: evidence(press_suppression) AND evidence(lay_lead) AND NOT evidence(gazette_correction_printed)
+    EVIDENCE: gazette_leverage, lay_publicity_refused
+    NOTEBOOK: editor_mortgage | "Pruitt and Corliss held the Gazette's building mortgage and libel bond; the paper...
+    NOTEBOOK: editor_lay_dismissed | "Gazette editor refused the Freeman wage claim as ancient history unsuited fo...
+  TOPIC: gas_main_origin (LABEL: "Ask who suggested the 'gas-main' story")
+    GATE: evidence(press_suppression) AND NOT topic_done(gazette_editor, gas_main_origin)
+    EVIDENCE: fabricated_foul_air
+    NOTEBOOK: editor_gas_origin_1 | "Dr. Fenn's associate phoned the 'gas-main/foul air' explanation to the Gazett...
+  TOPIC: crew_omission (LABEL: "Ask why the town's history leaves out the crew's names")
+    GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(gazette_editor, crew_omission)
+    NOTEBOOK: crew_omission_refusal | "Asked Mr. Halleck why the crew's names are missing from the town's history....
+  TOPIC: correction_terms (LABEL: "Ask what he needs to correct the count and print Naomi's name")
+    GATE: evidence(press_suppression) AND evidence(naomi) AND NOT topic_done(gazette_editor, correction_terms)
+    EVIDENCE: gazette_correction_terms
+    NOTEBOOK: correction_terms | "Halleck will consider a sourced correction: eight deaths, Almy's identification ...
+  TOPIC: correction_pending (LABEL: "Ask whether the correction can go ahead yet")
+    GATE: evidence(gazette_correction_terms) AND NOT (filed(eight) AND filed(naomi) AND filed(lodging)) AND NOT topic_done(gazette_editor, correction_pending)
+    NOTEBOOK: correction_pending | "Halleck still requires the count and both identification sources in received p...
+  TOPIC: print_correction (LABEL: "Lay out the received pages and request the correction")
+    GATE: evidence(gazette_correction_terms) AND filed(eight) AND filed(naomi) AND filed(lodging) AND NOT topic_done(gazette_editor, print_correction)
+    EVIDENCE: gazette_correction_printed
+    NOTEBOOK: printed_correction | "Collected a printed Gazette correction slip: eight reported deaths; Naomi Free...
+
+========================================
+NPC: harbor_observer
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(harbor_observer, default)
+  TOPIC: estate_grounds_crew (LABEL: "Ask about the laborers who work the Ophion grounds")
+    GATE: always
+    EVIDENCE: observer_stone_discipline
+    NOTEBOOK: observer_pantry_refusal | "Harbor mason on grounds crew avoiding pantry: 'A sensible man doesn't put...
+  TOPIC: drowned_island (LABEL: "Ask about the drowned island off the point")
+    GATE: evidence(observer_stone_discipline)
+    EVIDENCE: island_memory
+    NOTEBOOK: observer_island_1 | "Mason on the drowned island: 'Our grandfathers learned in a single night what l...
+  TOPIC: the_ring (LABEL: "Ask about the copper ring on his hand")
+    GATE: coat = plain AND NOT topic_done(harbor_observer, the_ring)
+    EVIDENCE: observer_color_tell
+    NOTEBOOK: observer_ring_1 | "The harbor laborers wear beaten anchor links to 'remind the eye what belongs to d...
+
+========================================
+NPC: local_historian
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(local_historian, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(local_historian, default)
+  TOPIC: ship_origin (LABEL: "Ask about the naming of the whaling ship Ophion")
+    GATE: always
+    EVIDENCE: ophion_myth_classical
+    NOTEBOOK: historian_ophion_1 | "Abernathy attributes the ship's name to Elias Pruitt's classical tastes in 181...
+  TOPIC: dr_fenn_library (LABEL: "Ask what Dr. Fenn was researching in the archives")
+    GATE: evidence(ophion_myth_classical) AND evidence(club_talk)
+    EVIDENCE: displaced_god_doctrine, estate_conduit_map
+    NOTEBOOK: historian_fenn_annotations | "Fenn studied Aegean mystery rites, obsessively annotating passages reg...
+    NOTEBOOK: historian_fenn_map | "Dr. Fenn borrowed and never returned an 1822 survey showing underground draina...
+  TOPIC: the_free_crew (LABEL: "Ask about free Black whalemen aboard the 1823 voyage")
+    GATE: evidence(lay_lead) AND topic_done(local_historian, crew_omission_followup) AND NOT topic_done(local_historian, the_free_crew)
+    EVIDENCE: freeman_lineage_free
+    NOTEBOOK: historian_crew_1 | "Historian confirms the Freeman whaling lineage was free by Massachusetts law sin...
+  TOPIC: crew_omission_official (LABEL: "Ask why the town's history leaves out the crew's names")
+    GATE: (evidence(lay_lead) OR evidence(sanitized_textbook)) AND NOT topic_done(local_historian, crew_omission_official)
+    NOTEBOOK: crew_official | "Abernathy defended separating the crew list from the civic history. He would not ex...
+  TOPIC: crew_omission_followup (LABEL: "Return to the question of the missing crew names")
+    GATE: topic_done(local_historian, crew_omission_official) AND topic_count(crew_omission) >= 4 AND NOT topic_done(local_historian, crew_omission_followup)
+    EVIDENCE: curriculum_abridgment
+    NOTEBOOK: reader_source | "Abernathy says he omitted the crew list when abridging the civic history for the sc...
+
+========================================
+NPC: miriam_ashcroft
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(miriam_ashcroft, default)
+  TOPIC: town (LABEL: "Ask about the ridge")
+    GATE: always
+  TOPIC: naomi (LABEL: "Ask whether she knew Naomi Freeman")
+    GATE: evidence(naomi)
+    EVIDENCE: ridge_sighting
+    NOTEBOOK: ashcroft_naomi_1 | "Mrs. Ashcroft recalls seeing Naomi Freeman on the ridge, turned away door to doo...
+  TOPIC: club (LABEL: "Ask about the Ophion Club")
+    GATE: always
+  TOPIC: crew_omission (LABEL: "Ask why the town's history leaves out the crew's names")
+    GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(miriam_ashcroft, crew_omission)
+    NOTEBOOK: ashcroft_crew_omission | "Mrs. Ashcroft offered no explanation for the crew's absence from the recor...
+
+========================================
+NPC: miss_wexley
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(miss_wexley, default) AND coat != plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(miss_wexley, default) AND coat = plain
+  TOPIC: museum_story (LABEL: "Ask why the museum omits certain families")
+    GATE: always
+    EVIDENCE: curated_history
+    NOTEBOOK: wexley_curation | "Miss Wexley admitted the museum presents only what can be displayed without publi...
+  TOPIC: freeman_claim (LABEL: "Ask whether she has heard of the Freeman wage claim")
+    GATE: coat = plain
+    EVIDENCE: freeman_whisper
+    NOTEBOOK: wexley_freeman | "Miss Wexley recognized the Freeman wage claim and implied it was privately known a...
+  TOPIC: crew_omission (LABEL: "Ask why the town's history leaves out the crew's names")
+    GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(miss_wexley, crew_omission)
+    NOTEBOOK: crew_omission_refusal | "Asked Miss Wexley why the crew's names are missing from the town's history....
+
+========================================
+NPC: mr_whitehouse
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(mr_whitehouse, default)
+  TOPIC: subscriptions_and_credit (LABEL: "Ask why everyone keeps calling it arithmetic")
+    GATE: always
+    EVIDENCE: civic_arithmetic
+    NOTEBOOK: whitehouse_confidence | "Whitehouse described the town's silence as a defense of confidence: banks, ...
+  TOPIC: name_the_dead (LABEL: "Ask whether confidence matters more than the dead")
+    GATE: evidence(civic_arithmetic)
+    EVIDENCE: silence_is_choice
+    NOTEBOOK: whitehouse_eight_payroll | "Whitehouse argued that acknowledging all eight dead would trigger wider ...
+    NOTEBOOK: whitehouse_silence_choice | "Whitehouse openly described public silence as a deliberate civic choice...
+
+========================================
+NPC: mrs_pell
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(mrs_pell, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(mrs_pell, default) AND coat != plain
+  TOPIC: club_guests (LABEL: "Ask who visited the ridge after dark")
+    GATE: always
+    NOTEBOOK: pell_ridge_traffic | "Mrs. Pell would not name late-night visitors to the ridge; she treated such tr...
+  TOPIC: servant_talk (LABEL: "Ask whether her maid heard anything from the club road")
+    GATE: coat = plain
+    EVIDENCE: ridge_haste
+    NOTEBOOK: pell_maid_heard | "Mrs. Pell admitted her maid heard men arriving and departing the ridge in haste, ...
+  TOPIC: crew_omission (LABEL: "Ask why the town's history leaves out the crew's names")
+    GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(mrs_pell, crew_omission)
+    NOTEBOOK: pell_crew_omission | "Mrs. Pell acknowledged her grandfather sat on the memorial committee. Framed t...
+
+========================================
+NPC: net_seller
+  TOPIC: default (LABEL: )
+    GATE: coat = plain AND visit_count(net_seller) >= 2
+  TOPIC: default (LABEL: )
+    GATE: always
+  TOPIC: crew_omission (LABEL: "Ask why the town's history leaves out the crew's names")
+    GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(net_seller, crew_omission)
+    NOTEBOOK: net_seller_crew_omission | "The net seller said the drowned crew's names are preserved in the harbor...
+  TOPIC: harbor_currents (LABEL: "Ask about the unnatural stillness before the murders")
+    GATE: evidence(sub_harbor_drag) AND NOT topic_done(net_seller, harbor_currents)
+    EVIDENCE: inland_subsea_current
+    NOTEBOOK: net_seller_currents_1 | "Net seller observed deep harbor currents running unnaturally inland toward ...
+  TOPIC: stone_sinkers (LABEL: "Ask why the skiffs by the slipway use grooved stones instead of iron anchors")
+    GATE: NOT topic_done(net_seller, stone_sinkers)
+    EVIDENCE: stone_sinker_discipline
+    NOTEBOOK: net_seller_stone_sinkers | "Net seller explained the dories use grooved granite stones instead of ir...
+  TOPIC: copper_rings (LABEL: "Ask why the harbor people wear beaten copper rings")
+    GATE: coat = plain AND evidence(observer_color_tell) AND NOT topic_done(net_seller, copper_rings)
+    EVIDENCE: eye_anchoring_discipline
+    NOTEBOOK: net_seller_ring_discipline | "The net seller declined to discuss the mason's band and returned to re...
+
+========================================
+NPC: odell
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(odell, default)
+    EVIDENCE: eight
+    NOTEBOOK: default_1_1 | "Walter told Odell to his face that six was not the whole count. Odell did not answer....
+    NOTEBOOK: default_1_2 | "Walter wrote EIGHT in his own file, in a hand larger than his usual notation, and sai...
+
+========================================
+NPC: odell_precinct
+  TOPIC: day_two_check (LABEL: "Report progress to the captain")
+    GATE: day >= 2 AND day <= 2 AND NOT topic_done(odell, day_two_check)
+    NOTEBOOK: odell_day_two | "Odell wants a written supplemental by four. He did not acknowledge Naomi or the boy...
+  TOPIC: day_two_pressure (LABEL: "Raise the insurance records with Odell")
+    GATE: day >= 2 AND (evidence(insurance_fraud_record) OR evidence(bulk_opium_spirits)) AND NOT topic_done(odell, day_two_pressure)
+    NOTEBOOK: odell_pressure | "Odell knew immediately what record Walter meant. He did not deny its contents. He ...
+  TOPIC: day_three_final (LABEL: "Face Odell on Day 3")
+    GATE: day >= 3 AND NOT topic_done(odell, day_three_final)
+    NOTEBOOK: odell_day_three | "Odell dropped the title. Warned Walter directly about his record. When pressed on...
+
+========================================
+NPC: old_woman
+  TOPIC: default (LABEL: )
+    GATE: evidence(naomi) AND NOT evidence(old_woman)
+    EVIDENCE: old_woman
+    NOTEBOOK: "She is gone before he finishes the sentence.\n\nHe writes what he remembers of it, exactly as given...
+
+========================================
+NPC: post_office_clerk
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(post_office_clerk, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(post_office_clerk, default)
+  TOPIC: naomi_letters (LABEL: "Inquire about mail held for Naomi Freeman")
+    GATE: evidence(naomi)
+    EVIDENCE: new_bedford_letters
+    NOTEBOOK: postal_naomi_1 | "Post office holds two letters from New Bedford for Naomi Freeman, addressed from a...
+  TOPIC: ophion_club_mail (LABEL: "Ask about correspondence received by the Ophion Club")
+    GATE: always
+    EVIDENCE: club_foreign_freight, postal_overseer_statements
+    NOTEBOOK: postal_foreign_packets | "Ophion Club received heavy insured parcels from Liverpool and Smyrna, smel...
+    NOTEBOOK: postal_overseer_drafts | "Monthly registered bank drafts arrived from Boston Marine Bank addressed s...
+  TOPIC: holding_the_letters (LABEL: "Attempt to take custody of the child's letters")
+    GATE: evidence(new_bedford_letters) AND NOT topic_done(post_office_clerk, holding_the_letters)
+    EVIDENCE: postal_bureaucracy_refusal
+    NOTEBOOK: postal_refusal_1 | "Postmaster refused to surrender Naomi's letters from her six-year-old son, citin...
+  TOPIC: crew_omission (LABEL: "Ask why the town's history leaves out the crew's names")
+    GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(post_office_clerk, crew_omission)
+    NOTEBOOK: crew_omission_refusal | "Asked Mr. Crump why the crew's names are missing from the town's history. N...
+
+========================================
+NPC: quay_bookkeeper
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(quay_bookkeeper, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(quay_bookkeeper, default)
+  TOPIC: work (LABEL: "Ask what records the office keeps")
+    GATE: always
+  TOPIC: unfamiliar_woman (LABEL: "Ask whether Naomi came to the office")
+    GATE: evidence(naomi)
+    EVIDENCE: quay_inquiry
+    NOTEBOOK: bookkeeper_naomi_1 | "A quay-office clerk initially reduced Naomi Freeman's claim to an inquiry. Mr....
+  TOPIC: old_lay (LABEL: "Ask how an old whaler's lay would be recorded")
+    GATE: evidence(lay_lead) AND evidence(quay_inquiry)
+    EVIDENCE: lay_record_method
+    NOTEBOOK: "An unpaid lay may leave no direct entry.\nSeek adjoining records: crew list, voyage account, owner ...
+  TOPIC: estate_freight (LABEL: "Ask about deliveries to the estate")
+    GATE: evidence(service_work)
+    EVIDENCE: estate_freight
+    NOTEBOOK: bookkeeper_estate_1 | "Estate freight discrepancy: two carts of kitchen stone billed, three observed...
+  TOPIC: missing_cart (LABEL: "Press him about the third cart")
+    GATE: evidence(estate_freight)
+    EVIDENCE: cart_record_missing, cart_unsigned
+    NOTEBOOK: bookkeeper_cart_destroyed | "A record of the estate's third freight cart existed but is no longer re...
+    NOTEBOOK: bookkeeper_cart_unsigned | "The unbilled third cart crossed without a receiving signature. Mr. Vale ...
+  TOPIC: records (LABEL: "Ask why records disappear")
+    GATE: evidence(quay_inquiry) AND NOT topic_done(quay_bookkeeper, records)
+    NOTEBOOK: bookkeeper_records_1 | "The quay office does not require a deliberate falsification to lose a record...
+  TOPIC: coat (LABEL: "Ask why he answered without the badge")
+    GATE: coat = plain AND evidence(quay_inquiry) AND NOT topic_done(quay_bookkeeper, coat)
+
+========================================
+NPC: quay_docker
+  TOPIC: default (LABEL: )
+    GATE: coat = plain AND visit_count(quay_docker) >= 2
+  TOPIC: default (LABEL: )
+    GATE: always
+  TOPIC: naomi_sighting (LABEL: "Ask if anyone saw Naomi Freeman near the water")
+    GATE: evidence(naomi) AND NOT topic_done(quay_docker, naomi_sighting)
+    EVIDENCE: naomi_quay_inquiry
+    NOTEBOOK: docker_naomi_sighting | "The quay docker saw Naomi Freeman three or four days before the inquiry. Sh...
+  TOPIC: estate_freight_carts (LABEL: "Ask about the three carts of stone sent to the estate")
+    GATE: evidence(estate_freight) AND NOT topic_done(quay_docker, estate_freight_carts)
+    EVIDENCE: tryworks_timber_freight, estate_private_driver
+    NOTEBOOK: docker_cart_weight | "Quay docker confirms third unbilled cart held waterlogged, muddy timber from t...
+    NOTEBOOK: docker_cart_driver | "Quay docker: the unbilled third cart was driven by estate staff in black serge...
+
+========================================
+NPC: ropewalk_foreman
+  TOPIC: default (LABEL: )
+    GATE: coat = plain AND visit_count(ropewalk_foreman) >= 2
+  TOPIC: default (LABEL: )
+    GATE: always
+  TOPIC: island_supply (LABEL: "Ask about supply runs to the offshore island")
+    GATE: evidence(naomi) AND NOT topic_done(ropewalk_foreman, island_supply)
+    NOTEBOOK: foreman_island_supply | "The rope-walk foreman confirmed no supply run to the island appears in his ...
+  TOPIC: cellar_salt (LABEL: "Ask why someone would carry harbor curing salt inland")
+    GATE: evidence(gray_salt_cakes) AND NOT topic_done(ropewalk_foreman, cellar_salt)
+    EVIDENCE: cellar_desiccation_practice
+    NOTEBOOK: ropewalk_salt_purpose | "Foreman explains gray harbor salt cakes are used to desiccate stone seams a...
+  TOPIC: estate_mooring_cable (LABEL: "Ask about heavy hawser supplied to the estate bluff")
+    GATE: evidence(estate_conduit_map) AND NOT topic_done(ropewalk_foreman, estate_mooring_cable)
+    EVIDENCE: heavy_subterranean_tackle
+    NOTEBOOK: ropewalk_estate_hawser | "Foreman confirms two hundred fathoms of 4-inch tarred Manila hawser delive...
+  TOPIC: island_confirmed (LABEL: "Tell him about the chandlery sale")
+    GATE: evidence(chandlery_island_delivery) AND evidence(naomi_quay_inquiry) AND NOT topic_done(ropewalk_foreman, island_confirmed)
+    EVIDENCE: dory_night_crossing
+    NOTEBOOK: foreman_island_confirmed | "The rope-walk foreman noted a dory left the repair slip after dark on a ...
+
+========================================
+NPC: salt_mender
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(salt_mender, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(salt_mender, default)
+  TOPIC: night_sounds (LABEL: "Ask about unusual sounds from the harbor at night")
+    GATE: always
+    EVIDENCE: sub_harbor_drag
+    NOTEBOOK: mender_tide_silence | "Mrs. Peake: dead flat tide at 3:00 AM before the deaths, followed by an unnat...
+  TOPIC: naomi_and_the_boy (LABEL: "Ask if she spoke to Naomi Freeman")
+    GATE: evidence(naomi)
+    EVIDENCE: naomi_moral_clarity, boy_pebble_survey
+    NOTEBOOK: mender_naomi_quote | "Mrs. Peake: Naomi and her boy were pacing distances and setting pebbles twenty...
+  TOPIC: crew_omission (LABEL: "Ask why the town's history leaves out the crew's names")
+    GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(salt_mender, crew_omission)
+    NOTEBOOK: peake_crew_omission | "Mrs. Peake says the drowned crew's names are preserved in the lower harbor fa...
+
+========================================
+NPC: school_parent
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(school_parent, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(school_parent, default)
+  TOPIC: the_stranger_woman (LABEL: "Ask if she saw Naomi Freeman and her boy")
+    GATE: evidence(naomi)
+    EVIDENCE: naomi_unapologetic_presence
+    NOTEBOOK: parent_naomi_attitude | "Mrs. Teague: Naomi Freeman 'walked like someone who had come to collect wha...
+  TOPIC: the_estate_talk (LABEL: "Ask what the ridge families are saying about the club deaths")
+    GATE: evidence(naomi)
+    EVIDENCE: turned_mirrors, fenn_camphor_taboo
+    NOTEBOOK: parent_wexford_mirrors | "Judge Wexford's housemaid quit after finding mirrors turned to the wall, 3...
+    NOTEBOOK: parent_fenn_peculiar | "Dr. Fenn stopped prescribing camphor, claiming the odor 'attracted things fr...
+
+========================================
+NPC: schoolteacher
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(schoolteacher, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(schoolteacher, default)
+  TOPIC: town_founding (LABEL: "Ask how the town's history is taught to the children")
+    GATE: always
+    EVIDENCE: sanitized_textbook
+    NOTEBOOK: teacher_founding_1 | "School curriculum teaches the 1823 fleet disaster as a noble sacrifice redeeme...
+  TOPIC: the_drowned_island (LABEL: "Ask whether the children ever ask about the island ruins")
+    GATE: evidence(sanitized_textbook) AND evidence(reader_omission_letter)
+    EVIDENCE: harbor_children_discipline
+    NOTEBOOK: teacher_island_1 | "Schoolteacher notes harbor children are taught at home never to look east toward...
+  TOPIC: the_slain_boy (LABEL: "Ask if Naomi's young son ever came to the school")
+    GATE: evidence(naomi) AND evidence(reader_omission_letter) AND NOT topic_done(schoolteacher, the_slain_boy)
+    EVIDENCE: boy_century_slate, boy_district_refusal
+    NOTEBOOK: teacher_boy_slate | "The murdered boy stood outside the schoolhouse asking about a century's span, s...
+    NOTEBOOK: teacher_boy_turned_away | "Schoolteacher turned away Naomi's son for lack of county residence proof:...
+  TOPIC: reader_letter (LABEL: "Ask for the covering letter Abernathy mentioned")
+    GATE: evidence(curriculum_abridgment) AND NOT topic_done(schoolteacher, reader_letter)
+    EVIDENCE: reader_omission_letter
+    NOTEBOOK: reader_letter | "Examined Hallowell's covering letter: retain rebuilding subscriptions and omit the ...
+  TOPIC: personal_questions (LABEL: "Ask whether she remembers Naomi's boy")
+    GATE: evidence(naomi) AND NOT evidence(reader_omission_letter) AND NOT topic_done(schoolteacher, personal_questions)
+    NOTEBOOK: teacher_refusal | "Hallowell declined a personal account and referred Walter to Abernathy about omis...
+
+========================================
+NPC: sebastian_wick
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(sebastian_wick, default)
+  TOPIC: records (LABEL: "Ask about missing records")
+    GATE: always
+  TOPIC: claim (LABEL: "Ask about an old wage claim")
+    GATE: evidence(lay_lead)
+    EVIDENCE: legal_claim
+    NOTEBOOK: wick_claim_1 | "Legal existence and practical enforceability are separate questions."...
+  TOPIC: filing (LABEL: "Ask what he would do")
+    GATE: coat = plain AND NOT topic_done(sebastian_wick, filing)
+
+========================================
+NPC: stationer
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(stationer, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(stationer, default)
+  TOPIC: the_corkboard_twine (LABEL: "Ask about heavy wrapping twine and map pins")
+    GATE: always
+    NOTEBOOK: stationer_twine_1 | "Mr. Finch: 'Facts don't drift, Walter. Men do.' Observed that only Walter uses ...
+  TOPIC: fenn_orders (LABEL: "Ask about Dr. Fenn's stationery orders")
+    GATE: evidence(knife)
+    EVIDENCE: cellar_candles
+    NOTEBOOK: stationer_fenn_supplies | "Dr. Fenn purchased iron-gall ink and heavy smokeless spermaceti candles f...
+  TOPIC: naomi_supplies (LABEL: "Ask if Naomi Freeman purchased writing materials")
+    GATE: evidence(naomi) AND NOT topic_done(stationer, naomi_supplies)
+    EVIDENCE: drafting_linen_diagram
+    NOTEBOOK: stationer_naomi_linen | "Naomi Freeman bought drafting linen and asked for transfer wax to take an i...
+  TOPIC: crew_omission (LABEL: "Ask why the town's history leaves out the crew's names")
+    GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(stationer, crew_omission)
+    NOTEBOOK: crew_omission_refusal | "Asked Mr. Finch why the crew's names are missing from the town's history. N...
+
+========================================
+NPC: steward
+  TOPIC: default (LABEL: )
+    GATE: steward_ready AND NOT topic_done(steward, steward_open)
+  TOPIC: default (LABEL: )
+    GATE: day = 3 AND coat != plain
+  TOPIC: default (LABEL: )
+    GATE: day < 3 AND evidence(service_work)
+    EVIDENCE: steward_heard_secondhand
+    NOTEBOOK: steward_first_lead_1 | "The steward heard secondhand that a colored woman had asked about work at th...
+  TOPIC: default (LABEL: )
+    GATE: day < 3
+    NOTEBOOK: first_day_book | "The steward distinguishes the staff day book from the dining-room seating list. He...
+  TOPIC: day_book (LABEL: "Ask for the staff day book he mentioned")
+    GATE: steward_ready AND evidence(service_work) AND NOT topic_done(steward, day_book)
+    EVIDENCE: estate_day_book
+    NOTEBOOK: day_book_entry | "Staff day book records 'N. Freeman — Day Work — Kitchen Wing.' Steward revealed th...
+  TOPIC: club_talk (LABEL: "Ask what the members used to talk about")
+    GATE: steward_ready
+    EVIDENCE: club_talk
+    NOTEBOOK: "Toward the end of what, he doesn't say.\nHer, he doesn't explain.\n\nWalter writes both down exactl...
+  TOPIC: club_devotion (LABEL: "Ask what Kessler used to say")
+    GATE: steward_ready AND evidence(club_talk)
+    EVIDENCE: club_devotion
+    NOTEBOOK: "A butcher, a judge, a doctor, a district attorney, a man of property, all of them speaking the same...
+  TOPIC: pantry_lead (LABEL: "Ask about the old pantry door")
+    GATE: steward_ready AND evidence(club_devotion)
+    EVIDENCE: pantry_lead
+    NOTEBOOK: "He won't say why. He also won't take back the direction he just gave.\n\nThe kitchen wing. The old ...
+
+========================================
+NPC: tailor
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(tailor, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(tailor, default)
+  TOPIC: cut_jackets (LABEL: "Ask who ordered the matching club evening dress")
+    GATE: always
+    EVIDENCE: five_tailored_coats
+    NOTEBOOK: tailor_five_1 | "Mr. Krebs tailored five identical club evening coats: Wexford, Fenn, Corliss, Pruit...
+  TOPIC: the_sixth_jacket (LABEL: "Ask who made the sixth coat")
+    GATE: never
+    EVIDENCE: ancestral_sixth_coat
+    NOTEBOOK: tailor_sixth_1 | "Josiah Pruitt told the tailor the sixth club coat was already provided, hanging in...
+  TOPIC: coat_lining (LABEL: "Ask what distinguished the Ophion club pattern")
+    GATE: NOT topic_done(tailor, coat_lining)
+    EVIDENCE: serpent_hem_motif
+    NOTEBOOK: tailor_serpent_hem | "All club evening jackets contained a black silk cord stitched inside the inner...
+  TOPIC: crew_omission (LABEL: "Ask why the town's history leaves out the crew's names")
+    GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(tailor, crew_omission)
+    NOTEBOOK: crew_omission_refusal | "Asked Mr. Krebs why the crew's names are missing from the town's history. N...
+
+========================================
+NPC: widow_kessler
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(widow_kessler, default) AND coat = plain
+  TOPIC: default (LABEL: )
+    GATE: NOT topic_done(widow_kessler, default)
+  TOPIC: the_knife (LABEL: "Ask about Otto's boning knife")
+    GATE: evidence(knife)
+    EVIDENCE: kessler_knife_confirmed
+    NOTEBOOK: kessler_knife_1 | "Mrs. Kessler confirms the boning knife belonged to Otto. He carried it to the Oph...
+  TOPIC: club_standing (LABEL: "Ask how Otto came to join the club")
+    GATE: always
+    EVIDENCE: kessler_carriages
+    NOTEBOOK: kessler_standing_1 | "Otto Kessler was excluded socially by the club's elite members, but collected ...
+  TOPIC: butcher_parcels (LABEL: "Ask what Otto brought to the meetings")
+    GATE: evidence(kessler_carriages)
+    EVIDENCE: gray_salt_cakes, tryworks_silt
+    NOTEBOOK: kessler_salt_parcels | "Kessler carried parcels of coarse gray harbor salt to the estate meetings, o...
+    NOTEBOOK: kessler_silt_cuffs | "Kessler returned from meetings with sea silt and low-tide try-works stench ben...
+  TOPIC: the_mother (LABEL: "Ask how Otto spoke about the club at the end")
+    GATE: evidence(club_devotion) AND NOT topic_done(widow_kessler, the_mother)
+    EVIDENCE: maternal_delusion
+    NOTEBOOK: kessler_mother_1 | "Kessler spoke of a maternal power toward the end: 'She'll have us home... She's ...
+  TOPIC: coat_difference (LABEL: "Ask why she told Walter instead of Odell")
+    GATE: coat = plain AND (evidence(kessler_carriages) OR topic_done(widow_kessler, club_standing)) AND NOT topic_done(widow_kessler, coat_difference)

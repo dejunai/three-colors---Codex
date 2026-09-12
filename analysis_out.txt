@@ -1,0 +1,118 @@
+Discovered 36 dialogue files.
+Parsed 36 NPCs.
+
+--- GATE AND DEPENDENCY ISSUES ---
+[background_npc_template.dialogue:21] in topic 'default': visit_count references unknown NPC 'example_witness' in GATE: 'coat = plain AND visit_count(example_witness) >= 2'
+[background_npc_template.dialogue:37] in topic 'example_account': topic_done references unknown NPC 'example_witness' in GATE: 'NOT topic_done(example_witness, example_account)'
+[background_npc_template.dialogue:53] in topic 'example_approach': topic_done references unknown NPC 'example_witness' in GATE: 'evidence(example_door_account) AND NOT topic_done(example_witness, example_approach)'
+[background_npc_template.dialogue:85] in topic 'example_word_spreads': topic_done references unknown NPC 'example_witness' in GATE: 'topic_count(example_shared_question) >= 4 AND NOT topic_done(example_witness, example_word_spreads)'
+[background_npc_template.dialogue:94] in topic 'example_referral': spoken_to references unknown NPC 'example_historian' in GATE: 'spoken_to(example_historian) AND topic_done(example_historian, example_referral_given)'
+[background_npc_template.dialogue:94] in topic 'example_referral': topic_done references unknown NPC 'example_historian' in GATE: 'spoken_to(example_historian) AND topic_done(example_historian, example_referral_given)'
+[background_npc_template.dialogue:102] in topic 'example_received_record': Unknown function 'AND' in GATE: 'filed(example_door_account) AND (day >= 2 OR estate_complete)'
+[clockmaker.dialogue:26] in topic 'the_stopped_watch': evidence('watch') checked, but 'watch' is never emitted in dialogue or known in game code! GATE: 'evidence(watch)'
+[clockmaker.dialogue:53] in topic 'tryworks_instruments': evidence('watch') checked, but 'watch' is never emitted in dialogue or known in game code! GATE: 'evidence(watch)'
+[gazette_editor.dialogue:112] in topic 'correction_pending': Unknown function 'NOT' in GATE: 'evidence(gazette_correction_terms) AND NOT (filed(eight) AND filed(naomi) AND filed(lodging)) AND NOT topic_done(gazette_editor, correction_pending)'
+[odell_precinct.dialogue:8] in topic 'day_two_check': topic_done references unknown topic/tag 'day_two_check' on NPC 'odell' in GATE: 'day >= 2 AND day <= 2 AND NOT topic_done(odell, day_two_check)'
+[odell_precinct.dialogue:27] in topic 'day_two_pressure': Unknown function 'AND' in GATE: 'day >= 2 AND (evidence(insurance_fraud_record) OR evidence(bulk_opium_spirits)) AND NOT topic_done(odell, day_two_pressure)'
+[odell_precinct.dialogue:27] in topic 'day_two_pressure': topic_done references unknown topic/tag 'day_two_pressure' on NPC 'odell' in GATE: 'day >= 2 AND (evidence(insurance_fraud_record) OR evidence(bulk_opium_spirits)) AND NOT topic_done(odell, day_two_pressure)'
+[odell_precinct.dialogue:44] in topic 'day_three_final': topic_done references unknown topic/tag 'day_three_final' on NPC 'odell' in GATE: 'day >= 3 AND NOT topic_done(odell, day_three_final)'
+[widow_kessler.dialogue:96] in topic 'coat_difference': Unknown function 'AND' in GATE: 'coat = plain AND (evidence(kessler_carriages) OR topic_done(widow_kessler, club_standing)) AND NOT topic_done(widow_kessler, coat_difference)'
+
+--- VOICE CUES CHECK ---
+
+--- SCHEDULE KEYS CHECK ---
+Non-standard schedule phase 'dawn' in mr_wick.dialogue: 'dawn={veranda}'
+Non-standard schedule phase 'dawn' in mrs_ashcroft.dialogue: 'dawn={garden_walk}'
+Non-standard schedule phase 'dawn' in mrs_whitlock.dialogue: 'dawn={chapel_path}'
+
+--- EVIDENCE SUMMARY ---
+Total distinct evidence IDs emitted by dialogue: 89
+  ancestral_sixth_coat: emitted by ['tailor.dialogue:the_sixth_jacket']
+  behan_name: emitted by ['father_behan.dialogue:behan_name']
+  boy_century_slate: emitted by ['schoolteacher.dialogue:the_slain_boy']
+  boy_district_refusal: emitted by ['schoolteacher.dialogue:the_slain_boy']
+  boy_pebble_survey: emitted by ['salt_mender.dialogue:naomi_and_the_boy']
+  bulk_opium_spirits: emitted by ['apothecary.dialogue:fenn_laudanum']
+  cart_record_missing: emitted by ['mr_vale.dialogue:missing_cart']
+  cart_unsigned: emitted by ['mr_vale.dialogue:missing_cart']
+  cedar_camphor_buyer: emitted by ['chandlers_boy.dialogue:cash_buyer_details']
+  cellar_candles: emitted by ['stationer.dialogue:fenn_orders']
+  cellar_desiccation_practice: emitted by ['ropewalk_foreman.dialogue:cellar_salt']
+  chandlery_island_delivery: emitted by ['chandlers_boy.dialogue:island_delivery']
+  civic_arithmetic: emitted by ['mr_whitehouse.dialogue:subscriptions_and_credit']
+  claim_filed_inert: emitted by ['county_clerk.dialogue:wage_claim_inquiry']
+  claim_no_claimant: emitted by ['county_clerk.dialogue:wage_claim_inquiry']
+  club_devotion: emitted by ['steward.dialogue:club_devotion']
+  club_foreign_freight: emitted by ['post_office_clerk.dialogue:ophion_club_mail']
+  club_talk: emitted by ['steward.dialogue:club_talk']
+  crew: emitted by ['groundskeeper.dialogue:default']
+  curated_history: emitted by ['miss_wexley.dialogue:museum_story']
+  curriculum_abridgment: emitted by ['local_historian.dialogue:crew_omission_followup']
+  displaced_god_doctrine: emitted by ['local_historian.dialogue:dr_fenn_library']
+  dory_night_crossing: emitted by ['ropewalk_foreman.dialogue:island_confirmed']
+  drafting_linen_diagram: emitted by ['stationer.dialogue:naomi_supplies']
+  eight: emitted by ['coroners_assistant.dialogue:default', 'odell.dialogue:default']
+  estate_conduit_map: emitted by ['local_historian.dialogue:dr_fenn_library']
+  estate_day_book: emitted by ['steward.dialogue:day_book']
+  estate_freight: emitted by ['mr_vale.dialogue:estate_freight']
+  estate_private_driver: emitted by ['quay_docker.dialogue:estate_freight_carts']
+  example_door_account: emitted by ['background_npc_template.dialogue:example_account']
+  example_face_unseen: emitted by ['background_npc_template.dialogue:example_approach']
+  example_pressure_rebuff: emitted by ['background_npc_template.dialogue:example_approach']
+  example_window_account: emitted by ['background_npc_template.dialogue:example_approach']
+  eye_anchoring_discipline: emitted by ['net_seller.dialogue:copper_rings']
+  fabricated_foul_air: emitted by ['gazette_editor.dialogue:gas_main_origin']
+  fenn_camphor_taboo: emitted by ['school_parent.dialogue:the_estate_talk']
+  five_tailored_coats: emitted by ['tailor.dialogue:cut_jackets']
+  freeman_lineage_free: emitted by ['local_historian.dialogue:the_free_crew']
+  freeman_whisper: emitted by ['miss_wexley.dialogue:freeman_claim']
+  fused_hairspring_anomaly: emitted by ['clockmaker.dialogue:the_stopped_watch']
+  gazette_correction_printed: emitted by ['gazette_editor.dialogue:print_correction']
+  gazette_correction_terms: emitted by ['gazette_editor.dialogue:correction_terms']
+  gazette_leverage: emitted by ['gazette_editor.dialogue:press_the_arithmetic']
+  gray_salt_cakes: emitted by ['widow_kessler.dialogue:butcher_parcels']
+  harbor_children_discipline: emitted by ['schoolteacher.dialogue:the_drowned_island']
+  heavy_subterranean_tackle: emitted by ['ropewalk_foreman.dialogue:estate_mooring_cable']
+  inland_subsea_current: emitted by ['net_seller.dialogue:harbor_currents']
+  insurance_fraud_record: emitted by ['county_clerk.dialogue:ophion_settlement']
+  island_memory: emitted by ['harbor_observer.dialogue:drowned_island']
+  kessler_carriages: emitted by ['widow_kessler.dialogue:club_standing']
+  kessler_knife_confirmed: emitted by ['widow_kessler.dialogue:the_knife']
+  lay_lead: emitted by ['mrs_almy.dialogue:lay_lead']
+  lay_publicity_refused: emitted by ['gazette_editor.dialogue:press_the_arithmetic']
+  lay_record_method: emitted by ['mr_vale.dialogue:old_lay']
+  legal_claim: emitted by ['mr_wick.dialogue:claim']
+  maternal_delusion: emitted by ['widow_kessler.dialogue:the_mother']
+  naomi: emitted by ['mrs_almy.dialogue:identify']
+  naomi_moral_clarity: emitted by ['salt_mender.dialogue:naomi_and_the_boy']
+  naomi_quay_inquiry: emitted by ['quay_docker.dialogue:naomi_sighting']
+  naomi_unapologetic_presence: emitted by ['school_parent.dialogue:the_stranger_woman']
+  new_bedford_letters: emitted by ['post_office_clerk.dialogue:naomi_letters']
+  no_water_lungs: emitted by ['coroners_assistant_morgue.dialogue:day_two_table']
+  observer_color_tell: emitted by ['harbor_observer.dialogue:the_ring']
+  observer_stone_discipline: emitted by ['harbor_observer.dialogue:estate_grounds_crew']
+  old_woman: emitted by ['old_woman.dialogue:default']
+  ophion_myth_classical: emitted by ['local_historian.dialogue:ship_origin']
+  overseer_deed: emitted by ['county_clerk.dialogue:sixth_member_deed']
+  pantry_lead: emitted by ['steward.dialogue:pantry_lead']
+  postal_bureaucracy_refusal: emitted by ['post_office_clerk.dialogue:holding_the_letters']
+  postal_overseer_statements: emitted by ['post_office_clerk.dialogue:ophion_club_mail']
+  press_suppression: emitted by ['gazette_editor.dialogue:the_omitted_two']
+  quay_inquiry: emitted by ['mr_vale.dialogue:unfamiliar_woman']
+  reader_omission_letter: emitted by ['schoolteacher.dialogue:reader_letter']
+  ridge_haste: emitted by ['mrs_pell.dialogue:servant_talk']
+  ridge_sighting: emitted by ['mrs_ashcroft.dialogue:naomi']
+  sanitized_textbook: emitted by ['schoolteacher.dialogue:town_founding']
+  serpent_hem_motif: emitted by ['tailor.dialogue:coat_lining']
+  service_work: emitted by ['mrs_almy.dialogue:service_work']
+  silence_is_choice: emitted by ['mr_whitehouse.dialogue:name_the_dead']
+  steward_heard_secondhand: emitted by ['steward.dialogue:default']
+  stone_sinker_discipline: emitted by ['net_seller.dialogue:stone_sinkers']
+  sub_harbor_drag: emitted by ['salt_mender.dialogue:night_sounds']
+  sulfur_shell_perimeter: emitted by ['groundskeeper.dialogue:perimeter_trench']
+  testimony: emitted by ['coroners_assistant.dialogue:default']
+  tryworks_metal_patina: emitted by ['clockmaker.dialogue:tryworks_instruments']
+  tryworks_silt: emitted by ['widow_kessler.dialogue:butcher_parcels']
+  tryworks_timber_freight: emitted by ['quay_docker.dialogue:estate_freight_carts']
+  turned_mirrors: emitted by ['school_parent.dialogue:the_estate_talk']
+  water_corrosion_inquiry: emitted by ['apothecary.dialogue:the_stranger_remedies']

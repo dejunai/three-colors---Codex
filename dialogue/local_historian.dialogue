@@ -7,15 +7,19 @@ SCHEDULE: morning=museum, midday=museum, evening=museum, night=upper_house_4
 TOPIC: default
   GATE: NOT topic_done(local_historian, default) AND coat = plain
   TAG: historian_plain
+  VOICE: trombone_neutral_medium_v1
   MR. ABERNATHY: "Admittance is ten cents, which supports the preservation of maritime relics."
   [The curator peers up from a vitrine filled with tarnished whale-oil lamps and baleen corsetry.]
+  VOICE: trombone_bureaucratic_medium_v1
   MR. ABERNATHY: "Mind the glass on the center case. The hinge is delicate and the county grant does not cover careless elbows."
 
 TOPIC: default
   GATE: NOT topic_done(local_historian, default)
   TAG: historian_badge
+  VOICE: trombone_bureaucratic_medium_v1
   MR. ABERNATHY: "Officer Corwin. If this is regarding the regrettable affair at the Ophion estate, the Historical Society has already prepared our condolence resolution."
   WALTER CORWIN: "I'm looking for history, Mr. Abernathy, not condolences."
+  VOICE: trombone_alarmed_medium_v2
   MR. ABERNATHY: "History is what survives grief, Officer. It is rarely in a hurry."
 
 TOPIC: ship_origin
@@ -24,12 +28,16 @@ TOPIC: ship_origin
   LABEL: "Ask about the naming of the whaling ship Ophion"
   TIME: 7
   WALTER CORWIN: "The flagship Ophion. Who named her?"
+  VOICE: trombone_neutral_medium_v2
   MR. ABERNATHY: "Elias Pruitt, 1819. A gentleman of classical discernment, educated at Harvard College."
   [He taps a framed pen-and-ink rendering of the three-masted bark on the wood-paneled wall.]
+  VOICE: trombone_neutral_medium_v1
   MR. ABERNATHY: "Ophion is a name from Greek mythology. Classical names were fashionable among the merchant families."
   WALTER CORWIN: "A classical name for a commercial vessel."
+  VOICE: trombone_alarmed_long_v2
   MR. ABERNATHY: "A respectable classical flourish, Officer! It was fashionable among Federalist merchant families to bestow Greek and Roman names upon commercial ventures. Nothing more sinister than an educated man's literary vanity."
   WALTER CORWIN: "The club kept the name."
+  VOICE: trombone_neutral_medium_v1
   MR. ABERNATHY: "To honor their forebears' enterprise. That is the Society's account."
   NOTEBOOK: historian_ophion_1 | "Abernathy attributes the ship's name to Elias Pruitt's classical tastes in 1819. He says the club retained it to honor the owners' enterprise."
   EVIDENCE: ophion_myth_classical
@@ -39,15 +47,19 @@ TOPIC: dr_fenn_library
   TAG: historian_fenn_books
   LABEL: "Ask what Dr. Fenn was researching in the archives"
   TIME: 6
+  VOICE: trombone_neutral_medium_v1
   MR. ABERNATHY: "Aldous Fenn spent weeks in our basement folio collection two winters ago."
   WALTER CORWIN: "What was he looking for?"
+  VOICE: trombone_neutral_medium_v2
   MR. ABERNATHY: "Pre-Colonial shoreline surveys. And translations of Aegean mystery rites.\nHe brought in a battered German volume on Near Eastern chthonic cults."
   FORK:
     CHOICE: "Ask about the annotations."
+      VOICE: trombone_happy_long_v1
       MR. ABERNATHY: "He was manic with his pencil. Underlining passages about gods that were not slain, only 'displaced.'\nI told him he was reading modern occultist rubbish into straightforward Athenian allegory, but a wealthy doctor does not welcome correction from a curator."
       NOTEBOOK: historian_fenn_annotations | "Fenn studied Aegean mystery rites, obsessively annotating passages regarding gods 'displaced rather than slain.'"
       EVIDENCE: displaced_god_doctrine
     CHOICE: "Ask what Fenn took from the collection."
+      VOICE: trombone_haunting_long_v1
       MR. ABERNATHY: "A survey map drawn by the try-works overseer in 1822, showing subterranean drainage conduits beneath the kitchen bluff.\nHe never returned the plate. Claimed it was lost to damp."
       NOTEBOOK: historian_fenn_map | "Dr. Fenn borrowed and never returned an 1822 survey showing underground drainage conduits beneath the estate's kitchen bluff."
       EVIDENCE: estate_conduit_map
@@ -58,10 +70,13 @@ TOPIC: the_free_crew
   LABEL: "Ask about free Black whalemen aboard the 1823 voyage"
   TIME: 5
   WALTER CORWIN: "The Ophion's crew list carries the name Freeman. Were they transients?"
+  VOICE: trombone_dismissive_short_v1
   MR. ABERNATHY: "Transients? Great heavens, no."
   [He removes his spectacles, cleaning them with a silk handkerchief.]
+  VOICE: trombone_bureaucratic_long_v2
   MR. ABERNATHY: "Massachusetts abolished slavery through judicial decree in the 1780s, Officer. Coastal maritime communities had free families of color established for generations before the Ophion ever tasted salt.\nThe Freemans were skilled harpooners and boat-steerers. Their lineage in this commonwealth predates the Pruitt mills by forty years."
   WALTER CORWIN: "Why did the town registry call Naomi a transient?"
+  VOICE: trombone_bureaucratic_medium_v1
   MR. ABERNATHY: "Because a town registry is written by living clerks to serve living landowners, Officer.\nPaper forgets whatever it is inconvenient to remember."
   NOTEBOOK: historian_crew_1 | "Historian confirms the Freeman whaling lineage was free by Massachusetts law since 1780s; calls town's 'transient' label a living clerk's convenience."
   EVIDENCE: freeman_lineage_free
@@ -72,8 +87,10 @@ TOPIC: crew_omission_official
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 4
   WALTER CORWIN: "The town remembers the estates that paid for its recovery. Where are the names of the men who sailed?"
+  VOICE: trombone_bureaucratic_medium_v2
   MR. ABERNATHY: "A civic history concerns the town's recovery, Officer. A crew list concerns a ship. Different documents serve different purposes."
   WALTER CORWIN: "Who decided which people belonged in which document?"
+  VOICE: trombone_dismissive_medium_v2
   MR. ABERNATHY: "The Society stands by its account. I have nothing to add."
   NOTEBOOK: crew_official | "Abernathy defended separating the crew list from the civic history. He would not explain the editorial decision. Other people in town may remember how the account was circulated."
 
@@ -82,13 +99,17 @@ TOPIC: crew_omission_followup
   TAG: historian_crew_followup
   LABEL: "Return to the question of the missing crew names"
   TIME: 6
+  VOICE: trombone_neutral_medium_v2
   MR. ABERNATHY: "I hear you've been asking why the crew's names are missing."
   [He closes the museum visitor book.]
   WALTER CORWIN: "I have been asking the same question. I haven't had an answer."
+  VOICE: trombone_neutral_medium_v1
   MR. ABERNATHY: "The question has been repeated to me rather less politely. If the Society is to be accused of an omission, I would prefer it described accurately."
   WALTER CORWIN: "Then describe it."
+  VOICE: trombone_bureaucratic_long_v2
   MR. ABERNATHY: "I prepared the abridgment for the school reader. The committee asked for the rebuilding of the town. I retained the subscriptions and left out the crew list."
   WALTER CORWIN: "Your decision?"
+  VOICE: trombone_bureaucratic_long_v1
   MR. ABERNATHY: "My pencil, Officer. The committee approved the page. Miss Hallowell received the covering letter with her copies. Ask her for the letter before you assign anyone else's hand to it."
   NOTEBOOK: reader_source | "Abernathy says he omitted the crew list when abridging the civic history for the school reader. He says the committee approved it and Hallowell received a covering letter. The letter has not yet been examined."
   EVIDENCE: curriculum_abridgment

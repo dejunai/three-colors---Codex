@@ -1,0 +1,191 @@
+{
+  "_note": "Schema-correct skeletons for two new NPC entries, matching the shape used throughout the existing NPCS data (verified against odell, assistant, and ropewalk_foreman). This is the TARGET JSON shape the dialogue compiler needs to produce — since 'source' points at a .dialogue script (dialogue_lang.gd/dialogue_runtime.gd compile those into this JSON), whoever authors the actual content will likely write it in that DSL, not hand-edit this JSON. Use this as the checklist for what the compiled output must contain, and delete this _note key before merging either block into NPCS.",
+
+  "_new_locations_needed": {
+    "_note": "Add these two entries to the LOCATIONS object (plain JS object literal, unquoted keys like the existing ones) before either NPC below will render anywhere sensible in the tool.",
+    "precinct": { "label": "The Precinct", "color": "#c0392b" },
+    "morgue":   { "label": "The Morgue",   "color": "#5a5a70" }
+  },
+
+  "odell_precinct": {
+    "color": "#c0392b",
+    "label": "Captain Odell",
+    "location": "precinct",
+    "schedule": {},
+    "source": "dialogue/odell_precinct.dialogue",
+    "topics": [
+      {
+        "gate": { "op": "lit", "value": true },
+        "gate_src": "always",
+        "id": "default",
+        "label": "",
+        "line": 1,
+        "steps": [
+          {
+            "kind": "line",
+            "player": false,
+            "speaker": "CAPTAIN ODELL",
+            "text": "PLACEHOLDER — first line Odell says when Walter finds him at the precinct. Replace before ship."
+          }
+        ],
+        "tag": "odell_precinct_default",
+        "timing": "0"
+      },
+      {
+        "gate": {
+          "expr": {
+            "args": ["odell_precinct", "default"],
+            "call": true,
+            "cmp": "",
+            "name": "topic_done",
+            "op": "cmp",
+            "value": null
+          },
+          "op": "not"
+        },
+        "gate_src": "NOT topic_done(odell_precinct, default)",
+        "id": "repeat",
+        "label": "",
+        "line": 8,
+        "steps": [
+          {
+            "kind": "line",
+            "player": false,
+            "speaker": "CAPTAIN ODELL",
+            "text": "PLACEHOLDER — what Odell says on a repeat visit, before he's given the substantive topic below. Delete this stub once real repeat lines exist, or fold it into 'default' if a repeat line isn't needed."
+          }
+        ],
+        "tag": "odell_precinct_repeat",
+        "timing": "1"
+      },
+      {
+        "gate": {
+          "left": {
+            "expr": {
+              "args": ["odell", "default"],
+              "call": true,
+              "cmp": "",
+              "name": "topic_done",
+              "op": "cmp",
+              "value": null
+            },
+            "op": "not"
+          },
+          "op": "and",
+          "right": {
+            "expr": {
+              "args": ["odell_precinct", "PLACEHOLDER_TOPIC_ID"],
+              "call": true,
+              "cmp": "",
+              "name": "topic_done",
+              "op": "cmp",
+              "value": null
+            },
+            "op": "not"
+          }
+        },
+        "gate_src": "NOT topic_done(odell, default) AND NOT topic_done(odell_precinct, PLACEHOLDER_TOPIC_ID) — EXAMPLE ONLY, this AND branch is almost certainly backwards for what you want (see note below)",
+        "id": "PLACEHOLDER_TOPIC_ID",
+        "label": "PLACEHOLDER — ask Odell about something raised at the estate",
+        "line": 15,
+        "steps": [
+          {
+            "kind": "line",
+            "player": true,
+            "speaker": "WALTER CORWIN",
+            "text": "PLACEHOLDER — player line referencing something Odell already said or refused at the estate."
+          },
+          {
+            "kind": "line",
+            "player": false,
+            "speaker": "CAPTAIN ODELL",
+            "text": "PLACEHOLDER — Odell's answer, written as continuous with the estate conversation, not a stranger meeting Walter fresh."
+          },
+          { "id": "PLACEHOLDER_evidence_id", "kind": "evidence" }
+        ],
+        "tag": "odell_precinct_PLACEHOLDER",
+        "timing": "3"
+      }
+    ]
+  },
+
+  "assistant_morgue": {
+    "color": "#8888cc",
+    "label": "Coroner's Assistant",
+    "location": "morgue",
+    "schedule": {},
+    "source": "dialogue/assistant_morgue.dialogue",
+    "topics": [
+      {
+        "gate": { "op": "lit", "value": true },
+        "gate_src": "always",
+        "id": "default",
+        "label": "",
+        "line": 1,
+        "steps": [
+          {
+            "kind": "line",
+            "player": false,
+            "speaker": "CORONER'S ASSISTANT",
+            "text": "PLACEHOLDER — first line at the morgue. Replace before ship."
+          }
+        ],
+        "tag": "assistant_morgue_default",
+        "timing": "0"
+      },
+      {
+        "gate": {
+          "left": {
+            "args": ["some_evidence_found_at_estate"],
+            "call": true,
+            "cmp": "",
+            "name": "evidence",
+            "op": "cmp",
+            "value": null
+          },
+          "op": "and",
+          "right": {
+            "expr": {
+              "args": ["assistant_morgue", "PLACEHOLDER_TOPIC_ID"],
+              "call": true,
+              "cmp": "",
+              "name": "topic_done",
+              "op": "cmp",
+              "value": null
+            },
+            "op": "not"
+          }
+        },
+        "gate_src": "evidence(some_evidence_found_at_estate) AND NOT topic_done(assistant_morgue, PLACEHOLDER_TOPIC_ID) — this is the pattern ropewalk_foreman's cellar_salt topic uses: gate a follow-up on evidence gathered elsewhere, guard against repeating once seen",
+        "id": "PLACEHOLDER_TOPIC_ID",
+        "label": "PLACEHOLDER — ask about the wounds/bodies using estate evidence as the key",
+        "line": 8,
+        "steps": [
+          {
+            "kind": "line",
+            "player": true,
+            "speaker": "WALTER CORWIN",
+            "text": "PLACEHOLDER — player references specific evidence from the estate scene."
+          },
+          {
+            "kind": "line",
+            "player": false,
+            "speaker": "CORONER'S ASSISTANT",
+            "text": "PLACEHOLDER — assistant's clinical answer."
+          },
+          { "id": "PLACEHOLDER_evidence_id_2", "kind": "evidence" }
+        ],
+        "tag": "assistant_morgue_PLACEHOLDER",
+        "timing": "2"
+      }
+    ]
+  },
+
+  "_gating_reminders": [
+    "topic_done(npc_id, topic_id) and evidence(evidence_id) both take an explicit id — they are NOT scoped to 'self', so odell_precinct topics can freely reference topic_done(odell, ...) or evidence(...) discovered back at the estate, and vice versa. That's the whole mechanism for making 'estate Odell' and 'precinct Odell' read as one continuous character rather than two strangers.",
+    "Evidence ids are global across the whole NPCS object (confirmed by walking every gate_src reference against every evidence-kind step in the file) — no namespacing needed there, unlike topic_done.",
+    "The AND-branch in the odell_precinct example topic above is written speculatively (NOT topic_done(odell, default) AND NOT topic_done(odell_precinct, this-topic)) — that reads as 'only offer this if Walter has NOT yet talked to estate-Odell', which is probably backwards (you likely want him to HAVE talked to estate Odell first — i.e. a plain evidence(...)/topic_done(odell, ...) check WITHOUT the 'not', same shape as ropewalk_foreman's gates). Left it visibly wrong on purpose as a flag, not a real recommendation — fix the boolean before using it.",
+    "None of this controls whether 'precinct' or 'morgue' are reachable locations at a given point in the story — that's the Godot travel/world-state code's job (chapter_one.gd's _travel/state.world/state.visited), separate from this NPCS data and not something this JSON can express.",
+    "visit_count(npc_id) is also per-NPC-id, same as topic_done — odell_precinct starts at 0 regardless of how many times Walter visited estate-Odell, which is almost certainly the correct behavior for a new scene/location."
+  ]
+}

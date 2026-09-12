@@ -39,6 +39,10 @@ func _run() -> void:
 		"school_parent": "res://dialogue/school_parent.dialogue",
 		"salt_mender": "res://dialogue/salt_mender.dialogue",
 		"apothecary": "res://dialogue/apothecary.dialogue",
+		"net_seller": "res://dialogue/net_seller.dialogue",
+		"quay_docker": "res://dialogue/quay_docker.dialogue",
+		"ropewalk_foreman": "res://dialogue/ropewalk_foreman.dialogue",
+		"chandlers_boy": "res://dialogue/chandlers_boy.dialogue",
 	}
 	var defs = {}
 	for key in paths:
@@ -93,14 +97,6 @@ func _run() -> void:
 	_play(gardener_after, state, dstate)
 	assert(gardener_after.cards[0][1] == "You took the badge off.", "estate_complete + plain coat must unlock the later gardener scene")
 
-	# --- old woman: one-shot, gated purely on the evidence() the scene itself implies ---
-	var woman_menu_before = Runtime.menu(defs.old_woman, ctx)
-	assert(woman_menu_before.default_topic != null, "the scene must be available before it has ever been recorded")
-	_play(Runtime.enter(defs.old_woman, ctx, dstate), state, dstate)
-	state.discover("old_woman")
-	var woman_menu_after = Runtime.menu(defs.old_woman, ctx)
-	assert(woman_menu_after.default_topic == null, "once evidence(old_woman) is true, the one-shot scene must no longer resolve")
-
 	# --- Mrs. Almy: coat-gated intro, evidence-gated menu, disappearing topic ---
 	state.coat = "Police coat" # undo the gardener section's coat change above
 	var almy_badge_intro = Runtime.enter(defs.almy, ctx, dstate)
@@ -127,6 +123,14 @@ func _run() -> void:
 	var almy_ids_after_trust = []
 	for entry in almy_menu_after_trust.entries: almy_ids_after_trust.append(entry.id)
 	assert(not almy_ids_after_trust.has("almy_trust"), "answering almy_trust once must remove it from the menu, via topic_done")
+
+	# --- old woman: one-shot, gated on evidence(naomi) (known via almy above) plus the scene's own evidence() ---
+	var woman_menu_before = Runtime.menu(defs.old_woman, ctx)
+	assert(woman_menu_before.default_topic != null, "the scene must be available once naomi is known, before it has ever been recorded")
+	_play(Runtime.enter(defs.old_woman, ctx, dstate), state, dstate)
+	state.discover("old_woman")
+	var woman_menu_after = Runtime.menu(defs.old_woman, ctx)
+	assert(woman_menu_after.default_topic == null, "once evidence(old_woman) is true, the one-shot scene must no longer resolve")
 
 	# --- Odell: the real branching response, ported alongside the invented 'bullets' demo ---
 	var odell_ctx = Runtime.make_context(state, dstate)
@@ -159,6 +163,24 @@ func _run() -> void:
 	assert(behan_ids_after.has("behan_name") and not behan_ids_after.has("club_invitation"), "behan_name must replace club_invitation, never both at once")
 	_play(Runtime.play_topic(defs.father_behan, dstate, "behan_name"), state, dstate)
 	assert(dstate.evidence.has("behan_name"), "the real ship-naming fact must be recorded")
+
+	# --- County clerk: postal details must be earned before the wage-claim filing topic appears ---
+	state.discover("lay_lead")
+	var clerk_ctx = Runtime.make_context(state, dstate)
+	var clerk_menu_before = Runtime.menu(defs.county_clerk, clerk_ctx)
+	var clerk_ids_before = []
+	for entry in clerk_menu_before.entries: clerk_ids_before.append(entry.id)
+	assert(not clerk_ids_before.has("wage_claim_inquiry"), "lay_lead alone must not surface postal details or the county filing topic")
+	state.discover("new_bedford_letters")
+	var clerk_menu_letters = Runtime.menu(defs.county_clerk, clerk_ctx)
+	var clerk_ids_letters = []
+	for entry in clerk_menu_letters.entries: clerk_ids_letters.append(entry.id)
+	assert(not clerk_ids_letters.has("wage_claim_inquiry"), "the filing topic must still stay hidden until the postmaster refusal establishes the minor-son detail")
+	state.discover("postal_bureaucracy_refusal")
+	var clerk_menu_after = Runtime.menu(defs.county_clerk, clerk_ctx)
+	var clerk_ids_after = []
+	for entry in clerk_menu_after.entries: clerk_ids_after.append(entry.id)
+	assert(clerk_ids_after.has("wage_claim_inquiry"), "the county filing topic must appear once the wage lead and postal trail are both in evidence")
 
 	print("DIALOGUE CONTENT PASS: gatehouse_boy/coroners_assistant/groundskeeper/gardener/old_woman/mrs_almy/odell/father_behan all reverse-engineered, parsing clean and gating correctly against real game state")
 	quit(0)

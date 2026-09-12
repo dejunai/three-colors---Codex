@@ -3,14 +3,17 @@ NPC: old_woman
 LOCATION: town
 
 TOPIC: default
-  GATE: NOT evidence(old_woman)
+  GATE: evidence(naomi) AND NOT evidence(old_woman)
   TAG: old_woman
   TIME: 6
   OUTSIDE THE SHUTTERED SHOP: "An old woman waits by Kessler's boarded windows. She has been waiting, Walter suspects, for someone in a coat like his."
+  VOICE: violin_neutral_medium_v1
   THE OLD WOMAN: "You're looking at the men.\n\nLook at what they looked at."
   WALTER CORWIN: "Who?"
+  VOICE: violin_neutral_short_v1
   THE OLD WOMAN: "The old ones don't love.\n\n[She crosses herself.]"
   WALTER CORWIN: "What do you mean, the old ones?"
+  VOICE: violin_bureaucratic_medium_v1
   THE OLD WOMAN: "Beware the old gods, Officer. They have no boundaries, and no need of them.\n\nMen name the ocean too. Doesn't mean the ocean knows."
   NOTEBOOK: "She is gone before he finishes the sentence.\n\nHe writes what he remembers of it, exactly as given. He does not yet have a place on the board where it belongs."
   EVIDENCE: old_woman

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c72gc503swwbu"
+path="res://.godot/imported/sfxv2_muted_trombone_take1_normalized.wav-5c99d4636802b423e3359603ddb83b6d.sample"
+
+[deps]
+
+source_file="res://dialogue/Claude outputs/sfxv2_muted_trombone_take1_normalized.wav"
+dest_files=["res://.godot/imported/sfxv2_muted_trombone_take1_normalized.wav-5c99d4636802b423e3359603ddb83b6d.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

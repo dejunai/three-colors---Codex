@@ -5,15 +5,19 @@ SCHEDULE: morning=home, midday=museum_committee, evening=club_road, night=home
 TOPIC: default
   GATE: NOT topic_done(miss_wexley, default) AND coat != plain
   TAG: wexley_badge
+  VOICE: violin_bureaucratic_short_v2
   MISS WEXLEY: "Officer."
   [Miss Wexley smiles with the composed patience of a woman receiving an unavoidable tradesman.]
+  VOICE: violin_neutral_medium_v1
   MISS WEXLEY: "I should hate to waste your morning with rumor when the town is already overfull of it."
 
 TOPIC: default
   GATE: NOT topic_done(miss_wexley, default) AND coat = plain
   TAG: wexley_plain
+  VOICE: violin_questioning_short_v2
   MISS WEXLEY: "Mr. Corwin, isn't it?"
   [Her tone softens once she realizes he has come without the uniform.]
+  VOICE: violin_bureaucratic_medium_v2
   MISS WEXLEY: "That is better. A man in ordinary wool may still be answered as a neighbor, which is more than can usually be said for an officer."
 
 TOPIC: museum_story
@@ -22,8 +26,10 @@ TOPIC: museum_story
   LABEL: "Ask why the museum omits certain families"
   TIME: 4
   WALTER CORWIN: "Your museum manages a very clean version of the town."
+  VOICE: violin_neutral_medium_v2
   MISS WEXLEY: "A museum manages what can be displayed without becoming an argument."
   WALTER CORWIN: "And what cannot?"
+  VOICE: violin_weary_medium_v2
   MISS WEXLEY: "Lives in ledgers, usually. Or kitchens. Or the sort of conversation people have only when they are unwise enough to feel guilty."
   NOTEBOOK: wexley_curation | "Miss Wexley admitted the museum presents only what can be displayed without public argument; the rest remains in ledgers and private talk."
   EVIDENCE: curated_history
@@ -34,10 +40,13 @@ TOPIC: freeman_claim
   LABEL: "Ask whether she has heard of the Freeman wage claim"
   TIME: 5
   WALTER CORWIN: "Did you ever hear the name Freeman attached to an unpaid lay?"
+  VOICE: violin_neutral_short_v2
   MISS WEXLEY: "Yes."
   [She answers too quickly, then looks past him toward the ridge road.]
+  VOICE: violin_neutral_medium_v1
   MISS WEXLEY: "Not in committee, of course. In private. As one hears of many things this town prefers to inherit rather than settle."
   WALTER CORWIN: "Who mentioned it?"
+  VOICE: violin_bureaucratic_medium_v2
   MISS WEXLEY: "A woman can remain welcome in a drawing room, Officer, or she can become useful to your case. Rarely both."
   NOTEBOOK: wexley_freeman | "Miss Wexley recognized the Freeman wage claim and implied it was privately known among upper families, though never discussed in committee."
   EVIDENCE: freeman_whisper
@@ -48,7 +57,9 @@ TOPIC: crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 3
   WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  VOICE: violin_neutral_medium_v1
   MISS WEXLEY: "A memorial cannot be expected to reproduce every ledger."
   WALTER CORWIN: "It found room for the families who received the money."
+  VOICE: violin_bureaucratic_medium_v2
   MISS WEXLEY: "I shall not discuss the Society's editorial decisions on a doorstep. Mr. Abernathy has an office for that."
   NOTEBOOK: crew_omission_refusal | "Asked Miss Wexley why the crew's names are missing from the town's history. No explanation supplied; the question remains open."

@@ -1,21 +1,63 @@
 # Generic Chapter 1 town NPC.
 # A quay bookkeeper who supplies corroboration rather than revelation.
 NPC: quay_bookkeeper
-LOCATION: business_district
+LOCATION: waterfront
+SCHEDULE: morning=quay_office, midday=quay_office, evening=closed, night=closed
 
 TOPIC: default
   GATE: NOT topic_done(quay_bookkeeper, default) AND coat = plain
   TAG: bookkeeper_plain
+  VOICE: trombone_bureaucratic_short_v2
   MR. VALE: "The office is closed."
   [He aligns the corner of a loose invoice with the ledger beneath it.]
+  VOICE: trombone_bureaucratic_medium_v1
   MR. VALE: "But you did not come dressed as an office.\n\nWhat are you asking?"
 
 TOPIC: default
   GATE: NOT topic_done(quay_bookkeeper, default)
   TAG: bookkeeper_badge
+  VOICE: trombone_bureaucratic_medium_v2
   MR. VALE: "If this concerns the estate accounts, Officer, the books have already been examined."
   WALTER CORWIN: "By whom?"
+  VOICE: trombone_neutral_short_v2
   MR. VALE: "By everyone entitled to say they examined them."
+
+TOPIC: default
+  GATE: visit_count(quay_bookkeeper) >= 2 AND NOT (topic_done(quay_bookkeeper, records) AND topic_done(quay_bookkeeper, missing_cart) AND topic_done(quay_bookkeeper, unfamiliar_woman))
+  TAG: bookkeeper_repeat_manifests
+  WEIGHT: 3
+  VOICE: trombone_bureaucratic_short_v1
+  MR. VALE: "The ink is dry on this morning's manifests, Officer. If you have an inquiry, make it brief."
+
+TOPIC: default
+  GATE: visit_count(quay_bookkeeper) >= 2 AND NOT (topic_done(quay_bookkeeper, records) AND topic_done(quay_bookkeeper, missing_cart) AND topic_done(quay_bookkeeper, unfamiliar_woman))
+  TAG: bookkeeper_repeat_inkwell
+  WEIGHT: 2
+  [He dips a steel pen in a heavy lead well without looking up.]
+  VOICE: trombone_neutral_short_v2
+  MR. VALE: "The wharf ledger does not change because the tide turns."
+
+TOPIC: default
+  GATE: visit_count(quay_bookkeeper) >= 2 AND NOT (topic_done(quay_bookkeeper, records) AND topic_done(quay_bookkeeper, missing_cart) AND topic_done(quay_bookkeeper, unfamiliar_woman))
+  TAG: bookkeeper_repeat_draft
+  WEIGHT: 1
+  VOICE: trombone_neutral_short_v1
+  MR. VALE: "Still tracking tonnage, Corwin? Stand out of the draft."
+
+TOPIC: default
+  GATE: topic_done(quay_bookkeeper, records) AND topic_done(quay_bookkeeper, missing_cart) AND topic_done(quay_bookkeeper, unfamiliar_woman)
+  TAG: bookkeeper_exhausted_drawer
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v1
+  MR. VALE: "The books for the Ophion estate are closed and audited, Walter. There is nothing further in this drawer."
+
+TOPIC: default
+  GATE: topic_done(quay_bookkeeper, records) AND topic_done(quay_bookkeeper, missing_cart) AND topic_done(quay_bookkeeper, unfamiliar_woman)
+  TAG: bookkeeper_exhausted_departure
+  WEIGHT: 2
+  [Mr. Vale methodically blots a column of figures.]
+  VOICE: trombone_bureaucratic_short_v2
+  MR. VALE: "State your departure, Officer. The freight agents arrive at three."
 
 TOPIC: work
   GATE: always
@@ -23,8 +65,10 @@ TOPIC: work
   LABEL: "Ask what records the office keeps"
   TIME: 3
   WALTER CORWIN: "What passes through these books?"
+  VOICE: trombone_neutral_medium_v2
   MR. VALE: "Freight. Wages. Berthing fees. Repairs when the repair was admitted.\nDebts when the debtor had a name worth writing."
   WALTER CORWIN: "And when the name was not worth writing?"
+  VOICE: trombone_neutral_short_v1
   MR. VALE: "Then someone generally found a broader word."
 
 TOPIC: unfamiliar_woman
@@ -33,8 +77,10 @@ TOPIC: unfamiliar_woman
   LABEL: "Ask whether Naomi came to the office"
   TIME: 4
   WALTER CORWIN: "Naomi Freeman. Did she bring that name here?"
+  VOICE: trombone_bureaucratic_medium_v1
   MR. VALE: "A woman brought it.\nWhether the office kept it is a different question."
   WALTER CORWIN: "You remember her."
+  VOICE: trombone_neutral_medium_v2
   MR. VALE: "I remember correcting the clerk who wrote 'inquiry' where she had said 'claim.'"
   NOTEBOOK: bookkeeper_naomi_1 | "A quay-office clerk initially reduced Naomi Freeman's claim to an inquiry. Mr. Vale remembers correcting the entry."
   EVIDENCE: quay_inquiry
@@ -45,8 +91,10 @@ TOPIC: old_lay
   LABEL: "Ask how an old whaler's lay would be recorded"
   TIME: 4
   WALTER CORWIN: "If a whaler's lay went unpaid, where would the debt appear?"
+  VOICE: trombone_bureaucratic_medium_v1
   MR. VALE: "In the owner's book first. In the harbor copy if anyone expected an argument.\nIn neither, if everyone who could argue was already at sea."
   WALTER CORWIN: "Could the omission be proved?"
+  VOICE: trombone_neutral_medium_v2
   MR. VALE: "An omission is proved by finding what had to exist on either side of it."
   NOTEBOOK: "An unpaid lay may leave no direct entry.\nSeek adjoining records: crew list, voyage account, owner disbursement, harbor copy."
   EVIDENCE: lay_record_method
@@ -57,8 +105,10 @@ TOPIC: estate_freight
   LABEL: "Ask about deliveries to the estate"
   TIME: 4
   WALTER CORWIN: "Did the estate receive anything unusual before the deaths?"
+  VOICE: trombone_neutral_medium_v1
   MR. VALE: "Unusual things arrive under ordinary descriptions.\nThat is one purpose of an ordinary description."
   WALTER CORWIN: "Which description?"
+  VOICE: trombone_neutral_medium_v1
   MR. VALE: "Kitchen stone. Two carts billed.\nThree crossed the quay."
   NOTEBOOK: bookkeeper_estate_1 | "Estate freight discrepancy: two carts of kitchen stone billed, three observed crossing the quay."
   EVIDENCE: estate_freight
@@ -70,14 +120,18 @@ TOPIC: missing_cart
   TIME: 7
   FORK:
     CHOICE: "Put the discrepancy in writing."
+      VOICE: trombone_neutral_short_v1
       MR. VALE: "It already was."
       WALTER CORWIN: "Then show me."
+      VOICE: trombone_neutral_medium_v2
       MR. VALE: "I said it was written.\nI did not say the writing was kept."
       NOTEBOOK: bookkeeper_cart_destroyed | "A record of the estate's third freight cart existed but is no longer retained at the quay office."
       EVIDENCE: cart_record_missing
     CHOICE: "Tell me who signed for it."
+      VOICE: trombone_neutral_short_v2
       MR. VALE: "No one signed."
       WALTER CORWIN: "Three carts crossed without a receiving name?"
+      VOICE: trombone_neutral_medium_v1
       MR. VALE: "One did.\nThat is why I remember the number."
       NOTEBOOK: bookkeeper_cart_unsigned | "The unbilled third cart crossed without a receiving signature. Mr. Vale remembers the procedural exception."
       EVIDENCE: cart_unsigned
@@ -86,9 +140,12 @@ TOPIC: records
   GATE: evidence(quay_inquiry) AND NOT topic_done(quay_bookkeeper, records)
   TAG: bookkeeper_records
   LABEL: "Ask why records disappear"
+  VOICE: trombone_bureaucratic_medium_v2
   MR. VALE: "Records do not disappear as often as people say."
   WALTER CORWIN: "What happens to them?"
+  VOICE: trombone_bureaucratic_medium_v1
   MR. VALE: "One clerk files a paper under the ship. Another looks under the owner.\nA third decides the matter was never properly submitted."
+  VOICE: trombone_neutral_medium_v2
   MR. VALE: "By the time anyone calls it missing, every hand involved has done something defensible."
   NOTEBOOK: bookkeeper_records_1 | "The quay office does not require a deliberate falsification to lose a record. Separate defensible filing decisions can make a fact practically unrecoverable."
 
@@ -96,6 +153,8 @@ TOPIC: coat
   GATE: coat = plain AND evidence(quay_inquiry) AND NOT topic_done(quay_bookkeeper, coat)
   TAG: bookkeeper_coat
   LABEL: "Ask why he answered without the badge"
+  VOICE: trombone_neutral_medium_v1
   MR. VALE: "A badge requires an answer that can survive being repeated."
   WALTER CORWIN: "And this coat?"
+  VOICE: trombone_bureaucratic_medium_v1
   MR. VALE: "That coat permits a man to remember what no office is prepared to certify."

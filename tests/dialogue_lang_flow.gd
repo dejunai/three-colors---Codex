@@ -46,6 +46,11 @@ func _run() -> void:
 	for id in dstate.facts:
 		if dstate.facts[id].begins_with("A refusal offered"): fact_found = true
 	assert(fact_found, "NOTEBOOK effect must write its text directly, no separate facts table")
+	_play(Runtime.play_topic(behan_def, dstate, "club_five"), state, dstate)
+	var recorded_entry = Runtime.menu(behan_def, Runtime.make_context(state, dstate)).entries.filter(func(entry): return entry.id == "club_five")[0]
+	assert(recorded_entry.label.ends_with("  · recorded"), "A completed repeatable dialogue topic must be marked recorded")
+	dstate.complete_topic("father_behan", "tagged_complete")
+	assert(Runtime._menu_topic_recorded(behan_def, {"id":"unfinished", "tag":"tagged_complete"}, Runtime.make_context(state, dstate)), "A completed TAG must also mark its menu topic recorded")
 
 	# --- cross-NPC tally: "ask N people about xyz" ---
 	assert(dstate.topic_count("bullets") == 0, "bullets topic not yet completed by anyone")
@@ -107,7 +112,40 @@ func _run() -> void:
 	var below = Lang._parse_gate("visit_count(steward) < 3")
 	assert(not Lang.evaluate(below, stew_ctx), "visit_count is already 3, so < 3 must now be false")
 
-	print("DIALOGUE LANG PASS: menu/never/always, linear CHOICE + inline NOTEBOOK, cross-NPC topic tally, FORK branching and resume, doc-only topics hidden, mutually exclusive default resolution, fuzzy gate matching")
+	# --- npc_done sugar and weighted repeat greetings ---
+	assert(Lang.evaluate(Lang._parse_gate("npc_done(steward)"), ctx), "npc_done must alias topic_done(npc, default): steward's default topic already completed above")
+	assert(not Lang.evaluate(Lang._parse_gate("npc_done(nobody_yet)"), ctx), "npc_done must be false before that NPC's default topic completes")
+	var priority = Lang.parse("NPC: priority\nLOCATION: test\nTOPIC: default\n  GATE: always\n  REQUIRED: \"Required first.\"\nTOPIC: default\n  GATE: always\n  WEIGHT: 100\n  CHATTER: \"Chatter later.\"\n")
+	var priority_state = DialogueState.new()
+	var priority_result = Runtime.enter(priority, Runtime.make_context(state, priority_state), priority_state)
+	assert(priority_result.cards[0][1] == "Required first.", "a later weighted default must never displace the first eligible unweighted progression default")
+	var weighted = Lang.parse("NPC: chatter\nLOCATION: test\nTOPIC: default\n  GATE: always\n  WEIGHT: 3\n  ONE: \"First.\"\nTOPIC: default\n  GATE: always\n  WEIGHT: 1\n  TWO: \"Second.\"\nTOPIC: default\n  GATE: always\n  FALLBACK: \"Unweighted fallback.\"\n")
+	assert(weighted.errors.is_empty(), "positive WEIGHT metadata must parse on defaults")
+	var chatter_state = DialogueState.new()
+	var first_chatter = Runtime.enter(weighted, Runtime.make_context(state, chatter_state), chatter_state)
+	var second_chatter = Runtime.enter(weighted, Runtime.make_context(state, chatter_state), chatter_state)
+	var third_chatter = Runtime.enter(weighted, Runtime.make_context(state, chatter_state), chatter_state)
+	assert(first_chatter.cards[0][1] != second_chatter.cards[0][1], "weighted defaults must avoid an immediate repeat")
+	assert(second_chatter.cards[0][1] != third_chatter.cards[0][1], "repeat avoidance must continue across interactions")
+	assert(first_chatter.cards[0][1] != "Unweighted fallback." and second_chatter.cards[0][1] != "Unweighted fallback." and third_chatter.cards[0][1] != "Unweighted fallback.", "an unweighted fallback must stay outside an explicitly weighted chatter pool")
+	assert(int(first_chatter.topic_index) in [0, 1] and int(second_chatter.topic_index) in [0, 1], "enter() must expose the exact selected default index")
+	var bad_weight = Lang.parse("NPC: bad\nLOCATION: test\nTOPIC: question\n  GATE: always\n  WEIGHT: 2\n  TEST: \"No.\"\nTOPIC: default\n  GATE: always\n  WEIGHT: 0\n  TEST: \"No.\"\n")
+	assert(bad_weight.errors.size() == 2, "WEIGHT must be positive and limited to default topics")
+
+	# --- omitted default TIME is free; explicit zero wins; inquiries retain fallback ---
+	var timing = Lang.parse("NPC: timing\nLOCATION: test\nTOPIC: default\n  GATE: always\n  TEST: \"Hello.\"\nTOPIC: default\n  GATE: always\n  TAG: explicit_zero\n  TIME: 0\n  TEST: \"Still free.\"\nTOPIC: inquiry\n  GATE: always\n  TEST: \"A question.\"\n")
+	var timing_state = DialogueState.new()
+	var clock_before = state.clock_minutes
+	_play(Runtime.render("timing", timing.topics[0], timing_state), state, timing_state)
+	assert(state.clock_minutes == clock_before, "An unpriced default must cost zero minutes")
+	_play(Runtime.render("timing", timing.topics[1], timing_state), state, timing_state)
+	assert(state.clock_minutes == clock_before, "Explicit TIME: 0 must be honored")
+	_play(Runtime.render("timing", timing.topics[2], timing_state), state, timing_state)
+	assert(state.clock_minutes == clock_before + Runtime.DEFAULT_MINUTES, "An unpriced substantive topic must use DEFAULT_MINUTES")
+	var malformed_outcome = Lang.parse("NPC: bad\nLOCATION: test\nTOPIC: default\n  GATE: always\n  OUTCOME: outside = fork\n  FORK:\n    CHOICE: \"Bad.\"\n      OUTCOME: missing_value\n      TEST: \"No.\"\n")
+	assert(malformed_outcome.errors.size() == 2, "OUTCOME must be branch-local and use a complete identifier assignment")
+
+	print("DIALOGUE LANG PASS: menu/never/always, linear CHOICE + inline NOTEBOOK, cross-NPC topic tally, FORK branching and resume, doc-only topics hidden, gated and weighted defaults, greeting timing, fuzzy gate matching")
 	quit(0)
 
 # Test-only stand-in for consuming every displayed card in a segment.

@@ -8,6 +8,7 @@ extends RefCounted
 # One's own content and deliberately does not live in case_state.gd, which
 # stays chapter-agnostic and only counts confirmed link ids.
 const LINKS := {
+	"gazette|gazette_correction_printed": {"id":"public_count_corrected", "title":"A CORRECTION BESIDE THE ORIGINAL", "summary":"The morning edition reports six. A later printed slip records the police count of eight and names Naomi with its identification sources. The correction supplements the account; it does not erase the copies already sold."},
 	"estate_day_book|service_work": {"id":"staff_book_entry", "title":"AN ENTRY IN THE STAFF BOOK", "summary":"Almy recalls Naomi asking about estate work. The staff book records N. Freeman doing day work in the kitchen wing. The entry is consistent with her account, without establishing why Naomi died."},
 	"curriculum_abridgment|reader_omission_letter": {"id":"reader_omission", "title":"THE ABRIDGMENT IN WRITING", "summary":"Abernathy describes omitting the crew list. The school's covering letter records that instruction and committee approval. The document corroborates the decision he acknowledged."},
 
@@ -198,22 +199,9 @@ func _board(g:Node) -> void:
 	link_button.disabled=count<2
 	if count<2: link_button.tooltip_text="Two recorded observations are needed."
 	g._paragraph("Walter’s observations",19)
-	var grid=GridContainer.new()
-	grid.columns=2
-	grid.add_theme_constant_override("h_separation",18)
-	grid.add_theme_constant_override("v_separation",18)
-	g.content.add_child(grid)
-	for id in g.state.evidence:
-		if id=="exemption" or not g.facts.has(id): continue
-		var box=VBoxContainer.new()
-		box.size_flags_horizontal=Control.SIZE_EXPAND_FILL
-		grid.add_child(box)
-		var b=g._button(str(g.facts[id][0]),func(): _link_observation(g,id),box)
-		b.custom_minimum_size.y=68
-		b.clip_text=true
-		box.custom_minimum_size.x=270
-		var source=g._label(g._source_for(id),14,false)
-		box.add_child(source)
+	var board = preload("res://scripts/shared/case_board.gd").new()
+	board.configure(g.interface,g.state.evidence.duplicate(),g.facts.duplicate(true),g.state.pack().links.duplicate(),LINKS,g._current_sources().duplicate(true),func(id): _link_observation(g,id))
+	g.content.add_child(board)
 	if g.state.evidence.has("crew") and g.state.statements.has("The gardener saw the woman at the service door. Ask the steward."):
 		g._paragraph("THE SERVICE DOOR\nThe gardener placed the unidentified woman there once. The groundskeeper keeps a fixed distance from it now. Neither observation explains the other.",22)
 	var confirmed=false
@@ -228,7 +216,7 @@ func _board(g:Node) -> void:
 		g._paragraph("THE RECORDED COUNT\nEight deaths in Walter's notes; six club members in the captain's heading. Both sources remain on file.",20)
 	if g.state.evidence.has("lower_foundation"):
 		g._paragraph("THE MEASURED PASSAGE\nWalter measured a passage beyond the recorded foundation. Its cause remains unestablished.",20)
-	g._button("Read the complete notebook",g._journal)
+	g._button("Read the complete notebook",g._notebook)
 	g._button("Step away from the board",g._close)
 	g._focus_first()
 

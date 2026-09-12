@@ -11,6 +11,7 @@ var extra_actors: Array[String] = []
 var figures: Dictionary = {}
 var population_world_id = 0
 var population_phase = ""
+var population_story = ""
 var active: Dictionary = {}
 var segment: Dictionary = {}
 var offset = 0
@@ -26,7 +27,9 @@ func setup(g: Node) -> void:
 
 func populate(g: Node) -> void:
 	var phase = Runtime.DayClock.phase(g.state.clock_minutes)
-	if population_world_id == g.estate.get_instance_id() and population_phase == phase: return
+	var story = str(g.state.day)+":"+str(g.state.estate_complete)
+	if population_world_id == g.estate.get_instance_id() and population_phase == phase and population_story == story: return
+	population_story = story
 	population_world_id = g.estate.get_instance_id()
 	population_phase = phase
 	for actor in figures:
@@ -71,8 +74,7 @@ func interact(g: Node, actor: String) -> bool:
 	if result.session.is_empty():
 		show_menu(g, actor)
 		return true
-	var selected = Runtime.menu(def, Runtime.make_context(g.state, g.state.dialogue_state)).default_topic
-	_begin(g, actor, def.topics.find(selected), result)
+	_begin(g, actor, int(result.get("topic_index", -1)), result)
 	return true
 
 func show_menu(g: Node, actor: String) -> void:
@@ -80,7 +82,7 @@ func show_menu(g: Node, actor: String) -> void:
 	var def = definition(actor)
 	var entries = Runtime.menu(def, Runtime.make_context(g.state, g.state.dialogue_state)).entries
 	if entries.is_empty() and actor != "odell": g._close(); return
-	g._panel("witness", TITLES[actor], "ASK, LISTEN, RECORD")
+	g._panel("witness", TITLES[actor], "ASK, LISTEN, RECORD", false, "dialogue")
 	if actor == "odell": g._paragraph("Walter's answer is already in his notebook. Odell has nothing further to add.")
 	for entry in entries:
 		g._button(entry.label, func(): play_topic(g, actor, entry.id))
@@ -93,7 +95,7 @@ func play_topic(g: Node, actor: String, topic_id: String) -> void:
 	var ctx = Runtime.make_context(g.state, g.state.dialogue_state)
 	for index in def.topics.size():
 		var topic = def.topics[index]
-		if topic.id == topic_id and not topic.steps.is_empty() and Runtime.Lang.evaluate(topic.gate, ctx):
+		if topic.id == topic_id and not topic.steps.is_empty() and Runtime.topic_available(topic, ctx):
 			_begin(g, actor, index, Runtime.render(def.npc, topic, g.state.dialogue_state))
 			return
 	show_menu(g, actor)
@@ -123,6 +125,10 @@ func _display(g: Node) -> void:
 	# Restore already-consumed effects without charging timing or another visit.
 	_acknowledge(g, offset)
 	if offset == segment.cards.size(): _segment_done(g); return
+	# Scripted dialogue starts the shared sequence directly rather than through
+	# chapter_one._cards(), so reset presentation state explicitly. Otherwise an
+	# examination immediately before a conversation leaks its object frame here.
+	g.card_kind = "dialogue"
 	g.dialogue.start(segment.cards.slice(offset), g._draw_card, func(): _segment_done(g))
 
 func next(g: Node) -> void:
@@ -137,7 +143,7 @@ func _segment_done(g: Node) -> void:
 	if segment.fork != null:
 		# Odell's count is already heard before Walter gives his answer.
 		if actor == "odell" and not g.state.visited.has(actor): g.state.visited.append(actor)
-		g._panel("witness", TITLES[actor], "WALTER'S ANSWER")
+		g._panel("witness", TITLES[actor], "WALTER'S ANSWER", false, "dialogue")
 		var current = segment
 		for index in segment.fork.options.size():
 			var label = String(segment.fork.options[index])
@@ -147,7 +153,7 @@ func _segment_done(g: Node) -> void:
 	var tag = String(segment.session.tag)
 	if not g.state.visited.has(actor): g.state.visited.append(actor)
 	if actor == "barman":
-		if tag == "steward_first" and g.state.steward_visits == 0: g.state.steward_visits = 1
+		if tag in ["steward_first", "steward_first_lead"] and g.state.steward_visits == 0: g.state.steward_visits = 1
 		elif tag == "steward_open": g.state.steward_visits = 3
 		g.state.dialogue_state.visit_counts["steward"] = g.state.steward_visits
 	if tag in ["almy_trust", "behan_invitation", "lay_lead", "service_work", "behan_name", "old_woman", "club_talk", "club_devotion", "pantry_lead"]:
@@ -170,7 +176,7 @@ func _choose(g: Node, current: Dictionary, index: int) -> void:
 	active.consumed = 0
 	segment = result
 	# Choosing Walter's line consumes that line; don't ask Continue for his own choice.
-	if not segment.cards.is_empty() and segment.cards[0] == ["WALTER CORWIN", label]:
+	if not segment.cards.is_empty() and segment.cards[0].size() >= 2 and segment.cards[0][0] == "WALTER CORWIN" and segment.cards[0][1] == label:
 		_acknowledge(g, 1)
 	_display(g)
 	g._save_game()

@@ -126,6 +126,11 @@ func _street() -> void:
 	target("route_post","Enter the post office",Vector3(-24,0,22))
 	routes["route_post"]=["post_office",Vector3(0,0.1,6),0.0]
 
+	# Street's western end opens downhill toward the harbor.
+	lettering("WATERFRONT",Vector3(-28,2.7,7),30).rotation.y=PI/2
+	target("route_waterfront","Go downhill to the waterfront",Vector3(-27,0,7))
+	routes["route_waterfront"]=["waterfront",Vector3(0,0.1,23),0.0]
+
 func _room_shell() -> void:
 	box(self,Vector3(0,-0.3,0),Vector3(18,0.5,20),"747d6b",true)
 	for x in range(-8,9): box(self,Vector3(x,0.001,0),Vector3(0.022,0.015,20),"46563f")

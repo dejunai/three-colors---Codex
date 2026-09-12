@@ -3,20 +3,46 @@ NPC: gardener
 LOCATION: estate
 
 TOPIC: default
-  GATE: estate_complete AND coat = plain
+  GATE: estate_complete AND coat = plain AND NOT topic_done(gardener, gardener_plain)
   TAG: gardener_plain
   TIME: 3
+  VOICE: trombone_cautious_short_v1
   THE GARDENER: "You took the badge off."
   WALTER CORWIN: "I'm still asking."
+  VOICE: trombone_cautious_long_v2
   THE GARDENER: "Then write this down as well. I saw the woman here before. Walking to the service door.\n\nI don't know her name. The steward might.\nAsk him as though an answer is required."
   NOTEBOOK: service_door | "The gardener saw the woman at the service door. Ask the steward."
+
+TOPIC: default
+  GATE: estate_complete AND visit_count(gardener) >= 2
+  TAG: gardener_repeat_thorns
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v1
+  THE GARDENER: "The rose beds are cut back for winter, Walter. There is nothing more to see under these thorns."
+
+TOPIC: default
+  GATE: estate_complete AND visit_count(gardener) >= 2
+  TAG: gardener_repeat_spade
+  WEIGHT: 2
+  [He turns a spade of cold earth, his boots coated in dark, sticky leaf-mold.]
+  VOICE: trombone_weary_medium_v1
+  THE GARDENER: "Ask the steward in the house. I keep the soil, not the silver."
+
+TOPIC: default
+  GATE: estate_complete AND visit_count(gardener) >= 2
+  TAG: gardener_repeat_gravel
+  WEIGHT: 1
+  VOICE: trombone_neutral_short_v1
+  THE GARDENER: "Mind the gravel path. Don't tread where the ground is fresh."
 
 TOPIC: default
   GATE: always
   TAG: gardener
   TIME: 3
+  VOICE: trombone_dismissive_long_v1
   THE GARDENER: "I keep the roses. I don't keep the hours of the men who walk among them."
   WALTER CORWIN: "You found both scenes?"
+  VOICE: trombone_weary_long_v1
   THE GARDENER: "Yes.\n\nI sent for eight sheets.\nThey brought six the first time."
   NOTEBOOK: eight_sheets | "The gardener requested eight sheets. Six arrived first."
 

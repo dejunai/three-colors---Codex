@@ -1,0 +1,61 @@
+# Police Precinct — Captain Odell.
+# The same man, a different room, with less patience and more at stake.
+NPC: odell_precinct
+LOCATION: precinct
+SCHEDULE: morning=precinct, midday=precinct, evening=precinct, night=closed
+
+TOPIC: day_two_check
+  GATE: day >= 2 AND day <= 2 AND NOT topic_done(odell_precinct, day_two_check)
+  TAG: odell_day_two
+  LABEL: "Report progress to the captain"
+  TIME: 4
+  VOICE: trombone_neutral_short_v1
+  CAPTAIN ODELL: "You've been busy."
+  WALTER CORWIN: "There's more to the estate than the preliminary report reflects."
+  VOICE: trombone_bureaucratic_medium_v2
+  CAPTAIN ODELL: "The preliminary report reflects what I asked for, Corwin.\nI'm asking for the supplemental now. On paper. By four o'clock."
+  WALTER CORWIN: "The woman and the boy aren't in the preliminary."
+  [Odell's pen moves across his blotter without stopping.]
+  VOICE: trombone_bureaucratic_medium_v1
+  CAPTAIN ODELL: "They are under county registrar review. You know this."
+  WALTER CORWIN: "They are under a hedge. I know that too."
+  VOICE: trombone_neutral_short_v1
+  CAPTAIN ODELL: "Four o'clock. In writing. That is all."
+  NOTEBOOK: odell_day_two | "Odell wants a written supplemental by four. He did not acknowledge Naomi or the boy as part of the count. He did not tell Walter to stop."
+
+TOPIC: day_two_pressure
+  GATE: day >= 2 AND (evidence(insurance_fraud_record) OR evidence(bulk_opium_spirits)) AND NOT topic_done(odell_precinct, day_two_pressure)
+  TAG: odell_day_two_pressure
+  LABEL: "Raise the insurance records with Odell"
+  TIME: 5
+  WALTER CORWIN: "The 1823 insurance settlement. Eighty-four thousand dollars to the same families who own the estate."
+  [Odell sets down the pen. The scratch of it stopping is louder than it should be.]
+  VOICE: trombone_questioning_short_v1
+  CAPTAIN ODELL: "Where did you pull that?"
+  WALTER CORWIN: "County registrar. Public record."
+  VOICE: trombone_bureaucratic_long_v1
+  CAPTAIN ODELL: "A public record from sixty years ago is not an active investigation, Corwin.\nYou are here about eight bodies in a rose garden, not a maritime settlement from before either of us was born."
+  WALTER CORWIN: "The same names are on both documents."
+  VOICE: trombone_bureaucratic_medium_v2
+  CAPTAIN ODELL: "I am aware of who lives in this county.\nWrite your supplemental. Go home. Come back tomorrow."
+  NOTEBOOK: odell_pressure | "Odell knew immediately what record Walter meant. He did not deny its contents. He redirected."
+
+TOPIC: day_three_final
+  GATE: day >= 3 AND NOT topic_done(odell_precinct, day_three_final)
+  TAG: odell_day_three
+  LABEL: "Face Odell on Day 3"
+  TIME: 6
+  [The precinct is quieter than it should be for mid-morning.]
+  VOICE: trombone_neutral_short_v2
+  CAPTAIN ODELL: "Sit down, Walter."
+  [He does not use the title.]
+  VOICE: trombone_bureaucratic_long_v2
+  CAPTAIN ODELL: "I am going to tell you one thing and I am going to tell it to you plainly.\nThe Gazette has already run the gas-main account. The county has already begun probate.\nWhat you write from here determines what follows you for the rest of your career in this department."
+  WALTER CORWIN: "And the boy in the garden?"
+  VOICE: trombone_bureaucratic_short_v2
+  CAPTAIN ODELL: "Is in the county registrar's care."
+  WALTER CORWIN: "He is in the ground, Captain."
+  [A long silence. Odell looks at his hands.]
+  VOICE: trombone_neutral_medium_v1
+  CAPTAIN ODELL: "I know where he is, Corwin.\nI know exactly where he is."
+  NOTEBOOK: odell_day_three | "Odell dropped the title. Warned Walter directly about his record. When pressed on the boy he said: 'I know where he is. I know exactly where he is.' He did not say it was acceptable."

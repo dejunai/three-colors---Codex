@@ -13,11 +13,14 @@ extends RefCounted
 #
 #   TOPIC: topic_id
 #     GATE: <expression>          ("never" / "always" / a boolean expression)
+#     WEIGHT: 3                   (optional; default topics only, relative chance)
 #     LABEL: "Menu button text"   (optional; defaults to topic_id.capitalize())
 #     SPEAKER: "Line of dialogue, may
 #               continue across indented lines until the closing quote,
 #               or use \n / \n\n inline to keep one physical line and
 #               still reproduce the source material's paragraph breaks."
+#     VOICE: trombone_cautious_v1  (optional; applies to the next spoken line)
+#     SPEAKER: "A wordless instrumental delivery cue accompanies this card."
 #     [A bracketed line is a stage direction/beat, not spoken dialogue.]
 #     CHOICE: "The player's own line."
 #       SPEAKER: "The reply. CHOICE always opens a nested, linear
@@ -29,15 +32,19 @@ extends RefCounted
 #         SPEAKER: "..."
 #       CHOICE: "Option B."
 #         SPEAKER: "..."
+#         OUTCOME: odell_response = deferred
 #
 # A `#` at the start of a (stripped) line is a full-line comment. A TOPIC
 # with no dialogue lines under it (just GATE/comments) is a documentation
 # stub — it parses fine and simply never surfaces in play.
 #
 # TOPIC IDS: the id "default" is reserved for an NPC's automatic opening
-# line. Multiple `TOPIC: default` blocks may exist with different GATEs;
-# the first whose GATE is true (file order) wins, and it is never shown in
-# a menu. Every other topic id is a revisitable menu entry whenever its
+# line. Multiple `TOPIC: default` blocks may exist with different GATEs.
+# The first eligible block controls selection. If it is unweighted, it wins.
+# If it has WEIGHT, only eligible explicitly weighted defaults enter the pool;
+# later unweighted defaults remain deterministic fallbacks outside that pool.
+# Defaults are never shown in a menu. Every other topic id is a revisitable
+# menu entry whenever its
 # GATE evaluates true — there is no separate "is this a menu" flag to
 # author or get out of sync as new topics are added later.
 #
@@ -57,8 +64,12 @@ extends RefCounted
 #
 # Built-in functions/fields are registered by the caller via the `ctx`
 # passed to evaluate() — see dialogue_runtime.gd's make_context() for the
-# actual vocabulary (visit_count, topic_count, spoken_to, evidence, flag,
-# topic_done, coat, day, phase, estate_complete).
+# actual vocabulary (visit_count, topic_count, spoken_to, evidence, filed,
+# flag, topic_done, npc_done, outcome, outcome_is, coat, day, phase, estate_complete,
+# steward_ready).
+# `npc_done(npc_id)` is sugar for
+# `topic_done(npc_id, "default")`, the existing "has this NPC's opener
+# already played" check.
 
 static func parse(text: String) -> Dictionary:
 	var logical = _logical_lines(text)
@@ -100,6 +111,8 @@ static func parse(text: String) -> Dictionary:
 		var parsed = _parse_topic_body(body, errors)
 		parsed["id"] = topic_id
 		parsed["line"] = entry.line
+		if bool(parsed.get("has_weight", false)) and topic_id != "default":
+			errors.append({"line": entry.line, "message": "WEIGHT is only valid on TOPIC: default"})
 		topics.append(parsed)
 		i = j
 	return {"npc": npc, "location": location, "schedule": schedule, "includes": includes, "topics": topics, "errors": errors}
@@ -123,6 +136,8 @@ static func _parse_topic_body(body: Array, errors: Array) -> Dictionary:
 	var label = ""
 	var tag = ""
 	var timing = ""
+	var weight = 1.0
+	var has_weight = false
 	var k = 0
 	while k < body.size() and body[k].indent == base_indent:
 		var text = body[k].text
@@ -135,16 +150,26 @@ static func _parse_topic_body(body: Array, errors: Array) -> Dictionary:
 		elif text.begins_with("TIME:"):
 			timing = text.substr(5).strip_edges()
 			k += 1
+		elif text.begins_with("WEIGHT:"):
+			var raw_weight = text.substr(7).strip_edges()
+			if not raw_weight.is_valid_float() or float(raw_weight) <= 0.0:
+				errors.append({"line": body[k].line, "message": "WEIGHT must be a number greater than zero"})
+			else:
+				weight = float(raw_weight)
+				has_weight = true
+			k += 1
 		elif text.begins_with("LABEL:"):
 			label = _quoted(text.substr(6))
 			k += 1
 		else:
 			break
 	var steps = _parse_steps(body, k, body.size(), base_indent, errors)
-	return {"gate_src": gate_src, "gate": _parse_gate(gate_src), "label": label, "tag": tag, "timing": timing, "steps": steps}
+	return {"gate_src": gate_src, "gate": _parse_gate(gate_src), "label": label, "tag": tag, "timing": timing,
+		"weight": weight, "has_weight": has_weight, "outcome_keys": _collect_outcome_keys(steps), "steps": steps}
 
-static func _parse_steps(body: Array, start: int, end: int, indent: int, errors: Array) -> Array:
+static func _parse_steps(body: Array, start: int, end: int, indent: int, errors: Array, allow_outcome: bool = false) -> Array:
 	var steps: Array = []
+	var pending_voice = ""
 	var k = start
 	while k < end:
 		var entry = body[k]
@@ -153,11 +178,26 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 			k += 1
 			continue
 		var line = entry.text
-		if line.begins_with("["):
+		if line.begins_with("VOICE:"):
+			pending_voice = line.substr(6).strip_edges()
+			if not pending_voice.is_valid_identifier():
+				errors.append({"line": entry.line, "message": "VOICE cue must be a simple asset id"})
+				pending_voice = ""
+			k += 1
+		elif line.begins_with("["):
 			steps.append({"kind": "beat", "text": _strip_brackets(line)})
 			k += 1
 		elif line.begins_with("EVIDENCE:"):
 			steps.append({"kind": "evidence", "id": line.substr(9).strip_edges()})
+			k += 1
+		elif line.begins_with("OUTCOME:"):
+			var assignment = line.substr(8).strip_edges().split("=", true, 1)
+			if not allow_outcome:
+				errors.append({"line": entry.line, "message": "OUTCOME is only valid inside a FORK choice"})
+			elif assignment.size() != 2 or not assignment[0].strip_edges().is_valid_identifier() or not assignment[1].strip_edges().is_valid_identifier():
+				errors.append({"line": entry.line, "message": "OUTCOME must use 'decision_id = value_id' with simple identifiers"})
+			else:
+				steps.append({"kind": "outcome", "id": assignment[0].strip_edges(), "value": assignment[1].strip_edges()})
 			k += 1
 		elif line.begins_with("NOTEBOOK:"):
 			var payload = line.substr(9).strip_edges()
@@ -172,11 +212,15 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 			var label = _quoted(line.substr(7))
 			var child_indent = _peek_indent(body, k + 1, end)
 			var child_end = _block_end(body, k + 1, end, child_indent) if child_indent > indent else k + 1
-			steps.append({"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true})
+			steps.append({"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true, "voice": pending_voice})
+			pending_voice = ""
 			if child_indent > indent:
-				steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors))
+				steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors, allow_outcome))
 			k = child_end
 		elif line.begins_with("FORK:"):
+			if not pending_voice.is_empty():
+				errors.append({"line": entry.line, "message": "VOICE must precede a spoken line, not FORK"})
+				pending_voice = ""
 			var fork_indent = _peek_indent(body, k + 1, end)
 			var fork_end = _block_end(body, k + 1, end, fork_indent)
 			steps.append({"kind": "fork", "options": _parse_fork(body, k + 1, fork_end, fork_indent, errors)})
@@ -188,9 +232,24 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 				k += 1
 				continue
 			var speaker = line.substr(0, colon).strip_edges()
-			steps.append({"kind": "line", "speaker": speaker, "text": _quoted(line.substr(colon + 1)), "player": false})
+			steps.append({"kind": "line", "speaker": speaker, "text": _quoted(line.substr(colon + 1)), "player": false, "voice": pending_voice})
+			pending_voice = ""
 			k += 1
+	if not pending_voice.is_empty():
+		errors.append({"line": body[end - 1].line, "message": "VOICE cue has no following spoken line"})
 	return steps
+
+static func _collect_outcome_keys(steps: Array) -> Array[String]:
+	var keys: Array[String] = []
+	for step in steps:
+		if String(step.get("kind", "")) == "outcome":
+			var key = String(step.get("id", ""))
+			if not keys.has(key): keys.append(key)
+		elif String(step.get("kind", "")) == "fork":
+			for option in step.get("options", []):
+				for key in _collect_outcome_keys(option.get("steps", [])):
+					if not keys.has(key): keys.append(key)
+	return keys
 
 static func _parse_fork(body: Array, start: int, end: int, indent: int, errors: Array) -> Array:
 	var options: Array = []
@@ -207,7 +266,7 @@ static func _parse_fork(body: Array, start: int, end: int, indent: int, errors: 
 		var child_end = _block_end(body, k + 1, end, child_indent) if child_indent > indent else k + 1
 		var steps: Array = [{"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true}]
 		if child_indent > indent:
-			steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors))
+			steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors, true))
 		# Tag/timing live on the topic (session-level), not per fork option —
 		# every branch of one FORK still belongs to the same topic/session.
 		options.append({"label": label, "steps": steps})
