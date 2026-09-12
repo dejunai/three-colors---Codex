@@ -127,7 +127,18 @@ func _run() -> void:
 	var bad_weight = Lang.parse("NPC: bad\nLOCATION: test\nTOPIC: question\n  GATE: always\n  WEIGHT: 2\n  TEST: \"No.\"\nTOPIC: default\n  GATE: always\n  WEIGHT: 0\n  TEST: \"No.\"\n")
 	assert(bad_weight.errors.size() == 2, "WEIGHT must be positive and limited to default topics")
 
-	print("DIALOGUE LANG PASS: menu/never/always, linear CHOICE + inline NOTEBOOK, cross-NPC topic tally, FORK branching and resume, doc-only topics hidden, gated and weighted default resolution, fuzzy gate matching")
+	# --- omitted default TIME is free; explicit zero wins; inquiries retain fallback ---
+	var timing = Lang.parse("NPC: timing\nLOCATION: test\nTOPIC: default\n  GATE: always\n  TEST: \"Hello.\"\nTOPIC: default\n  GATE: always\n  TAG: explicit_zero\n  TIME: 0\n  TEST: \"Still free.\"\nTOPIC: inquiry\n  GATE: always\n  TEST: \"A question.\"\n")
+	var timing_state = DialogueState.new()
+	var clock_before = state.clock_minutes
+	_play(Runtime.render("timing", timing.topics[0], timing_state), state, timing_state)
+	assert(state.clock_minutes == clock_before, "An unpriced default must cost zero minutes")
+	_play(Runtime.render("timing", timing.topics[1], timing_state), state, timing_state)
+	assert(state.clock_minutes == clock_before, "Explicit TIME: 0 must be honored")
+	_play(Runtime.render("timing", timing.topics[2], timing_state), state, timing_state)
+	assert(state.clock_minutes == clock_before + Runtime.DEFAULT_MINUTES, "An unpriced substantive topic must use DEFAULT_MINUTES")
+
+	print("DIALOGUE LANG PASS: menu/never/always, linear CHOICE + inline NOTEBOOK, cross-NPC topic tally, FORK branching and resume, doc-only topics hidden, gated and weighted defaults, greeting timing, fuzzy gate matching")
 	quit(0)
 
 # Test-only stand-in for consuming every displayed card in a segment.

@@ -268,8 +268,8 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 # completion (and only then — repeats and "nothing more to say" replays
 # never re-fire this), TIME: minutes are charged to the day clock via
 # DayClock.advance(), giving each topic its own cost instead of a blanket
-# per-interaction charge. A topic with no TIME: (or a non-numeric one)
-# falls back to DEFAULT_MINUTES rather than silently costing nothing.
+# per-interaction charge. Explicit numeric TIME always wins, including zero.
+# Without it, default greetings are free and substantive topics use the fallback.
 const DEFAULT_MINUTES = 3.0
 static func commit_through(result: Dictionary, state, dstate, count: int) -> bool:
 	if result.session.is_empty() or result.resumed or result.finished: return false
@@ -291,7 +291,8 @@ static func commit_through(result: Dictionary, state, dstate, count: int) -> boo
 		if not result.session.tag.is_empty(): dstate.complete_topic(result.session.npc, result.session.tag)
 		if first_completion and state != null:
 			var raw_minutes = String(result.session.timing)
-			DayClock.advance(state, float(raw_minutes) if raw_minutes.is_valid_float() else DEFAULT_MINUTES)
+			var minutes = float(raw_minutes) if raw_minutes.is_valid_float() else (0.0 if result.session.topic == "default" else DEFAULT_MINUTES)
+			DayClock.advance(state, minutes)
 			if not result.session.tag.is_empty() and not state.timed_conversations.has(time_key): state.timed_conversations.append(time_key)
 		result.finished = true
 		return true
