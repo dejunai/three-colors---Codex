@@ -1,6 +1,6 @@
 # Returning precinct and morgue NPCs
 
-Prepared by Codex from Claude's npc_precinct_morgue_skeletons.json, supplied by Dejunai. Dialogue prose will be authored by Dejunai. The repaired JSON in docs is a reference, not a live runtime registry; no placeholder dialogue was installed.
+Prepared by Codex from Claude's npc_precinct_morgue_skeletons.json, supplied by Dejunai. The repaired JSON in `docs/` remains a reference, not a live runtime registry. Authored live files now exist at `dialogue/odell_precinct.dialogue` and `dialogue/coroners_assistant_morgue.dialogue` (catalog + TDD treat returning staff as implemented). Prefer the `.dialogue` SCHEDULE/GATE lines over this note when they disagree.
 
 ## File headers to use
 
@@ -9,7 +9,7 @@ Prepared by Codex from Claude's npc_precinct_morgue_skeletons.json, supplied by 
 ```text
 NPC: odell_precinct
 LOCATION: precinct
-SCHEDULE: morning=precinct, midday=precinct, evening=closed, night=closed
+SCHEDULE: morning=precinct, midday=precinct, evening=precinct, night=closed
 ```
 
 `dialogue/coroners_assistant_morgue.dialogue`:
@@ -17,7 +17,7 @@ SCHEDULE: morning=precinct, midday=precinct, evening=closed, night=closed
 ```text
 NPC: coroners_assistant_morgue
 LOCATION: morgue
-SCHEDULE: morning=morgue, midday=morgue, evening=closed, night=closed
+SCHEDULE: morning=morgue, midday=morgue, evening=morgue, night=closed
 ```
 
 Use CAPTAIN ODELL and CORONER'S ASSISTANT as speaker names. The suffixes are internal IDs only.
