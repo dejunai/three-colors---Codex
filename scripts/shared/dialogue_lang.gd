@@ -187,6 +187,9 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 				steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors))
 			k = child_end
 		elif line.begins_with("FORK:"):
+			if not pending_voice.is_empty():
+				errors.append({"line": entry.line, "message": "VOICE must precede a spoken line, not FORK"})
+				pending_voice = ""
 			var fork_indent = _peek_indent(body, k + 1, end)
 			var fork_end = _block_end(body, k + 1, end, fork_indent)
 			steps.append({"kind": "fork", "options": _parse_fork(body, k + 1, fork_end, fork_indent, errors)})

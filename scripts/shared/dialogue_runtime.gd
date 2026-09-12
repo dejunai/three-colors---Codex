@@ -3,9 +3,10 @@ extends RefCounted
 # Game-facing half of the dialogue system: builds the GATE-evaluation
 # context from live game state, loads/caches parsed .dialogue files, picks
 # an NPC's current default line and menu, and renders a chosen topic into
-# the same [speaker, text] card-array shape story.gd/town_story.gd already
-# use, so dialogue_sequence.gd/chapter_interface.gd need no changes to
-# consume it. Live presentation is owned by ChapterOneDialogue; see
+# the compatible card-array shape story.gd/town_story.gd already use.
+# Unvoiced and beat cards remain [speaker, text]; voiced dialogue cards are
+# [speaker, text, voice]. The Chapter One renderer treats the third element
+# as optional, so legacy cards and other chapters remain unchanged. See
 # tests/dialogue_lang_flow.gd for a full standalone proof, and the note at
 # the bottom of this file for what remains to integrate it live.
 const Lang = preload("res://scripts/shared/dialogue_lang.gd")
