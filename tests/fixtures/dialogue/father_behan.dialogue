@@ -21,7 +21,7 @@ TOPIC: club_five
 TOPIC: club_invitation
   GATE: always AND NOT topic_done(father_behan, club_invitation)
   LABEL: "Ask about the club invitations"
-  CHOICE: "You were invited to the club. Twice. You declined both times."
+  CHOICE: "Word in the parish is you were invited to the club. Twice. You declined both times."
     BEHAN: "I did."
   CHOICE: "Why?"
     BEHAN: [He says nothing further. The silence is not evasive. It is final.]

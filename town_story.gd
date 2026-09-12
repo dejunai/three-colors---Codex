@@ -68,7 +68,7 @@ const SCENES = {
 		["WALTER CORWIN", "You knew all six."],
 		["FATHER BEHAN", "I knew what men tell a priest, which is not the same as what they are.\n\nAsk your question, Officer. I've answered worse."]],
 	"behan_invitation": [
-		["WALTER CORWIN", "You were invited to the club. Twice. You declined both times."],
+		["WALTER CORWIN", "Word in the parish is you were invited to the club. Twice. You declined both times."],
 		["FATHER BEHAN", "I did."],
 		["WALTER CORWIN", "Why?"],
 		["FATHER BEHAN", "[He says nothing further. The silence is not evasive. It is final.]"],

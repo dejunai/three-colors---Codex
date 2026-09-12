@@ -94,7 +94,7 @@ func _street() -> void:
 		for dx in [-1.1,1.1]: box(self,Vector3(x+dx,0.24,18.2),Vector3(0.12,0.5,0.6),"37483a")
 	box(self,Vector3(8.5,0.65,18.2),Vector3(0.55,0.025,0.4),"c5c5ad")
 	target("gazette","Read the morning paper",Vector3(8.5,0,17.3))
-	lettering("ESTATE ROAD",Vector3(-27,2.4,15.5),38)
+	lettering("ESTATE ROAD",Vector3(-27,2.4,15.5),38).rotation.y=PI/2
 	target("street_estate","Return to the Ophion estate",Vector3(-27,0,15))
 	# A rectory marker behind which Father Behan will speak plainly, if asked.
 	box(self,Vector3(-8.6,0.55,-1.6),Vector3(0.06,1.1,0.06),"3a443a")
