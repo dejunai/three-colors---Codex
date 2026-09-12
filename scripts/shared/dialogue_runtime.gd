@@ -116,6 +116,8 @@ static func make_context(state, dstate) -> Dictionary:
 			"flag": func(args): return dstate.flag(args[0]) if args.size() > 0 else false,
 			"topic_done": func(args): return dstate.topic_done(args[0], args[1]) if args.size() > 1 else false,
 			"npc_done": func(args): return dstate.topic_done(args[0], "default") if args.size() > 0 else false,
+			"outcome": func(args): return dstate.has_outcome(args[0]) if args.size() > 0 else false,
+			"outcome_is": func(args): return dstate.outcome_is(args[0], args[1]) if args.size() > 1 else false,
 		},
 		"fields": {
 			"coat": func(): return state.coat,
@@ -169,7 +171,7 @@ static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 	var entries: Array = []
 	for topic in def.topics:
 		if topic.steps.is_empty(): continue
-		if not Lang.evaluate(topic.gate, ctx): continue
+		if not topic_available(topic, ctx): continue
 		if topic.id == "default":
 			eligible_defaults.append(topic)
 			if default_topic == null: default_topic = topic
@@ -178,6 +180,14 @@ static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 			if _menu_topic_recorded(def, topic, ctx): label += "  · recorded"
 			entries.append({"id": topic.id, "label": label})
 	return {"default_topic": default_topic, "default_topics": eligible_defaults, "entries": entries}
+
+static func topic_available(topic: Dictionary, ctx: Dictionary) -> bool:
+	if not Lang.evaluate(topic.gate, ctx): return false
+	var check = ctx.get("functions", {}).get("outcome", Callable())
+	if not check is Callable or not check.is_valid(): return true
+	for key in topic.get("outcome_keys", []):
+		if bool(check.call([String(key)])): return false
+	return true
 
 static func _choose_default(candidates: Array, dstate, npc: String):
 	if candidates.is_empty(): return null
@@ -231,6 +241,7 @@ static func _empty_result() -> Dictionary:
 static func render(npc: String, topic: Dictionary, _dstate) -> Dictionary:
 	var session = {"npc": npc, "topic": topic.id,
 		"stack": [{"steps": topic.steps, "i": 0}], "pending": [],
+		"pending_outcomes": {},
 		"tag": topic.get("tag", ""), "timing": topic.get("timing", "")}
 	return _next_segment(session)
 
@@ -257,6 +268,7 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 				if note_id.is_empty(): note_id = "text_" + String(step.text).sha256_text()
 				result.effects.append({"id": session.npc + "." + note_id,
 					"text": step.text, "after_cards": result.cards.size(), "applied": false})
+			"outcome": session.pending_outcomes[String(step.id)] = String(step.value)
 			"fork":
 				session.pending = step.options
 				result.fork = {"options": step.options.map(func(o): return o.label)}
@@ -289,6 +301,8 @@ static func commit_through(result: Dictionary, state, dstate, count: int) -> boo
 		if state != null and not result.session.tag.is_empty() and state.timed_conversations.has(time_key): first_completion = false
 		dstate.complete_topic(result.session.npc, result.session.topic)
 		if not result.session.tag.is_empty(): dstate.complete_topic(result.session.npc, result.session.tag)
+		for outcome_id in result.session.pending_outcomes:
+			dstate.set_outcome(String(outcome_id), String(result.session.pending_outcomes[outcome_id]))
 		if first_completion and state != null:
 			var raw_minutes = String(result.session.timing)
 			var minutes = float(raw_minutes) if raw_minutes.is_valid_float() else (0.0 if result.session.topic == "default" else DEFAULT_MINUTES)

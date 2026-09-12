@@ -62,14 +62,45 @@ TOPIC: default
 	var a = R.enter(fixture, ctx, D)
 	R.commit_through(a, S, D, a.cards.size())
 	var b = R.resume(a, 0)
-	assert(b.cards == [["WALTER CORWIN", "Outer"], ["N", "Outer reply"]])
+	assert(b.cards == [["WALTER CORWIN", "Outer", ""], ["N", "Outer reply", ""]])
 	R.commit_through(b, S, D, b.cards.size())
 	var c = R.resume(b, 0)
-	assert(c.cards == [["WALTER CORWIN", "Inner"], ["N", "Inner reply"], ["N", "Outer tail"], ["N", "Final tail"]])
+	assert(c.cards == [["WALTER CORWIN", "Inner", ""], ["N", "Inner reply", ""], ["N", "Outer tail", ""], ["N", "Final tail", ""]])
 	assert(not D.facts.has("nested.inner"))
 	assert(not R.commit_through(c, S, D, 2))
 	assert(D.facts.has("nested.inner") and not D.topic_done("nested", "default"))
 	assert(R.commit_through(c, S, D, 4))
 	assert(D.visit_count("nested") == 1)
-	print("DIALOGUE PLAYBACK PASS: distinct gardener notes, deferred effects/completion, state round-trip, single-visit fork resume, invalid/stale choices, nested continuation")
+	# Consequential fork outcomes commit only with the completed chosen path,
+	# retire their source topic automatically, persist, and cannot be overwritten.
+	var decision = L.parse('''NPC: choice_test
+TOPIC: decision
+  GATE: always
+  FORK:
+    CHOICE: "Press him."
+      N: "He stiffens."
+      OUTCOME: odell_response = pressed
+    CHOICE: "Let it pass."
+      N: "He relaxes."
+      OUTCOME: odell_response = deferred
+''')
+	assert(decision.errors.is_empty())
+	assert(R.menu(decision, R.make_context(S, D)).entries.size() == 1)
+	var prompt = R.render("choice_test", decision.topics[0], D)
+	R.commit_through(prompt, S, D, prompt.cards.size())
+	var chosen = R.resume(prompt, 0)
+	assert(not R.commit_through(chosen, S, D, 1) and not D.has_outcome("odell_response"), "Partial branch playback must not commit its outcome")
+	assert(R.commit_through(chosen, S, D, chosen.cards.size()))
+	assert(D.outcome_is("odell_response", "pressed") and not D.outcome_is("odell_response", "deferred"))
+	assert(R.menu(decision, R.make_context(S, D)).entries.is_empty(), "A committed outcome must retire its source fork")
+	assert(L.evaluate(L._parse_gate("outcome(odell_response) AND outcome_is(odell_response, pressed)"), R.make_context(S, D)))
+	D.set_outcome("odell_response", "deferred")
+	assert(D.outcome_is("odell_response", "pressed"), "A committed outcome must be immutable")
+	var outcome_restore = load("res://scripts/shared/dialogue_state.gd").new()
+	assert(outcome_restore.restore(D.pack()) and outcome_restore.outcome_is("odell_response", "pressed"), "Outcomes must survive save/load")
+	var legacy_pack = D.pack()
+	legacy_pack.erase("outcomes")
+	var legacy_restore = load("res://scripts/shared/dialogue_state.gd").new()
+	assert(legacy_restore.restore(legacy_pack) and legacy_restore.outcomes.is_empty(), "Pre-OUTCOME dialogue saves must remain valid")
+	print("DIALOGUE PLAYBACK PASS: distinct gardener notes, deferred effects/completion, state round-trip, forks, nested continuation, immutable outcomes and automatic retirement")
 	quit(0)

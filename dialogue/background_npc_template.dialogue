@@ -50,8 +50,10 @@ TOPIC: example_account
     EVIDENCE: example_door_account
 
 # CHOICE above is linear speech. Only a FORK makes selectable alternatives.
-# This topic closes after completion; without NOT topic_done it can be replayed
-# and another branch chosen. Nested FORKs work. The parent tail always resumes.
+# This example closes through its explicit topic_done gate. For a consequential
+# branch, put OUTCOME: decision_id = value_id in each choice instead; completion
+# then records the chosen value and automatically retires the source topic.
+# Nested FORKs work. The parent tail always resumes.
 TOPIC: example_approach
   GATE: evidence(example_door_account) AND NOT topic_done(example_witness, example_approach)
   LABEL: "Press for a clearer account"

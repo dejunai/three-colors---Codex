@@ -137,6 +137,8 @@ func _run() -> void:
 	assert(state.clock_minutes == clock_before, "Explicit TIME: 0 must be honored")
 	_play(Runtime.render("timing", timing.topics[2], timing_state), state, timing_state)
 	assert(state.clock_minutes == clock_before + Runtime.DEFAULT_MINUTES, "An unpriced substantive topic must use DEFAULT_MINUTES")
+	var malformed_outcome = Lang.parse("NPC: bad\nLOCATION: test\nTOPIC: default\n  GATE: always\n  OUTCOME: outside = fork\n  FORK:\n    CHOICE: \"Bad.\"\n      OUTCOME: missing_value\n      TEST: \"No.\"\n")
+	assert(malformed_outcome.errors.size() == 2, "OUTCOME must be branch-local and use a complete identifier assignment")
 
 	print("DIALOGUE LANG PASS: menu/never/always, linear CHOICE + inline NOTEBOOK, cross-NPC topic tally, FORK branching and resume, doc-only topics hidden, gated and weighted defaults, greeting timing, fuzzy gate matching")
 	quit(0)

@@ -164,6 +164,9 @@ func _check_cmp(def: Dictionary, topic: Dictionary, ast: Dictionary, all_topics:
 						warnings.append("%s: filed('%s') is never emitted in dialogue or known facts" % [topic_ref, ev_id])
 			"flag":
 				pass
+			"outcome", "outcome_is":
+				# OUTCOME identifiers are author-defined and validated by the parser.
+				pass
 			_:
 				errors.append("%s: Unknown gate function '%s'" % [topic_ref, name])
 	else:

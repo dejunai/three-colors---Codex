@@ -43,6 +43,7 @@ Multiple `TOPIC: default` blocks are allowed. Without `WEIGHT`, the first eligib
 | `NOTEBOOK: stable_note_id \| "Account"` | Persists prose under NPC ID plus note ID. First write wins. |
 | `NOTEBOOK: "Account"` | Supported legacy form; derives identity from the text, so edits can produce another note. Prefer explicit IDs. |
 | `EVIDENCE: stable_evidence_id` | Records a linkable observation. Use source-faithful NOTEBOOK prose immediately before a new observation. |
+| `OUTCOME: decision_id = value_id` | Commits one immutable branch result when the entire chosen path finishes. A topic containing that decision ID retires automatically afterward. |
 
 Quoted speech and notes may continue across physical lines until the closing straight double quote; those lines join with spaces. Use literal `\n` for a line break, `\n\n` for a paragraph, and `\"` for a quoted word inside text. Do not assume other escape sequences are supported. Blank lines and whole-line comments are skipped. A speaker named `WALTER'S NOTEBOOK` is just a spoken-card label; it does not save a note.
 
@@ -68,6 +69,8 @@ Use `always`, `never`, `NOT`, `AND`, `OR`, parentheses, and `<`, `<=`, `>`, `>=`
 | `filed(evidence_id)` | Evidence in received records after intake. Supplement history is authoritative when present; older saves without history may use the filed supplement snapshot. Possession alone is insufficient. No alias expansion. |
 | `flag(flag_id)` | Boolean set by game code; unknown flags are false. Dialogue has no command to set one. |
 | `npc_done(npc_id)` | Sugar for `topic_done(npc_id, "default")` — whether that NPC's one-time opener has already played. |
+| `outcome(decision_id)` | Whether any value for this consequential decision has committed. |
+| `outcome_is(decision_id, value_id)` | Whether the committed value exactly matches this branch value. |
 
 | Field | Values/meaning |
 | --- | --- |
@@ -97,7 +100,21 @@ Use a shared named TOPIC for spreading questions, with a different TAG for each 
 
 Notes and evidence apply as the player acknowledges the preceding cards. Topic and TAG completion occur only after the chosen branches and final continuation finish. A cancelled or unfinished conversation does not earn completion. A completed topic remains available if its gate stays true. For a once-only decision use `NOT topic_done(this_npc, this_topic)`; otherwise a later replay can choose another branch.
 
-Branch-specific consequences can be represented by distinct EVIDENCE IDs and read later with `evidence()`. Completion alone records that a topic finished, not which option was chosen. New evidence joins the catalog, but valid evidence pairs still require an authored entry in `chapter_one_archive.gd`'s LINKS table. Writing a note does not create a link, file a report, or automatically unlock a consequence elsewhere. New observation descriptions use preceding notebook prose or the topic label when no existing fact supplies a description; inspect the resulting case-file text.
+Use `OUTCOME` for a consequential, once-only FORK whose chosen path must affect later dialogue. Put the same decision ID with a different value inside each branch. The selected value commits only when the player finishes the entire chosen path; closing or abandoning it early commits nothing. Once any value commits, the runtime automatically removes every topic containing that decision ID, so the original choice cannot be reopened to sample another branch. Outcomes are immutable and survive save/load. Existing forks without `OUTCOME` remain replayable. Later gates can read `outcome(decision_id)` or `outcome_is(decision_id, value_id)`. Describe the concrete act (`pressed`, `withheld`, `deferred`) rather than awarding morality or affinity points.
+
+Branch-specific observations can still use distinct EVIDENCE IDs and be read later with `evidence()`. Evidence is for something Walter can record and link; OUTCOME is for what the player chose. New evidence joins the catalog, but valid evidence pairs still require an authored entry in `chapter_one_archive.gd`'s LINKS table. Writing a note does not create a link, file a report, or automatically unlock a consequence elsewhere. New observation descriptions use preceding notebook prose or the topic label when no existing fact supplies a description; inspect the resulting case-file text.
+
+```text
+TOPIC: odell_decision
+  GATE: always
+  FORK:
+    CHOICE: "Press him."
+      OUTCOME: odell_response = pressed
+      ODELL: "Mind your rank, Corwin."
+    CHOICE: "Let it pass."
+      OUTCOME: odell_response = deferred
+      ODELL: "Good. Write what I told you."
+```
 
 TIME is charged once per NPC and TAG (or TOPIC if TAG is omitted). Existing legacy timed-conversation tags are also consulted, so use globally unique TAGs. An explicitly authored numeric `TIME` always wins, including `TIME: 0`. When `TIME` is omitted or nonnumeric, a `default` greeting costs **0 minutes** and every substantive topic falls back to **3 minutes**; words such as `short` do not define a duration. Replaying a completed topic does not repeatedly advance time. Give new default scenes distinct TAGs if each should have its own time charge.
 

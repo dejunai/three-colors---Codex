@@ -95,7 +95,7 @@ func play_topic(g: Node, actor: String, topic_id: String) -> void:
 	var ctx = Runtime.make_context(g.state, g.state.dialogue_state)
 	for index in def.topics.size():
 		var topic = def.topics[index]
-		if topic.id == topic_id and not topic.steps.is_empty() and Runtime.Lang.evaluate(topic.gate, ctx):
+		if topic.id == topic_id and not topic.steps.is_empty() and Runtime.topic_available(topic, ctx):
 			_begin(g, actor, index, Runtime.render(def.npc, topic, g.state.dialogue_state))
 			return
 	show_menu(g, actor)

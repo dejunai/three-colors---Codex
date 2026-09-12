@@ -14,6 +14,7 @@ var visited_topics: Dictionary = {} # npc_id -> Array[String] topic_ids complete
 var facts: Dictionary = {}          # NPC + authored note id -> free text (legacy notes use text hash)
 var evidence: Array[String] = [] # Existing case FACTS identifiers, separate from prose statements.
 var flags: Dictionary = {}          # arbitrary named booleans for future SET-style effects
+var outcomes: Dictionary = {}       # decision_id -> selected value_id
 var last_default_lines: Dictionary = {} # transient NPC -> source line; prevents immediate flavor repeats
 
 func visit(npc: String) -> void:
@@ -50,14 +51,25 @@ func flag(name: String) -> bool:
 func set_flag(name: String, value: bool) -> void:
 	flags[name] = value
 
+func has_outcome(id: String) -> bool:
+	return outcomes.has(id)
+
+func outcome_is(id: String, value: String) -> bool:
+	return String(outcomes.get(id, "")) == value
+
+func set_outcome(id: String, value: String) -> void:
+	# Consequential choices are immutable once committed.
+	if not outcomes.has(id): outcomes[id] = value
+
 func pack() -> Dictionary:
 	return {"version": VERSION, "visit_counts": visit_counts, "topic_sources": topic_sources,
-		"visited_topics": visited_topics, "facts": facts, "flags": flags, "evidence": evidence}
+		"visited_topics": visited_topics, "facts": facts, "flags": flags, "outcomes": outcomes, "evidence": evidence}
 
 func restore(d: Dictionary) -> bool:
 	if int(d.get("version", 0)) != VERSION: return false
 	for key in ["visit_counts", "topic_sources", "visited_topics", "facts", "flags"]:
 		if not d.get(key, {}) is Dictionary: return false
+	if not d.get("outcomes", {}) is Dictionary: return false
 	if not d.get("evidence", []) is Array: return false
 	for id in d.get("evidence", []):
 		if not id is String: return false
@@ -72,10 +84,13 @@ func restore(d: Dictionary) -> bool:
 		if not value is String: return false
 	for value in d.get("flags", {}).values():
 		if not value is bool: return false
+	for key in d.get("outcomes", {}):
+		if not key is String or not d.outcomes[key] is String: return false
 	evidence.assign(d.get("evidence", []))
 	visit_counts = d.get("visit_counts", {}).duplicate(true)
 	topic_sources = d.get("topic_sources", {}).duplicate(true)
 	visited_topics = d.get("visited_topics", {}).duplicate(true)
 	facts = d.get("facts", {}).duplicate(true)
 	flags = d.get("flags", {}).duplicate(true)
+	outcomes = d.get("outcomes", {}).duplicate(true)
 	return true

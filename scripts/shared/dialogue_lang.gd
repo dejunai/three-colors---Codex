@@ -32,6 +32,7 @@ extends RefCounted
 #         SPEAKER: "..."
 #       CHOICE: "Option B."
 #         SPEAKER: "..."
+#         OUTCOME: odell_response = deferred
 #
 # A `#` at the start of a (stripped) line is a full-line comment. A TOPIC
 # with no dialogue lines under it (just GATE/comments) is a documentation
@@ -63,7 +64,7 @@ extends RefCounted
 # Built-in functions/fields are registered by the caller via the `ctx`
 # passed to evaluate() — see dialogue_runtime.gd's make_context() for the
 # actual vocabulary (visit_count, topic_count, spoken_to, evidence, filed,
-# flag, topic_done, npc_done, coat, day, phase, estate_complete,
+# flag, topic_done, npc_done, outcome, outcome_is, coat, day, phase, estate_complete,
 # steward_ready).
 # `npc_done(npc_id)` is sugar for
 # `topic_done(npc_id, "default")`, the existing "has this NPC's opener
@@ -163,9 +164,9 @@ static func _parse_topic_body(body: Array, errors: Array) -> Dictionary:
 			break
 	var steps = _parse_steps(body, k, body.size(), base_indent, errors)
 	return {"gate_src": gate_src, "gate": _parse_gate(gate_src), "label": label, "tag": tag, "timing": timing,
-		"weight": weight, "has_weight": has_weight, "steps": steps}
+		"weight": weight, "has_weight": has_weight, "outcome_keys": _collect_outcome_keys(steps), "steps": steps}
 
-static func _parse_steps(body: Array, start: int, end: int, indent: int, errors: Array) -> Array:
+static func _parse_steps(body: Array, start: int, end: int, indent: int, errors: Array, allow_outcome: bool = false) -> Array:
 	var steps: Array = []
 	var pending_voice = ""
 	var k = start
@@ -188,6 +189,15 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 		elif line.begins_with("EVIDENCE:"):
 			steps.append({"kind": "evidence", "id": line.substr(9).strip_edges()})
 			k += 1
+		elif line.begins_with("OUTCOME:"):
+			var assignment = line.substr(8).strip_edges().split("=", true, 1)
+			if not allow_outcome:
+				errors.append({"line": entry.line, "message": "OUTCOME is only valid inside a FORK choice"})
+			elif assignment.size() != 2 or not assignment[0].strip_edges().is_valid_identifier() or not assignment[1].strip_edges().is_valid_identifier():
+				errors.append({"line": entry.line, "message": "OUTCOME must use 'decision_id = value_id' with simple identifiers"})
+			else:
+				steps.append({"kind": "outcome", "id": assignment[0].strip_edges(), "value": assignment[1].strip_edges()})
+			k += 1
 		elif line.begins_with("NOTEBOOK:"):
 			var payload = line.substr(9).strip_edges()
 			var note_id = ""
@@ -204,7 +214,7 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 			steps.append({"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true, "voice": pending_voice})
 			pending_voice = ""
 			if child_indent > indent:
-				steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors))
+				steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors, allow_outcome))
 			k = child_end
 		elif line.begins_with("FORK:"):
 			if not pending_voice.is_empty():
@@ -228,6 +238,18 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 		errors.append({"line": body[end - 1].line, "message": "VOICE cue has no following spoken line"})
 	return steps
 
+static func _collect_outcome_keys(steps: Array) -> Array[String]:
+	var keys: Array[String] = []
+	for step in steps:
+		if String(step.get("kind", "")) == "outcome":
+			var key = String(step.get("id", ""))
+			if not keys.has(key): keys.append(key)
+		elif String(step.get("kind", "")) == "fork":
+			for option in step.get("options", []):
+				for key in _collect_outcome_keys(option.get("steps", [])):
+					if not keys.has(key): keys.append(key)
+	return keys
+
 static func _parse_fork(body: Array, start: int, end: int, indent: int, errors: Array) -> Array:
 	var options: Array = []
 	if indent == -1: return options
@@ -243,7 +265,7 @@ static func _parse_fork(body: Array, start: int, end: int, indent: int, errors: 
 		var child_end = _block_end(body, k + 1, end, child_indent) if child_indent > indent else k + 1
 		var steps: Array = [{"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true}]
 		if child_indent > indent:
-			steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors))
+			steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors, true))
 		# Tag/timing live on the topic (session-level), not per fork option —
 		# every branch of one FORK still belongs to the same topic/session.
 		options.append({"label": label, "steps": steps})
