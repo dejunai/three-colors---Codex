@@ -83,7 +83,7 @@ func show_menu(g: Node, actor: String) -> void:
 	var def = definition(actor)
 	var entries = Runtime.menu(def, Runtime.make_context(g.state, g.state.dialogue_state)).entries
 	if entries.is_empty() and actor != "odell": g._close(); return
-	g._panel("witness", TITLES[actor], "ASK, LISTEN, RECORD")
+	g._panel("witness", TITLES[actor], "ASK, LISTEN, RECORD", false, "dialogue")
 	if actor == "odell": g._paragraph("Walter's answer is already in his notebook. Odell has nothing further to add.")
 	for entry in entries:
 		g._button(entry.label, func(): play_topic(g, actor, entry.id))
@@ -140,7 +140,7 @@ func _segment_done(g: Node) -> void:
 	if segment.fork != null:
 		# Odell's count is already heard before Walter gives his answer.
 		if actor == "odell" and not g.state.visited.has(actor): g.state.visited.append(actor)
-		g._panel("witness", TITLES[actor], "WALTER'S ANSWER")
+		g._panel("witness", TITLES[actor], "WALTER'S ANSWER", false, "dialogue")
 		var current = segment
 		for index in segment.fork.options.size():
 			var label = String(segment.fork.options[index])

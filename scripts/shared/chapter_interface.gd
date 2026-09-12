@@ -102,22 +102,24 @@ func _panel(kind:String,heading:String,kicker:String = "",wide:bool = false) -> 
 	if is_instance_valid(modal):
 		ui.remove_child(modal)
 		modal.queue_free()
-	case_palette = kind in ["board","notebook","journal","fact","examine"]
+	var conversation_frame = kind == "dialogue"
+	var object_frame = kind == "examine"
+	case_palette = kind in ["board","notebook","journal","fact","dialogue","examine"]
 	modal = Control.new()
 	modal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	ui.add_child(modal)
 	var dark = ColorRect.new()
-	dark.color = Color(0.025,0.035,0.03,0.9 if kind == "dialogue" else 0.84)
+	dark.color = Color(0.025,0.035,0.03,0.9 if conversation_frame else 0.84)
 	dark.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	modal.add_child(dark)
 	var panel = PanelContainer.new()
 	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	panel.offset_left = 170 if wide else 320
 	panel.offset_right = -170 if wide else -320
-	panel.offset_top = 150 if kind == "dialogue" else 60
-	panel.offset_bottom = -150 if kind == "dialogue" else -60
+	panel.offset_top = 150 if conversation_frame else 60
+	panel.offset_bottom = -150 if conversation_frame else -60
 	panel.add_theme_stylebox_override("panel",_style(Color("111914"),Color("727b66")))
-	if kind == "examine":
+	if conversation_frame:
 		panel.offset_left = 40
 		panel.offset_right = -40
 		panel.offset_top = 32
@@ -126,6 +128,15 @@ func _panel(kind:String,heading:String,kicker:String = "",wide:bool = false) -> 
 		wood.set_border_width_all(14)
 		wood.set_corner_radius_all(2)
 		panel.add_theme_stylebox_override("panel",wood)
+	elif object_frame:
+		panel.offset_left = 80
+		panel.offset_right = -80
+		panel.offset_top = 54
+		panel.offset_bottom = -54
+		var archive = _style(Color("d9d5c7"),Color("52636a"))
+		archive.set_border_width_all(5)
+		archive.set_corner_radius_all(2)
+		panel.add_theme_stylebox_override("panel",archive)
 	elif case_palette:
 		panel.offset_left = 40
 		panel.offset_right = -40
@@ -133,9 +144,10 @@ func _panel(kind:String,heading:String,kicker:String = "",wide:bool = false) -> 
 		panel.offset_bottom = -32
 		panel.add_theme_stylebox_override("panel",_style(Color("ead9b4"),Color("976838")))
 	modal.add_child(panel)
-	# Object-examination frames get a brass inlay strip between the wood and the parchment.
+	# Conversations use a warm theatrical frame; examined objects use the
+	# quieter archival frame above so the player can identify each at a glance.
 	var inner: Container = panel
-	if kind == "examine":
+	if conversation_frame:
 		var brass_margin = MarginContainer.new()
 		for side in ["left","right","top","bottom"]: brass_margin.add_theme_constant_override("margin_"+side,8)
 		panel.add_child(brass_margin)
