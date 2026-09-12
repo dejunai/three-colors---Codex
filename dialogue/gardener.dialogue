@@ -3,7 +3,7 @@ NPC: gardener
 LOCATION: estate
 
 TOPIC: default
-  GATE: estate_complete AND coat = plain AND NOT topic_done(gardener, default)
+  GATE: estate_complete AND coat = plain AND NOT topic_done(gardener, gardener_plain)
   TAG: gardener_plain
   TIME: 3
   VOICE: trombone_cautious_short_v1

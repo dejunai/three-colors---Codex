@@ -67,16 +67,16 @@ TOPIC: ophion_club_mail
 TOPIC: holding_the_letters
   GATE: evidence(new_bedford_letters) AND NOT topic_done(post_office_clerk, holding_the_letters)
   TAG: postal_release
-  LABEL: "Attempt to take custody of the child's letters"
+  LABEL: "Attempt to take custody of the family letters"
   TIME: 5
-  WALTER CORWIN: "Hand over the letters from the boy. They're material to a murder investigation."
+  WALTER CORWIN: "Hand over the letters. They're material to a murder investigation."
   [Mr. Crump slides the cubby drawer shut with a deliberate wooden snap.]
   VOICE: trombone_alarmed_long_v1
   MR. CRUMP: "Section 3891 of the Revised Statutes, Officer. A local policeman cannot seize federal post without judicial subpoena.\nCaptain Odell knows the law even if his beat patrol doesn't."
-  WALTER CORWIN: "The woman is in the morgue, Crump. The child who wrote them is six years old."
+  WALTER CORWIN: "The woman is in the morgue, Crump. Her kin in New Bedford have a right to know."
   VOICE: trombone_bureaucratic_medium_v1
   MR. CRUMP: "The United States Post Office does not alter postal statutes because a patron suffered a misfortune, Corwin.\nBring me a federal order, or leave the window."
-  NOTEBOOK: postal_refusal_1 | "Postmaster refused to surrender Naomi's letters from her six-year-old son, citing federal postal statute Section 3891."
+  NOTEBOOK: postal_refusal_1 | "Postmaster refused to surrender Naomi's letters from New Bedford, citing federal postal statute Section 3891."
   EVIDENCE: postal_bureaucracy_refusal
 
 # Shared inquiry: four different completed refusals make the question travel.
