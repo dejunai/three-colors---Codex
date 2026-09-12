@@ -66,6 +66,8 @@ Use `always`, `never`, `NOT`, `AND`, `OR`, parentheses, and `<`, `<=`, `>`, `>=`
 | `evidence(evidence_id)` | Current recorded evidence, with the small existing alias map in the runtime. |
 | `filed(evidence_id)` | Evidence in received records after intake. Supplement history is authoritative when present; older saves without history may use the filed supplement snapshot. Possession alone is insufficient. No alias expansion. |
 | `flag(flag_id)` | Boolean set by game code; unknown flags are false. Dialogue has no command to set one. |
+| `npc_done(npc_id)` | Sugar for `topic_done(npc_id, "default")` — whether that NPC's one-time opener has already played. |
+| `chance(50)` | True `50`% of the time, re-rolled every evaluation. Not sticky: never gate a `default` opener or anything a test checks exact text against with it. Use it only on repeat/flavor topics, stacking blocks (`chance(50)`, then `chance(30)`, then `always`) to get a fallback cascade for free from the existing "first true GATE wins" rule. |
 
 | Field | Values/meaning |
 | --- | --- |

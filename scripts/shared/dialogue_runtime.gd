@@ -115,6 +115,8 @@ static func make_context(state, dstate) -> Dictionary:
 			"filed": func(args): return has_filed_evidence(state, args[0]) if args.size() > 0 else false,
 			"flag": func(args): return dstate.flag(args[0]) if args.size() > 0 else false,
 			"topic_done": func(args): return dstate.topic_done(args[0], args[1]) if args.size() > 1 else false,
+			"npc_done": func(args): return dstate.topic_done(args[0], "default") if args.size() > 0 else false,
+			"chance": func(args): return randf()*100.0 < float(args[0]) if args.size() > 0 else false,
 		},
 		"fields": {
 			"coat": func(): return state.coat,

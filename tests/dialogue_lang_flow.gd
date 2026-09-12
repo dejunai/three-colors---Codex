@@ -112,6 +112,12 @@ func _run() -> void:
 	var below = Lang._parse_gate("visit_count(steward) < 3")
 	assert(not Lang.evaluate(below, stew_ctx), "visit_count is already 3, so < 3 must now be false")
 
+	# --- npc_done sugar and chance() cascade ---
+	assert(Lang.evaluate(Lang._parse_gate("npc_done(steward)"), ctx), "npc_done must alias topic_done(npc, default): steward's default topic already completed above")
+	assert(not Lang.evaluate(Lang._parse_gate("npc_done(nobody_yet)"), ctx), "npc_done must be false before that NPC's default topic completes")
+	assert(Lang.evaluate(Lang._parse_gate("chance(100)"), ctx), "chance(100) must always succeed")
+	assert(not Lang.evaluate(Lang._parse_gate("chance(0)"), ctx), "chance(0) must never succeed")
+
 	print("DIALOGUE LANG PASS: menu/never/always, linear CHOICE + inline NOTEBOOK, cross-NPC topic tally, FORK branching and resume, doc-only topics hidden, mutually exclusive default resolution, fuzzy gate matching")
 	quit(0)
 

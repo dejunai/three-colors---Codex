@@ -59,8 +59,16 @@ extends RefCounted
 #
 # Built-in functions/fields are registered by the caller via the `ctx`
 # passed to evaluate() — see dialogue_runtime.gd's make_context() for the
-# actual vocabulary (visit_count, topic_count, spoken_to, evidence, flag,
-# topic_done, coat, day, phase, estate_complete).
+# actual vocabulary (visit_count, topic_count, spoken_to, evidence, filed,
+# flag, topic_done, npc_done, chance, coat, day, phase, estate_complete,
+# steward_ready).
+#
+# `chance(N)` re-rolls (randf()*100 < N) every time its GATE is evaluated —
+# it is not sticky across menu()/enter() calls, so only use it on repeat/
+# flavor topics, never on a one-time `default` opener or anything a test
+# asserts exact text against. `npc_done(npc_id)` is sugar for
+# `topic_done(npc_id, "default")`, the existing "has this NPC's opener
+# already played" check.
 
 static func parse(text: String) -> Dictionary:
 	var logical = _logical_lines(text)
