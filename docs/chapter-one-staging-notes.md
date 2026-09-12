@@ -52,4 +52,4 @@ Repeated entries on day one do not substitute for this agreed day-one / montage 
 
 ## Status
 
-Discussion only. No project source, design documents, or TDD files have been edited as part of this agreement.
+Historical discussion notes (8 September 2026). The staging described here was implemented; see `docs/qa/STAGING_PASS.md` and `scripts/chapters/chapter_one_staging.gd` for the live contract. Retained out-of-scope items in this note (notebook unreliability, ontological break, fatal ending) remain future work. Design Bible still wins over TDD and build briefs.

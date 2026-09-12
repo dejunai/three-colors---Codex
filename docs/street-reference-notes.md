@@ -1,6 +1,6 @@
 # Geography and business-street reference — 9 September 2026
 
-This is the agreed review stage: a geography proposal and one improved street. The waterfront, extra residents, schedules, and continuous-town conversion remain later work.
+This is the agreed review stage: a geography proposal and one improved street. A playable waterfront outdoor hub with scheduled residents later shipped (`docs/qa/WATERFRONT_PASS.md`); continuous-town conversion and further quay interiors remain later work.
 
 ## Geography proposal
 
