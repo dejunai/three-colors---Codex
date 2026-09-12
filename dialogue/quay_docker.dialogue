@@ -3,18 +3,40 @@ LOCATION: waterfront
 SCHEDULE: morning=waterfront_moorings, midday=waterfront_moorings, evening=closed, night=closed
 
 TOPIC: default
-  GATE: coat = plain AND visit_count(quay_docker) >= 2
+  GATE: coat = plain AND visit_count(quay_docker) >= 2 AND NOT topic_done(quay_docker, naomi_sighting)
   TAG: quay_docker_plain_repeat
-  TIME: 0
+  WEIGHT: 3
   VOICE: trombone_bureaucratic_medium_v2
   QUAY DOCKER: "Look at that — Officer Corwin looking like he might actually haul a rope.\nDon't drop your boots in the scum, Corwin."
 
 TOPIC: default
+  GATE: visit_count(quay_docker) >= 2 AND NOT topic_done(quay_docker, naomi_sighting)
+  TAG: quay_docker_repeat_slack
+  WEIGHT: 3
+  VOICE: trombone_neutral_short_v1
+  QUAY DOCKER: "Slack water still, Corwin. Winches don't turn till the tide fills the basin."
+
+TOPIC: default
+  GATE: visit_count(quay_docker) >= 2 AND NOT topic_done(quay_docker, naomi_sighting)
+  TAG: quay_docker_repeat_fender
+  WEIGHT: 2
+  [He kicks a frayed hemp fender into place along the pier stringer.]
+  VOICE: trombone_neutral_medium_v1
+  QUAY DOCKER: "You're standing where the hawsers bite, Officer."
+
+TOPIC: default
+  GATE: topic_done(quay_docker, naomi_sighting)
+  TAG: quay_docker_exhausted_basin
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v1
+  QUAY DOCKER: "I told you what I saw pass the basin, Walter. Go ask the harbor master if you want lies."
+
+TOPIC: default
   GATE: always
   TAG: quay_docker_default
-  TIME: 2
+  WEIGHT: 2
   VOICE: trombone_dismissive_medium_v2
-  QUAY DOCKER: "Tide's been slack since six. Nothing's moving today that wasn't stuck yesterday."
+  QUAY DOCKER: "Nothing moving today that wasn't stuck yesterday. Mind the cleats."
 
 TOPIC: naomi_sighting
   GATE: evidence(naomi) AND NOT topic_done(quay_docker, naomi_sighting)

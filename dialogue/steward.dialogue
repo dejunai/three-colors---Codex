@@ -18,6 +18,43 @@ TOPIC: default
   THE STEWARD: "I asked you to leave your badge behind."
 
 TOPIC: default
+  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead))
+  TAG: steward_repeat_sideboard
+  WEIGHT: 3
+  [The steward continues wiping down the mahogany sideboard with slow, circular strokes.]
+  VOICE: trombone_neutral_medium_v1
+  THE STEWARD: "Ask what you came to ask, Walter. The glasses don't dry themselves."
+
+TOPIC: default
+  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead))
+  TAG: steward_repeat_quiet
+  WEIGHT: 2
+  VOICE: trombone_bureaucratic_short_v1
+  THE STEWARD: "The room is quiet today. State your business."
+
+TOPIC: default
+  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead))
+  TAG: steward_repeat_hall
+  WEIGHT: 1
+  VOICE: trombone_cautious_short_v1
+  THE STEWARD: "Speak low, Officer. Sound carries in an empty hall."
+
+TOPIC: default
+  GATE: topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead)
+  TAG: steward_exhausted_doors
+  WEIGHT: 3
+  VOICE: trombone_neutral_short_v1
+  THE STEWARD: "The household has answered enough questions, Walter. Some doors remain service doors."
+
+TOPIC: default
+  GATE: topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead)
+  TAG: steward_exhausted_goblet
+  WEIGHT: 2
+  [He sets down a dry wine goblet, perfectly aligned with the row behind it.]
+  VOICE: trombone_dismissive_short_v2
+  THE STEWARD: "You have the day-book entry and the direction to the pantry. I have nothing further to offer a policeman."
+
+TOPIC: default
   GATE: day < 3 AND evidence(service_work)
   TAG: steward_first_lead
   TIME: 4

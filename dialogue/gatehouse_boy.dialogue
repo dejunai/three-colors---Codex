@@ -5,11 +5,27 @@ LOCATION: estate
 TOPIC: default
   GATE: estate_complete
   TAG: boy_return
+  WEIGHT: 3
   VOICE: violin_neutral_long_v1
   THE GATEHOUSE BOY: "The wagon's been and gone. The captain and the coroner's man went right with the bodies."
   WALTER CORWIN: "And the gardener?"
   VOICE: violin_cautious_long_v2
   THE GATEHOUSE BOY: "Over yonder, just beside the drive below the hedge. He's back at his work."
+
+TOPIC: default
+  GATE: estate_complete
+  TAG: boy_return_cold
+  WEIGHT: 2
+  [The boy shivers in his thin coat, watching the empty carriage drive.]
+  VOICE: violin_cautious_medium_v1
+  THE GATEHOUSE BOY: "The gardener's still down by the hedge. Nobody's come up from town yet."
+
+TOPIC: default
+  GATE: estate_complete
+  TAG: boy_return_post
+  WEIGHT: 1
+  VOICE: violin_neutral_short_v1
+  THE GATEHOUSE BOY: "I'm not supposed to leave the gate, Officer. That's what the captain told me."
 
 TOPIC: default
   GATE: visit_count(boy) >= 2

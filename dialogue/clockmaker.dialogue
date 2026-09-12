@@ -22,6 +22,43 @@ TOPIC: default
   VOICE: trombone_bureaucratic_medium_v2
   MR. VANE: "Then state your gear, Officer. A balance wheel waits for no man."
 
+TOPIC: default
+  GATE: visit_count(clockmaker) >= 2 AND NOT (topic_done(clockmaker, the_stopped_watch) AND topic_done(clockmaker, tryworks_instruments))
+  TAG: clockmaker_repeat_pendulum
+  WEIGHT: 3
+  VOICE: trombone_bureaucratic_short_v2
+  MR. VANE: "The door draft disturbs the regulator, Officer. Close it firmly."
+
+TOPIC: default
+  GATE: visit_count(clockmaker) >= 2 AND NOT (topic_done(clockmaker, the_stopped_watch) AND topic_done(clockmaker, tryworks_instruments))
+  TAG: clockmaker_repeat_tweezers
+  WEIGHT: 2
+  [He remains bent over the jeweler's block, a tiny brass pinion balanced between his tweezers.]
+  VOICE: trombone_neutral_short_v1
+  MR. VANE: "Speak from the counter, Walter. My breath is timed to this escapement."
+
+TOPIC: default
+  GATE: visit_count(clockmaker) >= 2 AND NOT (topic_done(clockmaker, the_stopped_watch) AND topic_done(clockmaker, tryworks_instruments))
+  TAG: clockmaker_repeat_escapement
+  WEIGHT: 1
+  VOICE: trombone_neutral_medium_v2
+  MR. VANE: "If a spring hasn't broken, what brings you back?"
+
+TOPIC: default
+  GATE: topic_done(clockmaker, the_stopped_watch) AND topic_done(clockmaker, tryworks_instruments)
+  TAG: clockmaker_exhausted_oil
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v1
+  MR. VANE: "I have said what mechanical inspection permits. The bench is occupied."
+
+TOPIC: default
+  GATE: topic_done(clockmaker, the_stopped_watch) AND topic_done(clockmaker, tryworks_instruments)
+  TAG: clockmaker_exhausted_eyeglass
+  WEIGHT: 2
+  [He does not remove the eyeglass from his socket.]
+  VOICE: trombone_bureaucratic_short_v1
+  MR. VANE: "There are no further dials for you here, Officer."
+
 TOPIC: the_stopped_watch
   GATE: evidence(watch)
   TAG: clockmaker_watch

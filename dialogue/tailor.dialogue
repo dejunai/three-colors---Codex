@@ -22,6 +22,43 @@ TOPIC: default
   VOICE: trombone_neutral_short_v1
   MR. KREBS: "Ah. The mourning cloths. A dreadful business."
 
+TOPIC: default
+  GATE: visit_count(tailor) >= 2 AND NOT (topic_done(tailor, cut_jackets) AND topic_done(tailor, coat_lining))
+  TAG: tailor_repeat_shears
+  WEIGHT: 3
+  [The heavy tailor's shears snip steadily through dark broadcloth on the cutting table.]
+  VOICE: trombone_neutral_short_v1
+  MR. KREBS: "Careful of the chalk lines, Officer."
+
+TOPIC: default
+  GATE: visit_count(tailor) >= 2 AND NOT (topic_done(tailor, cut_jackets) AND topic_done(tailor, coat_lining))
+  TAG: tailor_repeat_tape
+  WEIGHT: 2
+  VOICE: trombone_neutral_medium_v1
+  MR. KREBS: "More questions about cloth? Measurements are measurements; they don't stretch."
+
+TOPIC: default
+  GATE: visit_count(tailor) >= 2 AND NOT (topic_done(tailor, cut_jackets) AND topic_done(tailor, coat_lining))
+  TAG: tailor_repeat_iron
+  WEIGHT: 1
+  VOICE: trombone_bureaucratic_short_v2
+  MR. KREBS: "Mind the pressing iron on the coal stove. It's hot enough to blister serge."
+
+TOPIC: default
+  GATE: topic_done(tailor, cut_jackets) AND topic_done(tailor, coat_lining)
+  TAG: tailor_exhausted_hems
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v1
+  MR. KREBS: "I have two coats for the county attorney to finish by Friday. Good day, Walter."
+
+TOPIC: default
+  GATE: topic_done(tailor, cut_jackets) AND topic_done(tailor, coat_lining)
+  TAG: tailor_exhausted_quiet
+  WEIGHT: 2
+  [Mr. Krebs threads a curved needle with black silk, his back turned to the door.]
+  VOICE: trombone_neutral_short_v2
+  MR. KREBS: "No more coats to discuss. The order is filed."
+
 TOPIC: cut_jackets
   GATE: always
   TAG: tailor_five_jackets

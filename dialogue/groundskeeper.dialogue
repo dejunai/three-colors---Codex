@@ -3,7 +3,7 @@ NPC: crew
 LOCATION: estate
 
 TOPIC: default
-  GATE: always
+  GATE: NOT topic_done(crew, default)
   TAG: crew
   THE KITCHEN WING YARD: "A groundskeeper stacks crates beside a banked fire, working fast in the cold. The service door stands a few feet off. He never sets a crate nearer to it than the last."
   WALTER CORWIN: "Something wrong with the door?"
@@ -11,6 +11,36 @@ TOPIC: default
   THE GROUNDSKEEPER: "Uneven step. Easy to turn an ankle in this light.\n\nMind the same on your way out."
   WALTER'S NOTEBOOK: "The distance he keeps is exact, not nervous. He named a reason before Walter asked for one, then went back to the crates without slowing down.\n\nThe observation is exact. The reason he gave may not be."
   EVIDENCE: crew
+
+TOPIC: default
+  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench)
+  TAG: crew_repeat_footing
+  WEIGHT: 3
+  VOICE: trombone_cautious_short_v1
+  THE GROUNDSKEEPER: "Uneven step by that kitchen door. Mind your footing on the flagstones."
+
+TOPIC: default
+  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench)
+  TAG: crew_repeat_crates
+  WEIGHT: 2
+  [He stacks another cabbage crate with loud, deliberate rhythm.]
+  VOICE: trombone_neutral_medium_v1
+  THE GROUNDSKEEPER: "The cartway's busy, Officer. Stand clear of the wheels."
+
+TOPIC: default
+  GATE: topic_done(crew, perimeter_trench)
+  TAG: crew_exhausted_sulfur
+  WEIGHT: 3
+  VOICE: trombone_cautious_short_v2
+  THE GROUNDSKEEPER: "Keep on the path, Walter. You're kicking the sulfur into the grass."
+
+TOPIC: default
+  GATE: topic_done(crew, perimeter_trench)
+  TAG: crew_exhausted_boundary
+  WEIGHT: 2
+  [He stays thirty paces back from the kitchen door, eyes fixed on the trench line.]
+  VOICE: trombone_dismissive_short_v1
+  THE GROUNDSKEEPER: "You've got your notes. Let the yard be."
 
 TOPIC: perimeter_trench
   GATE: evidence(crew) AND NOT topic_done(crew, perimeter_trench)

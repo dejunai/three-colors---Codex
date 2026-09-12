@@ -12,6 +12,36 @@ TOPIC: default
   VOICE: trombone_neutral_medium_v1
   MASON: "High water comes at quarter past five.\nIf you're going to stand on that timber, watch your step."
 
+TOPIC: default
+  GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring))
+  TAG: observer_repeat_chisel
+  WEIGHT: 3
+  [The chisel strikes the granite seam with a flat, dull ring.]
+  VOICE: trombone_neutral_short_v1
+  MASON: "High water comes at quarter past five. Watch your step on the timber."
+
+TOPIC: default
+  GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring))
+  TAG: observer_repeat_stone
+  WEIGHT: 2
+  VOICE: trombone_neutral_medium_v2
+  MASON: "A sensible man doesn't ask twice about stone he doesn't own."
+
+TOPIC: default
+  GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)
+  TAG: observer_exhausted_mud
+  WEIGHT: 3
+  [He chips mortar with steady, measured strokes, his anchor ring gleaming dull umber.]
+  VOICE: trombone_haunting_medium_v1
+  MASON: "We leave the mud where it settled, Walter. You should do the same."
+
+TOPIC: default
+  GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)
+  TAG: observer_exhausted_tide
+  WEIGHT: 2
+  VOICE: trombone_neutral_short_v2
+  MASON: "The tide is making. Go home."
+
 TOPIC: estate_grounds_crew
   GATE: always
   TAG: observer_estate_crew

@@ -22,6 +22,43 @@ TOPIC: default
   VOICE: trombone_bureaucratic_medium_v1
   MR. FINCH: "Then I hope you're here as a paying customer.\nA shop runs on sales, Officer, not on town curiosity."
 
+TOPIC: default
+  GATE: visit_count(stationer) >= 2 AND NOT (topic_done(stationer, the_corkboard_twine) AND topic_done(stationer, fenn_orders) AND topic_done(stationer, naomi_supplies))
+  TAG: stationer_repeat_ledger
+  WEIGHT: 3
+  VOICE: trombone_neutral_short_v1
+  MR. FINCH: "Ink, blotters, or more twine for your case, Walter?"
+
+TOPIC: default
+  GATE: visit_count(stationer) >= 2 AND NOT (topic_done(stationer, the_corkboard_twine) AND topic_done(stationer, fenn_orders) AND topic_done(stationer, naomi_supplies))
+  TAG: stationer_repeat_paper
+  WEIGHT: 2
+  [He trims the edge of a stack of foolscap with a heavy cast-iron guillotine shear.]
+  VOICE: trombone_neutral_medium_v1
+  MR. FINCH: "Step back from the shear. What else needs recording?"
+
+TOPIC: default
+  GATE: visit_count(stationer) >= 2 AND NOT (topic_done(stationer, the_corkboard_twine) AND topic_done(stationer, fenn_orders) AND topic_done(stationer, naomi_supplies))
+  TAG: stationer_repeat_quill
+  WEIGHT: 1
+  VOICE: trombone_bureaucratic_short_v2
+  MR. FINCH: "The ledgers don't change between morning and midday, Officer."
+
+TOPIC: default
+  GATE: topic_done(stationer, the_corkboard_twine) AND topic_done(stationer, fenn_orders) AND topic_done(stationer, naomi_supplies)
+  TAG: stationer_exhausted_ink
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v1
+  MR. FINCH: "The stock is accounted for, Walter. If you don't need paper, let the trade go on."
+
+TOPIC: default
+  GATE: topic_done(stationer, the_corkboard_twine) AND topic_done(stationer, fenn_orders) AND topic_done(stationer, naomi_supplies)
+  TAG: stationer_exhausted_quiet
+  WEIGHT: 2
+  [He dips a steel pen in black ink, blotting the nib with practiced ease.]
+  VOICE: trombone_neutral_short_v2
+  MR. FINCH: "Nothing more in the day-books. You've seen the whole of it."
+
 TOPIC: the_corkboard_twine
   GATE: always
   TAG: stationer_twine
