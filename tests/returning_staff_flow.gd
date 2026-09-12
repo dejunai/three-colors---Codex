@@ -2,6 +2,8 @@ extends SceneTree
 func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var catalog=load("res://scripts/chapters/dialogue_catalog.gd").new()
+	assert(catalog.RETURNING_STAFF.has("coroners_assistant_morgue"))
+	assert(not catalog.RETURNING_STAFF.has("assistant_morgue"))
 	var state=load("res://case_state.gd").new()
 	for npc in catalog.RETURNING_STAFF:
 		var location=catalog.RETURNING_STAFF[npc][0]

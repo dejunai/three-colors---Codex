@@ -39,6 +39,9 @@ func run() -> void:
 			count+=1
 	# Every added resident has at least one reachable location and real interaction.
 	for actor in g.scripted_dialogue.extra_actors:
+		if catalog.RETURNING_STAFF.has(actor):
+			g.state.day=3
+			g.state.estate_complete=true
 		g.state.clock_minutes=360
 		var spot=catalog.slot(actor,g.state)
 		assert(not spot.is_empty())

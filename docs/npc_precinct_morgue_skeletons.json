@@ -132,7 +132,7 @@
       }
     ]
   },
-  "assistant_morgue": {
+  "coroners_assistant_morgue": {
     "color": "#8888cc",
     "label": "Coroner's Assistant",
     "location": "morgue",
@@ -142,7 +142,7 @@
       "evening": "closed",
       "night": "closed"
     },
-    "source": "dialogue/assistant_morgue.dialogue",
+    "source": "dialogue/coroners_assistant_morgue.dialogue",
     "topics": [
       {
         "gate": {
@@ -161,7 +161,7 @@
             "text": "PLACEHOLDER — first line at the morgue. Replace before ship."
           }
         ],
-        "tag": "assistant_morgue_default",
+        "tag": "coroners_assistant_morgue_default",
         "timing": "0"
       },
       {
@@ -180,7 +180,7 @@
           "right": {
             "expr": {
               "args": [
-                "assistant_morgue",
+                "coroners_assistant_morgue",
                 "PLACEHOLDER_TOPIC_ID"
               ],
               "call": true,
@@ -192,7 +192,7 @@
             "op": "not"
           }
         },
-        "gate_src": "evidence(some_evidence_found_at_estate) AND NOT topic_done(assistant_morgue, PLACEHOLDER_TOPIC_ID)",
+        "gate_src": "evidence(some_evidence_found_at_estate) AND NOT topic_done(coroners_assistant_morgue, PLACEHOLDER_TOPIC_ID)",
         "id": "PLACEHOLDER_TOPIC_ID",
         "label": "PLACEHOLDER — ask about the wounds/bodies using estate evidence as the key",
         "line": 8,
@@ -210,7 +210,7 @@
             "text": "PLACEHOLDER — assistant's clinical answer."
           }
         ],
-        "tag": "assistant_morgue_PLACEHOLDER",
+        "tag": "coroners_assistant_morgue_PLACEHOLDER",
         "timing": "2"
       }
     ]

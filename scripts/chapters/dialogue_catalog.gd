@@ -27,7 +27,7 @@ const SLOTS = {
 	"chapel_path":["upper",Vector3(17,0,12)], "whitlock_orangery":["upper",Vector3(22,0,18)],
 	"charity_hall":["upper",Vector3(20,0,16)]
 }
-const RETURNING_STAFF = {"odell_precinct":["precinct",Vector3(3.8,0,1)], "assistant_morgue":["morgue",Vector3(1.6,0,-1)]}
+const RETURNING_STAFF = {"odell_precinct":["precinct",Vector3(3.8,0,1)], "coroners_assistant_morgue":["morgue",Vector3(1.6,0,-1)]}
 var definitions: Dictionary = {}
 var paths: Dictionary = {}
 var titles: Dictionary = {}

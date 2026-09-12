@@ -3,7 +3,7 @@ LOCATION: morgue
 SCHEDULE: morning=morgue, midday=morgue, evening=morgue, night=closed
 
 TOPIC: day_two_table
-  GATE: day >= 2 AND NOT topic_done(assistant, day_two_table)
+  GATE: day >= 2 AND NOT topic_done(coroners_assistant_morgue, day_two_table)
   TAG: assistant_day_two
   LABEL: "Return to the morgue"
   TIME: 5
@@ -19,7 +19,7 @@ TOPIC: day_two_table
   EVIDENCE: no_water_lungs
 
 TOPIC: day_three_table
-  GATE: day >= 3 AND evidence(no_water_lungs) AND NOT topic_done(assistant, day_three_table)
+  GATE: day >= 3 AND evidence(no_water_lungs) AND NOT topic_done(coroners_assistant_morgue, day_three_table)
   TAG: assistant_day_three
   LABEL: "Ask what the registrar's disposition found"
   TIME: 4

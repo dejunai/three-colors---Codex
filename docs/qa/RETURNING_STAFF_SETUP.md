@@ -12,10 +12,10 @@ LOCATION: precinct
 SCHEDULE: morning=precinct, midday=precinct, evening=closed, night=closed
 ```
 
-`dialogue/assistant_morgue.dialogue`:
+`dialogue/coroners_assistant_morgue.dialogue`:
 
 ```text
-NPC: assistant_morgue
+NPC: coroners_assistant_morgue
 LOCATION: morgue
 SCHEDULE: morning=morgue, midday=morgue, evening=closed, night=closed
 ```
@@ -28,7 +28,7 @@ Replace placeholder topic IDs and prerequisites with real IDs. Add EVIDENCE only
 
 ## Prepared integration
 
-The catalog reserves a precinct position (3.8,0,1) for odell_precinct and a morgue aisle position (1.6,0,-1) for assistant_morgue, separate from the intake clerk and coroner. Both require day >= 2 and estate_complete. Existing time schedules still control working hours; night remains closed. With the current montage, day-three visits are the playable use of these placements.
+The catalog reserves a precinct position (3.8,0,1) for odell_precinct and a morgue aisle position (1.6,0,-1) for coroners_assistant_morgue, separate from the intake clerk and coroner. Both require day >= 2 and estate_complete. Existing time schedules still control working hours; night remains closed. With the current montage, day-three visits are the playable use of these placements.
 
 The population cache now also checks day and estate completion, so story changes cannot leave stale actors solely because the room and time phase are unchanged. No new general scheduling syntax or save fields are introduced. The original estate actors retain their existing departure rules.
 
