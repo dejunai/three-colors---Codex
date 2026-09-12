@@ -5,7 +5,7 @@ LOCATION: precinct
 SCHEDULE: morning=precinct, midday=precinct, evening=precinct, night=closed
 
 TOPIC: day_two_check
-  GATE: day >= 2 AND day <= 2 AND NOT topic_done(odell, day_two_check)
+  GATE: day >= 2 AND day <= 2 AND NOT topic_done(odell_precinct, day_two_check)
   TAG: odell_day_two
   LABEL: "Report progress to the captain"
   TIME: 4
@@ -24,7 +24,7 @@ TOPIC: day_two_check
   NOTEBOOK: odell_day_two | "Odell wants a written supplemental by four. He did not acknowledge Naomi or the boy as part of the count. He did not tell Walter to stop."
 
 TOPIC: day_two_pressure
-  GATE: day >= 2 AND (evidence(insurance_fraud_record) OR evidence(bulk_opium_spirits)) AND NOT topic_done(odell, day_two_pressure)
+  GATE: day >= 2 AND (evidence(insurance_fraud_record) OR evidence(bulk_opium_spirits)) AND NOT topic_done(odell_precinct, day_two_pressure)
   TAG: odell_day_two_pressure
   LABEL: "Raise the insurance records with Odell"
   TIME: 5
@@ -41,7 +41,7 @@ TOPIC: day_two_pressure
   NOTEBOOK: odell_pressure | "Odell knew immediately what record Walter meant. He did not deny its contents. He redirected."
 
 TOPIC: day_three_final
-  GATE: day >= 3 AND NOT topic_done(odell, day_three_final)
+  GATE: day >= 3 AND NOT topic_done(odell_precinct, day_three_final)
   TAG: odell_day_three
   LABEL: "Face Odell on Day 3"
   TIME: 6
