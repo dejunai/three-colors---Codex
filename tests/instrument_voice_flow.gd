@@ -1,6 +1,6 @@
 extends SceneTree
 
-const ESTATE_FILES = ["gatehouse_boy", "coroners_assistant", "gardener", "groundskeeper", "odell"]
+const SILENT_SPEAKERS = ["WALTER CORWIN", "WALTER'S NOTEBOOK", "THE KITCHEN WING YARD", "THE COVERING LETTER", "THE DAY BOOK", "THE GAZETTE — CORRECTION", "OUTSIDE THE SHUTTERED SHOP", "A CLEAN READ", "THE SMOKING LOUNGE"]
 
 func _initialize() -> void:
 	call_deferred("run")
@@ -15,19 +15,20 @@ func run() -> void:
 	Runtime._validate_voice_cues("VOICE: trombone_typo_medium_v1\nTEST: \"No.\"", unknown_errors)
 	assert(unknown_errors.size() == 1 and String(unknown_errors[0].message).contains("Unknown VOICE cue"), "Unknown cue must fail manifest validation")
 	var voice_cues: Array[String] = []
+	var unvoiced_npc_lines: Array[String] = []
+	var speaker_instruments: Dictionary = {}
 	for filename in DirAccess.get_files_at("res://dialogue"):
 		if not filename.ends_with(".dialogue"): continue
 		var definition = Runtime.load_npc("res://dialogue/" + filename)
 		assert(definition.errors.is_empty(), "%s: %s" % [filename, definition.errors])
-		var before = voice_cues.size()
+		if filename == "background_npc_template.dialogue": continue
 		for topic in definition.topics:
-			_collect_voice_cues(topic.steps, voice_cues)
-		if voice_cues.size() > before:
-			assert(ESTATE_FILES.has(filename.trim_suffix(".dialogue")), "Audition escaped estate scope: " + filename)
+			_audit_voice_cues(topic.steps, filename, voice_cues, unvoiced_npc_lines, speaker_instruments)
 	for cue in voice_cues:
 		assert(cue.is_valid_identifier())
 		assert(ResourceLoader.exists("res://assets/audio/instrument_voices/" + cue + ".wav"), "Missing " + cue)
-	assert(voice_cues.size() == 17, "Expected the limited full-library estate audition set")
+	assert(unvoiced_npc_lines.is_empty(), "Every authored NPC line must have a voice cue: %s" % [unvoiced_npc_lines])
+	assert(voice_cues.size() == 403, "Expected every current NPC line to be seeded")
 	var fixture = load("res://scripts/shared/dialogue_lang.gd").parse("NPC: test\nLOCATION: estate\nTOPIC: default\n  GATE: always\n  VOICE: violin_cautious_medium_v1\n  TEST: \"One line.\"\n")
 	assert(fixture.errors.is_empty())
 	var rendered = Runtime.render("test", fixture.topics[0], null)
@@ -50,11 +51,24 @@ func run() -> void:
 	g.settings.instrument_voice_volume = 0.0
 	g._play_instrument_voice("trombone_bureaucratic_medium_v1")
 	assert(not g.instrument_voice_player.playing, "Zero instrument voice volume must mute cues")
-	print("INSTRUMENT VOICE PASS: DSL, estate cues, asset safety, playback stop, independent mute")
+	print("INSTRUMENT VOICE PASS: 144-cue manifest, 403 NPC lines, character consistency, playback stop, independent mute")
 	quit()
 
-func _collect_voice_cues(steps:Array,cues:Array[String]) -> void:
+func _audit_voice_cues(steps:Array,filename:String,cues:Array[String],unvoiced:Array[String],instruments:Dictionary) -> void:
 	for step in steps:
-		if step.kind == "line" and not String(step.get("voice", "")).is_empty(): cues.append(String(step.voice))
+		if step.kind == "line":
+			var speaker = String(step.get("speaker", ""))
+			var cue = String(step.get("voice", ""))
+			if speaker in SILENT_SPEAKERS or bool(step.get("player", false)):
+				assert(cue.is_empty(), "Silent/player line was voiced: %s / %s" % [filename, speaker])
+				continue
+			if cue.is_empty():
+				unvoiced.append("%s / %s" % [filename, speaker])
+				continue
+			cues.append(cue)
+			var instrument = cue.get_slice("_", 0)
+			if instruments.has(speaker):
+				assert(instruments[speaker] == instrument, "Character changed instruments: %s" % speaker)
+			else: instruments[speaker] = instrument
 		elif step.kind == "fork":
-			for option in step.options: _collect_voice_cues(option.steps,cues)
+			for option in step.options: _audit_voice_cues(option.steps, filename, cues, unvoiced, instruments)

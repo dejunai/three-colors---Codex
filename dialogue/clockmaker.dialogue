@@ -7,15 +7,19 @@ SCHEDULE: morning=repairer, midday=repairer, evening=repairer, night=closed
 TOPIC: default
   GATE: NOT topic_done(clockmaker, default) AND coat = plain
   TAG: clockmaker_plain
+  VOICE: trombone_neutral_short_v1
   MR. VANE: "Do not touch the regulator on the wall."
   [The watchmaker works with an eyeglass screwed into his right orbit, tweezers poised over an open brass movement.]
+  VOICE: trombone_bureaucratic_medium_v2
   MR. VANE: "The pendulum is calibrated to county mean time. If you have an uncoiled mainspring, set it in the tin dish by the lamp."
 
 TOPIC: default
   GATE: NOT topic_done(clockmaker, default)
   TAG: clockmaker_badge
+  VOICE: trombone_haunting_medium_v1
   MR. VANE: "Officer Corwin. I told Captain Odell two years ago that the precinct hall clock gains four minutes a week because of the coal stove beneath it."
   WALTER CORWIN: "I'm not here about the hall clock, Mr. Vane."
+  VOICE: trombone_bureaucratic_medium_v2
   MR. VANE: "Then state your gear, Officer. A balance wheel waits for no man."
 
 TOPIC: the_stopped_watch
@@ -25,16 +29,22 @@ TOPIC: the_stopped_watch
   TIME: 8
   WALTER CORWIN: "A gold pocket watch. Found on a body in the rose garden.\nHands stopped at precisely 3:17."
   [Mr. Vane takes the watch with jeweler's tissue, turns it under the magnifier, and taps the balance cock.]
+  VOICE: trombone_neutral_medium_v2
   MR. VANE: "English lever movement. London hallmark, circa 1840. The mainspring is fully wound."
   WALTER CORWIN: "Then why did it stop?"
+  VOICE: trombone_neutral_medium_v1
   MR. VANE: "The balance staff didn't break, Walter. The hairspring fused."
   WALTER CORWIN: "Fused?"
+  VOICE: trombone_neutral_medium_v2
   MR. VANE: "The blued steel coils appear joined at three points. I can show you under the glass. I cannot tell you what joined them."
   WALTER CORWIN: "Does that tell you when it stopped?"
+  VOICE: trombone_neutral_medium_v1
   MR. VANE: "It tells me why it cannot run now. The hands are not a certificate of the hour it failed."
   [He pauses, looking up from the loupe with pale, watering eyes.]
+  VOICE: trombone_neutral_medium_v2
   MR. VANE: "Though if you want an hour, ask why Judge Wexford, Mr. Corliss, and Dr. Fenn brought me their watches last Thursday."
   WALTER CORWIN: "To be cleaned?"
+  VOICE: trombone_neutral_long_v1
   MR. VANE: "To have the second hands removed. Plucked out with tweezers and left in my scrap bin.\nThree men on the same afternoon. They said the jumping of the hand made their parlors too loud."
   NOTEBOOK: clockmaker_watch_1 | "Vane showed fused hairspring in the stopped watch. Revealed Wexford, Corliss, and Fenn had their watches' second hands removed last Thursday: 'the jumping of the hand made their parlors too loud.'"
   EVIDENCE: fused_hairspring_anomaly
@@ -45,10 +55,13 @@ TOPIC: tryworks_instruments
   LABEL: "Ask about old navigational instruments from the fleet"
   TIME: 6
   WALTER CORWIN: "Do you ever see brass work from the 1823 whaling fleet?"
+  VOICE: trombone_neutral_medium_v2
   MR. VANE: "The Ophion carried sextants by Troughton of London. Very fine brass, hand-divided silver arcs."
   [He sets down his tweezers and removes the loupe.]
+  VOICE: trombone_neutral_medium_v1
   MR. VANE: "A laborer brought me a vernier index two seasons back. Found in the silt off the point.\nHe asked me to polish the verdigris off."
   WALTER CORWIN: "Did you?"
+  VOICE: trombone_weary_long_v1
   MR. VANE: "The acid wouldn't touch it. Salt water leaves green crust, Walter. This was dark grey, slick as oil, and smelled of sulphur.\nI gave it back to him. Some metals have had enough done to them."
   NOTEBOOK: clockmaker_instruments_1 | "Watchmaker examined a fleet vernier index from the silt: coated in dark, acid-resistant grey patina that smelled of sulphur."
   EVIDENCE: tryworks_metal_patina

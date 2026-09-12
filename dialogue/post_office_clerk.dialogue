@@ -7,15 +7,19 @@ SCHEDULE: morning=post_office, midday=post_office, evening=post_office, night=cl
 TOPIC: default
   GATE: NOT topic_done(post_office_clerk, default) AND coat = plain
   TAG: postal_plain
+  VOICE: trombone_neutral_short_v2
   MR. CRUMP: "Window closes at five sharp."
   [He thumps a circular cancellation stamp onto an envelope with rhythmic precision.]
+  VOICE: trombone_neutral_medium_v1
   MR. CRUMP: "General delivery to the left, money orders and parcel post to the right.\nHave your postage counted before you reach the brass grate."
 
 TOPIC: default
   GATE: NOT topic_done(post_office_clerk, default)
   TAG: postal_badge
+  VOICE: trombone_bureaucratic_medium_v2
   MR. CRUMP: "Officer. If this is official mail for Captain Odell, the precinct pouch went out at eight."
   WALTER CORWIN: "I'm asking about general delivery."
+  VOICE: trombone_neutral_medium_v1
   MR. CRUMP: "Federal mail is confidential by act of Congress, Corwin.\nUnless you have a warrant signed by a federal magistrate."
 
 TOPIC: naomi_letters
@@ -24,13 +28,17 @@ TOPIC: naomi_letters
   LABEL: "Inquire about mail held for Naomi Freeman"
   TIME: 7
   WALTER CORWIN: "Naomi Freeman. Did she receive mail in general delivery before she died?"
+  VOICE: trombone_neutral_short_v1
   MR. CRUMP: "Two letters. Both from New Bedford."
   WALTER CORWIN: "Who sent them?"
   [Mr. Crump flips through a cubby of uncollected yellowed envelopes behind the brass grille.]
+  VOICE: trombone_neutral_medium_v2
   MR. CRUMP: "Postmarked three weeks ago. Addressed in a schoolchild's round hand, with adult corrections in pencil."
   WALTER CORWIN: "What did the return address say?"
+  VOICE: trombone_neutral_medium_v2
   MR. CRUMP: "'Freeman, care of Bethel Mission, New Bedford.'\nOne was marked 'For Mama and Brother.'"
   WALTER CORWIN: "There's someone at that mission still waiting on an answer that isn't coming."
+  VOICE: trombone_alarmed_medium_v1
   MR. CRUMP: "Then he will wait until the ninety-day unclaimed window expires, Officer.\nThen regulations require me to return them to the dead-letter office in Washington."
   NOTEBOOK: postal_naomi_1 | "Post office holds two letters from New Bedford for Naomi Freeman, addressed from a child via Bethel Mission: 'For Mama and Brother.'"
   EVIDENCE: new_bedford_letters
@@ -41,14 +49,17 @@ TOPIC: ophion_club_mail
   LABEL: "Ask about correspondence received by the Ophion Club"
   TIME: 6
   WALTER CORWIN: "The private post for the Ophion Club. Who collects it?"
+  VOICE: trombone_neutral_medium_v2
   MR. CRUMP: "The steward. Every Tuesday morning with a leather locking pouch."
   WALTER CORWIN: "Where does their outside mail originate?"
   FORK:
     CHOICE: "Ask about foreign post."
+      VOICE: trombone_neutral_long_v1
       MR. CRUMP: "Heavy packets from Liverpool and Smyrna. Burlap-wrapped parcels stamped by maritime customs in Boston.\nAlways insured to the maximum ceiling. Smelled of camphor and dry brine."
       NOTEBOOK: postal_foreign_packets | "Ophion Club received heavy insured parcels from Liverpool and Smyrna, smelling of camphor and brine."
       EVIDENCE: club_foreign_freight
     CHOICE: "Ask about banking correspondence."
+      VOICE: trombone_neutral_long_v2
       MR. CRUMP: "Drafts from the Boston Marine Bank. Monthly registered statements addressed to 'The Overseer.'\nNever an individual's name on the envelope. Just the box number and that title."
       NOTEBOOK: postal_overseer_drafts | "Monthly registered bank drafts arrived from Boston Marine Bank addressed solely to 'The Overseer.'"
       EVIDENCE: postal_overseer_statements
@@ -60,8 +71,10 @@ TOPIC: holding_the_letters
   TIME: 5
   WALTER CORWIN: "Hand over the letters from the boy. They're material to a murder investigation."
   [Mr. Crump slides the cubby drawer shut with a deliberate wooden snap.]
+  VOICE: trombone_alarmed_long_v1
   MR. CRUMP: "Section 3891 of the Revised Statutes, Officer. A local policeman cannot seize federal post without judicial subpoena.\nCaptain Odell knows the law even if his beat patrol doesn't."
   WALTER CORWIN: "The woman is in the morgue, Crump. The child who wrote them is six years old."
+  VOICE: trombone_bureaucratic_medium_v1
   MR. CRUMP: "The United States Post Office does not alter postal statutes because a patron suffered a misfortune, Corwin.\nBring me a federal order, or leave the window."
   NOTEBOOK: postal_refusal_1 | "Postmaster refused to surrender Naomi's letters from her six-year-old son, citing federal postal statute Section 3891."
   EVIDENCE: postal_bureaucracy_refusal
@@ -73,7 +86,9 @@ TOPIC: crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 3
   WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  VOICE: trombone_neutral_medium_v2
   MR. CRUMP: "I deliver the Historical Society's circulars. I don't compose them."
   WALTER CORWIN: "You have never wondered whose names are missing?"
+  VOICE: trombone_bureaucratic_medium_v2
   MR. CRUMP: "I have a queue, Officer. The museum can answer for its own envelopes."
   NOTEBOOK: crew_omission_refusal | "Asked Mr. Crump why the crew's names are missing from the town's history. No explanation supplied; the question remains open."

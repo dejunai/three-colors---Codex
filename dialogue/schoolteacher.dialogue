@@ -7,15 +7,19 @@ SCHEDULE: morning=schoolhouse, midday=schoolhouse, evening=upper_house_2, night=
 TOPIC: default
   GATE: NOT topic_done(schoolteacher, default) AND coat = plain
   TAG: teacher_plain
+  VOICE: violin_pleading_medium_v2
   MISS HALLOWELL: "Please leave the children's desks as you found them."
   [She dusts chalk from her cuffs with small, sharp motions, looking over the empty rows of wooden desks.]
+  VOICE: violin_neutral_medium_v1
   MISS HALLOWELL: "If you're a parent inquiring about reading primers, speak to the school board on Tuesday.\n\nOtherwise, I am grading geography slates."
 
 TOPIC: default
   GATE: NOT topic_done(schoolteacher, default)
   TAG: teacher_badge
+  VOICE: violin_bureaucratic_medium_v2
   MISS HALLOWELL: "Officer Corwin. I hope you haven't come to disturb the children with talk of the garden."
   WALTER CORWIN: "The children know?"
+  VOICE: violin_conspiratorial_long_v1
   MISS HALLOWELL: "A town like this doesn't need to speak a thing for a child to hear it.\nThey arrived quiet as mice this morning. I had them recite the county psalm twice."
 
 TOPIC: town_founding
@@ -24,10 +28,13 @@ TOPIC: town_founding
   LABEL: "Ask how the town's history is taught to the children"
   TIME: 5
   WALTER CORWIN: "What does the school reader say about the Ophion?"
+  VOICE: violin_neutral_medium_v1
   MISS HALLOWELL: "The reader says what is fitting for young minds to absorb."
   [She points a piece of chalk toward a slate map of the Massachusetts coast on the wall.]
+  VOICE: violin_neutral_long_v2
   MISS HALLOWELL: "It says a tempest overtook our whaling fleet in the winter of 1823.\nIt says Christian fortitude and the generosity of our founding estates preserved Widow's Bight from ruin."
   WALTER CORWIN: "Does it mention the crew?"
+  VOICE: violin_haunting_medium_v1
   MISS HALLOWELL: "'The sea received its harvest,' Officer. Chapter Four, page twelve.\nA beautiful sentence. It gives the loss dignity."
   NOTEBOOK: teacher_founding_1 | "School curriculum teaches the 1823 fleet disaster as a noble sacrifice redeemed by founding estates' charity: 'The sea received its harvest.'"
   EVIDENCE: sanitized_textbook
@@ -37,10 +44,13 @@ TOPIC: the_drowned_island
   TAG: teacher_island
   LABEL: "Ask whether the children ever ask about the island ruins"
   TIME: 5
+  VOICE: violin_neutral_medium_v2
   MISS HALLOWELL: "Children have foolish fancies. They frighten each other with dares about rowboats."
   WALTER CORWIN: "What do you tell them?"
+  VOICE: violin_neutral_medium_v1
   MISS HALLOWELL: "I tell them the island is mud and rotting timbers, and that curious children fall into cisterns."
   [She pauses, setting her chalk in the wooden groove.]
+  VOICE: violin_haunting_long_v1
   MISS HALLOWELL: "The harbor children don't ask, of course. Their parents teach them earlier than I can.\nThey sit in the back row with their slates and never look east out the window. It is remarkably difficult to teach a child who refuses to turn his head toward the sea."
   NOTEBOOK: teacher_island_1 | "Schoolteacher notes harbor children are taught at home never to look east toward the drowned island: 'They refuse to turn their heads toward the sea.'"
   EVIDENCE: harbor_children_discipline
@@ -51,18 +61,23 @@ TOPIC: the_slain_boy
   LABEL: "Ask if Naomi's young son ever came to the school"
   TIME: 6
   WALTER CORWIN: "Mrs. Almy identified the woman as Naomi Freeman. Did the boy who was with her ever come here?"
+  VOICE: violin_neutral_medium_v1
   MISS HALLOWELL: "I remember him. He stood by the gate during morning recess."
   WALTER CORWIN: "Did he ask to enter?"
   FORK:
     CHOICE: "Ask about his demeanor."
+      VOICE: violin_neutral_medium_v2
       MISS HALLOWELL: "He had a slate of his own. Resoled boots, very neat.\nHe asked me how many years sat between eighteen twenty-three and nineteen twenty-three."
       WALTER CORWIN: "A century."
+      VOICE: violin_haunting_long_v1
       MISS HALLOWELL: "I told him a hundred. He wrote the number on his slate, rubbed it out with his sleeve, and said his mother was going to collect it today."
       NOTEBOOK: teacher_boy_slate | "The murdered boy stood outside the schoolhouse asking about a century's span, saying his mother was going to collect 'it' that day; what he meant was not established."
       EVIDENCE: boy_century_slate
     CHOICE: "Ask why he wasn't admitted."
+      VOICE: violin_bureaucratic_long_v1
       MISS HALLOWELL: "Our district requires proof of county residence, Officer.\nA tax receipt or an employer's voucher. He had neither.\nI gave him a hard biscuit from my drawer and told him to go back to the boardinghouse."
       [She touches her collar, her fingers suddenly tight.]
+      VOICE: violin_bureaucratic_medium_v2
       MISS HALLOWELL: "I did not do him an injury, Officer. I followed the district regulations."
       NOTEBOOK: teacher_boy_turned_away | "Schoolteacher turned away Naomi's son for lack of county residence proof: 'I followed the district regulations.'"
       EVIDENCE: boy_district_refusal
@@ -73,13 +88,17 @@ TOPIC: reader_letter
   LABEL: "Ask for the covering letter Abernathy mentioned"
   TIME: 5
   WALTER CORWIN: "Mr. Abernathy says he prepared the reader's abridgment. He says you received a covering letter."
+  VOICE: violin_questioning_short_v1
   MISS HALLOWELL: "He told you that himself?"
   WALTER CORWIN: "He wanted me to distinguish his decision from yours."
   [She unlocks the shallow drawer beneath her desk.]
+  VOICE: violin_neutral_short_v2
   MISS HALLOWELL: "Then you may distinguish them accurately."
   THE COVERING LETTER: "Retain the subscriptions toward rebuilding. Omit the accompanying crew list from the school edition. Approved by the committee. A. Abernathy."
+  VOICE: violin_neutral_medium_v2
   MISS HALLOWELL: "You may copy it. The original stays with the readers."
   WALTER CORWIN: "And the things that aren't in the reader?"
+  VOICE: violin_bureaucratic_medium_v1
   MISS HALLOWELL: "Ask me what I saw, Officer. I can answer for that."
   NOTEBOOK: reader_letter | "Examined Hallowell's covering letter: retain rebuilding subscriptions and omit the crew list from the school edition; committee approval recorded above Abernathy's name. Original remains at the school. This corroborates his account of the abridgment."
   EVIDENCE: reader_omission_letter
@@ -89,7 +108,9 @@ TOPIC: personal_questions
   TAG: teacher_personal_refusal
   LABEL: "Ask whether she remembers Naomi's boy"
   TIME: 2
+  VOICE: violin_bureaucratic_medium_v1
   MISS HALLOWELL: "I will answer questions about the school, Officer. I will not furnish an account of the town for the museum to contradict tomorrow."
   WALTER CORWIN: "What has the museum to do with a child at your gate?"
+  VOICE: violin_cautious_medium_v1
   MISS HALLOWELL: "Mr. Abernathy supplies the history we are expected to teach. You might begin by asking him what he left out."
   NOTEBOOK: teacher_refusal | "Hallowell declined a personal account and referred Walter to Abernathy about omissions in the history taught at the school."

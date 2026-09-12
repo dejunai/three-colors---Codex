@@ -7,22 +7,29 @@ SCHEDULE: dawn={garden_walk}, midday={ashcroft_house}, evening={sunroom}
 
 TOPIC: default
   GATE: NOT topic_done(miriam_ashcroft, default)
+  VOICE: trombone_bureaucratic_medium_v2
   MRS. ASHCROFT: "You have climbed a long way to ask a question, Officer."
+  VOICE: trombone_neutral_medium_v2
   MRS. ASHCROFT: "People generally come up here to avoid being asked one."
 
 TOPIC: town
   GATE: always
   TAG: ashcroft_town
   LABEL: "Ask about the ridge"
+  VOICE: trombone_neutral_medium_v2
   MRS. ASHCROFT: "The town prefers to imagine the hill means something."
+  VOICE: trombone_neutral_medium_v1
   MRS. ASHCROFT: "It does not. The rich simply reached the top first and stayed."
 
 TOPIC: naomi
   GATE: evidence(naomi)
   TAG: ashcroft_naomi
   LABEL: "Ask whether she knew Naomi Freeman"
+  VOICE: trombone_dismissive_short_v1
   MRS. ASHCROFT: "Knew? No."
+  VOICE: trombone_questioning_short_v1
   MRS. ASHCROFT: "Saw? Yes."
+  VOICE: trombone_neutral_medium_v2
   MRS. ASHCROFT: "A woman asking directions to houses that had no intention of answering her."
   NOTEBOOK: ashcroft_naomi_1 | "Mrs. Ashcroft recalls seeing Naomi Freeman on the ridge, turned away door to door."
   EVIDENCE: ridge_sighting
@@ -31,9 +38,12 @@ TOPIC: club
   GATE: always
   TAG: ashcroft_club
   LABEL: "Ask about the Ophion Club"
+  VOICE: trombone_neutral_short_v1
   MRS. ASHCROFT: "Men join clubs to hear themselves echoed."
   WALTER CORWIN: "Did your husband belong?"
+  VOICE: trombone_neutral_short_v1
   MRS. ASHCROFT: "For eighteen years."
+  VOICE: trombone_neutral_medium_v1
   MRS. ASHCROFT: "The club improved none of his opinions, but certainly increased his confidence in them."
   
 TOPIC: crew_omission
@@ -42,9 +52,12 @@ TOPIC: crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 3
   WALTER CORWIN: "The crew who drowned in 1823. Their names don't appear anywhere."
+  VOICE: trombone_dismissive_short_v1
   MRS. ASHCROFT: "No."
   WALTER CORWIN: "You've never wondered why."
+  VOICE: trombone_neutral_medium_v2
   MRS. ASHCROFT: "I have wondered about a great many things this town has decided not to write down.\nWondering has not changed any of them."
   [She turns back toward the garden as if the conversation has already concluded.]
+  VOICE: trombone_cautious_medium_v1
   MRS. ASHCROFT: "My husband attended eighteen years of dinners at that club.\nHe came home from each one entirely satisfied.\nI have learned to read satisfaction carefully."
   NOTEBOOK: ashcroft_crew_omission | "Mrs. Ashcroft offered no explanation for the crew's absence from the record. She implied her husband's club membership made him comfortable with what was omitted."

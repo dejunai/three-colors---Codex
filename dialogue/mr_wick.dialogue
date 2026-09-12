@@ -7,7 +7,9 @@ SCHEDULE: dawn={veranda}, midday={study}, evening={club_carriage_stop}
 
 TOPIC: default
   GATE: NOT topic_done(sebastian_wick, default)
+  VOICE: trombone_bureaucratic_short_v1
   MR. WICK: "You are either here officially or personally."
+  VOICE: trombone_bureaucratic_short_v2
   MR. WICK: "The distinction matters more than most officers realize."
 
 TOPIC: records
@@ -15,8 +17,11 @@ TOPIC: records
   TAG: wick_records
   LABEL: "Ask about missing records"
   WALTER CORWIN: "How does a document disappear?"
+  VOICE: trombone_neutral_short_v2
   MR. WICK: "Usually without disappearing at all."
+  VOICE: trombone_neutral_short_v1
   MR. WICK: "A filing decision here. A transfer there."
+  VOICE: trombone_neutral_medium_v2
   MR. WICK: "Eventually everyone involved can justify his own part in the loss."
 
 TOPIC: claim
@@ -24,7 +29,9 @@ TOPIC: claim
   TAG: wick_claim
   LABEL: "Ask about an old wage claim"
   WALTER CORWIN: "Can a century-old debt still exist?"
+  VOICE: trombone_questioning_short_v1
   MR. WICK: "Exist? Certainly."
+  VOICE: trombone_questioning_short_v2
   MR. WICK: "Be collected? That depends which family owes it."
   NOTEBOOK: wick_claim_1 | "Legal existence and practical enforceability are separate questions."
   EVIDENCE: legal_claim
@@ -33,6 +40,8 @@ TOPIC: filing
   GATE: coat = plain AND NOT topic_done(sebastian_wick, filing)
   TAG: wick_plain
   LABEL: "Ask what he would do"
+  VOICE: trombone_neutral_medium_v2
   MR. WICK: "If I wished something buried, I would not destroy it."
   WALTER CORWIN: "What would you do?"
+  VOICE: trombone_bureaucratic_medium_v1
   MR. WICK: "I would ensure every surviving copy was perfectly filed."

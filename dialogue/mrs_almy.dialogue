@@ -5,14 +5,18 @@ LOCATION: boardinghouse
 TOPIC: default
   GATE: NOT topic_done(almy, default) AND coat = plain
   TAG: almy_plain
+  VOICE: trombone_neutral_medium_v1
   MRS. ALMY: "The coat changes the room before Walter says a word.\nMrs. Almy sets a second cup beside the first."
+  VOICE: trombone_neutral_medium_v1
   MRS. ALMY: "You came to ask about Naomi.\n\nSit, then. Ask properly."
 
 TOPIC: default
   GATE: NOT topic_done(almy, default)
   TAG: almy_badge
+  VOICE: trombone_bureaucratic_medium_v1
   MRS. ALMY: "If you've come to tell me what the paper says, Officer,\nI have already read it."
   WALTER CORWIN: "I'm asking about the woman and the boy."
+  VOICE: trombone_questioning_medium_v2
   MRS. ALMY: "The paper wasn't.\n\nWhat is it you intend to write down?"
 
 TOPIC: identify
@@ -21,8 +25,10 @@ TOPIC: identify
   LABEL: "Ask for the woman's name"
   TIME: 4
   WALTER CORWIN: "I counted eight people.\nI would like to put a name beside each of them."
+  VOICE: trombone_neutral_medium_v1
   MRS. ALMY: "Naomi Freeman.\n\nShe ate here. The boy too.\nHe waited for her to begin before touching his own plate."
   NOTEBOOK: "NAOMI FREEMAN.\nIdentified by Mrs. Almy, Pickman Street.\nBoy accompanying her: name still to be established."
+  VOICE: trombone_weary_medium_v1
   MRS. ALMY: "You can ask me again tomorrow.\nHer name will still be Naomi."
   EVIDENCE: naomi
 
@@ -31,8 +37,10 @@ TOPIC: lay_lead
   TAG: lay_lead
   LABEL: "Ask what brought Naomi to town"
   TIME: 4
+  VOICE: trombone_neutral_medium_v2
   MRS. ALMY: "She was looking for something owed.\nA whaler's wages. A share, she called it. A lay.\nFrom her family's time, long before hers."
   WALTER CORWIN: "Did you see the document?"
+  VOICE: trombone_dismissive_medium_v2
   MRS. ALMY: "No. She spoke of finding it.\nYou mustn't write that I saw it."
   NOTEBOOK: "Possible wage claim. Document not examined.\nSource: Mrs. Almy's recollection.\n\nA question to pursue.\nNo conclusion about why Naomi died."
   EVIDENCE: lay_lead
@@ -42,8 +50,10 @@ TOPIC: service_work
   TAG: service_work
   LABEL: "Ask about work at the estate"
   TIME: 4
+  VOICE: trombone_cautious_medium_v2
   MRS. ALMY: "She asked about work at the estate.\nCleaning, perhaps. They always need someone who can leave by the other door."
   WALTER CORWIN: "Who engaged her?"
+  VOICE: trombone_weary_medium_v2
   MRS. ALMY: "I don't know.\nThe steward has books enough.\nAsk him for one that contains her."
   EVIDENCE: service_work
 
@@ -51,12 +61,14 @@ TOPIC: almy_ledger
   GATE: evidence(naomi)
   TAG: almy_ledger
   LABEL: "Ask to corroborate the visit in her ledger"
+  VOICE: trombone_bureaucratic_medium_v2
   MRS. ALMY: "On the sideboard.\nCopy the entry, if you need it.\nThe book stays here."
 
 TOPIC: almy_trust
   GATE: coat = plain AND NOT topic_done(almy, almy_trust)
   TAG: almy_trust
   LABEL: "Ask why the coat made a difference"
+  VOICE: trombone_bureaucratic_medium_v1
   MRS. ALMY: "A uniform asks what belongs in a report.\nA man might still ask what happened.\n\nI haven't decided which you are yet."
   NOTEBOOK: almy_trust_1_1 | "Mrs. Almy distinguished speaking to a uniform from speaking to a man. The name she supplied was the same."
 
@@ -67,9 +79,12 @@ TOPIC: show_printed_correction
   LABEL: "Show her the correction with Naomi's name"
   TIME: 3
   [Almy reads the narrow slip without sitting down.]
+  VOICE: trombone_neutral_short_v2
   MRS. ALMY: "They have put her name in it."
   WALTER CORWIN: "It goes with the copies they haven't sold."
+  VOICE: trombone_bureaucratic_short_v2
   MRS. ALMY: "Leave it beside the book a moment."
   [She lays the slip by the meal ledger, then returns it to Walter.]
+  VOICE: trombone_happy_medium_v2
   MRS. ALMY: "You brought back something I can read. Thank you."
   NOTEBOOK: correction_seen | "Showed Almy the printed correction. She read Naomi's name and set it beside the meal ledger before returning the slip."

@@ -5,15 +5,19 @@ SCHEDULE: morning=home, midday=club_road, evening=home, night=home
 TOPIC: default
   GATE: NOT topic_done(mrs_pell, default) AND coat = plain
   TAG: pell_plain
+  VOICE: violin_bureaucratic_medium_v1
   MRS. PELL: "You are not calling in any official capacity, then."
   [Mrs. Pell keeps one gloved hand on the gate latch, studying Walter's coat before she studies his face.]
+  VOICE: violin_neutral_medium_v1
   MRS. PELL: "That is almost a relief. Men with badges always arrive having already decided what sort of answer they mean to hear."
 
 TOPIC: default
   GATE: NOT topic_done(mrs_pell, default) AND coat != plain
   TAG: pell_badge
+  VOICE: violin_bureaucratic_short_v1
   MRS. PELL: "Officer Corwin."
   [Her expression does not change; only the gate remains half-closed.]
+  VOICE: violin_neutral_medium_v2
   MRS. PELL: "If this concerns the club, I imagine Captain Odell has already received whatever statement the town requires of me."
 
 TOPIC: club_guests
@@ -22,8 +26,10 @@ TOPIC: club_guests
   LABEL: "Ask who visited the ridge after dark"
   TIME: 4
   WALTER CORWIN: "There were carriages on this road after midnight."
+  VOICE: violin_neutral_medium_v2
   MRS. PELL: "There are always carriages on this road after midnight. That is half the point of having a ridge to climb to."
   WALTER CORWIN: "I only need to know whose."
+  VOICE: violin_bureaucratic_medium_v2
   MRS. PELL: "No, Officer. You need a world in which the right names make the wrong night simpler. That is not the same thing."
   NOTEBOOK: pell_ridge_traffic | "Mrs. Pell would not name late-night visitors to the ridge; she treated such traffic as routine among the upper houses."
 
@@ -33,8 +39,10 @@ TOPIC: servant_talk
   LABEL: "Ask whether her maid heard anything from the club road"
   TIME: 4
   WALTER CORWIN: "Your maid keeps the back rooms facing the club road."
+  VOICE: violin_bureaucratic_medium_v1
   MRS. PELL: "She keeps my rooms, Officer. She is not an extension of your precinct."
   WALTER CORWIN: "Did she hear anything?"
+  VOICE: violin_dismissive_medium_v2
   MRS. PELL: "She heard men arriving too confident and leaving too quickly. In this town that narrows nothing."
   NOTEBOOK: pell_maid_heard | "Mrs. Pell admitted her maid heard men arriving and departing the ridge in haste, but gave no names."
   EVIDENCE: ridge_haste
@@ -45,10 +53,13 @@ TOPIC: crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 4
   WALTER CORWIN: "The memorial on the common lists every owner who subscribed to the rebuilding fund.\nIt does not list the men who drowned."
+  VOICE: violin_haunting_medium_v2
   MRS. PELL: "A subscription is a matter of public record.\nA drowning is a matter of the sea."
   WALTER CORWIN: "The sea didn't write the memorial. The committee did."
   [She releases the gate latch and lets it click shut between them.]
+  VOICE: violin_bureaucratic_long_v1
   MRS. PELL: "My grandfather sat on that committee, Officer.\nHe was not a cruel man.\nHe was a practical one.\nThere is a difference, and it has served this ridge for a hundred years."
   WALTER CORWIN: "It served the ridge. I'm asking about the crew."
+  VOICE: violin_neutral_medium_v1
   MRS. PELL: "Then ask the harbor. The harbor keeps its own account."
   NOTEBOOK: pell_crew_omission | "Mrs. Pell acknowledged her grandfather sat on the memorial committee. Framed the omission as practical rather than cruel. Referred to 'the harbor' as the keeper of a different account."

@@ -7,15 +7,19 @@ SCHEDULE: morning=registrar, midday=registrar, evening=closed, night=closed
 TOPIC: default
   GATE: NOT topic_done(county_clerk, default) AND coat = plain
   TAG: clerk_plain
+  VOICE: trombone_neutral_short_v2
   MR. PENCE: "Public inspection hours end at four."
   [He moistens a fingertip on a porcelain sponge tray and turns a ledger leaf.]
+  VOICE: trombone_neutral_medium_v1
   MR. PENCE: "If this is genealogical, the fee is twenty cents per volume.\nIf this is municipal, state the parcel."
 
 TOPIC: default
   GATE: NOT topic_done(county_clerk, default)
   TAG: clerk_badge
+  VOICE: trombone_bureaucratic_medium_v2
   MR. PENCE: "Officer Corwin. Captain Odell sent over the preliminary notices this morning."
   WALTER CORWIN: "Did he send the full list?"
+  VOICE: trombone_bureaucratic_medium_v2
   MR. PENCE: "He sent six notices of sudden decease for probate indexing.\nThe forms are standard."
 
 TOPIC: wage_claim_inquiry
@@ -24,24 +28,31 @@ TOPIC: wage_claim_inquiry
   LABEL: "Attempt to file Naomi Freeman's wage claim"
   TIME: 10
   WALTER CORWIN: "I want to record an unpaid whaler's lay. Naomi Freeman, on behalf of an ancestor aboard the Ophion."
+  VOICE: trombone_neutral_medium_v2
   MR. PENCE: "You'd need a living claimant. A next of kin with legal standing."
   WALTER CORWIN: "The mother is dead. The boy found with her is dead."
+  VOICE: trombone_neutral_medium_v2
   MR. PENCE: "Then the claim abates. An estate requires an administrator appointed by probate, and Judge Wexford's seat is vacant, as you know."
   WALTER CORWIN: "There is another child. A boy, six years old, kept at a mission in New Bedford. Surviving."
+  VOICE: trombone_questioning_short_v1
   MR. PENCE: "Who stands as his guardian?"
   WALTER CORWIN: "No one of record. The mission, as far as I can tell."
   [Mr. Pence sets his dry pen into the brass stand without looking up.]
+  VOICE: trombone_bureaucratic_long_v1
   MR. PENCE: "Then you have brought me no claimant at all, Officer.\nA minor cannot tender his own affidavit, and no guardian of record stands to tender it for him."
+  VOICE: trombone_neutral_medium_v1
   MR. PENCE: "Find a guardian appointed to stand for him, or the claim has no one to belong to."
   FORK:
     CHOICE: "Ask what becomes of a debt with no claimant to stand for it."
       WALTER CORWIN: "So a debt simply evaporates because a six-year-old can't sign for it?"
+      VOICE: trombone_neutral_long_v2
       MR. PENCE: "It does not evaporate, Corwin. It abates.\nA minor cannot stand for himself, and until someone is appointed to stand for him, that is the nature of the statute, not a flaw in it."
       NOTEBOOK: clerk_claim_minor | "Registrar: a wage claim requires a living claimant able to stand for himself, or a guardian appointed to stand for him. Naomi's surviving son is a minor at a New Bedford mission with no guardian of record; the claim has no one to stand for it."
       EVIDENCE: claim_no_claimant
     CHOICE: "Insist on filing in triplicate under police authority."
       WALTER CORWIN: "Enter the claim in triplicate under my name as reporting officer, to preserve the record until a guardian is appointed."
       [Mr. Pence looks up over wire spectacles, pen poised.]
+      VOICE: trombone_alarmed_long_v1
       MR. PENCE: "I will stamp it as received correspondence, Officer.\nIt sits in the dead-records drawer. It creates no lien, and twenty years from now nobody will look in that drawer."
       NOTEBOOK: clerk_claim_triplicate | "Wage claim submitted in triplicate as police correspondence to preserve the record for Naomi's surviving son, a minor with no guardian of record; filed inertly in county dead-records drawer."
       EVIDENCE: claim_filed_inert
@@ -51,12 +62,16 @@ TOPIC: ophion_settlement
   TAG: clerk_ophion_records
   LABEL: "Request the 1820s Ophion insurance and probate filings"
   TIME: 5
+  VOICE: trombone_neutral_medium_v1
   MR. PENCE: "Volume 14, Maritime Disbursements and Marine Underwriting, 1823–1828."
   [He pulls a heavy sheepskin-bound folio with flaking spine.]
+  VOICE: trombone_neutral_medium_v2
   MR. PENCE: "Underwriters' draft paid out to Pruitt, Corliss, and Wexford syndicates. Eighty-four thousand dollars in gold specie."
   WALTER CORWIN: "And the crew's families?"
+  VOICE: trombone_neutral_medium_v1
   MR. PENCE: "Noted as 'Lost at sea; accounts closed by total abandonment.' No lay shares were distributed."
   WALTER CORWIN: "The same families bought the harbor mills eighteen months later."
+  VOICE: trombone_bureaucratic_medium_v1
   MR. PENCE: "The ledger notes transactions, Officer. It does not pass moral judgments on timing."
   NOTEBOOK: clerk_ophion_1 | "1820s probate records: $84,000 insurance paid to Pruitt/Corliss/Wexford syndicates. Crew accounts closed as total loss; zero lays paid."
   EVIDENCE: insurance_fraud_record
@@ -68,12 +83,16 @@ TOPIC: sixth_member_deed
   TAG: clerk_sixth_man
   LABEL: "Check deeds and tax rolls for the Ophion Club property"
   TIME: 5
+  VOICE: trombone_neutral_medium_v1
   MR. PENCE: "The estate deed is held in trust. Six shares of tenancy in common."
   WALTER CORWIN: "Name the shareholders."
+  VOICE: trombone_neutral_medium_v1
   MR. PENCE: "Absalom Wexford. Aldous Fenn. Miles Corliss. Josiah Pruitt. Otto Kessler."
   WALTER CORWIN: "That is five."
+  VOICE: trombone_bureaucratic_medium_v1
   MR. PENCE: "The sixth share is recorded simply as 'The Overseer of the Line.' No individual surname registered since the 1850 re-charter."
   WALTER CORWIN: "How does an unnameable title pay property tax?"
+  VOICE: trombone_bureaucratic_medium_v2
   MR. PENCE: "The check arrives drawn on the Boston Marine Bank. It clears. The county does not return legal currency."
   NOTEBOOK: clerk_sixth_man_1 | "The sixth Ophion Club share is deeded to 'The Overseer of the Line' without personal name; taxes paid via Boston Marine Bank."
   EVIDENCE: overseer_deed
@@ -85,7 +104,9 @@ TOPIC: crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 3
   WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  VOICE: trombone_bureaucratic_medium_v1
   MR. PENCE: "Crew names belong in a shipping list, Officer. This is a county office."
   WALTER CORWIN: "I asked why the town's account leaves them out."
+  VOICE: trombone_bureaucratic_medium_v1
   MR. PENCE: "Then ask whoever composed the account. I certify records. I do not improve them."
   NOTEBOOK: crew_omission_refusal | "Asked Mr. Pence why the crew's names are missing from the town's history. No explanation supplied; the question remains open."

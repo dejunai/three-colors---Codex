@@ -173,7 +173,7 @@ func _choose(g: Node, current: Dictionary, index: int) -> void:
 	active.consumed = 0
 	segment = result
 	# Choosing Walter's line consumes that line; don't ask Continue for his own choice.
-	if not segment.cards.is_empty() and segment.cards[0] == ["WALTER CORWIN", label]:
+	if not segment.cards.is_empty() and segment.cards[0].size() >= 2 and segment.cards[0][0] == "WALTER CORWIN" and segment.cards[0][1] == label:
 		_acknowledge(g, 1)
 	_display(g)
 	g._save_game()

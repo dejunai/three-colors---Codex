@@ -5,8 +5,10 @@ SCHEDULE: morning=bank_walk, midday=business_district, evening=home, night=home
 TOPIC: default
   GATE: NOT topic_done(mr_whitehouse, default)
   TAG: whitehouse_default
+  VOICE: trombone_neutral_short_v1
   MR. WHITEHOUSE: "Corwin."
   [Mr. Whitehouse folds a newspaper against his cane with slow, practiced precision.]
+  VOICE: trombone_alarmed_medium_v2
   MR. WHITEHOUSE: "If this is about the dead men, I advise you to distinguish inconvenience from catastrophe while the town still can."
 
 TOPIC: subscriptions_and_credit
@@ -15,8 +17,10 @@ TOPIC: subscriptions_and_credit
   LABEL: "Ask why everyone keeps calling it arithmetic"
   TIME: 4
   WALTER CORWIN: "Every man I speak to gives me a different version of the same excuse."
+  VOICE: trombone_neutral_medium_v1
   MR. WHITEHOUSE: "Then you are hearing the truth from several angles at once."
   WALTER CORWIN: "Truth."
+  VOICE: trombone_neutral_long_v2
   MR. WHITEHOUSE: "Yes. Mills extend credit. Papers carry advertisers. Banks calm depositors. Houses keep staff employed. Remove confidence from a town this size and the rest follows it into the water."
   NOTEBOOK: whitehouse_confidence | "Whitehouse described the town's silence as a defense of confidence: banks, papers, houses, and wages depend on keeping panic out of print."
   EVIDENCE: civic_arithmetic
@@ -28,12 +32,16 @@ TOPIC: name_the_dead
   TIME: 6
   FORK:
     CHOICE: "Say that eight people died, not six."
+      VOICE: trombone_questioning_short_v1
       MR. WHITEHOUSE: "And if you print eight, do they revive?"
+      VOICE: trombone_dismissive_long_v1
       MR. WHITEHOUSE: "No. But the bank run becomes real, the paper goes under, and every laundress and porter paid from those accounts discovers that your honesty has a payroll attached to it."
       NOTEBOOK: whitehouse_eight_payroll | "Whitehouse argued that acknowledging all eight dead would trigger wider economic harm the town's laboring people would bear."
     CHOICE: "Say that silence is still a choice."
+      VOICE: trombone_neutral_short_v2
       MR. WHITEHOUSE: "Of course it is."
       [He taps the folded newspaper once against his glove.]
+      VOICE: trombone_bureaucratic_medium_v2
       MR. WHITEHOUSE: "Adulthood consists largely of choosing which damage will be entered into the record and which will merely be survived."
       NOTEBOOK: whitehouse_silence_choice | "Whitehouse openly described public silence as a deliberate civic choice, not an accident."
       EVIDENCE: silence_is_choice

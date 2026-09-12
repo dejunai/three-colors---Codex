@@ -7,15 +7,19 @@ SCHEDULE: morning=stationer, midday=stationer, evening=stationer, night=closed
 TOPIC: default
   GATE: NOT topic_done(stationer, default) AND coat = plain
   TAG: stationer_plain
+  VOICE: trombone_neutral_medium_v1
   MR. FINCH: "Two-cent ruled slates on the counter, linen correspondence paper in the drawers."
   [He wraps a cake of red sealing wax in brown paper and ties it with a short length of hemp twine.]
+  VOICE: trombone_neutral_medium_v1
   MR. FINCH: "You have ink on your knuckles, friend. Same as any man who spends his evenings arguing with ledgers."
 
 TOPIC: default
   GATE: NOT topic_done(stationer, default)
   TAG: stationer_badge
+  VOICE: trombone_bureaucratic_medium_v1
   MR. FINCH: "Officer Corwin. If this is the quarterly precinct supply voucher, Odell hasn't endorsed it."
   WALTER CORWIN: "I'm not here for blotters, Mr. Finch."
+  VOICE: trombone_bureaucratic_medium_v1
   MR. FINCH: "Then I hope you're here as a paying customer.\nA shop runs on sales, Officer, not on town curiosity."
 
 TOPIC: the_corkboard_twine
@@ -24,10 +28,13 @@ TOPIC: the_corkboard_twine
   LABEL: "Ask about heavy wrapping twine and map pins"
   TIME: 5
   WALTER CORWIN: "I need another spool of the tarred hemp twine. And brass-headed pins."
+  VOICE: trombone_weary_medium_v2
   MR. FINCH: "Working late in your room above the cobbler again, are you?"
   [He sets a wooden bobbin of dark twine on the counter.]
+  VOICE: trombone_bureaucratic_long_v1
   MR. FINCH: "Most men who buy that twine use it to hang dried cod in the shed.\nYou're the only man in this county who strings it between index cards."
   WALTER CORWIN: "It keeps the facts from drifting."
+  VOICE: trombone_neutral_long_v1
   MR. FINCH: "Facts don't drift, Walter. Men do.\nWhen my ledger shows an inventory deficit, I don't string twine across the shelves. I look at who holds the key."
   NOTEBOOK: stationer_twine_1 | "Mr. Finch: 'Facts don't drift, Walter. Men do.' Observed that only Walter uses merchant twine to bind cards."
 
@@ -37,8 +44,10 @@ TOPIC: fenn_orders
   LABEL: "Ask about Dr. Fenn's stationery orders"
   TIME: 4
   WALTER CORWIN: "Dr. Aldous Fenn bought his calfskin notebooks here."
+  VOICE: trombone_neutral_long_v1
   MR. FINCH: "Heavy imported vellum. Octavo size, marbled endpapers.\nHe insisted on iron-gall ink. Said modern aniline dyes fade inside thirty years, and he intended his observations to outlast the century."
   WALTER CORWIN: "What was he writing?"
+  VOICE: trombone_bureaucratic_long_v1
   MR. FINCH: "He didn't share his notes with a tradesman, Officer.\nThough he did buy two dozen wax candles every autumn. The thick spermaceti ones that burn without smoke in closed cellars."
   NOTEBOOK: stationer_fenn_supplies | "Dr. Fenn purchased iron-gall ink and heavy smokeless spermaceti candles for closed-cellar work."
   EVIDENCE: cellar_candles
@@ -49,10 +58,13 @@ TOPIC: naomi_supplies
   LABEL: "Ask if Naomi Freeman purchased writing materials"
   TIME: 5
   WALTER CORWIN: "Did Naomi Freeman come into the shop before she died?"
+  VOICE: trombone_questioning_medium_v2
   MR. FINCH: "The colored woman staying at Mrs. Almy's? She came in on a Thursday."
   WALTER CORWIN: "What did she buy?"
+  VOICE: trombone_neutral_long_v1
   MR. FINCH: "A one-cent graphite pencil. And two sheets of heavy draughting linen.\nShe asked if linen would rot if kept in oilskin near salt water. I told her linen outlasts paper three to one in the damp."
   [He pauses, resting both palms on the polished counter.]
+  VOICE: trombone_neutral_long_v1
   MR. FINCH: "She wasn't writing a letter, Walter. She was copying a diagram.\nShe asked if I carried red transfer wax to take an impression of an engraved brass maker's plate.\nSaid she needed to lift the serial mark off an old boiler without damaging the patina."
   NOTEBOOK: stationer_naomi_linen | "Naomi Freeman bought drafting linen and asked for transfer wax to take an impression of an engraved brass plate on an old boiler without damaging patina."
   EVIDENCE: drafting_linen_diagram
@@ -64,7 +76,9 @@ TOPIC: crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 3
   WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  VOICE: trombone_neutral_medium_v2
   MR. FINCH: "I sell the school reader as it comes from the printer."
   WALTER CORWIN: "No one asked why it names the benefactors and not the crew?"
+  VOICE: trombone_neutral_medium_v1
   MR. FINCH: "No one asked me. If you want the wording changed, you need someone other than a stationer."
   NOTEBOOK: crew_omission_refusal | "Asked Mr. Finch why the crew's names are missing from the town's history. No explanation supplied; the question remains open."

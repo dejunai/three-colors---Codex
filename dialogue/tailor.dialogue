@@ -7,15 +7,19 @@ SCHEDULE: morning=haberdasher, midday=haberdasher, evening=haberdasher, night=cl
 TOPIC: default
   GATE: NOT topic_done(tailor, default) AND coat = plain
   TAG: tailor_plain
+  VOICE: trombone_neutral_medium_v1
   MR. KREBS: "Good day, sir. If you're looking for overcoat repair, I can take measurements."
   [He glances down at Walter's secondhand boots.]
+  VOICE: trombone_neutral_medium_v2
   MR. KREBS: "Though honest woolen cloth rarely needs the scissors as often as ready-made cotton."
 
 TOPIC: default
   GATE: NOT topic_done(tailor, default)
   TAG: tailor_badge
+  VOICE: trombone_bureaucratic_medium_v2
   MR. KREBS: "Officer. If this is about uniform serge, the county contract went to the mill in Lynn."
   WALTER CORWIN: "I'm asking about the evening jackets at the Ophion Club."
+  VOICE: trombone_neutral_short_v1
   MR. KREBS: "Ah. The mourning cloths. A dreadful business."
 
 TOPIC: cut_jackets
@@ -24,8 +28,10 @@ TOPIC: cut_jackets
   LABEL: "Ask who ordered the matching club evening dress"
   TIME: 5
   WALTER CORWIN: "Six men died in identical broadcloth evening coats. Did you cut them?"
+  VOICE: trombone_bureaucratic_medium_v1
   MR. KREBS: "I cut five, Officer. Italian wool, satin lapels, horn buttons imported through Boston."
   WALTER CORWIN: "Five?"
+  VOICE: trombone_neutral_long_v1
   MR. KREBS: "The Judge, Dr. Fenn, Mr. Corliss, Mr. Pruitt, and poor Otto Kessler.\nKessler had to be let out across the shoulder — butcher's bulk, you know. Not a gentleman's posture."
   NOTEBOOK: tailor_five_1 | "Mr. Krebs tailored five identical club evening coats: Wexford, Fenn, Corliss, Pruitt, and Kessler."
   EVIDENCE: five_tailored_coats
@@ -38,12 +44,16 @@ TOPIC: the_sixth_jacket
   LABEL: "Ask who made the sixth coat"
   TIME: 7
   WALTER CORWIN: "Six bodies lay in the garden. All six wore identical cut coats."
+  VOICE: trombone_bureaucratic_medium_v1
   MR. KREBS: "Then the sixth was cut by someone who didn't buy his cloth in Miskatonic County."
   [He fetches an order book, flipping to a marbled ledger page.]
+  VOICE: trombone_neutral_medium_v2
   MR. KREBS: "Look here. Spring commission, 1921. 'Five dress coats, pattern Ophion.'\nI asked Mr. Pruitt if a sixth setting was needed, knowing they kept six chairs."
   WALTER CORWIN: "What did Pruitt answer?"
+  VOICE: trombone_neutral_medium_v1
   MR. KREBS: "'The sixth coat is already provided,' he told me. Said it had been hanging in the cedar press since his grandfather's winter."
   WALTER CORWIN: "A coat seventy years old?"
+  VOICE: trombone_neutral_medium_v1
   MR. KREBS: "Moth-proofed, I expect. Or made of something moths don't eat."
   NOTEBOOK: tailor_sixth_1 | "Josiah Pruitt told the tailor the sixth club coat was already provided, hanging in cedar since his grandfather's time."
   EVIDENCE: ancestral_sixth_coat
@@ -54,8 +64,10 @@ TOPIC: coat_lining
   TAG: tailor_lining
   LABEL: "Ask what distinguished the Ophion club pattern"
   TIME: 4
+  VOICE: trombone_neutral_medium_v1
   MR. KREBS: "No label inside the collar. That was Mr. Corliss's instruction.\n'A gentleman's jacket requires no card to say where it came from.'"
   WALTER CORWIN: "Was there any marking at all?"
+  VOICE: trombone_neutral_long_v2
   MR. KREBS: "A black silk cord sewn into the inner breast hem. Shaped like a coiled eel.\nOr a worm. Not decorative. Tucked where only the wearer's hand would brush it when reaching for a pocket."
   NOTEBOOK: tailor_serpent_hem | "All club evening jackets contained a black silk cord stitched inside the inner breast hem, shaped like a coiled eel or worm."
   EVIDENCE: serpent_hem_motif
@@ -67,7 +79,9 @@ TOPIC: crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 3
   WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  VOICE: trombone_neutral_medium_v1
   MR. KREBS: "I remember the subscribers' names from the commemorative dinner. That is all."
   WALTER CORWIN: "And the men who sailed?"
+  VOICE: trombone_bureaucratic_medium_v1
   MR. KREBS: "I wasn't making their coats, Officer. I have no answer for you."
   NOTEBOOK: crew_omission_refusal | "Asked Mr. Krebs why the crew's names are missing from the town's history. No explanation supplied; the question remains open."
