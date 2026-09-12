@@ -8,7 +8,8 @@
 # of the live NPC catalog. A new real NPC also needs a verified world slot.
 # Use two spaces per indent, uppercase directives, full-line comments only.
 # Optional VOICE applies only to the next spoken line. Its id names a WAV in
-# assets/audio/instrument_voices. Omit it to leave the line silent.
+# assets/audio/instrument_voices. An omitted NPC cue warns and receives the
+# character's neutral fallback; Walter, objects, beats, and system text stay silent.
 NPC: {generated}
 LOCATION: museum
 SCHEDULE: morning=museum, midday=museum, evening=closed, night=closed
@@ -16,22 +17,37 @@ SCHEDULE: morning=museum, midday=museum, evening=closed, night=closed
 # INCLUDE: shared_rebuffs.dialogue
 
 # All metadata precedes dialogue. Defaults are automatic. Without WEIGHT, the
-# first eligible default wins. For interchangeable repeat chatter, give each
-# eligible default a positive relative WEIGHT (omitted means 1); the runtime
-# avoids immediately repeating the previous weighted default.
+# first eligible default wins. If the first eligible default has WEIGHT, only
+# eligible defaults with an explicit positive WEIGHT enter the chatter draw.
+# Keep that group together; the runtime avoids an immediate weighted repeat.
 # Put specific defaults before the catch-all. TAGs distinguish their timing.
 TOPIC: default
-  GATE: coat = plain AND visit_count(example_witness) >= 2
+  GATE: NOT npc_done(example_witness) AND coat = plain AND visit_count(example_witness) >= 2
   TAG: example_witness_plain_return
   TIME: 0
   EXAMPLE WITNESS: "Back again, Mr. Corwin?"
 
 TOPIC: default
-  GATE: always
+  GATE: NOT npc_done(example_witness)
   TAG: example_witness_greeting
   TIME: 0
   # VOICE: trombone_neutral_medium_v1
   EXAMPLE WITNESS: "Good morning. What can I do for you?"
+
+# Once the initial greeting is complete, these equally eligible defaults form
+# a weighted pool. Relative weights need not total 100. The last selected line
+# is excluded when another is available, so these two alternate in practice.
+TOPIC: default
+  GATE: npc_done(example_witness)
+  WEIGHT: 3
+  TAG: example_witness_repeat_work
+  EXAMPLE WITNESS: "The same work is waiting where you left it."
+
+TOPIC: default
+  GATE: npc_done(example_witness)
+  WEIGHT: 1
+  TAG: example_witness_repeat_weather
+  EXAMPLE WITNESS: "Rain again before supper, I expect."
 
 # Normal menu topic. LABEL is optional; the topic id supplies a fallback label.
 # NOTEBOOK writes prose; EVIDENCE creates a separately linkable observation.
@@ -76,6 +92,22 @@ TOPIC: example_approach
       NOTEBOOK: example_rebuff_note | "The witness withdrew when pressed for certainty."
       EVIDENCE: example_pressure_rebuff
   [The witness folds the newspaper again.]
+
+# OUTCOME is reserved for a consequential FORK. The selected value commits
+# only after its full path completes, survives saves, cannot be overwritten,
+# and automatically removes this topic from future menus.
+TOPIC: example_decision
+  GATE: evidence(example_door_account)
+  LABEL: "Decide how to handle the account"
+  TAG: example_witness_decision
+  TIME: 5
+  FORK:
+    CHOICE: "Press for a name."
+      EXAMPLE WITNESS: "I told you what I actually saw."
+      OUTCOME: example_account_response = pressed
+    CHOICE: "Accept the limited account."
+      EXAMPLE WITNESS: "Then write only that."
+      OUTCOME: example_account_response = accepted
 
 # Shared TOPIC across different NPCs counts DISTINCT completed sources.
 # Keep each NPC's TAG unique. Repeating this NPC never increases the tally.

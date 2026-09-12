@@ -26,12 +26,12 @@ Included topics are appended only when their ID is absent locally. Local topics 
 | Metadata | Meaning |
 | --- | --- |
 | `GATE: expression` | Availability; omitted means `never`. |
-| `WEIGHT: 3` | Optional relative selection weight for multiple eligible `default` topics. Positive numbers only; omitted means 1. |
+| `WEIGHT: 3` | Optional relative selection weight for a contiguous group of eligible `default` chatter topics. Positive numbers only. |
 | `LABEL: "Menu text"` | Optional; otherwise a capitalized version of the topic ID. |
 | `TAG: npc_unique_scene_id` | Optional additional completion identity and timing key. Prefer globally unique tags. |
 | `TIME: 12.5` | In-game minutes charged on first completion. Use finite, nonnegative numbers; `0` is valid. |
 
-Multiple `TOPIC: default` blocks are allowed. Without `WEIGHT`, the first eligible, nonempty one is the automatic greeting, preserving specific-before-fallback gate cascades. If any eligible default has `WEIGHT`, all eligible defaults form a weighted pool; an omitted weight counts as 1. The immediately previous default is excluded whenever another eligible choice exists. This repeat memory is cosmetic and is not saved. Defaults never appear as menu entries. Use weighted defaults for interchangeable exhausted/ambient remarks, and keep required evidence, notes, progression, and unique information in deterministic topics. Other topic IDs must be unique within that NPC. Sharing a topic ID across different NPCs intentionally supports `topic_count()`.
+Multiple `TOPIC: default` blocks are allowed, and the first eligible block controls selection. If that block has no `WEIGHT`, it wins deterministically, preserving specific-before-fallback gate cascades. If it has `WEIGHT`, the runtime draws only from eligible defaults that explicitly have `WEIGHT`; eligible unweighted defaults remain outside the pool as later fallbacks. Keep each weighted chatter group together after any required defaults. The immediately previous weighted default is excluded whenever another eligible weighted choice exists. This repeat memory is cosmetic and is not saved. Defaults never appear as menu entries. Use weighted defaults for interchangeable exhausted/ambient remarks, and keep required evidence, notes, progression, and unique information in deterministic topics. Other topic IDs must be unique within that NPC. Sharing a topic ID across different NPCs intentionally supports `topic_count()`.
 
 | Step | Meaning |
 | --- | --- |
@@ -139,4 +139,4 @@ godot --headless --path . --script res://tests/dialogue_lang_flow.gd
 
 Also play the intended entry conditions, locked conditions, both fork responses, and revisits. Verify notebook/evidence wording and time charges. Syntax tests cannot establish that an NPC is reachable or a dependency makes narrative sense.
 
-Implementation sources: [parser](../scripts/shared/dialogue_lang.gd), [runtime](../scripts/shared/dialogue_runtime.gd), [dialogue state](../scripts/shared/dialogue_state.gd), and [catalog](../scripts/chapters/dialogue_catalog.gd). Codex expanded the original placeholder template and authored this reference on 2026-09-10 against these sources. No interpreter, scheduling, story-state, or Web-build behavior was changed by this authoring pass.
+Implementation sources: [parser](../scripts/shared/dialogue_lang.gd), [runtime](../scripts/shared/dialogue_runtime.gd), [dialogue state](../scripts/shared/dialogue_state.gd), and [catalog](../scripts/chapters/dialogue_catalog.gd). Codex expanded the original placeholder template and authored this reference on 2026-09-10. It was synchronized on 2026-09-12 with the live `VOICE`, `WEIGHT`, default-time, and `OUTCOME` implementations. No Web export or publication was performed by these authoring-system passes.

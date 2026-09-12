@@ -6,6 +6,8 @@ The original scripting system was developed with Claude Sonnet 5. The current
 dialogue expansion and numeric TIME convention are Dejunai's subsequent work.
 All 30 current `.dialogue` files are preserved byte-for-byte in this pass.
 
+**Current-state addendum — September 12, 2026:** This document preserves the original integration pass below. The live catalog has since grown to 35 concrete NPC definitions and 217 nonempty topics. The same interpreter is now the planned foundation for all three chapters. It supports validated `VOICE:` cues, weighted repeat defaults, free unpriced greetings, and persistent branch-local `OUTCOME` values whose completed decisions automatically retire their source forks. The current behavior and authoring contract are maintained in `docs/DIALOGUE_AUTHORING.md`; the historical counts and three-minute omitted-default rule below describe the September 9 baseline only.
+
 ## Connected behavior
 
 - Automatic catalog discovery registers 29 concrete NPCs; the background template

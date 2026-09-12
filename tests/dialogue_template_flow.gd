@@ -22,6 +22,14 @@ func _run() -> void:
 	ds.visit("example_witness")
 	ds.visit("example_witness")
 	assert(Runtime.menu(def, ctx).default_topic.tag == "example_witness_plain_return")
+	var initial = Runtime.enter(def, ctx, ds)
+	Runtime.commit_through(initial, state, ds, initial.cards.size())
+	var repeat_one = Runtime.enter(def, ctx, ds)
+	Runtime.commit_through(repeat_one, state, ds, repeat_one.cards.size())
+	var repeat_two = Runtime.enter(def, ctx, ds)
+	Runtime.commit_through(repeat_two, state, ds, repeat_two.cards.size())
+	assert(repeat_one.cards[0][1] != repeat_two.cards[0][1], "Weighted defaults must avoid an immediate repeat")
+	assert(is_equal_approx(state.clock_minutes, 360.0), "Unpriced repeat greetings must be free")
 	# Execute every cookbook body, including every path through nested forks.
 	for topic in def.topics:
 		if topic.steps.is_empty(): continue
@@ -40,6 +48,9 @@ func _run() -> void:
 				assert(result.cards.back()[1] == "The witness folds the newspaper again.")
 				var expected = "example_pressure_rebuff" if route[0] == 1 else ("example_window_account" if route[1] == 0 else "example_face_unseen")
 				assert(fresh.evidence == [expected], "Only selected branch evidence should persist")
+			if topic.id == "example_decision":
+				var expected_outcome = "accepted" if route[0] == 1 else "pressed"
+				assert(fresh.outcome_is("example_account_response", expected_outcome), "Only the selected branch outcome should persist")
 	var before = state.clock_minutes
 	var account = Runtime.play_topic(def, ds, "example_account")
 	Runtime.commit_through(account, state, ds, account.cards.size())
@@ -51,5 +62,11 @@ func _run() -> void:
 	var repeated = Runtime.play_topic(def, ds, "example_account")
 	Runtime.commit_through(repeated, state, ds, repeated.cards.size())
 	assert(is_equal_approx(state.clock_minutes - before, 12.5), "Replay must not charge again")
-	print("PASS: dialogue template parses; all fork paths, defaults, notes, evidence, gates and timing verified")
+	var decision = Runtime.play_topic(def, ds, "example_decision")
+	Runtime.commit_through(decision, state, ds, decision.cards.size())
+	decision = Runtime.resume(decision, 0)
+	Runtime.commit_through(decision, state, ds, decision.cards.size())
+	assert(ds.outcome_is("example_account_response", "pressed"))
+	assert(Runtime.menu(def, ctx).entries.all(func(entry): return entry.id != "example_decision"), "Committed OUTCOME must retire its source topic")
+	print("PASS: dialogue template parses; forks, weighted defaults, outcomes, notes, evidence, gates and timing verified")
 	quit(0)

@@ -40,8 +40,9 @@ extends RefCounted
 #
 # TOPIC IDS: the id "default" is reserved for an NPC's automatic opening
 # line. Multiple `TOPIC: default` blocks may exist with different GATEs.
-# Normally the first eligible block wins. If any eligible default has a
-# WEIGHT, all eligible defaults form a weighted pool (omitted WEIGHT = 1).
+# The first eligible block controls selection. If it is unweighted, it wins.
+# If it has WEIGHT, only eligible explicitly weighted defaults enter the pool;
+# later unweighted defaults remain deterministic fallbacks outside that pool.
 # Defaults are never shown in a menu. Every other topic id is a revisitable
 # menu entry whenever its
 # GATE evaluates true — there is no separate "is this a menu" flag to

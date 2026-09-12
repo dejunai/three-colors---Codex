@@ -28,7 +28,7 @@ func run() -> void:
 		assert(cue.is_valid_identifier())
 		assert(ResourceLoader.exists("res://assets/audio/instrument_voices/" + cue + ".wav"), "Missing " + cue)
 	assert(unvoiced_npc_lines.is_empty(), "Every authored NPC line must have a voice cue: %s" % [unvoiced_npc_lines])
-	assert(voice_cues.size() == 403, "Expected every current NPC line to be seeded")
+	assert(not voice_cues.is_empty(), "Expected authored NPC voice cues")
 	var fixture = load("res://scripts/shared/dialogue_lang.gd").parse("NPC: test\nLOCATION: estate\nTOPIC: default\n  GATE: always\n  VOICE: violin_cautious_medium_v1\n  TEST: \"One line.\"\n")
 	assert(fixture.errors.is_empty())
 	var rendered = Runtime.render("test", fixture.topics[0], null)
@@ -58,7 +58,7 @@ func run() -> void:
 	g.settings.instrument_voice_volume = 0.0
 	g._play_instrument_voice("trombone_bureaucratic_medium_v1")
 	assert(not g.instrument_voice_player.playing, "Zero instrument voice volume must mute cues")
-	print("INSTRUMENT VOICE PASS: 144-cue manifest, 403 NPC lines, character consistency, playback stop, independent mute")
+	print("INSTRUMENT VOICE PASS: 144-cue manifest, %d NPC lines, character consistency, playback stop, independent mute" % voice_cues.size())
 	quit()
 
 func _audit_voice_cues(steps:Array,filename:String,cues:Array[String],unvoiced:Array[String],instruments:Dictionary) -> void:

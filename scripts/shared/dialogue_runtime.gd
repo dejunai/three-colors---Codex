@@ -191,9 +191,12 @@ static func topic_available(topic: Dictionary, ctx: Dictionary) -> bool:
 
 static func _choose_default(candidates: Array, dstate, npc: String):
 	if candidates.is_empty(): return null
-	if not candidates.any(func(topic): return bool(topic.get("has_weight", false))):
+	# Ordered, unweighted defaults are authoritative progression beats. A weighted
+	# block begins only when the first eligible default is weighted; unweighted
+	# fallbacks after that block cannot enter the chatter draw.
+	if not bool(candidates[0].get("has_weight", false)):
 		return candidates[0]
-	var pool = candidates.duplicate()
+	var pool = candidates.filter(func(topic): return bool(topic.get("has_weight", false)))
 	var previous_line = int(dstate.last_default_lines.get(npc, -1))
 	if pool.size() > 1:
 		var without_previous = pool.filter(func(topic): return int(topic.get("line", -1)) != previous_line)
