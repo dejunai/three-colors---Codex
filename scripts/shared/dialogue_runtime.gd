@@ -4,14 +4,17 @@ extends RefCounted
 # context from live game state, loads/caches parsed .dialogue files, picks
 # an NPC's current default line and menu, and renders a chosen topic into
 # the compatible card-array shape story.gd/town_story.gd already use.
-# Unvoiced and beat cards remain [speaker, text]; voiced dialogue cards are
-# [speaker, text, voice]. The Chapter One renderer treats the third element
-# as optional, so legacy cards and other chapters remain unchanged. See
+# Beat cards remain [speaker, text]; dialogue lines are [speaker, text, voice].
+# Missing NPC cues receive a conspicuous warning and a neutral same-instrument
+# fallback. The Chapter One renderer treats the third element as optional, so
+# legacy cards and other chapters remain unchanged. See
 # tests/dialogue_lang_flow.gd for a full standalone proof, and the note at
 # the bottom of this file for what remains to integrate it live.
 const Lang = preload("res://scripts/shared/dialogue_lang.gd")
 const DayClock = preload("res://scripts/shared/day_clock.gd")
 const VOICE_MANIFEST_PATH = "res://assets/audio/instrument_voices/manifest.json"
+const DEFAULT_VOICE = "trombone_neutral_medium_v1"
+const SILENT_SPEAKERS = ["WALTER CORWIN", "WALTER'S NOTEBOOK", "THE KITCHEN WING YARD", "THE COVERING LETTER", "THE DAY BOOK", "THE GAZETTE — CORRECTION", "OUTSIDE THE SHUTTERED SHOP", "A CLEAN READ", "THE SMOKING LOUNGE"]
 
 static var _cache: Dictionary = {}
 static var _voice_ids: Dictionary = {}
@@ -39,10 +42,40 @@ static func load_npc(path: String) -> Dictionary:
 			if not known.has(topic.id):
 				parsed.topics.append(topic)
 				known[topic.id] = true
+	# Cookbook/shared files use braced placeholder identities and are never live
+	# residents. Do not turn their deliberately incomplete examples into warnings.
+	if not String(parsed.get("npc", "")).begins_with("{"):
+		_supply_default_voice_cues(parsed, path)
 	for error in parsed.errors:
 		push_error("dialogue parse error (%s:%d): %s" % [path, error.line, error.message])
 	_cache[path] = parsed
 	return parsed
+
+static func _supply_default_voice_cues(definition:Dictionary, path:String="<dialogue>") -> void:
+	var instruments:Dictionary = {}
+	for topic in definition.get("topics", []): _collect_speaker_instruments(topic.get("steps", []), instruments)
+	for topic in definition.get("topics", []): _fill_missing_voice_cues(topic.get("steps", []), instruments, path)
+
+static func _collect_speaker_instruments(steps:Array, instruments:Dictionary) -> void:
+	for step in steps:
+		if String(step.get("kind", "")) == "line":
+			var speaker=String(step.get("speaker", ""))
+			var cue=String(step.get("voice", ""))
+			if not cue.is_empty() and not instruments.has(speaker): instruments[speaker]=cue.get_slice("_",0)
+		elif String(step.get("kind", "")) == "fork":
+			for option in step.get("options", []): _collect_speaker_instruments(option.get("steps", []),instruments)
+
+static func _fill_missing_voice_cues(steps:Array, instruments:Dictionary, path:String) -> void:
+	for step in steps:
+		if String(step.get("kind", "")) == "line":
+			var speaker=String(step.get("speaker", ""))
+			if bool(step.get("player",false)) or speaker in SILENT_SPEAKERS or not String(step.get("voice", "")).is_empty(): continue
+			var fallback="%s_neutral_medium_v1" % String(instruments.get(speaker,"trombone"))
+			if not _known_voice_ids().has(fallback): fallback=DEFAULT_VOICE
+			step["voice"]=fallback
+			push_warning("Missing VOICE cue in %s for %s; using %s" % [path,speaker,fallback])
+		elif String(step.get("kind", "")) == "fork":
+			for option in step.get("options", []): _fill_missing_voice_cues(option.get("steps", []),instruments,path)
 
 static func _validate_voice_cues(source: String, errors: Array) -> void:
 	var ids = _known_voice_ids()

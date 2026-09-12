@@ -18,7 +18,9 @@ func run() -> void:
 	g.state.started = true
 	g._travel("estate", Vector3(0,0.1,35), 0, false)
 	# Save halfway through the opening, restore the next unread line, then the fork.
+	g.card_kind = "examine"
 	g._interact("odell")
+	assert(g.card_kind == "dialogue", "Scripted conversation must reset an earlier examination frame")
 	g._next_card()
 	assert(not g.state.evidence.has("eight"))
 	assert(g._save_game())

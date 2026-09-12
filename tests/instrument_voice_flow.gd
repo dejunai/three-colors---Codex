@@ -33,6 +33,13 @@ func run() -> void:
 	assert(fixture.errors.is_empty())
 	var rendered = Runtime.render("test", fixture.topics[0], null)
 	assert(rendered.cards[0] == ["TEST", "One line.", "violin_cautious_medium_v1"])
+	var fallback_fixture = load("res://scripts/shared/dialogue_lang.gd").parse("NPC: test\nLOCATION: estate\nTOPIC: default\n  GATE: always\n  TEST: \"Uncued line.\"\n")
+	Runtime._supply_default_voice_cues(fallback_fixture,"test fixture")
+	var fallback_rendered = Runtime.render("test",fallback_fixture.topics[0],null)
+	assert(fallback_rendered.cards[0] == ["TEST","Uncued line.","trombone_neutral_medium_v1"], "Uncued NPC line must receive an audible fallback")
+	for cards in [load("res://town_story.gd").SCENES.intake,load("res://town_story.gd").SCENES.intake_thin,load("res://town_story.gd").SCENES.intake_rich,load("res://town_story.gd").SCENES.supplement]:
+		for card in cards:
+			if card[0] == "THE INTAKE CLERK": assert(card.size() == 3 and not String(card[2]).is_empty(), "Legacy intake clerk line must be voiced")
 	var malformed = load("res://scripts/shared/dialogue_lang.gd").parse("NPC: test\nLOCATION: estate\nTOPIC: default\n  GATE: always\n  VOICE: ../escape\n  TEST: \"No.\"\n")
 	assert(not malformed.errors.is_empty(), "Unsafe cue id must fail authoring validation")
 	var fork_cue = load("res://scripts/shared/dialogue_lang.gd").parse("NPC: test\nLOCATION: estate\nTOPIC: default\n  GATE: always\n  VOICE: violin_cautious_medium_v1\n  FORK:\n    CHOICE: \"One\"\n      TEST: \"Reply.\"\n")

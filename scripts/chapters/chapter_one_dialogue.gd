@@ -126,6 +126,10 @@ func _display(g: Node) -> void:
 	# Restore already-consumed effects without charging timing or another visit.
 	_acknowledge(g, offset)
 	if offset == segment.cards.size(): _segment_done(g); return
+	# Scripted dialogue starts the shared sequence directly rather than through
+	# chapter_one._cards(), so reset presentation state explicitly. Otherwise an
+	# examination immediately before a conversation leaks its object frame here.
+	g.card_kind = "dialogue"
 	g.dialogue.start(segment.cards.slice(offset), g._draw_card, func(): _segment_done(g))
 
 func next(g: Node) -> void:
