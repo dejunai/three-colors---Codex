@@ -184,9 +184,16 @@ func _title() -> void:
 	var buttons=[]
 	if not _available_save_path().is_empty(): buttons.append(["Continue investigation",_load_game])
 	buttons.append(["Begin at the estate",_new_game])
-	buttons.append(["Accessibility & controls",func(): return_page="title"; _settings(),true])
+	buttons.append(["Accessibility & controls",_title_settings,true])
 	buttons.append(["Quit",func(): get_tree().quit(),true])
 	prologue.show_title(preload("res://assets/prologue/club-night.jpg"),"Three Colors of Madness","Competence delays the end. It never prevents it.","A man does not interrogate the shape of his own eye.",buttons)
+
+func _title_settings() -> void:
+	return_page="title"
+	# The photographic title lives above the ordinary interface. Remove it
+	# before constructing settings so the visible title cannot intercept input.
+	prologue.hide_all()
+	_settings()
 
 func _new_game() -> void:
 	tunnel_checkpoint.clear()
