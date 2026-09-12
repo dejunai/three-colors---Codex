@@ -5,25 +5,24 @@ LOCATION: estate
 TOPIC: default
   GATE: estate_complete
   TAG: boy_return
-  VOICE: trombone_cautious_v1
+  VOICE: violin_cautious_medium_v1
   THE GATEHOUSE BOY: "The wagon's been and gone. The captain and the coroner's man went right with the bodies."
   WALTER CORWIN: "And the gardener?"
-  VOICE: trombone_cautious_v2
+  VOICE: violin_cautious_medium_v1
   THE GATEHOUSE BOY: "Over yonder, just beside the drive below the hedge. He's back at his work."
 
 TOPIC: default
   GATE: visit_count(boy) >= 2
   TAG: boy_repeat
-  VOICE: trombone_cautious_v1
+  VOICE: violin_cautious_medium_v1
   THE GATEHOUSE BOY: "Through the gap in the hedge. The captain's still on the terrace."
 
 TOPIC: default
   GATE: always
   TAG: boy
   TIME: 4
-  VOICE: trombone_alarmed_v1
   THE GATEHOUSE BOY: "THEY'RE IN THE ROSE GARDEN, OFFICER.\nWHAT'S LEFT OF THEM."
   WALTER CORWIN: "Who found them?"
-  VOICE: trombone_cautious_v2
+  VOICE: violin_cautious_medium_v1
   THE GATEHOUSE BOY: "The gardener. He sent me for the police.\n\nStraight up the drive. Through the opening in the hedge.\nThe captain is waiting on the terrace."
 

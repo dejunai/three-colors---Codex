@@ -20,14 +20,14 @@ func run() -> void:
 	for cue in voice_cues:
 		assert(cue.is_valid_identifier())
 		assert(ResourceLoader.exists("res://assets/audio/instrument_voices/" + cue + ".wav"), "Missing " + cue)
-	assert(voice_cues.size() == 17, "Expected the limited estate audition set")
-	var fixture = load("res://scripts/shared/dialogue_lang.gd").parse("NPC: test\nLOCATION: estate\nTOPIC: default\n  GATE: always\n  VOICE: trombone_cautious_v1\n  TEST: \"One line.\"\n")
+	assert(voice_cues.size() == 16, "Expected the limited orchestral estate audition set")
+	var fixture = load("res://scripts/shared/dialogue_lang.gd").parse("NPC: test\nLOCATION: estate\nTOPIC: default\n  GATE: always\n  VOICE: violin_cautious_medium_v1\n  TEST: \"One line.\"\n")
 	assert(fixture.errors.is_empty())
 	var rendered = Runtime.render("test", fixture.topics[0], null)
-	assert(rendered.cards[0] == ["TEST", "One line.", "trombone_cautious_v1"])
+	assert(rendered.cards[0] == ["TEST", "One line.", "violin_cautious_medium_v1"])
 	var malformed = load("res://scripts/shared/dialogue_lang.gd").parse("NPC: test\nLOCATION: estate\nTOPIC: default\n  GATE: always\n  VOICE: ../escape\n  TEST: \"No.\"\n")
 	assert(not malformed.errors.is_empty(), "Unsafe cue id must fail authoring validation")
-	var fork_cue = load("res://scripts/shared/dialogue_lang.gd").parse("NPC: test\nLOCATION: estate\nTOPIC: default\n  GATE: always\n  VOICE: trombone_cautious_v1\n  FORK:\n    CHOICE: \"One\"\n      TEST: \"Reply.\"\n")
+	var fork_cue = load("res://scripts/shared/dialogue_lang.gd").parse("NPC: test\nLOCATION: estate\nTOPIC: default\n  GATE: always\n  VOICE: violin_cautious_medium_v1\n  FORK:\n    CHOICE: \"One\"\n      TEST: \"Reply.\"\n")
 	assert(not fork_cue.errors.is_empty(), "VOICE before FORK must fail instead of leaking to a later line")
 
 	var scene = load("res://main.tscn").instantiate()
@@ -36,12 +36,12 @@ func run() -> void:
 	var g = scene.chapter
 	g.test_mode = true
 	assert(is_instance_valid(g.instrument_voice_player))
-	g._play_instrument_voice("trombone_bureaucratic_v1")
+	g._play_instrument_voice("trombone_bureaucratic_medium_v1")
 	assert(g.instrument_voice_player.playing)
 	g._next_card()
 	assert(not g.instrument_voice_player.playing, "Advancing must stop the current voice")
 	g.settings.instrument_voice_volume = 0.0
-	g._play_instrument_voice("trombone_bureaucratic_v1")
+	g._play_instrument_voice("trombone_bureaucratic_medium_v1")
 	assert(not g.instrument_voice_player.playing, "Zero instrument voice volume must mute cues")
 	print("INSTRUMENT VOICE PASS: DSL, estate cues, asset safety, playback stop, independent mute")
 	quit()

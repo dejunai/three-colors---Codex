@@ -6,13 +6,13 @@ TOPIC: default
   GATE: NOT topic_done(odell, default)
   TAG: odell
   TIME: 8
-  VOICE: trombone_bureaucratic_v1
+  VOICE: trombone_bureaucratic_medium_v1
   CAPTAIN ODELL: "A gas-main tragedy.\nOr something close enough for the morning edition."
   WALTER CORWIN: "There are eight bodies. Six club members. A woman and a boy beyond the birches.\n\nNobody has established an accident."
-  VOICE: trombone_dismissive_v1
+  VOICE: trombone_dismissive_medium_v1
   CAPTAIN ODELL: "Six members, Corwin.\nThe other two are a filing matter."
   WALTER CORWIN: "Eight people are dead."
-  VOICE: trombone_bureaucratic_v1
+  VOICE: trombone_bureaucratic_medium_v1
   CAPTAIN ODELL: "Then put your observations in writing.\n\nI need a preliminary report.\nI do not need a quarrel before breakfast."
   EVIDENCE: eight
   FORK:
