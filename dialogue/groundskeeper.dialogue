@@ -7,7 +7,7 @@ TOPIC: default
   TAG: crew
   THE KITCHEN WING YARD: "A groundskeeper stacks crates beside a banked fire, working fast in the cold. The service door stands a few feet off. He never sets a crate nearer to it than the last."
   WALTER CORWIN: "Something wrong with the door?"
-  VOICE: violin_cautious_medium_v1
+  VOICE: trombone_cautious_long_v1
   THE GROUNDSKEEPER: "Uneven step. Easy to turn an ankle in this light.\n\nMind the same on your way out."
   WALTER'S NOTEBOOK: "The distance he keeps is exact, not nervous. He named a reason before Walter asked for one, then went back to the crates without slowing down.\n\nThe observation is exact. The reason he gave may not be."
   EVIDENCE: crew
@@ -19,10 +19,10 @@ TOPIC: perimeter_trench
   TIME: 4
   WALTER CORWIN: "There's a shallow furrow scored into the dirt thirty paces back from the kitchen door. Ground oyster shell and yellow brimstone."
   [The groundskeeper drops a crate onto the stack with a sharp, hollow hollow clatter.]
-  VOICE: trombone_dismissive_medium_v1
+  VOICE: trombone_dismissive_short_v2
   THE GROUNDSKEEPER: "Grange orders. Slugs in the rhododendrons."
   WALTER CORWIN: "Slugs don't cross thirty yards of open carriage gravel in November."
-  VOICE: violin_cautious_medium_v1
+  VOICE: trombone_cautious_long_v2
   THE GROUNDSKEEPER: "They don't cross that line either, Officer. That's why it's there.\nNow step back on the gravel path. You're kicking the lime into the grass."
   NOTEBOOK: groundskeeper_perimeter_line | "A furrow packed with crushed oyster shell and brimstone sulfur rings the kitchen yard thirty paces out. Groundskeeper claimed it was for garden slugs, but insisted Walter not disturb the boundary."
   EVIDENCE: sulfur_shell_perimeter

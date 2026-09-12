@@ -34,7 +34,7 @@ Multiple `TOPIC: default` blocks are allowed. The first eligible, nonempty one i
 
 | Step | Meaning |
 | --- | --- |
-| `VOICE: trombone_cautious_v1` | Optional delivery cue for the immediately following spoken line. Uses a matching WAV under `assets/audio/instrument_voices`; simple identifiers only. |
+| `VOICE: trombone_cautious_medium_v1` | Optional delivery cue for the immediately following spoken line. The identifier must exist in `assets/audio/instrument_voices/manifest.json`. |
 | `ANY SPEAKER NAME: "Text"` | A spoken card with that literal label. No name lookup or interpolation. |
 | `[A short stage direction.]` | An unspoken beat card; keep the brackets on one physical line. |
 | `CHOICE: "Walter's line"` | Outside a FORK, linear Walter speech followed by its indented continuation. |

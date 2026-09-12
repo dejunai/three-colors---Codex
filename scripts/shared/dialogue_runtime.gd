@@ -11,8 +11,10 @@ extends RefCounted
 # the bottom of this file for what remains to integrate it live.
 const Lang = preload("res://scripts/shared/dialogue_lang.gd")
 const DayClock = preload("res://scripts/shared/day_clock.gd")
+const VOICE_MANIFEST_PATH = "res://assets/audio/instrument_voices/manifest.json"
 
 static var _cache: Dictionary = {}
+static var _voice_ids: Dictionary = {}
 
 static func clear_cache() -> void:
 	_cache.clear()
@@ -25,7 +27,9 @@ static func load_npc(path: String) -> Dictionary:
 		var empty = {"npc": "", "location": "", "schedule": {}, "includes": [], "topics": [], "errors": []}
 		_cache[path] = empty
 		return empty
-	var parsed = Lang.parse(file.get_as_text())
+	var source = file.get_as_text()
+	var parsed = Lang.parse(source)
+	_validate_voice_cues(source, parsed.errors)
 	var known: Dictionary = {}
 	for topic in parsed.topics: known[topic.id] = true
 	for include_value in parsed.get("includes", []):
@@ -39,6 +43,34 @@ static func load_npc(path: String) -> Dictionary:
 		push_error("dialogue parse error (%s:%d): %s" % [path, error.line, error.message])
 	_cache[path] = parsed
 	return parsed
+
+static func _validate_voice_cues(source: String, errors: Array) -> void:
+	var ids = _known_voice_ids()
+	var lines = source.split("\n")
+	for index in range(lines.size()):
+		var line = String(lines[index]).strip_edges()
+		if not line.begins_with("VOICE:"): continue
+		var cue = line.substr(6).strip_edges()
+		# dialogue_lang.gd reports malformed identifiers. This pass verifies
+		# well-formed names against the actual shipped asset manifest.
+		if cue.is_valid_identifier() and not ids.has(cue):
+			errors.append({"line": index + 1, "message": "Unknown VOICE cue '%s' (not in instrument voice manifest)" % cue})
+
+static func _known_voice_ids() -> Dictionary:
+	if not _voice_ids.is_empty(): return _voice_ids
+	if not FileAccess.file_exists(VOICE_MANIFEST_PATH):
+		push_error("Missing instrument voice manifest: %s" % VOICE_MANIFEST_PATH)
+		return _voice_ids
+	var manifest = JSON.parse_string(FileAccess.get_file_as_string(VOICE_MANIFEST_PATH))
+	if not manifest is Dictionary:
+		push_error("Malformed instrument voice manifest: %s" % VOICE_MANIFEST_PATH)
+		return _voice_ids
+	for clip in manifest.get("clips", []):
+		if not clip is Dictionary: continue
+		var filename = String(clip.get("filename", ""))
+		if filename.ends_with(".wav"):
+			_voice_ids[filename.trim_suffix(".wav")] = true
+	return _voice_ids
 
 static func make_context(state, dstate) -> Dictionary:
 	return {

@@ -7,6 +7,13 @@ func _initialize() -> void:
 
 func run() -> void:
 	var Runtime = load("res://scripts/shared/dialogue_runtime.gd")
+	var manifest_ids: Dictionary = Runtime._known_voice_ids()
+	assert(manifest_ids.size() == 144, "Expected the complete instrument voice manifest")
+	for cue in manifest_ids:
+		assert(ResourceLoader.exists("res://assets/audio/instrument_voices/" + cue + ".wav"), "Manifest asset missing: " + cue)
+	var unknown_errors: Array = []
+	Runtime._validate_voice_cues("VOICE: trombone_typo_medium_v1\nTEST: \"No.\"", unknown_errors)
+	assert(unknown_errors.size() == 1 and String(unknown_errors[0].message).contains("Unknown VOICE cue"), "Unknown cue must fail manifest validation")
 	var voice_cues: Array[String] = []
 	for filename in DirAccess.get_files_at("res://dialogue"):
 		if not filename.ends_with(".dialogue"): continue
@@ -20,7 +27,7 @@ func run() -> void:
 	for cue in voice_cues:
 		assert(cue.is_valid_identifier())
 		assert(ResourceLoader.exists("res://assets/audio/instrument_voices/" + cue + ".wav"), "Missing " + cue)
-	assert(voice_cues.size() == 16, "Expected the limited orchestral estate audition set")
+	assert(voice_cues.size() == 17, "Expected the limited full-library estate audition set")
 	var fixture = load("res://scripts/shared/dialogue_lang.gd").parse("NPC: test\nLOCATION: estate\nTOPIC: default\n  GATE: always\n  VOICE: violin_cautious_medium_v1\n  TEST: \"One line.\"\n")
 	assert(fixture.errors.is_empty())
 	var rendered = Runtime.render("test", fixture.topics[0], null)
