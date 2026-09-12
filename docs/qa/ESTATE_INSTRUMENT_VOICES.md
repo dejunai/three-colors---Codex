@@ -6,6 +6,6 @@ The dialogue DSL accepts an optional `VOICE: cue_id` directly before a spoken li
 
 Accessibility settings now include **Instrument voices**, default 45%, range 0–100%. Zero fully mutes these cues without muting other audio.
 
-The September 11 orchestral audition uses four cues from Dejunai's `three-colors-voice-pack` repository, built from real Iowa MIS instrument samples. Odell uses bureaucratic and dismissive trombone; cautious and weary deliveries use violin. Sixteen estate lines are cued for the audition. The gatehouse boy's alarmed line remains silent until an orchestral alarmed sample exists, so rejected synthesized audio cannot leak into the comparison.
+The September 11 playtest revision uses four cues from Dejunai's `three-colors-voice-pack` repository, rendered from expressive MIDI through the MuseScore General trombone and violin instruments. It replaces the rejected Iowa MIS grain-concatenation audition without changing cue IDs or dialogue behavior. Odell uses bureaucratic and dismissive trombone; cautious and weary deliveries use violin. Sixteen estate lines are cued for the audition. The gatehouse boy's alarmed line remains silent until an accepted alarmed sample exists.
 
 Validation: `tests/instrument_voice_flow.gd` verifies clean parsing, all 16 cue references, asset availability, safe cue IDs, renderer metadata, playback, stop-on-advance, and independent mute. Existing dialogue language, content, and template flows pass. No Web export or publication was performed.
