@@ -87,6 +87,7 @@ var tunnel_dead = false
 var hazard_caption: Label:
 	get: return interface.hazard_caption
 var cough_player: AudioStreamPlayer
+var instrument_voice_player: AudioStreamPlayer
 var last_hazard_phase = ""
 var card_kind := "dialogue"
 
@@ -143,6 +144,9 @@ func _build_ui() -> void:
 	prologue.layer=20
 	add_child(prologue)
 	_build_cough()
+	instrument_voice_player=AudioStreamPlayer.new()
+	instrument_voice_player.bus="Master"
+	add_child(instrument_voice_player)
 	_apply_settings()
 
 func _label(text:String,size:int=24,literary:bool=true) -> Label:
@@ -167,6 +171,7 @@ func _focus_first() -> void:
 	interface._focus_first()
 
 func _close() -> void:
+	_stop_instrument_voice()
 	scripted_dialogue.clear()
 	interface.close()
 	page="play"
@@ -234,6 +239,7 @@ func _cards(cards:Array,after:Callable,kind:String="dialogue") -> void:
 		if charged: _save_game())
 
 func _draw_card(card:Array,index:int) -> void:
+	_stop_instrument_voice()
 	var kicker = "PHYSICAL EVIDENCE  /  %02d" % (index+1) if card_kind == "examine" else "NO EXIT WOUND  /  %02d" % (index+1)
 	_panel("dialogue",str(card[0]),kicker,false,card_kind)
 	_paragraph(str(card[1]),27)
@@ -244,8 +250,25 @@ func _draw_card(card:Array,index:int) -> void:
 	for child in content.get_children():
 		if child is Label: child.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_focus_first()
+	if card.size() > 2: _play_instrument_voice(str(card[2]))
+
+func _play_instrument_voice(cue:String) -> void:
+	if cue.is_empty() or not cue.is_valid_identifier(): return
+	var path="res://assets/audio/instrument_voices/"+cue+".wav"
+	if not ResourceLoader.exists(path):
+		push_warning("Missing instrument voice cue: "+cue)
+		return
+	instrument_voice_player.stream=load(path)
+	var level=clampf(float(settings.instrument_voice_volume),0.0,1.0)
+	if is_zero_approx(level): return
+	instrument_voice_player.volume_db=linear_to_db(level)
+	instrument_voice_player.play()
+
+func _stop_instrument_voice() -> void:
+	if is_instance_valid(instrument_voice_player): instrument_voice_player.stop()
 
 func _next_card() -> void:
+	_stop_instrument_voice()
 	if not scripted_dialogue.active.is_empty(): scripted_dialogue.next(self)
 	else: dialogue.next()
 
@@ -471,7 +494,7 @@ func _settings() -> void:
 	_panel("settings","Accessibility & controls","AVAILABLE BEFORE PLAY",true)
 	_paragraph("WASD / arrows: move · Mouse: look · Q / R: orbit camera\nWheel: camera distance · Shift: walk briskly · E / F: interact\nTab / I: personal effects · J: case file · Esc: pause · F11: fullscreen\nMenus: Tab to focus · Enter / Space to select · Mouse also supported",18)
 	_paragraph("Clue text and intertitles remain outside all film effects.\nThe service passage uses a provisional cough cue with a protected caption. No spoken dialogue is omitted.",18)
-	for item in [["distortion","Distortion intensity",0.0,1.0,0.05],["grain","Film grain",0.0,0.06,0.005],["contrast","Scene contrast",0.8,1.4,0.05],["text_scale","Text size",0.9,1.3,0.1],["sensitivity","Mouse sensitivity",0.001,0.006,0.0005]]:
+	for item in [["distortion","Distortion intensity",0.0,1.0,0.05],["grain","Film grain",0.0,0.06,0.005],["contrast","Scene contrast",0.8,1.4,0.05],["text_scale","Text size",0.9,1.3,0.1],["sensitivity","Mouse sensitivity",0.001,0.006,0.0005],["instrument_voice_volume","Instrument voices",0.0,1.0,0.05]]:
 		var key:String = item[0]
 		var row = HBoxContainer.new()
 		content.add_child(row)

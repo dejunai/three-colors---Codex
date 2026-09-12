@@ -18,6 +18,8 @@ extends RefCounted
 #               continue across indented lines until the closing quote,
 #               or use \n / \n\n inline to keep one physical line and
 #               still reproduce the source material's paragraph breaks."
+#     VOICE: trombone_cautious_v1  (optional; applies to the next spoken line)
+#     SPEAKER: "A wordless instrumental delivery cue accompanies this card."
 #     [A bracketed line is a stage direction/beat, not spoken dialogue.]
 #     CHOICE: "The player's own line."
 #       SPEAKER: "The reply. CHOICE always opens a nested, linear
@@ -145,6 +147,7 @@ static func _parse_topic_body(body: Array, errors: Array) -> Dictionary:
 
 static func _parse_steps(body: Array, start: int, end: int, indent: int, errors: Array) -> Array:
 	var steps: Array = []
+	var pending_voice = ""
 	var k = start
 	while k < end:
 		var entry = body[k]
@@ -153,7 +156,13 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 			k += 1
 			continue
 		var line = entry.text
-		if line.begins_with("["):
+		if line.begins_with("VOICE:"):
+			pending_voice = line.substr(6).strip_edges()
+			if not pending_voice.is_valid_identifier():
+				errors.append({"line": entry.line, "message": "VOICE cue must be a simple asset id"})
+				pending_voice = ""
+			k += 1
+		elif line.begins_with("["):
 			steps.append({"kind": "beat", "text": _strip_brackets(line)})
 			k += 1
 		elif line.begins_with("EVIDENCE:"):
@@ -172,7 +181,8 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 			var label = _quoted(line.substr(7))
 			var child_indent = _peek_indent(body, k + 1, end)
 			var child_end = _block_end(body, k + 1, end, child_indent) if child_indent > indent else k + 1
-			steps.append({"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true})
+			steps.append({"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true, "voice": pending_voice})
+			pending_voice = ""
 			if child_indent > indent:
 				steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors))
 			k = child_end
@@ -188,8 +198,11 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 				k += 1
 				continue
 			var speaker = line.substr(0, colon).strip_edges()
-			steps.append({"kind": "line", "speaker": speaker, "text": _quoted(line.substr(colon + 1)), "player": false})
+			steps.append({"kind": "line", "speaker": speaker, "text": _quoted(line.substr(colon + 1)), "player": false, "voice": pending_voice})
+			pending_voice = ""
 			k += 1
+	if not pending_voice.is_empty():
+		errors.append({"line": body[end - 1].line, "message": "VOICE cue has no following spoken line"})
 	return steps
 
 static func _parse_fork(body: Array, start: int, end: int, indent: int, errors: Array) -> Array:

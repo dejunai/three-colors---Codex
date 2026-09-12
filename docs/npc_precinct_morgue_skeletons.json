@@ -1,0 +1,226 @@
+{
+  "_note": "Claude-authored planning skeleton, repaired by Codex. Reference only, not runtime input. Author .dialogue files; regenerate the NPC viewer afterward. Placeholders are not shipping dialogue.",
+  "_new_locations_needed": {
+    "_note": "Add these two entries to the LOCATIONS object (plain JS object literal, unquoted keys like the existing ones) before either NPC below will render anywhere sensible in the tool.",
+    "precinct": {
+      "label": "The Precinct",
+      "color": "#c0392b"
+    },
+    "morgue": {
+      "label": "The Morgue",
+      "color": "#5a5a70"
+    }
+  },
+  "odell_precinct": {
+    "color": "#c0392b",
+    "label": "Captain Odell",
+    "location": "precinct",
+    "schedule": {
+      "morning": "precinct",
+      "midday": "precinct",
+      "evening": "closed",
+      "night": "closed"
+    },
+    "source": "dialogue/odell_precinct.dialogue",
+    "topics": [
+      {
+        "gate": {
+          "op": "not",
+          "expr": {
+            "args": [
+              "odell_precinct",
+              "default"
+            ],
+            "call": true,
+            "cmp": "",
+            "name": "topic_done",
+            "op": "cmp",
+            "value": null
+          }
+        },
+        "gate_src": "NOT topic_done(odell_precinct, default)",
+        "id": "default",
+        "label": "",
+        "line": 1,
+        "steps": [
+          {
+            "kind": "line",
+            "player": false,
+            "speaker": "CAPTAIN ODELL",
+            "text": "PLACEHOLDER — first line Odell says when Walter finds him at the precinct. Replace before ship."
+          }
+        ],
+        "tag": "odell_precinct_default",
+        "timing": "0"
+      },
+      {
+        "gate": {
+          "args": [
+            "odell_precinct",
+            "default"
+          ],
+          "call": true,
+          "cmp": "",
+          "name": "topic_done",
+          "op": "cmp",
+          "value": null
+        },
+        "gate_src": "topic_done(odell_precinct, default)",
+        "id": "default",
+        "label": "",
+        "line": 8,
+        "steps": [
+          {
+            "kind": "line",
+            "player": false,
+            "speaker": "CAPTAIN ODELL",
+            "text": "PLACEHOLDER — what Odell says on a repeat visit, before he's given the substantive topic below. Delete this stub once real repeat lines exist, or fold it into 'default' if a repeat line isn't needed."
+          }
+        ],
+        "tag": "odell_precinct_repeat",
+        "timing": "1"
+      },
+      {
+        "gate": {
+          "left": {
+            "args": [
+              "odell",
+              "default"
+            ],
+            "call": true,
+            "cmp": "",
+            "name": "topic_done",
+            "op": "cmp",
+            "value": null
+          },
+          "op": "and",
+          "right": {
+            "expr": {
+              "args": [
+                "odell_precinct",
+                "PLACEHOLDER_TOPIC_ID"
+              ],
+              "call": true,
+              "cmp": "",
+              "name": "topic_done",
+              "op": "cmp",
+              "value": null
+            },
+            "op": "not"
+          }
+        },
+        "gate_src": "topic_done(odell, default) AND NOT topic_done(odell_precinct, PLACEHOLDER_TOPIC_ID)",
+        "id": "PLACEHOLDER_TOPIC_ID",
+        "label": "PLACEHOLDER — ask Odell about something raised at the estate",
+        "line": 15,
+        "steps": [
+          {
+            "kind": "line",
+            "player": true,
+            "speaker": "WALTER CORWIN",
+            "text": "PLACEHOLDER — player line referencing something Odell already said or refused at the estate."
+          },
+          {
+            "kind": "line",
+            "player": false,
+            "speaker": "CAPTAIN ODELL",
+            "text": "PLACEHOLDER — Odell's answer, written as continuous with the estate conversation, not a stranger meeting Walter fresh."
+          }
+        ],
+        "tag": "odell_precinct_PLACEHOLDER",
+        "timing": "3"
+      }
+    ]
+  },
+  "assistant_morgue": {
+    "color": "#8888cc",
+    "label": "Coroner's Assistant",
+    "location": "morgue",
+    "schedule": {
+      "morning": "morgue",
+      "midday": "morgue",
+      "evening": "closed",
+      "night": "closed"
+    },
+    "source": "dialogue/assistant_morgue.dialogue",
+    "topics": [
+      {
+        "gate": {
+          "op": "lit",
+          "value": true
+        },
+        "gate_src": "always",
+        "id": "default",
+        "label": "",
+        "line": 1,
+        "steps": [
+          {
+            "kind": "line",
+            "player": false,
+            "speaker": "CORONER'S ASSISTANT",
+            "text": "PLACEHOLDER — first line at the morgue. Replace before ship."
+          }
+        ],
+        "tag": "assistant_morgue_default",
+        "timing": "0"
+      },
+      {
+        "gate": {
+          "left": {
+            "args": [
+              "some_evidence_found_at_estate"
+            ],
+            "call": true,
+            "cmp": "",
+            "name": "evidence",
+            "op": "cmp",
+            "value": null
+          },
+          "op": "and",
+          "right": {
+            "expr": {
+              "args": [
+                "assistant_morgue",
+                "PLACEHOLDER_TOPIC_ID"
+              ],
+              "call": true,
+              "cmp": "",
+              "name": "topic_done",
+              "op": "cmp",
+              "value": null
+            },
+            "op": "not"
+          }
+        },
+        "gate_src": "evidence(some_evidence_found_at_estate) AND NOT topic_done(assistant_morgue, PLACEHOLDER_TOPIC_ID)",
+        "id": "PLACEHOLDER_TOPIC_ID",
+        "label": "PLACEHOLDER — ask about the wounds/bodies using estate evidence as the key",
+        "line": 8,
+        "steps": [
+          {
+            "kind": "line",
+            "player": true,
+            "speaker": "WALTER CORWIN",
+            "text": "PLACEHOLDER — player references specific evidence from the estate scene."
+          },
+          {
+            "kind": "line",
+            "player": false,
+            "speaker": "CORONER'S ASSISTANT",
+            "text": "PLACEHOLDER — assistant's clinical answer."
+          }
+        ],
+        "tag": "assistant_morgue_PLACEHOLDER",
+        "timing": "2"
+      }
+    ]
+  },
+  "_gating_reminders": [
+    "Cross-NPC topic_done and shared evidence preserve continuity.",
+    "Both returning actors are hidden until day >= 2 AND estate_complete. Morning/midday workplace schedules; evening/night closed in this reference.",
+    "Odell repeat uses TOPIC: default with completed-default gate. First greeting uses its inverse.",
+    "Replace placeholder topic IDs and evidence prerequisites with real IDs. No placeholder EVIDENCE effects remain.",
+    "LOCATION is precinct or morgue; dedicated positions are provided by dialogue_catalog.gd.",
+    "The JSON describes the viewer reference, not a runtime NPC registry. Do not manually paste it into generated NPCS."
+  ]
+}

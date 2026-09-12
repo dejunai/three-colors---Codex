@@ -11,6 +11,7 @@ var extra_actors: Array[String] = []
 var figures: Dictionary = {}
 var population_world_id = 0
 var population_phase = ""
+var population_story = ""
 var active: Dictionary = {}
 var segment: Dictionary = {}
 var offset = 0
@@ -26,7 +27,9 @@ func setup(g: Node) -> void:
 
 func populate(g: Node) -> void:
 	var phase = Runtime.DayClock.phase(g.state.clock_minutes)
-	if population_world_id == g.estate.get_instance_id() and population_phase == phase: return
+	var story = str(g.state.day)+":"+str(g.state.estate_complete)
+	if population_world_id == g.estate.get_instance_id() and population_phase == phase and population_story == story: return
+	population_story = story
 	population_world_id = g.estate.get_instance_id()
 	population_phase = phase
 	for actor in figures:

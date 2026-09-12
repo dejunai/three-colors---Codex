@@ -7,6 +7,8 @@
 # Braces do not interpolate. This placeholder header keeps the template out
 # of the live NPC catalog. A new real NPC also needs a verified world slot.
 # Use two spaces per indent, uppercase directives, full-line comments only.
+# Optional VOICE applies only to the next spoken line. Its id names a WAV in
+# assets/audio/instrument_voices. Omit it to leave the line silent.
 NPC: {generated}
 LOCATION: museum
 SCHEDULE: morning=museum, midday=museum, evening=closed, night=closed
@@ -25,6 +27,7 @@ TOPIC: default
   GATE: always
   TAG: example_witness_greeting
   TIME: 0
+  # VOICE: trombone_neutral_medium_v1
   EXAMPLE WITNESS: "Good morning. What can I do for you?"
 
 # Normal menu topic. LABEL is optional; the topic id supplies a fallback label.

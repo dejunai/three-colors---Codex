@@ -1,6 +1,6 @@
 # Dialogue authoring reference
 
-Updated by Codex, 2026-09-10. This documents the current development parser and live Chapter One runtime, including cross-NPC inquiries and `filed()`. It does not add syntax or change the frozen Web build. The design bible remains authoritative for story content.
+Updated by Codex, 2026-09-11. This documents the current development parser and live Chapter One runtime, including cross-NPC inquiries, `filed()`, and optional instrumental voices. It does not change the frozen Web build. The design bible remains authoritative for story content.
 
 Start with [the annotated template](../dialogue/background_npc_template.dialogue). It is a cookbook, not a proposed character: delete unused examples, replace all example identifiers, and supply the actual account. Its `{generated}` NPC header deliberately excludes it from the live catalog. Braces are placeholders for a human to replace, not variables.
 
@@ -34,6 +34,7 @@ Multiple `TOPIC: default` blocks are allowed. The first eligible, nonempty one i
 
 | Step | Meaning |
 | --- | --- |
+| `VOICE: trombone_cautious_v1` | Optional delivery cue for the immediately following spoken line. Uses a matching WAV under `assets/audio/instrument_voices`; simple identifiers only. |
 | `ANY SPEAKER NAME: "Text"` | A spoken card with that literal label. No name lookup or interpolation. |
 | `[A short stage direction.]` | An unspoken beat card; keep the brackets on one physical line. |
 | `CHOICE: "Walter's line"` | Outside a FORK, linear Walter speech followed by its indented continuation. |
@@ -43,6 +44,8 @@ Multiple `TOPIC: default` blocks are allowed. The first eligible, nonempty one i
 | `EVIDENCE: stable_evidence_id` | Records a linkable observation. Use source-faithful NOTEBOOK prose immediately before a new observation. |
 
 Quoted speech and notes may continue across physical lines until the closing straight double quote; those lines join with spaces. Use literal `\n` for a line break, `\n\n` for a paragraph, and `\"` for a quoted word inside text. Do not assume other escape sequences are supported. Blank lines and whole-line comments are skipped. A speaker named `WALTER'S NOTEBOOK` is just a spoken-card label; it does not save a note.
+
+`VOICE` is a wordless imitation-of-speech performance, not dialogue content or evidence. It does not persist in case state. Put it directly before the line it accompanies; a dangling cue is an authoring error. Unmarked lines stay silent. The sound stops when the player advances. Players can reduce or mute these cues independently under **Instrument voices** in Accessibility & controls.
 
 CHOICE currently always labels the player **WALTER CORWIN**, including in FORKs. It is not yet a chapter-independent protagonist system. GATE/TAG/TIME/LABEL are topic metadata, not per-choice controls. For different availability, write separate gated topics. There are no `SET`, `GOTO`, `JUMP`, `CALL`, `WAIT`, `END`, `GIVE`, `REMOVE`, or `LINK` commands. An unknown colon-prefixed command can be treated as a speaker, so parsing successfully does not prove invented syntax works.
 

@@ -51,3 +51,21 @@ TOPIC: estate_mooring_cable
   ROPEWALK FOREMAN: "Billed to Elias Pruitt's account as 'bluff retaining tackle.'\nDelivered straight to the kitchen cartway three weeks before the deaths.\nYou don't hold up a flower bed with four-inch Manila, Officer."
   NOTEBOOK: ropewalk_estate_hawser | "Foreman confirms two hundred fathoms of 4-inch tarred Manila hawser delivered to estate kitchen cartway three weeks prior."
   EVIDENCE: heavy_subterranean_tackle
+  
+TOPIC: island_confirmed
+  GATE: evidence(chandlery_island_delivery) AND evidence(naomi_quay_inquiry) AND NOT topic_done(ropewalk_foreman, island_confirmed)
+  TAG: ropewalk_foreman_island_confirmed
+  LABEL: "Tell him about the chandlery sale"
+  TIME: 6
+  WALTER CORWIN: "Two crates of sperm oil and long tapers. Cash purchase at the chandlery yard, eight weeks ago.\nDelivered somewhere private."
+  [He doesn't pick up the spool he just set down. He looks at the tide line instead.]
+  ROPEWALK FOREMAN: "Eight weeks."
+  WALTER CORWIN: "The chandler's boy described a tall man in a good coat."
+  ROPEWALK FOREMAN: "There are a great many tall men in good coats in this county, Officer."
+  WALTER CORWIN: "Not many of them buying lighting oil for a building the county thinks is uninhabited."
+  [A long pause. A gull works the pier pilings fifty feet out.]
+  ROPEWALK FOREMAN: "I log what leaves the quay on registered vessels.\nEight weeks ago a dory left the repair slip after dark on a Tuesday.\nIt was back before the morning muster. I don't log dories."
+  WALTER CORWIN: "Did you see who rowed it?"
+  ROPEWALK FOREMAN: "I saw a shape and a lantern.\nThe lantern was the good kind. Long burn. Steady flame."
+  NOTEBOOK: foreman_island_confirmed | "The rope-walk foreman noted a dory left the repair slip after dark on a Tuesday eight weeks ago and returned before morning muster. He did not log it. He saw a long-burn lantern — consistent with the chandlery's long tapers — and a single shape rowing."
+  EVIDENCE: dory_night_crossing

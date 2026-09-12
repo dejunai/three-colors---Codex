@@ -6,8 +6,10 @@ TOPIC: default
   GATE: always
   TAG: assistant
   TIME: 5
+  VOICE: trombone_weary_v1
   THE CORONER'S ASSISTANT: "I've counted them twice. Eight.\n\nThe captain wants the identified men prepared first."
   WALTER CORWIN: "Any sign of an explosion?"
+  VOICE: trombone_weary_v1
   THE CORONER'S ASSISTANT: "None I can find. No burns. No broken glass.\n\nI can't tell you what happened. I can tell you what isn't here."
   A CLEAN READ: "Two independent observations agree.\nFor a moment the work is simple.\n\nWalter knows what to ask next."
   EVIDENCE: testimony

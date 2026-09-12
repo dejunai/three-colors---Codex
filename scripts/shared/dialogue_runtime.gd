@@ -148,7 +148,7 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 		var step = frame.steps[frame.i]
 		frame.i += 1
 		match String(step.kind):
-			"line": result.cards.append([step.speaker, step.text])
+			"line": result.cards.append([step.speaker, step.text, step.get("voice", "")])
 			"beat": result.cards.append(["", step.text])
 			"evidence":
 				result.effects.append({"kind": "evidence", "id": step.id, "after_cards": result.cards.size(), "applied": false})

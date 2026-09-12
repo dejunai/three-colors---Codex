@@ -27,6 +27,7 @@ const SLOTS = {
 	"chapel_path":["upper",Vector3(17,0,12)], "whitlock_orangery":["upper",Vector3(22,0,18)],
 	"charity_hall":["upper",Vector3(20,0,16)]
 }
+const RETURNING_STAFF = {"odell_precinct":["precinct",Vector3(3.8,0,1)], "assistant_morgue":["morgue",Vector3(1.6,0,-1)]}
 var definitions: Dictionary = {}
 var paths: Dictionary = {}
 var titles: Dictionary = {}
@@ -62,6 +63,7 @@ func _collect(steps: Array, facts: Dictionary, source: String, previous: String)
 			for option in step.options: _collect(option.steps, facts, source, previous)
 
 func slot(npc: String, state) -> Array:
+	if RETURNING_STAFF.has(npc) and (state.day < 2 or not state.estate_complete): return []
 	var def = definitions[npc]
 	var phase = Runtime.DayClock.phase(state.clock_minutes)
 	if phase == "night": return []
@@ -70,6 +72,7 @@ func slot(npc: String, state) -> Array:
 	where = where.trim_prefix("{").trim_suffix("}")
 	if where == "closed": return []
 	if where == "home": where = HOME.get(npc, def.location)
+	if RETURNING_STAFF.has(npc) and where == RETURNING_STAFF[npc][0]: return RETURNING_STAFF[npc]
 	if SLOTS.has(where): return SLOTS[where]
 	var places = preload("res://scripts/chapters/town_places.gd")
 	if where.begins_with("upper_house_") or where.begins_with("lower_house_"):

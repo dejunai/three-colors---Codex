@@ -1,0 +1,33 @@
+NPC: coroners_assistant_morgue
+LOCATION: morgue
+SCHEDULE: morning=morgue, midday=morgue, evening=morgue, night=closed
+
+TOPIC: day_two_table
+  GATE: day >= 2 AND NOT topic_done(assistant, day_two_table)
+  TAG: assistant_day_two
+  LABEL: "Return to the morgue"
+  TIME: 5
+  [Six of the eight tables now have county tags on their cards. Two do not.]
+  THE CORONER'S ASSISTANT: "The captain's office sent a memorandum this morning.\nI'm to finalize the six identified decedents and hold the remaining two for registrar disposition."
+  WALTER CORWIN: "Registrar disposition."
+  THE CORONER'S ASSISTANT: "That is the language of the memorandum."
+  WALTER CORWIN: "What does it mean in practice?"
+  THE CORONER'S ASSISTANT: "In practice it means I do not write cause of death on those two cards until I'm told I may."
+  [She turns back to the preparation table. Her hands are very still.]
+  THE CORONER'S ASSISTANT: "I will tell you that there was no water in the woman's lungs.\nI will tell you that as a professional observation I am recording in my own notes, not the county file."
+  NOTEBOOK: assistant_day_two | "The coroner's assistant is barred from filing cause of death for Naomi and the boy pending registrar disposition. She recorded independently that there was no water in Naomi's lungs — not drowning."
+  EVIDENCE: no_water_lungs
+
+TOPIC: day_three_table
+  GATE: day >= 3 AND evidence(no_water_lungs) AND NOT topic_done(assistant, day_three_table)
+  TAG: assistant_day_three
+  LABEL: "Ask what the registrar's disposition found"
+  TIME: 4
+  [The two untagged tables are empty. The sheets are folded on the chairs beside them.]
+  WALTER CORWIN: "The two from beyond the birches."
+  THE CORONER'S ASSISTANT: "Removed yesterday evening. Registrar's order."
+  WALTER CORWIN: "To where?"
+  THE CORONER'S ASSISTANT: "The order did not specify.\nI asked. I was told the county would handle the arrangement."
+  [She folds a piece of lint cloth twice, precisely, and sets it in a drawer.]
+  THE CORONER'S ASSISTANT: "I kept my notes.\nIf anyone asks me under oath what I observed, I will say exactly what I observed.\nI hope someone asks."
+  NOTEBOOK: assistant_day_three | "Naomi and the boy were removed from the morgue on a registrar's order with no stated destination. The assistant kept her private notes and stated she will testify if asked."
