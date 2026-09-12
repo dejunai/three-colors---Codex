@@ -112,13 +112,22 @@ func _run() -> void:
 	var below = Lang._parse_gate("visit_count(steward) < 3")
 	assert(not Lang.evaluate(below, stew_ctx), "visit_count is already 3, so < 3 must now be false")
 
-	# --- npc_done sugar and chance() cascade ---
+	# --- npc_done sugar and weighted repeat greetings ---
 	assert(Lang.evaluate(Lang._parse_gate("npc_done(steward)"), ctx), "npc_done must alias topic_done(npc, default): steward's default topic already completed above")
 	assert(not Lang.evaluate(Lang._parse_gate("npc_done(nobody_yet)"), ctx), "npc_done must be false before that NPC's default topic completes")
-	assert(Lang.evaluate(Lang._parse_gate("chance(100)"), ctx), "chance(100) must always succeed")
-	assert(not Lang.evaluate(Lang._parse_gate("chance(0)"), ctx), "chance(0) must never succeed")
+	var weighted = Lang.parse("NPC: chatter\nLOCATION: test\nTOPIC: default\n  GATE: always\n  WEIGHT: 3\n  ONE: \"First.\"\nTOPIC: default\n  GATE: always\n  WEIGHT: 1\n  TWO: \"Second.\"\n")
+	assert(weighted.errors.is_empty(), "positive WEIGHT metadata must parse on defaults")
+	var chatter_state = DialogueState.new()
+	var first_chatter = Runtime.enter(weighted, Runtime.make_context(state, chatter_state), chatter_state)
+	var second_chatter = Runtime.enter(weighted, Runtime.make_context(state, chatter_state), chatter_state)
+	var third_chatter = Runtime.enter(weighted, Runtime.make_context(state, chatter_state), chatter_state)
+	assert(first_chatter.cards[0][1] != second_chatter.cards[0][1], "weighted defaults must avoid an immediate repeat")
+	assert(second_chatter.cards[0][1] != third_chatter.cards[0][1], "repeat avoidance must continue across interactions")
+	assert(int(first_chatter.topic_index) in [0, 1] and int(second_chatter.topic_index) in [0, 1], "enter() must expose the exact selected default index")
+	var bad_weight = Lang.parse("NPC: bad\nLOCATION: test\nTOPIC: question\n  GATE: always\n  WEIGHT: 2\n  TEST: \"No.\"\nTOPIC: default\n  GATE: always\n  WEIGHT: 0\n  TEST: \"No.\"\n")
+	assert(bad_weight.errors.size() == 2, "WEIGHT must be positive and limited to default topics")
 
-	print("DIALOGUE LANG PASS: menu/never/always, linear CHOICE + inline NOTEBOOK, cross-NPC topic tally, FORK branching and resume, doc-only topics hidden, mutually exclusive default resolution, fuzzy gate matching")
+	print("DIALOGUE LANG PASS: menu/never/always, linear CHOICE + inline NOTEBOOK, cross-NPC topic tally, FORK branching and resume, doc-only topics hidden, gated and weighted default resolution, fuzzy gate matching")
 	quit(0)
 
 # Test-only stand-in for consuming every displayed card in a segment.

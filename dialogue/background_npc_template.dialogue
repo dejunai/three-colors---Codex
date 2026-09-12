@@ -15,7 +15,10 @@ SCHEDULE: morning=museum, midday=museum, evening=closed, night=closed
 # Optional, repeatable header; uncomment only when the real file exists:
 # INCLUDE: shared_rebuffs.dialogue
 
-# All metadata precedes dialogue. Defaults are automatic, first eligible wins.
+# All metadata precedes dialogue. Defaults are automatic. Without WEIGHT, the
+# first eligible default wins. For interchangeable repeat chatter, give each
+# eligible default a positive relative WEIGHT (omitted means 1); the runtime
+# avoids immediately repeating the previous weighted default.
 # Put specific defaults before the catch-all. TAGs distinguish their timing.
 TOPIC: default
   GATE: coat = plain AND visit_count(example_witness) >= 2

@@ -26,11 +26,12 @@ Included topics are appended only when their ID is absent locally. Local topics 
 | Metadata | Meaning |
 | --- | --- |
 | `GATE: expression` | Availability; omitted means `never`. |
+| `WEIGHT: 3` | Optional relative selection weight for multiple eligible `default` topics. Positive numbers only; omitted means 1. |
 | `LABEL: "Menu text"` | Optional; otherwise a capitalized version of the topic ID. |
 | `TAG: npc_unique_scene_id` | Optional additional completion identity and timing key. Prefer globally unique tags. |
 | `TIME: 12.5` | In-game minutes charged on first completion. Use finite, nonnegative numbers; `0` is valid. |
 
-Multiple `TOPIC: default` blocks are allowed. The first eligible, nonempty one is the automatic greeting, never a menu entry. Put specific variants before the fallback and give them different TAGs. Other topic IDs must be unique within that NPC. Sharing a topic ID across different NPCs intentionally supports `topic_count()`.
+Multiple `TOPIC: default` blocks are allowed. Without `WEIGHT`, the first eligible, nonempty one is the automatic greeting, preserving specific-before-fallback gate cascades. If any eligible default has `WEIGHT`, all eligible defaults form a weighted pool; an omitted weight counts as 1. The immediately previous default is excluded whenever another eligible choice exists. This repeat memory is cosmetic and is not saved. Defaults never appear as menu entries. Use weighted defaults for interchangeable exhausted/ambient remarks, and keep required evidence, notes, progression, and unique information in deterministic topics. Other topic IDs must be unique within that NPC. Sharing a topic ID across different NPCs intentionally supports `topic_count()`.
 
 | Step | Meaning |
 | --- | --- |
@@ -51,7 +52,7 @@ Quoted speech and notes may continue across physical lines until the closing str
 
 Run `python tools/seed_instrument_voices.py dialogue` after adding NPC dialogue. It fills only uncued NPC lines, preserves hand-authored cues, assigns one instrument per character, and chooses a deterministic mood, length, and take. Review its choices as delivery direction; rerunning it does not replace manual edits. The live-content test fails when a new NPC line remains unvoiced or a character changes instruments.
 
-CHOICE currently always labels the player **WALTER CORWIN**, including in FORKs. It is not yet a chapter-independent protagonist system. GATE/TAG/TIME/LABEL are topic metadata, not per-choice controls. For different availability, write separate gated topics. There are no `SET`, `GOTO`, `JUMP`, `CALL`, `WAIT`, `END`, `GIVE`, `REMOVE`, or `LINK` commands. An unknown colon-prefixed command can be treated as a speaker, so parsing successfully does not prove invented syntax works.
+CHOICE currently always labels the player **WALTER CORWIN**, including in FORKs. It is not yet a chapter-independent protagonist system. GATE/WEIGHT/TAG/TIME/LABEL are topic metadata, not per-choice controls. WEIGHT is valid only for `TOPIC: default`. For different availability, write separate gated topics. There are no `SET`, `GOTO`, `JUMP`, `CALL`, `WAIT`, `END`, `GIVE`, `REMOVE`, or `LINK` commands. An unknown colon-prefixed command can be treated as a speaker, so parsing successfully does not prove invented syntax works.
 
 ## Complete GATE vocabulary
 
@@ -67,7 +68,6 @@ Use `always`, `never`, `NOT`, `AND`, `OR`, parentheses, and `<`, `<=`, `>`, `>=`
 | `filed(evidence_id)` | Evidence in received records after intake. Supplement history is authoritative when present; older saves without history may use the filed supplement snapshot. Possession alone is insufficient. No alias expansion. |
 | `flag(flag_id)` | Boolean set by game code; unknown flags are false. Dialogue has no command to set one. |
 | `npc_done(npc_id)` | Sugar for `topic_done(npc_id, "default")` — whether that NPC's one-time opener has already played. |
-| `chance(50)` | True `50`% of the time, re-rolled every evaluation. Not sticky: never gate a `default` opener or anything a test checks exact text against with it. Use it only on repeat/flavor topics, stacking blocks (`chance(50)`, then `chance(30)`, then `always`) to get a fallback cascade for free from the existing "first true GATE wins" rule. |
 
 | Field | Values/meaning |
 | --- | --- |

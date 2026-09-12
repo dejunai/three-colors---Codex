@@ -13,6 +13,7 @@ extends RefCounted
 #
 #   TOPIC: topic_id
 #     GATE: <expression>          ("never" / "always" / a boolean expression)
+#     WEIGHT: 3                   (optional; default topics only, relative chance)
 #     LABEL: "Menu button text"   (optional; defaults to topic_id.capitalize())
 #     SPEAKER: "Line of dialogue, may
 #               continue across indented lines until the closing quote,
@@ -37,9 +38,11 @@ extends RefCounted
 # stub — it parses fine and simply never surfaces in play.
 #
 # TOPIC IDS: the id "default" is reserved for an NPC's automatic opening
-# line. Multiple `TOPIC: default` blocks may exist with different GATEs;
-# the first whose GATE is true (file order) wins, and it is never shown in
-# a menu. Every other topic id is a revisitable menu entry whenever its
+# line. Multiple `TOPIC: default` blocks may exist with different GATEs.
+# Normally the first eligible block wins. If any eligible default has a
+# WEIGHT, all eligible defaults form a weighted pool (omitted WEIGHT = 1).
+# Defaults are never shown in a menu. Every other topic id is a revisitable
+# menu entry whenever its
 # GATE evaluates true — there is no separate "is this a menu" flag to
 # author or get out of sync as new topics are added later.
 #
@@ -60,13 +63,9 @@ extends RefCounted
 # Built-in functions/fields are registered by the caller via the `ctx`
 # passed to evaluate() — see dialogue_runtime.gd's make_context() for the
 # actual vocabulary (visit_count, topic_count, spoken_to, evidence, filed,
-# flag, topic_done, npc_done, chance, coat, day, phase, estate_complete,
+# flag, topic_done, npc_done, coat, day, phase, estate_complete,
 # steward_ready).
-#
-# `chance(N)` re-rolls (randf()*100 < N) every time its GATE is evaluated —
-# it is not sticky across menu()/enter() calls, so only use it on repeat/
-# flavor topics, never on a one-time `default` opener or anything a test
-# asserts exact text against. `npc_done(npc_id)` is sugar for
+# `npc_done(npc_id)` is sugar for
 # `topic_done(npc_id, "default")`, the existing "has this NPC's opener
 # already played" check.
 
@@ -110,6 +109,8 @@ static func parse(text: String) -> Dictionary:
 		var parsed = _parse_topic_body(body, errors)
 		parsed["id"] = topic_id
 		parsed["line"] = entry.line
+		if bool(parsed.get("has_weight", false)) and topic_id != "default":
+			errors.append({"line": entry.line, "message": "WEIGHT is only valid on TOPIC: default"})
 		topics.append(parsed)
 		i = j
 	return {"npc": npc, "location": location, "schedule": schedule, "includes": includes, "topics": topics, "errors": errors}
@@ -133,6 +134,8 @@ static func _parse_topic_body(body: Array, errors: Array) -> Dictionary:
 	var label = ""
 	var tag = ""
 	var timing = ""
+	var weight = 1.0
+	var has_weight = false
 	var k = 0
 	while k < body.size() and body[k].indent == base_indent:
 		var text = body[k].text
@@ -145,13 +148,22 @@ static func _parse_topic_body(body: Array, errors: Array) -> Dictionary:
 		elif text.begins_with("TIME:"):
 			timing = text.substr(5).strip_edges()
 			k += 1
+		elif text.begins_with("WEIGHT:"):
+			var raw_weight = text.substr(7).strip_edges()
+			if not raw_weight.is_valid_float() or float(raw_weight) <= 0.0:
+				errors.append({"line": body[k].line, "message": "WEIGHT must be a number greater than zero"})
+			else:
+				weight = float(raw_weight)
+				has_weight = true
+			k += 1
 		elif text.begins_with("LABEL:"):
 			label = _quoted(text.substr(6))
 			k += 1
 		else:
 			break
 	var steps = _parse_steps(body, k, body.size(), base_indent, errors)
-	return {"gate_src": gate_src, "gate": _parse_gate(gate_src), "label": label, "tag": tag, "timing": timing, "steps": steps}
+	return {"gate_src": gate_src, "gate": _parse_gate(gate_src), "label": label, "tag": tag, "timing": timing,
+		"weight": weight, "has_weight": has_weight, "steps": steps}
 
 static func _parse_steps(body: Array, start: int, end: int, indent: int, errors: Array) -> Array:
 	var steps: Array = []

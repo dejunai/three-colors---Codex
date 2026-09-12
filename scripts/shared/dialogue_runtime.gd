@@ -116,7 +116,6 @@ static func make_context(state, dstate) -> Dictionary:
 			"flag": func(args): return dstate.flag(args[0]) if args.size() > 0 else false,
 			"topic_done": func(args): return dstate.topic_done(args[0], args[1]) if args.size() > 1 else false,
 			"npc_done": func(args): return dstate.topic_done(args[0], "default") if args.size() > 0 else false,
-			"chance": func(args): return randf()*100.0 < float(args[0]) if args.size() > 0 else false,
 		},
 		"fields": {
 			"coat": func(): return state.coat,
@@ -161,22 +160,41 @@ static func has_evidence(state, id: String) -> bool:
 		if state.evidence.has(source): return true
 	return false
 
-# Finds the winning `default` topic (first true GATE, file order) and every
+# Finds the ordinary winning `default` topic (first true GATE, file order) and every
 # other topic currently GATE-true, as menu entries. Does not render or
-# apply effects — prepare with play_topic(), then acknowledge playback.
+# apply effects. enter() performs weighted selection when WEIGHT is authored.
 static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 	var default_topic = null
+	var eligible_defaults: Array = []
 	var entries: Array = []
 	for topic in def.topics:
 		if topic.steps.is_empty(): continue
 		if not Lang.evaluate(topic.gate, ctx): continue
 		if topic.id == "default":
+			eligible_defaults.append(topic)
 			if default_topic == null: default_topic = topic
 		else:
 			var label = topic.label if not topic.label.is_empty() else topic.id.capitalize()
 			if _menu_topic_recorded(def, topic, ctx): label += "  · recorded"
 			entries.append({"id": topic.id, "label": label})
-	return {"default_topic": default_topic, "entries": entries}
+	return {"default_topic": default_topic, "default_topics": eligible_defaults, "entries": entries}
+
+static func _choose_default(candidates: Array, dstate, npc: String):
+	if candidates.is_empty(): return null
+	if not candidates.any(func(topic): return bool(topic.get("has_weight", false))):
+		return candidates[0]
+	var pool = candidates.duplicate()
+	var previous_line = int(dstate.last_default_lines.get(npc, -1))
+	if pool.size() > 1:
+		var without_previous = pool.filter(func(topic): return int(topic.get("line", -1)) != previous_line)
+		if not without_previous.is_empty(): pool = without_previous
+	var total = 0.0
+	for topic in pool: total += float(topic.get("weight", 1.0))
+	var roll = randf() * total
+	for topic in pool:
+		roll -= float(topic.get("weight", 1.0))
+		if roll <= 0.0: return topic
+	return pool.back()
 
 static func _menu_topic_recorded(def: Dictionary, topic: Dictionary, ctx: Dictionary) -> bool:
 	var check = ctx.get("functions", {}).get("topic_done", Callable())
@@ -191,8 +209,11 @@ static func enter(def: Dictionary, ctx: Dictionary, dstate) -> Dictionary:
 	dstate.visit(def.npc)
 	var selection = menu(def, ctx)
 	var result = _empty_result()
-	if selection.default_topic != null:
-		result = render(def.npc, selection.default_topic, dstate)
+	var selected = _choose_default(selection.default_topics, dstate, def.npc)
+	if selected != null:
+		dstate.last_default_lines[def.npc] = int(selected.get("line", -1))
+		result = render(def.npc, selected, dstate)
+		result["topic_index"] = def.topics.find(selected)
 	result["entries"] = selection.entries
 	return result
 

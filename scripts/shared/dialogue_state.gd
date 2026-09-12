@@ -14,6 +14,7 @@ var visited_topics: Dictionary = {} # npc_id -> Array[String] topic_ids complete
 var facts: Dictionary = {}          # NPC + authored note id -> free text (legacy notes use text hash)
 var evidence: Array[String] = [] # Existing case FACTS identifiers, separate from prose statements.
 var flags: Dictionary = {}          # arbitrary named booleans for future SET-style effects
+var last_default_lines: Dictionary = {} # transient NPC -> source line; prevents immediate flavor repeats
 
 func visit(npc: String) -> void:
 	visit_counts[npc] = int(visit_counts.get(npc, 0)) + 1

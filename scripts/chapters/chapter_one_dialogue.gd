@@ -74,8 +74,7 @@ func interact(g: Node, actor: String) -> bool:
 	if result.session.is_empty():
 		show_menu(g, actor)
 		return true
-	var selected = Runtime.menu(def, Runtime.make_context(g.state, g.state.dialogue_state)).default_topic
-	_begin(g, actor, def.topics.find(selected), result)
+	_begin(g, actor, int(result.get("topic_index", -1)), result)
 	return true
 
 func show_menu(g: Node, actor: String) -> void:
