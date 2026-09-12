@@ -70,9 +70,30 @@ func _update_camera(delta:float) -> void:
 	if is_instance_valid(model): model.visible = pitch > -0.55 and camera.global_position.distance_to(pivot) > 1.5
 	if camera.global_position.distance_to(pivot) > 0.01: camera.look_at(pivot)
 
+func _notification(what: int) -> void:
+	# Losing window/tab focus while a movement key is held (alt-tab, a browser dialog,
+	# clicking off the canvas) can drop the browser's keyup event entirely, leaving
+	# Godot's internal action state stuck "pressed" forever — the reported "W won't
+	# release" bug. Force every held directional/camera/sprint action to a clean
+	# released state on focus loss so a dropped keyup can never latch a direction on
+	# indefinitely.
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+		for action in ["walk_forward","walk_back","walk_left","walk_right","brisk","camera_left","camera_right","use","case","journal"]:
+			if InputMap.has_action(action):
+				Input.action_release(action)
+		for action in move_latch_timer.keys():
+			move_latch_timer[action] = 0.0
+
 func _physics_process(delta:float) -> void:
 	if not is_instance_valid(chapter) or chapter.page != "play":
 		move_target = null
+		# Guards against Input.mouse_mode drifting out of sync with an open panel/menu —
+		# a browser can silently release pointer lock (e.g. on Escape, or a focus change)
+		# without the engine's captured/visible state noticing. Re-asserting VISIBLE every
+		# frame while a menu is open is a no-op when already correct, and prevents the
+		# cursor from ever being invisible/unresponsive while a panel is up.
+		if Input.mouse_mode != Input.MOUSE_MODE_VISIBLE:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		return
 	for action in move_latch_timer.keys(): move_latch_timer[action] = maxf(0.0,move_latch_timer[action]-delta)
 	var axis = Vector2(

@@ -65,7 +65,7 @@ func _neighborhood() -> void:
 				for dx in [-1.08,0,1.08]: box(self,p+Vector3(x+dx,y,back*0.25),Vector3(0.09,2,0.12),"b0b59e")
 		var door_color="253b30" if spec[3]!="exterior" else "525d4e"
 		box(self,p+Vector3(0,1.5,back*0.3),Vector3(1.8,3,0.18),door_color)
-		lettering(spec[1],p+Vector3(0,3.7,-back*0.05),36).rotation.y=0.0 if i<3 else PI
+		lettering(spec[1],p+Vector3(0,4.3,-back*0.05),36).rotation.y=0.0 if i<3 else PI
 		if upper:
 			for x in [-2,2]: cylinder(self,p+Vector3(x,1.7,-back*0.2),0.18,3.4,"a9ae97")
 			box(self,p+Vector3(0,3.5,-back*0.2),Vector3(5,0.3,1.5),"a0aa91")
