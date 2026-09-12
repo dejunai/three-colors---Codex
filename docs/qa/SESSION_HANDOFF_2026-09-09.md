@@ -7,13 +7,14 @@ Prepared 9 September 2026 after completing the Chapter One dialogue integration.
 Actual game repository: `C:\Users\Dejunai\projects\three colors — Codex`.
 The current workspace at `D:\Documents\ChatGPT\Three Colors` contains staging and test helpers, not the authoritative game checkout.
 
-Read applicable AGENTS.md instructions, then `docs/qa/DIALOGUE_LIVE_PASS.md` in the game repository. It contains the full implementation, provenance, provisional placements, writing observations and validation record. The TDD (`docs/design/7) Three colors of madness tdd v11.md`) and `docs/qa/DIALOGUE_LANG_PASS.md` already point to that record. The design bible wins on story conflicts.
+Read `docs/qa/DIALOGUE_LIVE_PASS.md` (integration history + Sept 12 current-state addendum) and `docs/DIALOGUE_AUTHORING.md` (canonical syntax). For current technical scope and counts, use `docs/design/7) Three Colors of Madness - TDD v21.md` and the Sept 12 addenda in `DIALOGUE_LANG_PASS.md` / `ARCHITECTURE.md` (35 concrete NPCs, 217 nonempty topics, 455 voiced lines). There is no `AGENTS.md` in this repository. The design bible wins on story conflicts.
 
 ## Completed, not pending
 
 The tested integration was applied to the actual repository, based on commit `1f1055f` (dialoges galore). Do not reapply the staging patch. The working tree intentionally contains uncommitted integration changes and rebuilt Web artifacts; do not discard them. Nothing was committed, pushed or published by this session.
 
 - Discovered 30 dialogue files, 29 concrete NPCs and 119 nonempty authored topics, including deliberately disabled topics. All 30 authored files were preserved byte-for-byte.
+- **Later growth (not part of this session):** catalog later reached 35 concrete NPCs / 217 nonempty topics; see TDD v21.
 - Connected NPC menus, dialogue branches, acknowledged-card effects, evidence, notebook entries, saved choices and mid-conversation resume.
 - Numeric `TIME:` advances the day once on first completion. Explicit zero and the author's default of three minutes are preserved; repeated topics do not charge again. The live adapter does not also charge the old conversation duration.
 - Added scheduled, reachable residents. Some use provisional existing interiors or storefronts; the full placement limitations are documented.
