@@ -138,8 +138,17 @@ static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 		if topic.id == "default":
 			if default_topic == null: default_topic = topic
 		else:
-			entries.append({"id": topic.id, "label": topic.label if not topic.label.is_empty() else topic.id.capitalize()})
+			var label = topic.label if not topic.label.is_empty() else topic.id.capitalize()
+			if _menu_topic_recorded(def, topic, ctx): label += "  · recorded"
+			entries.append({"id": topic.id, "label": label})
 	return {"default_topic": default_topic, "entries": entries}
+
+static func _menu_topic_recorded(def: Dictionary, topic: Dictionary, ctx: Dictionary) -> bool:
+	var check = ctx.get("functions", {}).get("topic_done", Callable())
+	if not check is Callable or not check.is_valid(): return false
+	if bool(check.call([String(def.get("npc", "")), String(topic.get("id", ""))])): return true
+	var tag = String(topic.get("tag", ""))
+	return not tag.is_empty() and bool(check.call([String(def.get("npc", "")), tag]))
 
 # A fresh interaction counts one visit. A FORK continues this same session
 # through resume(); never call enter() again to answer a pending choice.

@@ -46,6 +46,11 @@ func _run() -> void:
 	for id in dstate.facts:
 		if dstate.facts[id].begins_with("A refusal offered"): fact_found = true
 	assert(fact_found, "NOTEBOOK effect must write its text directly, no separate facts table")
+	_play(Runtime.play_topic(behan_def, dstate, "club_five"), state, dstate)
+	var recorded_entry = Runtime.menu(behan_def, Runtime.make_context(state, dstate)).entries.filter(func(entry): return entry.id == "club_five")[0]
+	assert(recorded_entry.label.ends_with("  · recorded"), "A completed repeatable dialogue topic must be marked recorded")
+	dstate.complete_topic("father_behan", "tagged_complete")
+	assert(Runtime._menu_topic_recorded(behan_def, {"id":"unfinished", "tag":"tagged_complete"}, Runtime.make_context(state, dstate)), "A completed TAG must also mark its menu topic recorded")
 
 	# --- cross-NPC tally: "ask N people about xyz" ---
 	assert(dstate.topic_count("bullets") == 0, "bullets topic not yet completed by anyone")
