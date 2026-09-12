@@ -22,6 +22,38 @@ TOPIC: default
   VOICE: trombone_neutral_medium_v2
   MRS. PEAKE: "Then you're looking for trouble.\nDown here, the two usually arrive in the same coat."
 
+# Plain coat defaults: tar, hemp, harbor tides, honest neighborhood exchange
+TOPIC: default
+  GATE: topic_done(salt_mender, default) AND coat = plain
+  TAG: mender_repeat_plain_needle
+  WEIGHT: 3
+  [Mrs. Peake pulls another fathom of heavy tarred hemp through the net webbing.]
+  VOICE: trombone_neutral_medium_v1
+  MRS. PEAKE: "Salt brine rots cotton, but good hemp outlasts the boat that hauled it. You look easier on the eyes without that tin badge, Walter."
+
+TOPIC: default
+  GATE: topic_done(salt_mender, default) AND coat = plain
+  TAG: mender_repeat_plain_tide
+  WEIGHT: 2
+  VOICE: trombone_weary_short_v1
+  MRS. PEAKE: "Tide's on the turn. When the mud flats dry, the smell will tell you what sixty years of rot looks like."
+
+# Police coat / badge defaults: lower-wharf skepticism, resentment of town authority, bad omens
+TOPIC: default
+  GATE: topic_done(salt_mender, default) AND coat != plain
+  TAG: mender_repeat_badge_boots
+  WEIGHT: 3
+  [She points the tip of her bone netting shuttle toward Walter's service boots.]
+  VOICE: trombone_dismissive_medium_v1
+  MRS. PEAKE: "Mind your polished boots on my hemp, Officer. The town precinct doesn't pay me for twine trampled into harbor mud."
+
+TOPIC: default
+  GATE: topic_done(salt_mender, default) AND coat != plain
+  TAG: mender_repeat_badge_questions
+  WEIGHT: 2
+  VOICE: trombone_bureaucratic_short_v2
+  MRS. PEAKE: "No new answers down here for the police. The water took what it took, and the badge never fished a drowned man out yet."
+
 TOPIC: night_sounds
   GATE: always
   TAG: mender_sounds

@@ -27,7 +27,19 @@ func interact(g:Node,id:String) -> bool:
 				g._travel("estate",Vector3(-10,0.1,-17),PI)
 			return true
 		"barman": steward(g); return true
-		"sleep", "day_close":
+		"day_close":
+			# Reviewing the notebook at the desk is a reflective beat, not a way to
+			# advance the day — that belongs to the bed alone (id "sleep" below).
+			# Previously both ids shared sleep()'s logic, so setting the notebook down
+			# silently advanced the day exactly like turning in for the night, with no
+			# beat implying Walter actually slept.
+			if g.state.world == "room":
+				g._panel("case","Walter looks over the day's notes once more.","CORWIN'S ROOM")
+				g._paragraph(g._objective(),22)
+				g._button("Set it down",g._close)
+				g._focus_first()
+			return true
+		"sleep":
 			if g.state.world == "room": sleep(g)
 			return true
 	return false

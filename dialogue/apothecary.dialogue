@@ -23,41 +23,62 @@ TOPIC: default
   MR. CRANE: "Then please keep your voice down, Officer.\nPatrons in a chemist's shop are entitled to their privacy regarding remedies."
 
 TOPIC: default
-  GATE: visit_count(apothecary) >= 2 AND NOT (topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies))
-  TAG: apothecary_repeat_sawdust
+  GATE: visit_count(apothecary) >= 2 AND NOT (topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies)) AND coat = plain
+  TAG: apothecary_repeat_plain_sawdust
   WEIGHT: 3
   VOICE: trombone_neutral_short_v1
   MR. CRANE: "Mind the threshold, Walter. I've just laid fresh sawdust."
 
 TOPIC: default
-  GATE: visit_count(apothecary) >= 2 AND NOT (topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies))
-  TAG: apothecary_repeat_mortar
+  GATE: visit_count(apothecary) >= 2 AND NOT (topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies)) AND coat = plain
+  TAG: apothecary_repeat_plain_mortar
   WEIGHT: 2
   [The chemist continues grinding sulfur in a shallow stone mortar without looking up.]
   VOICE: trombone_neutral_medium_v1
   MR. CRANE: "If you're looking for liniment, the shelf behind you hasn't moved."
 
 TOPIC: default
-  GATE: visit_count(apothecary) >= 2 AND NOT (topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies))
-  TAG: apothecary_repeat_carboy
-  WEIGHT: 1
+  GATE: visit_count(apothecary) >= 2 AND NOT (topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies)) AND coat != plain
+  TAG: apothecary_repeat_badge_carboy
+  WEIGHT: 3
   VOICE: trombone_bureaucratic_short_v2
   MR. CRANE: "State your business, Officer. Tincture of squill doesn't boil itself."
 
 TOPIC: default
-  GATE: topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies)
-  TAG: apothecary_exhausted_prescriptions
-  WEIGHT: 3
-  VOICE: trombone_dismissive_short_v1
-  MR. CRANE: "I have four prescriptions waiting for the evening carriage. You know your way out."
+  GATE: visit_count(apothecary) >= 2 AND NOT (topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies)) AND coat != plain
+  TAG: apothecary_repeat_badge_curiosity
+  WEIGHT: 2
+  VOICE: trombone_pleading_short_v1
+  MR. CRANE: "Don't lean against the counter glass with that belt, Officer. You'll craze the bevel."
 
 TOPIC: default
-  GATE: topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies)
-  TAG: apothecary_exhausted_scales
+  GATE: topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies) AND coat = plain
+  TAG: apothecary_exhausted_plain_prescriptions
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v1
+  MR. CRANE: "I have four prescriptions waiting for the evening carriage. You know your way out, Walter."
+
+TOPIC: default
+  GATE: topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies) AND coat = plain
+  TAG: apothecary_exhausted_plain_scales
   WEIGHT: 2
   [Mr. Crane measures grains of bismuth onto a brass scale, ignoring the bell over the door.]
   VOICE: trombone_neutral_short_v1
-  MR. CRANE: "Unless Captain Odell sent an order in writing, the counter is closed to you."
+  MR. CRANE: "The drawer is locked and the ledger is put away. Good day to you."
+
+TOPIC: default
+  GATE: topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies) AND coat != plain
+  TAG: apothecary_exhausted_badge_odell
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v2
+  MR. CRANE: "Unless Captain Odell sent an order in writing, the counter is closed to you, Officer."
+
+TOPIC: default
+  GATE: topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies) AND coat != plain
+  TAG: apothecary_exhausted_badge_closed
+  WEIGHT: 2
+  VOICE: trombone_bureaucratic_short_v1
+  MR. CRANE: "The precinct has its records, and I have mine. Neither belongs on display."
 
 TOPIC: fenn_laudanum
   GATE: evidence(naomi)

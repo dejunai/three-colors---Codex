@@ -12,6 +12,38 @@ TOPIC: default
   VOICE: trombone_bureaucratic_short_v2
   MR. WICK: "The distinction matters more than most officers realize."
 
+# Plain coat defaults: legal counsel vs evidence, patience of common law
+TOPIC: default
+  GATE: topic_done(sebastian_wick, default) AND coat = plain
+  TAG: wick_repeat_plain_veranda
+  WEIGHT: 3
+  [Mr. Wick looks over his iron spectacles from a wicker chair on the veranda.]
+  VOICE: trombone_neutral_medium_v1
+  MR. WICK: "Without the uniform, Corwin, an attorney might almost mistake you for someone seeking legal counsel rather than evidence."
+
+TOPIC: default
+  GATE: topic_done(sebastian_wick, default) AND coat = plain
+  TAG: wick_repeat_plain_statutes
+  WEIGHT: 2
+  VOICE: trombone_cautious_short_v1
+  MR. WICK: "The common law is very patient with things men prefer to forget. Good afternoon."
+
+# Police coat / badge defaults: subpoenas, procedure as shield
+TOPIC: default
+  GATE: topic_done(sebastian_wick, default) AND coat != plain
+  TAG: wick_repeat_badge_subpoena
+  WEIGHT: 3
+  VOICE: trombone_bureaucratic_medium_v2
+  MR. WICK: "If you carry no subpoena signed by the magistrate, Officer, this is merely an interruption of my morning tea."
+
+TOPIC: default
+  GATE: topic_done(sebastian_wick, default) AND coat != plain
+  TAG: wick_repeat_badge_procedure
+  WEIGHT: 2
+  [He turns a page of his legal journal without looking up.]
+  VOICE: trombone_dismissive_short_v1
+  MR. WICK: "Procedure is the only shield between a town and catastrophe, Corwin. Mind yours."
+
 TOPIC: records
   GATE: always
   TAG: wick_records

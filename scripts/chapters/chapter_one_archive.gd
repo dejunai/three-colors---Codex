@@ -320,9 +320,16 @@ func _town_complete(g:Node) -> void:
 	g._panel("ending","A name brought home","END OF THE FIRST TOWN INQUIRY")
 	g._paragraph("Naomi Freeman.\n\nThe town has not changed its account.\nWalter's account has become harder to dismiss.",27)
 	g._paragraph("Notebook: %d observations\nEstate report: %d observations, retained as submitted\nDated supplements: %d\nCounty dispatch: %s" % [g.state.evidence.size(),g.state.report_evidence.size(),g.state.supplement_history.size(),"recorded" if g.state.county_dispatched else "none"],20)
-	g._paragraph("The service passage beneath the estate is open for inquiry. Your notebook and the copies already filed remain separate records.",19)
-	g._button("Return to the service passage" if g.state.tunnel_complete else "Continue to the service passage",g._begin_tunnel)
-	if g.state.tunnel_complete: g._paragraph(g._custody_result(),20)
+	# The service passage (the tunnel) is not playtest-ready and is disabled as the
+	# closing beat for this alpha slice. A save from before this change may already
+	# have tunnel_complete=true; if so its result still displays, but the passage
+	# itself is no longer offered as an entry point. Re-enable the button below
+	# once the tunnel content is ready to ship.
+	if g.state.tunnel_complete:
+		g._paragraph(g._custody_result(),20)
+	else:
+		g._paragraph("Beyond the estate's service door, a passage waits. It is not part of this inquiry yet.",19)
+	g._paragraph("This is where the alpha slice of Three Colors of Madness ends. Thank you for playing.",22)
 	g._button("Review the board",g._board)
 	g._button("Continue exploring",g._close)
 	g._button("Save and return to title",func(): g._save_game(); g._title())

@@ -81,6 +81,10 @@ func run() -> void:
 				assert(not g.estate.routes.has("route_"+spec[0]))
 				continue
 			var p=Places.front(i)
+			if spec[0] == "speakeasy":
+				p = p + Vector3(7, 0, 8)
+				g.state.clock_minutes = 1020
+				g.state.coat = "Plain wool coat"
 			await walk(g,Vector3(g.player.position.x,0,8))
 			await walk(g,Vector3(p.x,0,8))
 			await walk(g,p)

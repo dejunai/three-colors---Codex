@@ -114,7 +114,7 @@ TOPIC: estate_freight
   EVIDENCE: estate_freight
 
 TOPIC: missing_cart
-  GATE: evidence(estate_freight)
+  GATE: evidence(estate_freight) AND NOT topic_done(quay_bookkeeper, missing_cart)
   TAG: bookkeeper_missing_cart
   LABEL: "Press him about the third cart"
   TIME: 7

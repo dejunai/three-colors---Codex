@@ -42,9 +42,9 @@ func run() -> void:
 		if catalog.RETURNING_STAFF.has(actor):
 			g.state.day=3
 			g.state.estate_complete=true
-		g.state.clock_minutes=360
+		g.state.clock_minutes=1020 if catalog.NIGHT_ACTIVE.has(actor) else 360
 		var spot=catalog.slot(actor,g.state)
-		assert(not spot.is_empty())
+		assert(not spot.is_empty(), "Actor slot empty: "+actor)
 		g._travel(spot[0],spot[1]+Vector3(0,0.1,1.8),0,false)
 		assert(g.estate.points.has(actor), "Actor missing: "+actor)
 		g._find_focus()

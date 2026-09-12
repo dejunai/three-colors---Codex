@@ -25,9 +25,15 @@ const SLOTS = {
 	"sunroom":["upper_house_4",Vector3(3,0,2)], "veranda":["upper",Vector3(3,0,18)],
 	"study":["upper",Vector3(4,0,18)], "club_carriage_stop":["upper",Vector3(8,0,13)],
 	"chapel_path":["upper",Vector3(17,0,12)], "whitlock_orangery":["upper",Vector3(22,0,18)],
-	"charity_hall":["upper",Vector3(20,0,16)]
+	"charity_hall":["upper",Vector3(20,0,16)],
+	"lower_dray":["lower",Vector3(-16,0,11)], "lower_smoke":["lower",Vector3(16,0,11)],
+	"lower_lane":["lower",Vector3(0,0,8)], "speakeasy":["speakeasy",Vector3(-2,0,-4.5)],
+	"speakeasy_bar":["speakeasy",Vector3(-2,0,-4.5)],
+	"speakeasy_table_one":["speakeasy",Vector3(5,0,2.5)],
+	"speakeasy_table_two":["speakeasy",Vector3(5,0,-2.5)]
 }
 const RETURNING_STAFF = {"odell_precinct":["precinct",Vector3(3.8,0,1)], "coroners_assistant_morgue":["morgue",Vector3(1.6,0,-1)]}
+const NIGHT_ACTIVE = ["speakeasy_bartender", "night_owl_one", "night_owl_two", "lamplighter"]
 var definitions: Dictionary = {}
 var paths: Dictionary = {}
 var titles: Dictionary = {}
@@ -66,7 +72,7 @@ func slot(npc: String, state) -> Array:
 	if RETURNING_STAFF.has(npc) and (state.day < 2 or not state.estate_complete): return []
 	var def = definitions[npc]
 	var phase = Runtime.DayClock.phase(state.clock_minutes)
-	if phase == "night": return []
+	if phase == "night" and not NIGHT_ACTIVE.has(npc): return []
 	var schedule: Dictionary = def.schedule
 	var where = String(schedule.get("midday" if phase=="noon" else phase, schedule.get("dawn", def.location)))
 	where = where.trim_prefix("{").trim_suffix("}")

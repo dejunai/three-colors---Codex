@@ -15,6 +15,18 @@ const MOVE_LATCH_MIN = 0.15
 var move_latch_timer = {"walk_forward":0.0,"walk_back":0.0,"walk_left":0.0,"walk_right":0.0}
 # Click-to-move waypoint: accessibility/automation fallback for players who can't sustain a held key.
 var move_target = null
+# Fix + diagnostics for the intermittent "camera pivots straight up" report: tracks
+# when mouse capture last re-engaged (leaving a menu), because browsers can report
+# the entire pointer movement that happened while the mouse was free — including
+# however far it drifted off the game canvas — as one inflated relative delta on the
+# very first motion event after pointer lock re-acquires. That single event was
+# large enough to slam pitch straight into its clamp. _suppress_next_motion discards
+# exactly that one event's delta (yaw/pitch are simply not updated from it) so a
+# recapture can never itself move the camera; every real look-around input after it
+# is unaffected.
+var _prev_mouse_mode = Input.MOUSE_MODE_VISIBLE
+var _recapture_time = -1000.0
+var _suppress_next_motion = false
 
 func _ready() -> void:
 	_setup_inputs()
@@ -95,6 +107,11 @@ func _physics_process(delta:float) -> void:
 		if Input.mouse_mode != Input.MOUSE_MODE_VISIBLE:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		return
+	if Input.mouse_mode != _prev_mouse_mode:
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			_recapture_time = Time.get_ticks_msec()/1000.0
+			_suppress_next_motion = true
+		_prev_mouse_mode = Input.mouse_mode
 	for action in move_latch_timer.keys(): move_latch_timer[action] = maxf(0.0,move_latch_timer[action]-delta)
 	var axis = Vector2(
 		(1.0 if _dir_pressed("walk_right") else 0.0)-(1.0 if _dir_pressed("walk_left") else 0.0),
@@ -149,8 +166,23 @@ func _unhandled_input(event:InputEvent) -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if mode == DisplayServer.WINDOW_MODE_FULLSCREEN else DisplayServer.WINDOW_MODE_FULLSCREEN)
 	if chapter.page == "play":
 		if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			yaw -= event.relative.x*float(chapter.settings.sensitivity)
-			pitch = clampf(pitch+event.relative.y*float(chapter.settings.sensitivity)*(-1 if chapter.settings.invert_y else 1),-1.3,1.05)
+			if _suppress_next_motion:
+				# Discard exactly one event: the first motion sample after pointer lock
+				# re-acquires. This is the fix for the "camera pivots straight up on
+				# exiting a menu" report — see the field comment near _suppress_next_motion.
+				_suppress_next_motion = false
+				print("[camera-pivot-diagnostic] suppressed post-recapture motion event, relative=",event.relative)
+			else:
+				var sensitivity = float(chapter.settings.sensitivity)
+				var raw_pitch_delta = event.relative.y*sensitivity*(-1 if chapter.settings.invert_y else 1)
+				var new_pitch = clampf(pitch+raw_pitch_delta,-1.3,1.05)
+				# Retained in case a spike still shows up outside the recapture window —
+				# would mean the theory above isn't the whole story.
+				if absf(event.relative.y) > 40.0 or (new_pitch >= 1.04 and pitch < 1.0) or (new_pitch <= -1.29 and pitch > -1.2):
+					var since_recapture = Time.get_ticks_msec()/1000.0 - _recapture_time
+					print("[camera-pivot-diagnostic] relative=",event.relative," sensitivity=",sensitivity," pitch ",pitch,"->",new_pitch," seconds_since_recapture=",since_recapture)
+				yaw -= event.relative.x*sensitivity
+				pitch = new_pitch
 		if event is InputEventMouseButton and event.pressed:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP: distance = maxf(3.2,distance-0.5)
 			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN: distance = minf(9,distance+0.5)

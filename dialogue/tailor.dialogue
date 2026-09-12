@@ -115,7 +115,7 @@ TOPIC: crew_omission
   TAG: tailor_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 3
-  WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  WALTER CORWIN: "You still cut coats for the men who get toasted at that dinner every year. None of it goes to the crew who drowned. Why?"
   VOICE: trombone_neutral_medium_v1
   MR. KREBS: "I remember the subscribers' names from the commemorative dinner. That is all."
   WALTER CORWIN: "And the men who sailed?"

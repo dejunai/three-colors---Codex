@@ -18,44 +18,58 @@ TOPIC: default
   THE STEWARD: "I asked you to leave your badge behind."
 
 TOPIC: default
-  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead))
-  TAG: steward_repeat_sideboard
+  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead)) AND coat = plain
+  TAG: steward_repeat_plain_sideboard
   WEIGHT: 3
   [The steward continues wiping down the mahogany sideboard with slow, circular strokes.]
   VOICE: trombone_neutral_medium_v1
   THE STEWARD: "Ask what you came to ask, Walter. The glasses don't dry themselves."
 
 TOPIC: default
-  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead))
-  TAG: steward_repeat_quiet
+  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead)) AND coat = plain
+  TAG: steward_repeat_plain_quiet
   WEIGHT: 2
   VOICE: trombone_bureaucratic_short_v1
   THE STEWARD: "The room is quiet today. State your business."
 
 TOPIC: default
-  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead))
-  TAG: steward_repeat_hall
-  WEIGHT: 1
+  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead)) AND coat != plain
+  TAG: steward_repeat_badge_hall
+  WEIGHT: 3
   VOICE: trombone_cautious_short_v1
   THE STEWARD: "Speak low, Officer. Sound carries in an empty hall."
 
 TOPIC: default
-  GATE: topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead)
-  TAG: steward_exhausted_doors
+  GATE: steward_ready AND visit_count(steward) >= 2 AND NOT (topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead)) AND coat != plain
+  TAG: steward_repeat_badge_service
+  WEIGHT: 2
+  VOICE: trombone_dismissive_short_v2
+  THE STEWARD: "I told you to leave the badge behind, Corwin. Members do not take tea with the precinct."
+
+TOPIC: default
+  GATE: topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead) AND coat = plain
+  TAG: steward_exhausted_plain_doors
   WEIGHT: 3
   VOICE: trombone_neutral_short_v1
   THE STEWARD: "The household has answered enough questions, Walter. Some doors remain service doors."
 
 TOPIC: default
-  GATE: topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead)
-  TAG: steward_exhausted_goblet
+  GATE: topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead) AND coat = plain
+  TAG: steward_exhausted_plain_goblet
   WEIGHT: 2
   [He sets down a dry wine goblet, perfectly aligned with the row behind it.]
+  VOICE: trombone_dismissive_short_v2
+  THE STEWARD: "You have the day-book entry and the direction to the pantry. I have nothing further to offer."
+
+TOPIC: default
+  GATE: topic_done(steward, day_book) AND topic_done(steward, club_talk) AND topic_done(steward, club_devotion) AND topic_done(steward, pantry_lead) AND coat != plain
+  TAG: steward_exhausted_badge_officer
+  WEIGHT: 3
   VOICE: trombone_dismissive_short_v2
   THE STEWARD: "You have the day-book entry and the direction to the pantry. I have nothing further to offer a policeman."
 
 TOPIC: default
-  GATE: day < 3 AND evidence(service_work)
+  GATE: day < 3 AND evidence(service_work) AND NOT topic_done(steward, steward_first_lead)
   TAG: steward_first_lead
   TIME: 4
   WALTER CORWIN: "Mrs. Almy says a woman came around asking about work here. Cleaning, laundry, anything she could carry home."
@@ -68,7 +82,7 @@ TOPIC: default
   EVIDENCE: steward_heard_secondhand
 
 TOPIC: default
-  GATE: day < 3
+  GATE: day < 3 AND NOT topic_done(steward, steward_first)
   TAG: steward_first
   WALTER CORWIN: "I need to ask about the people who came through the service entrance."
   VOICE: trombone_haunting_medium_v2
@@ -77,6 +91,21 @@ TOPIC: default
   VOICE: trombone_bureaucratic_medium_v2
   THE STEWARD: "Not while I'm putting this room in order, Officer. Come back another day."
   NOTEBOOK: first_day_book | "The steward distinguishes the staff day book from the dining-room seating list. He has not produced it. Ask for the day book on returning."
+
+TOPIC: default
+  GATE: day < 2 AND (topic_done(steward, steward_first) OR topic_done(steward, steward_first_lead))
+  TAG: steward_day1_repeat_order
+  WEIGHT: 3
+  VOICE: trombone_bureaucratic_short_v1
+  THE STEWARD: "I told you, Officer. I have the room to put in order. Come back another day."
+
+TOPIC: default
+  GATE: day < 2 AND (topic_done(steward, steward_first) OR topic_done(steward, steward_first_lead))
+  TAG: steward_day1_repeat_glasses
+  WEIGHT: 2
+  [The steward continues wiping down the glasses behind the counter without looking up.]
+  VOICE: trombone_neutral_short_v1
+  THE STEWARD: "Nothing more to tell you today, Walter."
 
 TOPIC: day_book
   GATE: steward_ready AND evidence(service_work) AND NOT topic_done(steward, day_book)

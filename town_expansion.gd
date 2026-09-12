@@ -22,12 +22,12 @@ func _ready() -> void:
 	else:
 		var spec=Places.entry(location)
 		_dress(spec[2])
-		lettering(spec[1],Vector3(0,3.4,-7.5),32)
+		lettering(Places.title(location) if location=="speakeasy" else spec[1],Vector3(0,3.4,-7.5),32)
 		var hub=Places.parent_hub(location)
 		var index=Places.BUILDINGS[hub].find(spec)
 		var pos=Places.front(index)+Vector3(0,0.1,1.4 if index<3 else -1.4)
 		_exit_to(hub,pos,"Return to the neighborhood",PI if index<3 else 0.0)
-		if spec[3]=="occupied":
+		if spec[3]=="occupied" and location!="speakeasy":
 			person(Vector3(3,0,-3),"55624f",false)
 			target("local_resident","Speak with the resident",Vector3(3,0,-2))
 
@@ -83,7 +83,12 @@ func _neighborhood() -> void:
 			for y in [0.7,1.5,2.3]: box(self,p+Vector3(0,y,0),Vector3(1.8,0.2,0.1),"718367")
 		if spec[3]!="exterior":
 			var id="route_"+spec[0]
-			target(id,"Enter "+spec[1].to_lower(),p)
+			if id == "route_speakeasy":
+				# The house keeps its ordinary street face. The cellar door is
+				# reached around the rear, beyond the southeast corner.
+				target(id,"Try the cellar door",p+Vector3(7,0,8))
+			else:
+				target(id,"Enter "+spec[1].to_lower(),p)
 			routes[id]=[spec[0],Vector3(0,0.1,6),0.0]
 	for x in [-28,-9,9,28]: lamp(Vector3(x,0,1))
 	if upper:
@@ -142,6 +147,24 @@ func _dress(kind:String) -> void:
 			_chair(Vector3(3,0,1.1))
 			cylinder(self,Vector3(6,0.6,-5),0.5,1.2,"384f38")
 			cylinder(self,Vector3(6,2.2,-5),0.12,2.2,"344632")
+		"speakeasy":
+			# Bar counter along back wall
+			_desk(Vector3(-2,0,-3),Vector3(6,0.16,1.4))
+			# Bar stools along counter
+			for x in [-4,-2,0]: _chair(Vector3(x,0,-1.4))
+			# Liquor barrels and bottles behind the bar counter
+			for x in [-5,-3,-1]:
+				cylinder(self,Vector3(x,0.7,-6.8),0.4,1.4,"3f3123")
+				cylinder(self,Vector3(x,1.5,-6.8),0.08,0.3,"7d8c72")
+			# Low corner table with two chairs for night owls
+			_desk(Vector3(4,0,1),Vector3(2.2,0.14,1.8))
+			_chair(Vector3(4,0,2.4),0.0)
+			_chair(Vector3(4,0,-0.4),PI)
+			# Low ceiling beam & hanging lantern
+			box(self,Vector3(0,3.6,0),Vector3(18,0.4,0.4),"282019")
+			box(self,Vector3(0,2.8,0),Vector3(0.3,0.5,0.3),"c29f4a")
+			# Bar stool interaction for eavesdropping
+			target("speakeasy_bar","Sit quietly at the bar",Vector3(-5,0,-1.4))
 
 func _post_office() -> void:
 	lettering("POST OFFICE",Vector3(0,3.3,-7.5),38)

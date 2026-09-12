@@ -1,0 +1,65 @@
+NPC: fish_smoker
+LOCATION: lower
+SCHEDULE: morning=lower_smoke, midday=lower_smoke, evening=lower_house_4, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(fish_smoker, default) AND coat = plain
+  TAG: smoker_plain
+  VOICE: violin_neutral_medium_v1
+  THE FISH SMOKER: "Mind the smoke-shed flue, mister. Damp hickory stings the eyes if you stand in the draft."
+  [She turns a rack of split, amber haddock over the smoking smolder with bare, brine-reddened hands.]
+  VOICE: violin_neutral_medium_v2
+  THE FISH SMOKER: "Ten cents a bundle for salt cod, eight for smoked pollock. Money on the brine tub."
+
+TOPIC: default
+  GATE: NOT topic_done(fish_smoker, default)
+  TAG: smoker_badge
+  VOICE: violin_cautious_medium_v1
+  THE FISH SMOKER: "A brass star in the smoke yard. I hope Odell hasn't put a tariff on salt brine, Officer."
+  WALTER CORWIN: "No tariff, Martha. Just questions."
+  VOICE: violin_dismissive_medium_v1
+  THE FISH SMOKER: "Questions don't cure winter haddock, Corwin. Keep back from the racks."
+
+TOPIC: default
+  GATE: visit_count(fish_smoker) >= 2 AND coat = plain
+  TAG: smoker_repeat_plain_hickory
+  WEIGHT: 3
+  VOICE: violin_neutral_short_v1
+  THE FISH SMOKER: "Hickory smoke clings to wool, Walter. You'll smell like cured herring for a week."
+
+TOPIC: default
+  GATE: visit_count(fish_smoker) >= 2 AND coat = plain
+  TAG: smoker_repeat_plain_brine
+  WEIGHT: 2
+  [She scatters coarse gray salt across a splitting bench.]
+  VOICE: violin_cautious_short_v2
+  THE FISH SMOKER: "The fog's settling over the mud flats. Watch your step on the ditch planks."
+
+TOPIC: default
+  GATE: visit_count(fish_smoker) >= 2 AND coat != plain
+  TAG: smoker_repeat_badge_patrol
+  WEIGHT: 3
+  VOICE: violin_bureaucratic_short_v1
+  THE FISH SMOKER: "We pay our curing dues at the town wharf, Officer. Nothing unlawful hanging here."
+
+TOPIC: default
+  GATE: visit_count(fish_smoker) >= 2 AND coat != plain
+  TAG: smoker_repeat_badge_racks
+  WEIGHT: 2
+  VOICE: violin_dismissive_short_v2
+  THE FISH SMOKER: "Standing in uniform by my smoke racks won't catch whoever drowned in the bay, Corwin."
+
+TOPIC: gray_salt_cakes
+  GATE: always
+  TAG: smoker_salt
+  LABEL: "Ask where the coarse gray harbor salt is cured"
+  TIME: 5
+  WALTER CORWIN: "Cakes of gray salt were found near the estate cellars. Is that harbor curing salt?"
+  [Martha wipes brine from her forearms with a scrap of sailcloth.]
+  VOICE: violin_cautious_medium_v2
+  THE FISH SMOKER: "Harbor salt comes off the salt-pans down by the mud reach. Coarse, heavy with kelp ash. We use it to pack cod belly."
+  WALTER CORWIN: "Would kitchen cooks use it for dining tables?"
+  VOICE: violin_cautious_long_v1
+  THE FISH SMOKER: "Dining tables? Heavens no. It tastes of bitter iodine and marsh mud.\n\nYou only use that gray muck when you're preserving something heavy that needs to keep in the dark without rotting."
+  NOTEBOOK: smoker_salt_preservation | "Martha the Fish Smoker says gray harbor salt is full of kelp ash and bitter iodine, never used for food, only for preserving things in the dark to prevent rot."
+  EVIDENCE: kelp_salt_preservative

@@ -7,29 +7,50 @@ TOPIC: default
   TAG: quay_docker_plain_repeat
   WEIGHT: 3
   VOICE: trombone_bureaucratic_medium_v2
-  QUAY DOCKER: "Look at that — Officer Corwin looking like he might actually haul a rope.\nDon't drop your boots in the scum, Corwin."
+  QUAY DOCKER: "Look at that — Corwin looking like he might actually haul a rope.\nDon't drop your boots in the scum, Walter."
 
 TOPIC: default
-  GATE: visit_count(quay_docker) >= 2 AND NOT topic_done(quay_docker, naomi_sighting)
-  TAG: quay_docker_repeat_slack
-  WEIGHT: 3
+  GATE: coat = plain AND visit_count(quay_docker) >= 2 AND NOT topic_done(quay_docker, naomi_sighting)
+  TAG: quay_docker_plain_tide
+  WEIGHT: 2
   VOICE: trombone_neutral_short_v1
   QUAY DOCKER: "Slack water still, Corwin. Winches don't turn till the tide fills the basin."
 
 TOPIC: default
-  GATE: visit_count(quay_docker) >= 2 AND NOT topic_done(quay_docker, naomi_sighting)
+  GATE: coat != plain AND visit_count(quay_docker) >= 2 AND NOT topic_done(quay_docker, naomi_sighting)
   TAG: quay_docker_repeat_fender
-  WEIGHT: 2
+  WEIGHT: 3
   [He kicks a frayed hemp fender into place along the pier stringer.]
   VOICE: trombone_neutral_medium_v1
   QUAY DOCKER: "You're standing where the hawsers bite, Officer."
 
 TOPIC: default
-  GATE: topic_done(quay_docker, naomi_sighting)
-  TAG: quay_docker_exhausted_basin
+  GATE: coat != plain AND visit_count(quay_docker) >= 2 AND NOT topic_done(quay_docker, naomi_sighting)
+  TAG: quay_docker_repeat_winch
+  WEIGHT: 2
+  VOICE: trombone_bureaucratic_short_v1
+  QUAY DOCKER: "A uniform makes the stevedores drop their tongs, Corwin. Keep back from the gangway."
+
+TOPIC: default
+  GATE: topic_done(quay_docker, naomi_sighting) AND coat = plain
+  TAG: quay_docker_exhausted_plain_basin
   WEIGHT: 3
   VOICE: trombone_dismissive_short_v1
   QUAY DOCKER: "I told you what I saw pass the basin, Walter. Go ask the harbor master if you want lies."
+
+TOPIC: default
+  GATE: topic_done(quay_docker, naomi_sighting) AND coat != plain
+  TAG: quay_docker_exhausted_badge_basin
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v2
+  QUAY DOCKER: "Precinct business ends at the high-water mark, Officer. The basin's cleared."
+
+TOPIC: default
+  GATE: coat = plain
+  TAG: quay_docker_default_plain
+  WEIGHT: 2
+  VOICE: trombone_neutral_short_v2
+  QUAY DOCKER: "Mind the bollards, Walter. Slippery when the scum dries."
 
 TOPIC: default
   GATE: always

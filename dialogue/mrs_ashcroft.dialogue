@@ -12,6 +12,38 @@ TOPIC: default
   VOICE: trombone_neutral_medium_v2
   MRS. ASHCROFT: "People generally come up here to avoid being asked one."
 
+# Plain coat defaults: garden walks, fog from cove, lower terraces
+TOPIC: default
+  GATE: topic_done(miriam_ashcroft, default) AND coat = plain
+  TAG: ashcroft_repeat_plain_hedge
+  WEIGHT: 3
+  [Mrs. Ashcroft clips a dead rose hip from a tall briar with brass shears.]
+  VOICE: trombone_neutral_medium_v1
+  MRS. ASHCROFT: "A plain coat makes the ridge seem less like a garrison. You may walk the lower terrace, Walter."
+
+TOPIC: default
+  GATE: topic_done(miriam_ashcroft, default) AND coat = plain
+  TAG: ashcroft_repeat_plain_gardens
+  WEIGHT: 2
+  VOICE: trombone_weary_short_v1
+  MRS. ASHCROFT: "The fog rolls up early from the cove. Don't linger until the stones get slick."
+
+# Police coat / badge defaults: garrison feeling, flower beds, generations of patrolmen
+TOPIC: default
+  GATE: topic_done(miriam_ashcroft, default) AND coat != plain
+  TAG: ashcroft_repeat_badge_gate
+  WEIGHT: 3
+  [She pauses with her shears, looking over the hedge at the uniform.]
+  VOICE: trombone_bureaucratic_medium_v2
+  MRS. ASHCROFT: "A badge on the garden path is an ugly ornament, Officer Corwin. We do not keep stolen silver in the flower beds."
+
+TOPIC: default
+  GATE: topic_done(miriam_ashcroft, default) AND coat != plain
+  TAG: ashcroft_repeat_badge_inquiries
+  WEIGHT: 2
+  VOICE: trombone_dismissive_short_v1
+  MRS. ASHCROFT: "The Ashcroft family has answered enough questions for three generations of patrolmen. Good day."
+
 TOPIC: town
   GATE: always
   TAG: ashcroft_town

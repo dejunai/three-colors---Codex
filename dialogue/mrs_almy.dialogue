@@ -19,6 +19,38 @@ TOPIC: default
   VOICE: trombone_questioning_medium_v2
   MRS. ALMY: "The paper wasn't.\n\nWhat is it you intend to write down?"
 
+# Plain coat defaults: quiet boardinghouse, tea, domestic sympathy
+TOPIC: default
+  GATE: topic_done(almy, default) AND coat = plain
+  TAG: almy_repeat_plain_kettle
+  WEIGHT: 3
+  [Mrs. Almy sets the heavy tin kettle back onto the stove trivet with a soft clang.]
+  VOICE: trombone_neutral_medium_v1
+  MRS. ALMY: "The kettle's always on, Walter. Without that badge pinned to your chest, this parlor feels like an ordinary room again."
+
+TOPIC: default
+  GATE: topic_done(almy, default) AND coat = plain
+  TAG: almy_repeat_plain_steps
+  WEIGHT: 2
+  VOICE: trombone_weary_short_v1
+  MRS. ALMY: "Mind the third stair if you go up. The board is loose since the winter rains."
+
+# Police coat / badge defaults: precinct wariness, neighborhood eyes, official distance
+TOPIC: default
+  GATE: topic_done(almy, default) AND coat != plain
+  TAG: almy_repeat_badge_lodgers
+  WEIGHT: 3
+  [She wipes the kitchen table, watching the street through the lace curtains.]
+  VOICE: trombone_bureaucratic_medium_v2
+  MRS. ALMY: "My lodgers pay weekly, Officer Corwin. Having a police uniform on the front stoop makes decent working folk nervous."
+
+TOPIC: default
+  GATE: topic_done(almy, default) AND coat != plain
+  TAG: almy_repeat_badge_inquest
+  WEIGHT: 2
+  VOICE: trombone_dismissive_short_v2
+  MRS. ALMY: "If the town wants more statements, tell Captain Odell to send an official clerk. I have sheets to boil."
+
 TOPIC: identify
   GATE: always
   TAG: identify

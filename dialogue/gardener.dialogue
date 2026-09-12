@@ -14,26 +14,33 @@ TOPIC: default
   NOTEBOOK: service_door | "The gardener saw the woman at the service door. Ask the steward."
 
 TOPIC: default
-  GATE: estate_complete AND visit_count(gardener) >= 2
-  TAG: gardener_repeat_thorns
+  GATE: estate_complete AND visit_count(gardener) >= 2 AND coat = plain
+  TAG: gardener_repeat_plain_thorns
   WEIGHT: 3
   VOICE: trombone_dismissive_short_v1
-  THE GARDENER: "The rose beds are cut back for winter, Walter. There is nothing more to see under these thorns."
+  THE GARDENER: "The rose beds are cut back for winter, Walter. Without the star pinned on, you look like any other man walking through dead canes."
 
 TOPIC: default
-  GATE: estate_complete AND visit_count(gardener) >= 2
-  TAG: gardener_repeat_spade
+  GATE: estate_complete AND visit_count(gardener) >= 2 AND coat = plain
+  TAG: gardener_repeat_plain_soil
   WEIGHT: 2
   [He turns a spade of cold earth, his boots coated in dark, sticky leaf-mold.]
   VOICE: trombone_weary_medium_v1
-  THE GARDENER: "Ask the steward in the house. I keep the soil, not the silver."
+  THE GARDENER: "Ask the steward in the house if you're hunting shadows. I keep the soil, not the silver."
 
 TOPIC: default
-  GATE: estate_complete AND visit_count(gardener) >= 2
-  TAG: gardener_repeat_gravel
-  WEIGHT: 1
+  GATE: estate_complete AND visit_count(gardener) >= 2 AND coat != plain
+  TAG: gardener_repeat_badge_gravel
+  WEIGHT: 3
   VOICE: trombone_neutral_short_v1
-  THE GARDENER: "Mind the gravel path. Don't tread where the ground is fresh."
+  THE GARDENER: "Mind the gravel path, Officer. A precinct boot leaves deep marks where the ground is fresh."
+
+TOPIC: default
+  GATE: estate_complete AND visit_count(gardener) >= 2 AND coat != plain
+  TAG: gardener_repeat_badge_patrol
+  WEIGHT: 2
+  VOICE: trombone_dismissive_short_v2
+  THE GARDENER: "Odell took the wagon down an hour ago. Standing by the hedge in uniform won't bring the dead back."
 
 TOPIC: default
   GATE: always

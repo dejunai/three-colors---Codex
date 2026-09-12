@@ -677,6 +677,20 @@ func _region_name() -> String:
 	return "THE TERRACE" if player.position.z < -10 else ("THE ROSE GARDEN" if player.position.z < 6 else "THE OPHION ESTATE")
 
 func _town_interaction(id:String) -> bool:
+	if id == "route_speakeasy":
+		var phase = DayClock.phase(state.clock_minutes)
+		if phase not in ["evening", "night"]:
+			_cards([["CELLAR BULKHEAD", "The heavy oak cellar door is padlocked with an iron chain.\n\nA chalked slate nailed to the plank reads:\n'DELIVERIES AFTER DUSK ONLY.'\n\nNo sound comes from the cellar below."]], _close)
+			return true
+		if state.coat != "Plain wool coat":
+			_cards([["THE VIEWING SLIT", "A heavy iron peephole clatters open in the center of the oak door. A pair of bloodshot eyes stares out from the dark, scanning Walter's lapels and brass police buttons.\n\n'No patrol coats down here, Corwin. Take the badge back to Odell.'\n\nThe iron wicket slams shut with a flat, hollow snap."]], _close)
+			return true
+		var route=estate.routes[id]
+		_travel(route[0],route[1],route[2])
+		return true
+	if id == "speakeasy_bar" and state.world == "speakeasy":
+		_speakeasy_eavesdrop()
+		return true
 	if estate.routes.has(id):
 		var route=estate.routes[id]
 		_travel(route[0],route[1],route[2])
@@ -735,6 +749,30 @@ func _town_observation(id:String,return_target:Variant=null) -> void:
 			_close()
 			_toast("Source recorded in Walter's notebook.  [ J ]",4)
 	, "examine" if id in ["gazette","lodging","exemption"] else "dialogue")
+
+func _speakeasy_eavesdrop() -> void:
+	if state.evidence.has("speakeasy_murders_overheard"):
+		_cards([["AT THE CELLAR BAR", "The two men at the corner table have hunched lower over their mugs, falling silent as a heavy cart rumbles in the lane above.\n\nNo further conversation can be heard."]], _close)
+		return
+	var eavesdrop_cards = [
+		["AT THE CELLAR BAR", "Walter takes an empty stool at the far end of the counter, resting an untouched glass of sour cider on the pine wood.\n\nAt the low corner table nearby, two harbor men in salt-stained caps hunch over mugs of dark rum, speaking in low, hurried murmurs."],
+		["CALEB", "They carried six of them down in the ice wagon, Silas. Six, I tell you.\n\nYet the Gazette only printed five names.", "trombone_cautious_long_v1"],
+		["SILAS", "Keep your voice down, Caleb. The harbor patrol has ears even in the cellar drains.", "violin_cautious_medium_v1"],
+		["CALEB", "Five gentlemen in black evening coats, and one man who wasn't a gentleman at all.\n\nOtto Kessler had butcher's brine in his coat sleeves. What was Otto doing drinking with judges?", "trombone_cautious_long_v2"],
+		["SILAS", "It wasn't drinking they were doing up there.\n\nMy cousin hauled the lime carts to the kitchen yard three nights back. Said the cellar bulkhead was cold enough to frost your eyebrows, and smelled like dried squid and copper.", "violin_cautious_long_v2"],
+		["WALTER'S NOTEBOOK", "Overheard at the Cellar Cask:\n\nSix men were brought down from the estate, but only five names were published. Otto Kessler was among them, despite having no connection to the gentlemen's club.\n\nThe kitchen cellar was described as unnaturally freezing and smelling of sulfur, squid, and copper."]
+	]
+	_cards(eavesdrop_cards, func():
+		state.discover("speakeasy_murders")
+		if not state.evidence.has("speakeasy_murders_overheard"):
+			state.evidence.append("speakeasy_murders_overheard")
+		var note = "Overheard at the speakeasy: Otto Kessler was among the six dead; the estate cellar was freezing cold."
+		if not state.statements.has(note):
+			state.statements.append(note)
+		DayClock.advance(state, 5.0)
+		_close()
+		_toast("Overheard murder talk recorded in Walter's notebook.  [ J ]", 4)
+	)
 
 func _survey_drawer(index_open:bool=false) -> void:
 	_panel("case","The survey drawer","PRECINCT 4  /  MUNICIPAL RECORDS")

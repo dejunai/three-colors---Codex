@@ -54,7 +54,7 @@ TOPIC: club_standing
   EVIDENCE: kessler_carriages
 
 TOPIC: butcher_parcels
-  GATE: evidence(kessler_carriages)
+  GATE: evidence(kessler_carriages) AND NOT topic_done(widow_kessler, butcher_parcels)
   TAG: kessler_parcels
   LABEL: "Ask what Otto brought to the meetings"
   TIME: 6

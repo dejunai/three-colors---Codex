@@ -43,7 +43,7 @@ TOPIC: ship_origin
   EVIDENCE: ophion_myth_classical
 
 TOPIC: dr_fenn_library
-  GATE: evidence(ophion_myth_classical) AND evidence(club_talk)
+  GATE: evidence(ophion_myth_classical) AND evidence(club_talk) AND NOT topic_done(local_historian, dr_fenn_library)
   TAG: historian_fenn_books
   LABEL: "Ask what Dr. Fenn was researching in the archives"
   TIME: 6

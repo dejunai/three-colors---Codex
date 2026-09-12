@@ -1,0 +1,46 @@
+NPC: night_owl_two
+LOCATION: speakeasy
+SCHEDULE: morning=closed, midday=closed, evening=speakeasy_table_two, night=speakeasy_table_two
+
+TOPIC: default
+  GATE: NOT topic_done(night_owl_two, default) AND coat = plain
+  TAG: owl_two_plain
+  VOICE: violin_cautious_short_v1
+  SILAS: "He hunches over his glass, avoiding Walter's gaze entirely."
+  VOICE: violin_cautious_medium_v1
+  SILAS: "We're minding our own business, mister. You'd be wise to mind yours."
+
+TOPIC: default
+  GATE: NOT topic_done(night_owl_two, default)
+  TAG: owl_two_badge
+  VOICE: violin_alarmed_short_v1
+  SILAS: "Keep the badge away from this booth, Officer! We don't want no trouble."
+
+TOPIC: default
+  GATE: visit_count(night_owl_two) >= 2 AND coat = plain
+  TAG: owl_two_repeat_plain_ale
+  WEIGHT: 3
+  VOICE: violin_dismissive_short_v1
+  SILAS: "Go sit by the bar counter, friend. We ain't looking for company."
+
+TOPIC: default
+  GATE: visit_count(night_owl_two) >= 2 AND coat = plain
+  TAG: owl_two_repeat_plain_shrug
+  WEIGHT: 2
+  [Silas takes a slow, defensive swallow of dark rum and looks away.]
+  VOICE: violin_neutral_short_v1
+  SILAS: "Nights are short enough without chatting with strangers."
+
+TOPIC: default
+  GATE: visit_count(night_owl_two) >= 2 AND coat != plain
+  TAG: owl_two_repeat_badge_dock
+  WEIGHT: 3
+  VOICE: violin_cautious_short_v2
+  SILAS: "Go patrol the wharf if you want criminals, Officer. Nothing here."
+
+TOPIC: default
+  GATE: visit_count(night_owl_two) >= 2 AND coat != plain
+  TAG: owl_two_repeat_badge_lookout
+  WEIGHT: 2
+  VOICE: violin_dismissive_short_v2
+  SILAS: "Odell's men aren't welcome in Barnaby's cellar. You know the score."

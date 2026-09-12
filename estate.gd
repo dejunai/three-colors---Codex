@@ -427,7 +427,9 @@ func _ready() -> void:
 	target("knife","Examine beneath the hedge",Vector3(-7,0,-0.4))
 	target("watch","Examine the unidentified man",Vector3(-3.8,0,-3.1))
 	points["watch"]["marker"] = Vector3(-3.8,0.7,-3.1)
-	target("gas","Examine the terrace windows",Vector3(-8,0,-18.0))
+	# Keep this inspection on the east side of the terrace. The service entrance
+	# occupies the west side, and nearby rings made the two read as one target.
+	target("gas","Examine the terrace windows",Vector3(8,0,-18.0))
 	target("register","Read the seating list",Vector3(7.4,0,-13.1))
 	target("shoes","Examine the belongings",Vector3(19,0,-4))
 	points["shoes"]["marker"] = Vector3(19,0.32,-4)

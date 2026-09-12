@@ -20,6 +20,38 @@ TOPIC: default
   VOICE: violin_neutral_medium_v2
   MRS. PELL: "If this concerns the club, I imagine Captain Odell has already received whatever statement the town requires of me."
 
+# Plain coat defaults: neighborly visit, gravel path, rain ruts
+TOPIC: default
+  GATE: topic_done(mrs_pell, default) AND coat = plain
+  TAG: pell_repeat_plain_gate
+  WEIGHT: 3
+  [Mrs. Pell adjusts her shawl, resting her fingers upon the wrought-iron gate.]
+  VOICE: violin_neutral_medium_v1
+  MRS. PELL: "A neighborly visit is always preferable to an official summons, Walter. The ridge is quiet this hour."
+
+TOPIC: default
+  GATE: topic_done(mrs_pell, default) AND coat = plain
+  TAG: pell_repeat_plain_wind
+  WEIGHT: 2
+  VOICE: violin_cautious_short_v1
+  MRS. PELL: "Mind the gravel path on the descent. The carriage ruts are deep after the rain."
+
+# Police coat / badge defaults: closed gate, staff boundaries
+TOPIC: default
+  GATE: topic_done(mrs_pell, default) AND coat != plain
+  TAG: pell_repeat_badge_latched
+  WEIGHT: 3
+  [She keeps the iron latch firmly engaged, speaking through the bars.]
+  VOICE: violin_bureaucratic_medium_v2
+  MRS. PELL: "The gate remains closed, Officer. The precinct has had its answers regarding the club road."
+
+TOPIC: default
+  GATE: topic_done(mrs_pell, default) AND coat != plain
+  TAG: pell_repeat_badge_servants
+  WEIGHT: 2
+  VOICE: violin_dismissive_short_v1
+  MRS. PELL: "Do not question my domestic staff without my presence, Corwin. That is all."
+
 TOPIC: club_guests
   GATE: always
   TAG: pell_guests

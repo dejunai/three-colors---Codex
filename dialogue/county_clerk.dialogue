@@ -23,7 +23,7 @@ TOPIC: default
   MR. PENCE: "He sent six notices of sudden decease for probate indexing.\nThe forms are standard."
 
 TOPIC: wage_claim_inquiry
-  GATE: evidence(lay_lead) AND evidence(new_bedford_letters) AND evidence(postal_bureaucracy_refusal)
+  GATE: evidence(lay_lead) AND evidence(new_bedford_letters) AND evidence(postal_bureaucracy_refusal) AND NOT topic_done(county_clerk, wage_claim_inquiry)
   TAG: clerk_wage_claim
   LABEL: "Attempt to file Naomi Freeman's wage claim"
   TIME: 10
@@ -103,7 +103,7 @@ TOPIC: crew_omission
   TAG: county_clerk_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 3
-  WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  WALTER CORWIN: "The county keeps records of everything else. Why is there no record of the crew who drowned in 1823?"
   VOICE: trombone_bureaucratic_medium_v1
   MR. PENCE: "Crew names belong in a shipping list, Officer. This is a county office."
   WALTER CORWIN: "I asked why the town's account leaves them out."

@@ -2,6 +2,38 @@ NPC: coroners_assistant_morgue
 LOCATION: morgue
 SCHEDULE: morning=morgue, midday=morgue, evening=morgue, night=closed
 
+# Plain coat defaults: private observations, confidential medical notes, mutual trust
+TOPIC: default
+  GATE: coat = plain
+  TAG: assistant_repeat_plain_notes
+  WEIGHT: 3
+  [The assistant sets down a pair of nickel-plated forceps, drying her fingers on a towel.]
+  VOICE: violin_neutral_medium_v1
+  THE CORONER'S ASSISTANT: "I speak more freely when the brass isn't reflecting off the tile, Walter. What I see under these lamps stays between our notebooks."
+
+TOPIC: default
+  GATE: coat = plain
+  TAG: assistant_repeat_plain_formalin
+  WEIGHT: 2
+  VOICE: violin_weary_short_v1
+  THE CORONER'S ASSISTANT: "The formalin smell gets into wool. You'll want to hang that coat by the stove tonight."
+
+# Police coat / badge defaults: official records, Odell's vouchers, administrative detachment
+TOPIC: default
+  GATE: coat != plain
+  TAG: assistant_repeat_badge_vouchers
+  WEIGHT: 3
+  [She points the tip of a scalpel toward the clipboard on the wall.]
+  VOICE: violin_bureaucratic_medium_v2
+  THE CORONER'S ASSISTANT: "If Captain Odell wants the certified autopsy transcripts, Officer, he must sign the morgue requisition slip."
+
+TOPIC: default
+  GATE: coat != plain
+  TAG: assistant_repeat_badge_slabs
+  WEIGHT: 2
+  VOICE: violin_dismissive_short_v1
+  THE CORONER'S ASSISTANT: "Official business only down here, Corwin. The coroner does not care for patrolmen idling beside the cold tables."
+
 TOPIC: day_two_table
   GATE: day >= 2 AND NOT topic_done(coroners_assistant_morgue, day_two_table)
   TAG: assistant_day_two

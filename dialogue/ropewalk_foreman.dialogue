@@ -10,33 +10,54 @@ TOPIC: default
   ROPEWALK FOREMAN: "Still got tar on your trouser hem, Corwin.\nMind the spinning jack if you're coming down the walk."
 
 TOPIC: default
-  GATE: visit_count(ropewalk_foreman) >= 2 AND NOT (topic_done(ropewalk_foreman, island_supply) AND topic_done(ropewalk_foreman, cellar_salt) AND topic_done(ropewalk_foreman, estate_mooring_cable))
+  GATE: coat = plain AND visit_count(ropewalk_foreman) >= 2 AND NOT (topic_done(ropewalk_foreman, island_supply) AND topic_done(ropewalk_foreman, cellar_salt) AND topic_done(ropewalk_foreman, estate_mooring_cable))
+  TAG: ropewalk_plain_hemp
+  WEIGHT: 2
+  [He wipes powdered pitch from his palms onto a leather apron.]
+  VOICE: trombone_neutral_short_v2
+  ROPEWALK FOREMAN: "Still asking about private boats, Walter? Ask the water."
+
+TOPIC: default
+  GATE: coat != plain AND visit_count(ropewalk_foreman) >= 2 AND NOT (topic_done(ropewalk_foreman, island_supply) AND topic_done(ropewalk_foreman, cellar_salt) AND topic_done(ropewalk_foreman, estate_mooring_cable))
   TAG: ropewalk_repeat_jack
   WEIGHT: 3
   VOICE: trombone_bureaucratic_short_v1
   ROPEWALK FOREMAN: "Mind the spinning jack, Corwin. Four-inch Manila doesn't stop for a uniform."
 
 TOPIC: default
-  GATE: visit_count(ropewalk_foreman) >= 2 AND NOT (topic_done(ropewalk_foreman, island_supply) AND topic_done(ropewalk_foreman, cellar_salt) AND topic_done(ropewalk_foreman, estate_mooring_cable))
-  TAG: ropewalk_repeat_pitch
+  GATE: coat != plain AND visit_count(ropewalk_foreman) >= 2 AND NOT (topic_done(ropewalk_foreman, island_supply) AND topic_done(ropewalk_foreman, cellar_salt) AND topic_done(ropewalk_foreman, estate_mooring_cable))
+  TAG: ropewalk_repeat_badge_coils
   WEIGHT: 2
-  [He wipes powdered pitch from his palms onto a leather apron.]
-  VOICE: trombone_neutral_short_v2
-  ROPEWALK FOREMAN: "Still asking about private boats? Ask the water."
+  VOICE: trombone_dismissive_short_v2
+  ROPEWALK FOREMAN: "The ropewalk is private property, Officer. Step outside the ground line."
 
 TOPIC: default
-  GATE: topic_done(ropewalk_foreman, island_supply) AND topic_done(ropewalk_foreman, cellar_salt) AND topic_done(ropewalk_foreman, estate_mooring_cable)
-  TAG: ropewalk_exhausted_coils
+  GATE: topic_done(ropewalk_foreman, island_supply) AND topic_done(ropewalk_foreman, cellar_salt) AND topic_done(ropewalk_foreman, estate_mooring_cable) AND coat = plain
+  TAG: ropewalk_exhausted_plain_coils
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v1
+  ROPEWALK FOREMAN: "The coils are tallied and the slips are cleared. I have no more logs for you, Walter."
+
+TOPIC: default
+  GATE: topic_done(ropewalk_foreman, island_supply) AND topic_done(ropewalk_foreman, cellar_salt) AND topic_done(ropewalk_foreman, estate_mooring_cable) AND coat != plain
+  TAG: ropewalk_exhausted_badge_coils
   WEIGHT: 3
   VOICE: trombone_dismissive_short_v1
   ROPEWALK FOREMAN: "The coils are tallied and the slips are cleared. I have no more logs for you, Officer."
 
 TOPIC: default
-  GATE: always
-  TAG: ropewalk_foreman_default
+  GATE: coat = plain
+  TAG: ropewalk_foreman_default_plain
   WEIGHT: 1
   VOICE: trombone_neutral_medium_v2
   ROPEWALK FOREMAN: "The quay wall's that way, Walter. Let the men work."
+
+TOPIC: default
+  GATE: always
+  TAG: ropewalk_foreman_default
+  WEIGHT: 1
+  VOICE: trombone_bureaucratic_short_v2
+  ROPEWALK FOREMAN: "Precinct business stays outside the tar-house, Corwin."
 
 TOPIC: island_supply
   GATE: evidence(naomi) AND NOT topic_done(ropewalk_foreman, island_supply)

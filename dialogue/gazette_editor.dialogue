@@ -40,7 +40,7 @@ TOPIC: the_omitted_two
   EVIDENCE: press_suppression
 
 TOPIC: press_the_arithmetic
-  GATE: evidence(press_suppression) AND evidence(lay_lead) AND NOT evidence(gazette_correction_printed)
+  GATE: evidence(press_suppression) AND evidence(lay_lead) AND NOT evidence(gazette_correction_printed) AND NOT topic_done(gazette_editor, press_the_arithmetic)
   TAG: editor_arithmetic
   LABEL: "Demand an honest retraction"
   TIME: 6
@@ -82,7 +82,7 @@ TOPIC: crew_omission
   TAG: gazette_editor_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 3
-  WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  WALTER CORWIN: "Your paper prints every subscriber's name twice a year. Why does it leave out the crew who drowned in 1823?"
   VOICE: trombone_neutral_short_v1
   MR. HALLECK: "A commemorative column is not a passenger manifest."
   WALTER CORWIN: "They were the crew. Why leave their names out?"

@@ -56,7 +56,7 @@ TOPIC: crew_omission
   TAG: miss_wexley_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 3
-  WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  WALTER CORWIN: "The Society's memorial doesn't mention the crew who drowned in 1823. Why not?"
   VOICE: violin_neutral_medium_v1
   MISS WEXLEY: "A memorial cannot be expected to reproduce every ledger."
   WALTER CORWIN: "It found room for the families who received the money."

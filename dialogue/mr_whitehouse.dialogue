@@ -26,7 +26,7 @@ TOPIC: subscriptions_and_credit
   EVIDENCE: civic_arithmetic
 
 TOPIC: name_the_dead
-  GATE: evidence(civic_arithmetic)
+  GATE: evidence(civic_arithmetic) AND NOT topic_done(mr_whitehouse, name_the_dead)
   TAG: whitehouse_dead
   LABEL: "Ask whether confidence matters more than the dead"
   TIME: 6

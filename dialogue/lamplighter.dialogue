@@ -1,0 +1,65 @@
+NPC: lamplighter
+LOCATION: lower
+SCHEDULE: morning=closed, midday=lower_lane, evening=lower_lane, night=lower_lane
+
+TOPIC: default
+  GATE: NOT topic_done(lamplighter, default) AND coat = plain
+  TAG: lamplighter_plain
+  VOICE: trombone_neutral_medium_v1
+  THE LAMPLIGHTER: "Stand clear of the ladder foot, mister. Whale oil drips when the reservoir's full."
+  [He trims a soot-crusted wick with brass shears, his face lined with soot and harbor spray.]
+  VOICE: trombone_neutral_medium_v2
+  THE LAMPLIGHTER: "No sense walking the lower alley after dark unless you know which cobbles have sunk into the marsh."
+
+TOPIC: default
+  GATE: NOT topic_done(lamplighter, default)
+  TAG: lamplighter_badge
+  VOICE: trombone_bureaucratic_medium_v1
+  THE LAMPLIGHTER: "Officer Corwin. If you're looking for broken street lamps, the selectmen haven't voted the glass appropriation."
+  WALTER CORWIN: "I'm looking for who moves in the dark, Pike."
+  VOICE: trombone_cautious_medium_v2
+  THE LAMPLIGHTER: "Everything moves in the dark down here, Officer. Most of it has four legs and keeps away from brass buttons."
+
+TOPIC: default
+  GATE: visit_count(lamplighter) >= 2 AND coat = plain
+  TAG: lamplighter_repeat_plain_oil
+  WEIGHT: 3
+  VOICE: trombone_neutral_short_v1
+  THE LAMPLIGHTER: "Watch the lantern draft, Walter. The wind off the shallows is treacherous."
+
+TOPIC: default
+  GATE: visit_count(lamplighter) >= 2 AND coat = plain
+  TAG: lamplighter_repeat_plain_mantle
+  WEIGHT: 2
+  [He polishes a smoky glass chimney against his sleeve with practiced patience.]
+  VOICE: trombone_weary_medium_v1
+  THE LAMPLIGHTER: "Salt fog eats the brass quicker than coal gas. Mind the mud puddle."
+
+TOPIC: default
+  GATE: visit_count(lamplighter) >= 2 AND coat != plain
+  TAG: lamplighter_repeat_badge_wicket
+  WEIGHT: 3
+  VOICE: trombone_bureaucratic_short_v1
+  THE LAMPLIGHTER: "Precinct patrol ought to carry their own lanterns, Corwin. The town lamp oil is budgeted to the gill."
+
+TOPIC: default
+  GATE: visit_count(lamplighter) >= 2 AND coat != plain
+  TAG: lamplighter_repeat_badge_dusk
+  WEIGHT: 2
+  VOICE: trombone_dismissive_short_v2
+  THE LAMPLIGHTER: "A uniform makes the cellar doors lock double fast, Officer. You won't find what you're seeking by lamplight."
+
+TOPIC: cellar_whispers
+  GATE: always
+  TAG: lamplighter_whispers
+  LABEL: "Ask about cellar doors opening after the lamps are lit"
+  TIME: 5
+  WALTER CORWIN: "Which cellars stay occupied when the street goes dark?"
+  [Pike lowers his trimming shears and glances toward Dwelling No. 5 at the end of the lower lane.]
+  VOICE: trombone_cautious_long_v2
+  THE LAMPLIGHTER: "Number Five has people slipping down the storm bulkhead at dusk. You know it, I know it, and Odell knows it."
+  WALTER CORWIN: "The speakeasy."
+  VOICE: trombone_haunting_medium_v1
+  THE LAMPLIGHTER: "Barnaby's cellar. They pour cider and rye from Boston.\n\nDon't go knocking in that police coat, though. Barnaby's doorman has a peephole and a shotgun behind the barrels. You won't get past the top step with brass on your chest."
+  NOTEBOOK: lamplighter_speakeasy_warning | "Pike the Lamplighter warned that Barnaby runs a speakeasy beneath Dwelling No. 5 after dusk, but the doorman will turn away anyone wearing a police uniform."
+  EVIDENCE: cellar_speakeasy_revealed

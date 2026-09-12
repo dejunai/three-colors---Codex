@@ -10,6 +10,38 @@ TOPIC: default
   VOICE: trombone_bureaucratic_medium_v1
   MRS. WHITLOCK: "If this concerns the garden party, Officer, I assure you the roses are innocent."
 
+# Plain coat defaults: charity vs retribution, warm orangery
+TOPIC: default
+  GATE: topic_done(eleanor_whitlock, default) AND coat = plain
+  TAG: whitlock_repeat_plain_charity
+  WEIGHT: 3
+  [Mrs. Whitlock checks a small ledger of charitable dispensations with a pencil.]
+  VOICE: trombone_neutral_medium_v1
+  MRS. WHITLOCK: "Without that badge, Walter, you look like a man who understands charity rather than retribution."
+
+TOPIC: default
+  GATE: topic_done(eleanor_whitlock, default) AND coat = plain
+  TAG: whitlock_repeat_plain_parish
+  WEIGHT: 2
+  VOICE: trombone_weary_short_v1
+  MRS. WHITLOCK: "The orangery is warm if you have walked up the steep path. Take care on the return."
+
+# Police coat / badge defaults: foundation oversight, benevolence subscriptions
+TOPIC: default
+  GATE: topic_done(eleanor_whitlock, default) AND coat != plain
+  TAG: whitlock_repeat_badge_precinct
+  WEIGHT: 3
+  [She sets her pencil in the ledger crease, regarding Walter's buttons with quiet distaste.]
+  VOICE: trombone_bureaucratic_medium_v2
+  MRS. WHITLOCK: "The Whitlock foundation does not require police oversight for our benevolence, Officer Corwin."
+
+TOPIC: default
+  GATE: topic_done(eleanor_whitlock, default) AND coat != plain
+  TAG: whitlock_repeat_badge_dignity
+  WEIGHT: 2
+  VOICE: trombone_dismissive_short_v1
+  MRS. WHITLOCK: "Tell Captain Odell our subscriptions to the Policemen's Benevolent fund remain current. Good morning."
+
 TOPIC: charity
   GATE: always
   TAG: whitlock_charity

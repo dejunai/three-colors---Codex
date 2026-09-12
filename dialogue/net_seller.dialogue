@@ -7,10 +7,18 @@ TOPIC: default
   TAG: net_seller_plain_repeat
   WEIGHT: 3
   VOICE: trombone_bureaucratic_medium_v1
-  NET SELLER: "Still walking the timbers without the brass, Officer?\nMind the tar bucket by the bench."
+  NET SELLER: "Still walking the timbers without the brass, Walter?\nMind the tar bucket by the bench."
 
 TOPIC: default
-  GATE: visit_count(net_seller) >= 2 AND NOT topic_done(net_seller, crew_omission)
+  GATE: coat = plain AND visit_count(net_seller) >= 2 AND NOT topic_done(net_seller, crew_omission)
+  TAG: net_seller_plain_twine
+  WEIGHT: 2
+  [She draws coarse hemp twine through a horn gauge without looking up.]
+  VOICE: trombone_neutral_medium_v2
+  NET SELLER: "The wind's coming round from the shoals. Stand out of the door, Corwin."
+
+TOPIC: default
+  GATE: coat != plain AND visit_count(net_seller) >= 2 AND NOT topic_done(net_seller, crew_omission)
   TAG: net_seller_repeat_needle
   WEIGHT: 3
   [Her netting needle clicks rhythmically through coarse hemp twine.]
@@ -18,26 +26,40 @@ TOPIC: default
   NET SELLER: "The harbor menders don't talk to police. You're wasting shoe leather."
 
 TOPIC: default
-  GATE: visit_count(net_seller) >= 2 AND NOT topic_done(net_seller, crew_omission)
+  GATE: coat != plain AND visit_count(net_seller) >= 2 AND NOT topic_done(net_seller, crew_omission)
   TAG: net_seller_repeat_light
   WEIGHT: 2
   VOICE: trombone_neutral_medium_v1
   NET SELLER: "Nets, lines, or crabbing pots, Officer. Otherwise you're in my light."
 
 TOPIC: default
-  GATE: topic_done(net_seller, crew_omission)
-  TAG: net_seller_exhausted_knots
+  GATE: topic_done(net_seller, crew_omission) AND coat = plain
+  TAG: net_seller_exhausted_knots_plain
   WEIGHT: 3
   VOICE: trombone_dismissive_short_v1
   NET SELLER: "The knots are tied, Walter. There's no more history in this loft for you."
 
 TOPIC: default
-  GATE: always
-  TAG: net_seller_default
+  GATE: topic_done(net_seller, crew_omission) AND coat != plain
+  TAG: net_seller_exhausted_knots_badge
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v1
+  NET SELLER: "The knots are tied, Officer. Precinct questions won't untie what the sea drowned."
+
+TOPIC: default
+  GATE: coat = plain
+  TAG: net_seller_default_plain
   WEIGHT: 1
   [She knots a lead sinker with a sharp jerk of her thumb.]
   VOICE: trombone_neutral_short_v1
   NET SELLER: "Mind the tar bucket on your way out."
+
+TOPIC: default
+  GATE: always
+  TAG: net_seller_default
+  WEIGHT: 1
+  VOICE: trombone_bureaucratic_short_v1
+  NET SELLER: "Keep your brass buttons off my hemp racks, Officer."
 
 TOPIC: crew_omission
   GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(net_seller, crew_omission)

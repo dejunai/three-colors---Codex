@@ -13,34 +13,64 @@ TOPIC: default
   EVIDENCE: crew
 
 TOPIC: default
-  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench)
-  TAG: crew_repeat_footing
+  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat = plain
+  TAG: crew_repeat_plain_cartway
   WEIGHT: 3
+  [He stacks another cabbage crate with loud, deliberate rhythm.]
+  VOICE: trombone_neutral_medium_v1
+  THE GROUNDSKEEPER: "The cartway's busy, Walter. Stand clear of the wheels, plain coat or no."
+
+TOPIC: default
+  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat = plain
+  TAG: crew_repeat_plain_footing
+  WEIGHT: 2
   VOICE: trombone_cautious_short_v1
   THE GROUNDSKEEPER: "Uneven step by that kitchen door. Mind your footing on the flagstones."
 
 TOPIC: default
-  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench)
-  TAG: crew_repeat_crates
-  WEIGHT: 2
-  [He stacks another cabbage crate with loud, deliberate rhythm.]
-  VOICE: trombone_neutral_medium_v1
-  THE GROUNDSKEEPER: "The cartway's busy, Officer. Stand clear of the wheels."
+  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat != plain
+  TAG: crew_repeat_badge_officer
+  WEIGHT: 3
+  VOICE: trombone_bureaucratic_short_v1
+  THE GROUNDSKEEPER: "The cartway's busy, Officer. The brass buttons won't keep a dray from pinning you against the wall."
 
 TOPIC: default
-  GATE: topic_done(crew, perimeter_trench)
-  TAG: crew_exhausted_sulfur
+  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat != plain
+  TAG: crew_repeat_badge_crates
+  WEIGHT: 2
+  [He drops a heavy crate onto the flagstones with deliberate force.]
+  VOICE: trombone_cautious_short_v2
+  THE GROUNDSKEEPER: "Precinct business belongs in the front hall, Officer. Not among the kitchen root cellars."
+
+TOPIC: default
+  GATE: topic_done(crew, perimeter_trench) AND coat = plain
+  TAG: crew_exhausted_plain_lime
   WEIGHT: 3
   VOICE: trombone_cautious_short_v2
   THE GROUNDSKEEPER: "Keep on the path, Walter. You're kicking the sulfur into the grass."
 
 TOPIC: default
-  GATE: topic_done(crew, perimeter_trench)
-  TAG: crew_exhausted_boundary
+  GATE: topic_done(crew, perimeter_trench) AND coat = plain
+  TAG: crew_exhausted_plain_boundary
   WEIGHT: 2
   [He stays thirty paces back from the kitchen door, eyes fixed on the trench line.]
   VOICE: trombone_dismissive_short_v1
   THE GROUNDSKEEPER: "You've got your notes. Let the yard be."
+
+TOPIC: default
+  GATE: topic_done(crew, perimeter_trench) AND coat != plain
+  TAG: crew_exhausted_badge_patrol
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v2
+  THE GROUNDSKEEPER: "You saw the furrow, Officer. Now take the badge back down the drive before someone asks what you're trampling."
+
+TOPIC: default
+  GATE: topic_done(crew, perimeter_trench) AND coat != plain
+  TAG: crew_exhausted_badge_watch
+  WEIGHT: 2
+  [He stands rigidly by the cabbage stack, watching Walter's uniform with guarded stillness.]
+  VOICE: trombone_cautious_medium_v1
+  THE GROUNDSKEEPER: "Town law ends where Grange gravel begins. Mind your steps."
 
 TOPIC: perimeter_trench
   GATE: evidence(crew) AND NOT topic_done(crew, perimeter_trench)

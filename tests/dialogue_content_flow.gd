@@ -64,7 +64,7 @@ func _run() -> void:
 	state.estate_complete = true
 	var after_departure = Runtime.enter(defs.boy, ctx, dstate)
 	_play(after_departure, state, dstate)
-	assert(after_departure.cards[0][1].begins_with("The wagon's been and gone"), "estate_complete must win over a mere repeat, regardless of visit count")
+	assert(after_departure.session.tag in ["boy_return", "boy_return_cold", "boy_return_post"], "estate_complete must win over a mere repeat, regardless of visit count")
 
 	# --- coroner's assistant: two real EVIDENCE ids, one flavor-only card ---
 	var assistant_play = Runtime.play_topic(defs.assistant, dstate, "default")
@@ -151,6 +151,9 @@ func _run() -> void:
 	assert(odell_replay.cards.is_empty(), "once answered, topic_done(odell, default) must keep the scene from replaying")
 
 	# --- Father Behan: the real behan_name topic, mutually exclusive with club_invitation ---
+	var behan_ctx_intro = Runtime.make_context(state, dstate)
+	var behan_intro = Runtime.enter(defs.father_behan, behan_ctx_intro, dstate)
+	_play(behan_intro, state, dstate)
 	var behan_ctx = Runtime.make_context(state, dstate)
 	var behan_menu_before = Runtime.menu(defs.father_behan, behan_ctx)
 	var behan_ids_before = []

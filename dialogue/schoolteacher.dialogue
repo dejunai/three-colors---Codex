@@ -22,6 +22,38 @@ TOPIC: default
   VOICE: violin_conspiratorial_long_v1
   MISS HALLOWELL: "A town like this doesn't need to speak a thing for a child to hear it.\nThey arrived quiet as mice this morning. I had them recite the county psalm twice."
 
+# Plain coat defaults: chalk, geography primers, academic civility
+TOPIC: default
+  GATE: topic_done(schoolteacher, default) AND coat = plain
+  TAG: teacher_repeat_plain_slates
+  WEIGHT: 3
+  [Miss Hallowell neatly stacks a dozen slate tablets with felt-wrapped erasers.]
+  VOICE: violin_neutral_medium_v1
+  MISS HALLOWELL: "You have quiet footsteps for an adult, sir. The children are reciting their Latin declensions in the vestibule."
+
+TOPIC: default
+  GATE: topic_done(schoolteacher, default) AND coat = plain
+  TAG: teacher_repeat_plain_grammar
+  WEIGHT: 2
+  VOICE: violin_happy_short_v1
+  MISS HALLOWELL: "Grammar requires patience, much like investigation. Mind the freshly scrubbed floorboards by the blackboard."
+
+# Police coat / badge defaults: protecting pupils from police talk, civic order, schoolhouse sanctity
+TOPIC: default
+  GATE: topic_done(schoolteacher, default) AND coat != plain
+  TAG: teacher_repeat_badge_order
+  WEIGHT: 3
+  [She taps her wooden ruler sharply against the corner of her desk.]
+  VOICE: violin_bureaucratic_medium_v2
+  MISS HALLOWELL: "The schoolhouse is an institution of moral instruction, Officer. We do not permit police interrogations near the pupils' coats."
+
+TOPIC: default
+  GATE: topic_done(schoolteacher, default) AND coat != plain
+  TAG: teacher_repeat_badge_rector
+  WEIGHT: 2
+  VOICE: violin_dismissive_short_v1
+  MISS HALLOWELL: "If you have official business regarding town safety, speak to the school board trustees, not the classroom teacher."
+
 TOPIC: town_founding
   GATE: always
   TAG: teacher_curriculum

@@ -4,6 +4,38 @@ NPC: odell_precinct
 LOCATION: precinct
 SCHEDULE: morning=precinct, midday=precinct, evening=precinct, night=closed
 
+# Plain coat defaults: uniform dressing-down, precinct propriety
+TOPIC: default
+  GATE: coat = plain
+  TAG: odell_repeat_plain_uniform
+  WEIGHT: 3
+  [Odell looks up from his morning precinct log, his eyes narrowing at Walter's clothes.]
+  VOICE: trombone_bureaucratic_medium_v1
+  CAPTAIN ODELL: "Where is your uniform, Corwin? You're an officer of this precinct, not a civilian taking an afternoon stroll."
+
+TOPIC: default
+  GATE: coat = plain
+  TAG: odell_repeat_plain_patrol
+  WEIGHT: 2
+  VOICE: trombone_dismissive_short_v1
+  CAPTAIN ODELL: "Put your brass coat back on before the selectmen see you hovering about the station house."
+
+# Police coat / badge defaults: reports, logs, command distance
+TOPIC: default
+  GATE: coat != plain
+  TAG: odell_repeat_badge_reports
+  WEIGHT: 3
+  [Odell dips his pen into black precinct ink without raising his chin.]
+  VOICE: trombone_bureaucratic_medium_v2
+  CAPTAIN ODELL: "Keep your written reports concise, Officer. What is not on the docket does not belong in my morning briefing."
+
+TOPIC: default
+  GATE: coat != plain
+  TAG: odell_repeat_badge_rounds
+  WEIGHT: 2
+  VOICE: trombone_neutral_short_v1
+  CAPTAIN ODELL: "If your rounds on Pickman Street are finished, file your log and clear the doorway."
+
 TOPIC: day_two_check
   GATE: day >= 2 AND day <= 2 AND NOT topic_done(odell_precinct, day_two_check)
   TAG: odell_day_two

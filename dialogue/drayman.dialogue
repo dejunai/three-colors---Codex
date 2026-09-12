@@ -1,0 +1,65 @@
+NPC: drayman
+LOCATION: lower
+SCHEDULE: morning=lower_dray, midday=lower_dray, evening=lower_house_1, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(drayman, default) AND coat = plain
+  TAG: drayman_plain
+  VOICE: trombone_neutral_medium_v1
+  THE DRAYMAN: "Mind the traces, mister. The gelding bites when the salt air gets into his teeth."
+  [He unhooks an oily trace-chain and drops it into the wagon bed with a heavy iron clatter.]
+  VOICE: trombone_neutral_medium_v2
+  THE DRAYMAN: "If you're looking for cart hire, I don't haul after four. Road's too slick along the mud flats."
+
+TOPIC: default
+  GATE: NOT topic_done(drayman, default)
+  TAG: drayman_badge
+  VOICE: trombone_bureaucratic_medium_v1
+  THE DRAYMAN: "Officer Corwin. If this is about axle grease on the turnpike, take it to the selectmen."
+  WALTER CORWIN: "I'm asking about heavy wagon traffic, Giles."
+  VOICE: trombone_cautious_medium_v2
+  THE DRAYMAN: "Everything heavy in this town moves on my axles, Walter. And none of it breaks the peace."
+
+TOPIC: default
+  GATE: visit_count(drayman) >= 2 AND coat = plain
+  TAG: drayman_repeat_plain_harness
+  WEIGHT: 3
+  VOICE: trombone_neutral_short_v1
+  THE DRAYMAN: "Stand clear of the wheel hub, Walter. Axle grease doesn't wash out of plain wool."
+
+TOPIC: default
+  GATE: visit_count(drayman) >= 2 AND coat = plain
+  TAG: drayman_repeat_plain_coal
+  WEIGHT: 2
+  [He heaves a split sack of anthracite onto the tailgate, wiping coal dust from his forehead.]
+  VOICE: trombone_weary_medium_v1
+  THE DRAYMAN: "Tide's coming up the ditch. Don't linger in the cartway if you don't have business."
+
+TOPIC: default
+  GATE: visit_count(drayman) >= 2 AND coat != plain
+  TAG: drayman_repeat_badge_wagon
+  WEIGHT: 3
+  VOICE: trombone_bureaucratic_short_v2
+  THE DRAYMAN: "A police coat in the dray-yard makes the team nervous, Officer. Step outside the shafts."
+
+TOPIC: default
+  GATE: visit_count(drayman) >= 2 AND coat != plain
+  TAG: drayman_repeat_badge_patrol
+  WEIGHT: 2
+  VOICE: trombone_dismissive_short_v2
+  THE DRAYMAN: "I pay my wheel tax quarterly at the hall, Corwin. Odell knows where to find my books."
+
+TOPIC: night_freight
+  GATE: always
+  TAG: drayman_freight
+  LABEL: "Ask about heavy carts moving after midnight"
+  TIME: 5
+  WALTER CORWIN: "Someone hauled heavy cargo toward the Ophion ridge three nights ago. Well past midnight."
+  [The drayman pauses with a leather trace in his fist, his jaw tightening.]
+  VOICE: trombone_cautious_long_v1
+  THE DRAYMAN: "Wasn't my team. My horses stay bedded down when the church bells hit eleven."
+  WALTER CORWIN: "Did you hear them pass?"
+  VOICE: trombone_haunting_medium_v1
+  THE DRAYMAN: "Heard the iron rims on the frost gravel. Iron tires, heavy load, two-horse team.\n\nMoving fast, too. No lantern hanging from the axle.\nA man who hauls without a lantern on a turnpike isn't delivering flour."
+  NOTEBOOK: drayman_night_wagon | "Giles the Drayman heard an unlit two-horse cart with iron tires racing toward the estate ridge past midnight three nights ago."
+  EVIDENCE: unlit_night_cart

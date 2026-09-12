@@ -1,0 +1,60 @@
+NPC: speakeasy_bartender
+LOCATION: speakeasy
+SCHEDULE: morning=closed, midday=closed, evening=speakeasy_bar, night=speakeasy_bar
+
+TOPIC: default
+  GATE: NOT topic_done(speakeasy_bartender, default) AND coat = plain
+  TAG: bartender_plain
+  VOICE: trombone_cautious_medium_v1
+  BARNABY: "He wipes down the scarred pine counter with a damp, sour rag without meeting Walter's eyes."
+  [The cellar smells heavily of spilled rye, wet sawdust, and unwashed wool.]
+  VOICE: trombone_dismissive_medium_v1
+  BARNABY: "Hard cider is five cents. Rye is ten. Drink it quiet or find the street."
+
+TOPIC: default
+  GATE: NOT topic_done(speakeasy_bartender, default)
+  TAG: bartender_badge
+  VOICE: trombone_alarmed_short_v1
+  BARNABY: "I told the lookout no uniforms! What are you doing in my cellar, Corwin?"
+  WALTER CORWIN: "Just looking around, Barnaby."
+  VOICE: trombone_dismissive_medium_v2
+  BARNABY: "We don't serve the precinct here, Officer. Drink nothing and ask nothing."
+
+TOPIC: default
+  GATE: visit_count(speakeasy_bartender) >= 2 AND coat = plain
+  TAG: bartender_repeat_plain_rag
+  WEIGHT: 3
+  [Barnaby continues scouring a grease ring from the counter, ignoring Walter.]
+  VOICE: trombone_neutral_short_v1
+  BARNABY: "Keep your elbows off the counter if you're not ordering."
+
+TOPIC: default
+  GATE: visit_count(speakeasy_bartender) >= 2 AND coat = plain
+  TAG: bartender_repeat_plain_glass
+  WEIGHT: 2
+  VOICE: trombone_weary_medium_v1
+  BARNABY: "I sell drink, mister. Not company. Drink what's in your glass and move along."
+
+TOPIC: default
+  GATE: visit_count(speakeasy_bartender) >= 2 AND coat != plain
+  TAG: bartender_repeat_badge_raid
+  WEIGHT: 3
+  VOICE: trombone_bureaucratic_short_v2
+  BARNABY: "If this is a raid, where's Odell's warrant? If it's not, take the badge outside."
+
+TOPIC: default
+  GATE: visit_count(speakeasy_bartender) >= 2 AND coat != plain
+  TAG: bartender_repeat_badge_precinct
+  WEIGHT: 2
+  VOICE: trombone_dismissive_short_v1
+  BARNABY: "No answers for police. You're ruining trade just standing by the kegs."
+
+TOPIC: bar_inquiry
+  GATE: always
+  TAG: bartender_inquiry
+  LABEL: "Ask if any of the Ophion gentlemen ever drank down here"
+  TIME: 4
+  WALTER CORWIN: "Did Judge Wexford or Dr. Fenn ever step foot in this cellar?"
+  [Barnaby slams a heavy tin funnel onto a whiskey cask with a sharp clang.]
+  VOICE: trombone_dismissive_medium_v2
+  BARNABY: "Gentlemen don't drink rye out of chipped jelly glasses under a potato cellar, Corwin.\nThey have their own club with crystal decanters and velvet curtains up on the ridge.\nNow let me tend my spigots."

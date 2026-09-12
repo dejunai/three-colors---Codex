@@ -44,7 +44,7 @@ TOPIC: naomi_letters
   EVIDENCE: new_bedford_letters
 
 TOPIC: ophion_club_mail
-  GATE: always
+  GATE: NOT topic_done(post_office_clerk, ophion_club_mail)
   TAG: postal_club_mail
   LABEL: "Ask about correspondence received by the Ophion Club"
   TIME: 6
@@ -85,7 +85,7 @@ TOPIC: crew_omission
   TAG: post_office_clerk_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 3
-  WALTER CORWIN: "Why does the town's history leave out the crew's names?"
+  WALTER CORWIN: "You deliver the Historical Society's circulars every week. Do any of them ever name the crew who drowned in 1823?"
   VOICE: trombone_neutral_medium_v2
   MR. CRUMP: "I deliver the Historical Society's circulars. I don't compose them."
   WALTER CORWIN: "You have never wondered whose names are missing?"

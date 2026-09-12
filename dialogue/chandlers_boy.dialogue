@@ -3,18 +3,43 @@ LOCATION: waterfront
 SCHEDULE: morning=waterfront_chandlery, midday=waterfront_chandlery, evening=closed, night=closed
 
 TOPIC: default
-  GATE: coat = plain AND visit_count(chandlers_boy) >= 2
-  TAG: chandlers_boy_plain_repeat
-  TIME: 0
-  VOICE: violin_weary_medium_v2
-  CHANDLER'S BOY: "Back again, sir? Mr. Hitch is in the cellar tallying casks."
-
-TOPIC: default
-  GATE: always
+  GATE: NOT topic_done(chandlers_boy, default)
   TAG: chandlers_boy_default
   TIME: 2
   VOICE: violin_neutral_medium_v2
   CHANDLER'S BOY: "We've got sperm oil, colza, and tallow.\nMr. Hitch says the colza's best for reading lamps but everyone buys the tallow anyway."
+
+# Plain coat defaults: whale oil, cellar casks, broom work
+TOPIC: default
+  GATE: topic_done(chandlers_boy, default) AND coat = plain
+  TAG: chandlers_boy_repeat_plain_casks
+  WEIGHT: 3
+  VOICE: violin_weary_medium_v2
+  CHANDLER'S BOY: "Mr. Hitch is down in the cellar with the tallow casks, sir. If you need lamp oil, I can measure it out."
+
+TOPIC: default
+  GATE: topic_done(chandlers_boy, default) AND coat = plain
+  TAG: chandlers_boy_repeat_plain_sweep
+  WEIGHT: 2
+  [The boy sweeps whale-grease sawdust into a wooden dustpan with quick strokes.]
+  VOICE: violin_neutral_short_v1
+  CHANDLER'S BOY: "Watch the slick near the threshold. The whale oil soaked right into the cedar."
+
+# Police coat / badge defaults: nervousness around police, paid invoices
+TOPIC: default
+  GATE: topic_done(chandlers_boy, default) AND coat != plain
+  TAG: chandlers_boy_repeat_badge_orders
+  WEIGHT: 3
+  VOICE: violin_cautious_medium_v1
+  CHANDLER'S BOY: "Mr. Hitch told me not to talk to policemen without him standing by the register, Officer."
+
+TOPIC: default
+  GATE: topic_done(chandlers_boy, default) AND coat != plain
+  TAG: chandlers_boy_repeat_badge_invoices
+  WEIGHT: 2
+  [He sets down his broom, watching Walter's uniform with wide, nervous eyes.]
+  VOICE: violin_alarmed_short_v1
+  CHANDLER'S BOY: "The precinct oil invoice is paid up for the month. Captain Odell signed the receipt on Tuesday."
 
 TOPIC: lamp_question
   GATE: visit_count(chandlers_boy) >= 2 AND NOT topic_done(chandlers_boy, lamp_question)

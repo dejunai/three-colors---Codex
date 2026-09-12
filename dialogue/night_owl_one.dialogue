@@ -1,0 +1,46 @@
+NPC: night_owl_one
+LOCATION: speakeasy
+SCHEDULE: morning=closed, midday=closed, evening=speakeasy_table_one, night=speakeasy_table_one
+
+TOPIC: default
+  GATE: NOT topic_done(night_owl_one, default) AND coat = plain
+  TAG: owl_one_plain
+  VOICE: trombone_neutral_short_v1
+  CALEB: "He pulls his salt-stained cap lower over his brow, shielding his mug of dark ale."
+  VOICE: trombone_cautious_medium_v1
+  CALEB: "Don't know you, friend. Go find an empty stool down the other end."
+
+TOPIC: default
+  GATE: NOT topic_done(night_owl_one, default)
+  TAG: owl_one_badge
+  VOICE: trombone_alarmed_short_v2
+  CALEB: "Look what blew in from the precinct. Don't look at me, Officer. I've got my head down."
+
+TOPIC: default
+  GATE: visit_count(night_owl_one) >= 2 AND coat = plain
+  TAG: owl_one_repeat_plain_corner
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v1
+  CALEB: "We're having a private conversation, mister. Let working men drink in peace."
+
+TOPIC: default
+  GATE: visit_count(night_owl_one) >= 2 AND coat = plain
+  TAG: owl_one_repeat_plain_mug
+  WEIGHT: 2
+  [He stares fixedly into his glass of dark ale, refusing to turn around.]
+  VOICE: trombone_neutral_short_v2
+  CALEB: "Nothing to say to strangers."
+
+TOPIC: default
+  GATE: visit_count(night_owl_one) >= 2 AND coat != plain
+  TAG: owl_one_repeat_badge_clam
+  WEIGHT: 3
+  VOICE: trombone_cautious_short_v1
+  CALEB: "I don't answer police questions without a justice of the peace present."
+
+TOPIC: default
+  GATE: visit_count(night_owl_one) >= 2 AND coat != plain
+  TAG: owl_one_repeat_badge_quiet
+  WEIGHT: 2
+  VOICE: trombone_dismissive_short_v2
+  CALEB: "Leave us alone, Corwin. We haven't done nothing."

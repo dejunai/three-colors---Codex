@@ -5,42 +5,78 @@ LOCATION: waterfront
 SCHEDULE: morning=quay_repair, midday=quay_repair, evening=lower_house_3, night=lower_house_3
 
 TOPIC: default
-  GATE: NOT topic_done(harbor_observer, default)
-  TAG: observer_default
+  GATE: NOT topic_done(harbor_observer, default) AND coat = plain
+  TAG: observer_default_plain
   [The laborer chips mortar from a sea-wall block with a cold chisel, his ring flashing dull umber in the salt air.]
   [He does not look up when Walter stops beside the staging.]
   VOICE: trombone_neutral_medium_v1
-  MASON: "High water comes at quarter past five.\nIf you're going to stand on that timber, watch your step."
+  MASON: "High water comes at quarter past five.\nIf you're going to stand on that timber in wool, mind the moss."
 
 TOPIC: default
-  GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring))
-  TAG: observer_repeat_chisel
+  GATE: NOT topic_done(harbor_observer, default)
+  TAG: observer_default_badge
+  [The laborer chips mortar from a sea-wall block with a cold chisel, his ring flashing dull umber in the salt air.]
+  VOICE: trombone_neutral_medium_v1
+  MASON: "High water comes at quarter past five, Officer.\nIf you're going to stand on that timber, watch your step."
+
+TOPIC: default
+  GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)) AND coat = plain
+  TAG: observer_repeat_plain_chisel
   WEIGHT: 3
   [The chisel strikes the granite seam with a flat, dull ring.]
   VOICE: trombone_neutral_short_v1
   MASON: "High water comes at quarter past five. Watch your step on the timber."
 
 TOPIC: default
-  GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring))
-  TAG: observer_repeat_stone
+  GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)) AND coat = plain
+  TAG: observer_repeat_plain_stone
   WEIGHT: 2
   VOICE: trombone_neutral_medium_v2
   MASON: "A sensible man doesn't ask twice about stone he doesn't own."
 
 TOPIC: default
-  GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)
-  TAG: observer_exhausted_mud
+  GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)) AND coat != plain
+  TAG: observer_repeat_badge_timber
+  WEIGHT: 3
+  VOICE: trombone_bureaucratic_short_v2
+  MASON: "A brass badge won't stop the surge from taking the staging out from under you, Officer."
+
+TOPIC: default
+  GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)) AND coat != plain
+  TAG: observer_repeat_badge_chisel
+  WEIGHT: 2
+  [He chips mortar with deliberate force, sending gray dust across Walter's boots.]
+  VOICE: trombone_dismissive_short_v2
+  MASON: "The precinct doesn't pay wharf repair. Stand back."
+
+TOPIC: default
+  GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring) AND coat = plain
+  TAG: observer_exhausted_plain_mud
   WEIGHT: 3
   [He chips mortar with steady, measured strokes, his anchor ring gleaming dull umber.]
   VOICE: trombone_haunting_medium_v1
   MASON: "We leave the mud where it settled, Walter. You should do the same."
 
 TOPIC: default
-  GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)
-  TAG: observer_exhausted_tide
+  GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring) AND coat = plain
+  TAG: observer_exhausted_plain_tide
   WEIGHT: 2
   VOICE: trombone_neutral_short_v2
   MASON: "The tide is making. Go home."
+
+TOPIC: default
+  GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring) AND coat != plain
+  TAG: observer_exhausted_badge_quarry
+  WEIGHT: 3
+  VOICE: trombone_dismissive_short_v1
+  MASON: "The town has no business with drowned granite, Officer. Take the uniform up the hill."
+
+TOPIC: default
+  GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring) AND coat != plain
+  TAG: observer_exhausted_badge_surge
+  WEIGHT: 2
+  VOICE: trombone_cautious_short_v1
+  MASON: "The surge is in the slipway. Move along, Corwin."
 
 TOPIC: estate_grounds_crew
   GATE: always
