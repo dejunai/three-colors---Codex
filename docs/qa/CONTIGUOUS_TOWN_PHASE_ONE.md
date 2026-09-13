@@ -82,6 +82,22 @@ Implemented September 13, 2026:
 
 No Web export was produced.
 
+## Desktop baseline profile
+
+Measured September 13, 2026 with the standard Godot 4.7.2 headless build:
+
+- Shared exterior construction: 107.16 ms
+- Scene nodes: 1,678
+- Mesh instances: 1,436
+- Physics bodies / collision shapes: 72 / 72
+- Interaction targets: 26
+- Scheduled exterior actors at the sampled morning state: 8
+- Process static memory after construction: 67.32 MiB
+
+These figures are a development baseline, not evidence that streaming or LOD is currently required. The high mesh count comes primarily from primitive-built architecture and should be measured again after model batching begins. Web profiling remains pending; no Web export was produced from this branch.
+
+Run the baseline again with `res://tests/contiguous_town_profile.gd`.
+
 ## Remaining seams
 
-1. Profile the complete Phase 1 exterior on desktop and Web before introducing streamed cells, HLOD, or model upgrades.
+1. Profile the complete Phase 1 exterior on Web before introducing streamed cells or HLOD.
