@@ -42,6 +42,10 @@ const SCENES = {
 		["BEYOND THE BIRCHES", "A woman and a boy lie apart from the club members.\n\nSomeone has brought two more sheets. These deaths were not clean. Walter leaves the coverings in place."],
 		["WALTER CORWIN", "No names yet.\n\nThat is a fact about the investigation.\nIt is not a fact about their lives."],
 		["WALTER'S NOTEBOOK", "Unidentified female. Unidentified male, minor.\nRelationship unconfirmed.\n\nEight people. Two scenes. One investigation."]],
+	"eight_identified": [
+		["BEYOND THE BIRCHES", "The woman and the boy lie exactly where they were. No one has come for them yet — but Walter no longer has to call her nothing."],
+		["WALTER CORWIN", "Naomi Freeman.\n\nThe boy still has no name on any list Walter has seen."],
+		["WALTER'S NOTEBOOK", "Naomi Freeman, identified. Her son, unidentified male, minor, remains so.\n\nEight people. Two scenes. One investigation — one name closer to whole."]],
 	"knife": [
 		["BENEATH THE HEDGE", "A knife with a butcher's grip. Walter has seen its like in Kessler's shop.\n\nThe blade is too clean for the earth around it."],
 		["EVIDENCE ENVELOPE", "He wraps the handle before lifting it.\n\nLocation recorded. Blade preserved for examination.\nAn object can be useful before it has agreed to explain itself."]],
