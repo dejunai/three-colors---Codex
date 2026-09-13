@@ -205,3 +205,11 @@ static func upper_return(interior_id: String) -> Variant:
 		var toward_street = Vector3(0, 0.1, 1.5 if index < 3 else -1.5)
 		return UPPER_ORIGIN + Places.front(index) + toward_street
 	return null
+
+static func shared_spot(spot: Array) -> Array:
+	if spot.is_empty(): return spot
+	var district = String(spot[0])
+	var position: Vector3 = spot[1]
+	if district == "business": return ["town", BUSINESS_ORIGIN + position]
+	if district == "upper": return ["town", UPPER_ORIGIN + position]
+	return spot

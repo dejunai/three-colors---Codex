@@ -17,6 +17,9 @@ func run() -> void:
 	assert(g.estate.has_node("ContiguousTownPhaseOne/BusinessDistrictExterior"), "Business geometry must share Pickman exterior")
 	assert(not g.estate.routes.has("route_business") and not g.estate.routes.has("route_pickman"), "Exterior seam must not retain a loading boundary")
 	assert(g.estate.routes.has("route_schoolhouse") and g.estate.routes["route_schoolhouse"][0] == "schoolhouse", "Separate business interiors must retain stable routes")
+	assert(g.estate.points.has("apothecary"), "Scheduled business actors must populate in shared coordinates")
+	assert(g.estate.points.has("mr_whitehouse"), "Scheduled upper actors must populate in shared coordinates")
+	assert(g.estate.points.apothecary.pos.y > 5.0 and g.estate.points.mr_whitehouse.pos.y > 12.0, "Shared actors must inherit their district elevations")
 	assert(g.movement_bounds.end.y >= 112, "Shared movement bounds must include the upper approach")
 	for point in [Vector3(14, 0, 17), Vector3(14, 0, 22), Vector3(11, 0, 22), Vector3(11, 0, 25), Vector3(8, 0, 31), Vector3(8, 0, 39), Vector3(8, 0, 49), Vector3(8, 0, 57), Vector3(8, 0, 67)]:
 		await g._walk_to(point)
@@ -36,5 +39,5 @@ func run() -> void:
 	for point in [Vector3(9, 0, 134), Vector3(9, 0, 117), Vector3(9, 0, 108), Vector3(9, 0, 99), Vector3(9, 0, 76), Vector3(-9, 0, 76), Vector3(-9, 0, 50), Vector3(-9, 0, 37), Vector3(-9, 0, 24)]:
 		await g._walk_to(point)
 	assert(g.state.world == "town" and g.player.position.y < 1.0, "Alternate return must reach Pickman without an exterior reload")
-	print("CONTIGUOUS TOWN PHASE 1 / STEP 5 PASS: complete Pickman-business-upper walking loop")
+	print("CONTIGUOUS TOWN PHASE 1 / STEP 6 PASS: full walking loop and scheduled shared-district actors")
 	quit(0)

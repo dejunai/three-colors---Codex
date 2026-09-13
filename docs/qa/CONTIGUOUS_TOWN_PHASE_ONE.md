@@ -18,6 +18,17 @@ Implemented September 13, 2026:
 
 No Web export was produced.
 
+## Step 6 — Scheduled actors in shared coordinates
+
+Implemented September 13, 2026:
+
+- Transformed scheduled business and upper exterior slots into the shared town coordinate space at population time.
+- Preserved every authored NPC ID, schedule location, dialogue state, and legacy-hub placement.
+- Kept interior, lower-quarter, waterfront, estate, and Pickman-only schedules unchanged.
+- Added regression coverage for simultaneous business and upper actors at their correct raised elevations.
+
+No Web export was produced.
+
 ## Step 4 — Shared upper-quarter exterior
 
 Implemented September 13, 2026:
@@ -73,5 +84,4 @@ No Web export was produced.
 
 ## Remaining seams
 
-1. Remap scheduled exterior NPC positions into shared coordinates while retaining every current NPC ID and separate interior destination.
-2. Profile the complete Phase 1 exterior on desktop and Web before introducing streamed cells, HLOD, or model upgrades.
+1. Profile the complete Phase 1 exterior on desktop and Web before introducing streamed cells, HLOD, or model upgrades.

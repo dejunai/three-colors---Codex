@@ -4,6 +4,7 @@ extends RefCounted
 # existing case record. Authored GATE/TAG/TIME/EVIDENCE remain in .dialogue files.
 const Runtime = preload("res://scripts/shared/dialogue_runtime.gd")
 const DialogueState = preload("res://scripts/shared/dialogue_state.gd")
+const ContiguousTown = preload("res://scripts/chapters/contiguous_town_phase_one.gd")
 var FILES = {"boy":"gatehouse_boy", "assistant":"coroners_assistant", "crew":"groundskeeper", "gardener":"gardener", "odell":"odell", "almy":"mrs_almy", "behan":"father_behan", "barman":"steward", "old_woman":"old_woman"}
 var TITLES = {"boy":"The gatehouse boys", "assistant":"The coroner's assistant", "crew":"The groundskeeper", "gardener":"The gardener", "odell":"Captain Odell", "almy":"Mrs. Almy", "behan":"Father Behan", "barman":"The club's steward", "old_woman":"The woman outside Kessler's shop"}
 var catalog = preload("res://scripts/chapters/dialogue_catalog.gd").new()
@@ -37,7 +38,7 @@ func populate(g: Node) -> void:
 	figures.clear()
 	for actor in extra_actors:
 		g.estate.points.erase(actor)
-		var spot = catalog.slot(actor,g.state)
+		var spot = _slot(g,actor)
 		if spot.is_empty() or spot[0] != g.state.world: continue
 		var figure = g.estate.person(spot[1], "55624f", true, "a17643" if actor=="harbor_observer" else "")
 		figures[actor] = figure
@@ -54,13 +55,18 @@ func clear() -> void:
 func allowed(g: Node, actor: String) -> bool:
 	if not FILES.has(actor): return false
 	if extra_actors.has(actor):
-		var spot = catalog.slot(actor,g.state)
+		var spot = _slot(g,actor)
 		return not spot.is_empty() and spot[0] == g.state.world
 	if actor == "barman": return g.state.world == "lounge" and g.state.visited.has("almy")
 	if actor in ["odell", "assistant"]: return g.state.world == "estate" and not g.state.estate_complete
 	if actor == "crew": return g.state.world == "estate" and g.state.lounge_exited
 	if actor == "old_woman": return g.state.world == "town" and not g.state.evidence.has("old_woman")
 	return definition(actor).location == g.state.world
+
+func _slot(g: Node, actor: String) -> Array:
+	var spot: Array = catalog.slot(actor,g.state)
+	if g.state.world == "town": return ContiguousTown.shared_spot(spot)
+	return spot
 
 func interact(g: Node, actor: String) -> bool:
 	if not FILES.has(actor): return false
