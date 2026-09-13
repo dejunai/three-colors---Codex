@@ -85,8 +85,16 @@ func _neighborhood() -> void:
 			var id="route_"+spec[0]
 			if id == "route_speakeasy":
 				# The house keeps its ordinary street face. The cellar door is
-				# reached around the rear, beyond the southeast corner.
-				target(id,"Try the cellar door",p+Vector3(7,0,8))
+				# reached around the rear, beyond the southeast corner. The
+				# bulkhead itself is always visible, day or night — only
+				# whether it actually opens is time/coat-gated, in
+				# chapter_one.gd's _town_interaction().
+				var hatch=p+Vector3(7,0,8)
+				box(self,hatch+Vector3(0,0.06,0),Vector3(2.3,0.12,1.9),"3c2f20",true)
+				box(self,hatch+Vector3(-0.62,0.32,0),Vector3(1.05,0.1,1.8),"55432c").rotation.x=-0.5
+				box(self,hatch+Vector3(0.62,0.32,0),Vector3(1.05,0.1,1.8),"55432c").rotation.x=0.5
+				box(self,hatch+Vector3(0,0.62,0),Vector3(2.3,0.1,0.12),"241b12")
+				target(id,"Try the cellar door",hatch)
 			else:
 				target(id,"Enter "+spec[1].to_lower(),p)
 			routes[id]=[spec[0],Vector3(0,0.1,6),0.0]
