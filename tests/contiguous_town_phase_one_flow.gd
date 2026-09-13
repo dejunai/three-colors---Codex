@@ -26,7 +26,12 @@ func run() -> void:
 	# attempting to walk through the northern storefront row.
 	for point in [Vector3(-9, 0, 76), Vector3(-9, 0, 97), Vector3(-24, 0, 97), Vector3(-24, 0, 100), Vector3(-24, 0, 108), Vector3(-24, 0, 116.5)]:
 		await g._walk_to(point)
-	assert(g.focused == "route_upper", "The upper-quarter handoff must sit at the top of its physical climb")
 	assert(g.player.position.y > 11.5, "Upper approach must reach the established upper elevation")
-	print("CONTIGUOUS TOWN PHASE 1 / STEP 3 PASS: shared business exterior and walkable upper-quarter climb")
+	assert(g.estate.has_node("ContiguousTownPhaseOne/UpperDistrictExterior"), "Upper district geometry must share the Pickman exterior")
+	assert(not g.estate.routes.has("route_upper") and not g.estate.routes.has("route_pickman"), "Upper exterior must not retain a loading boundary")
+	assert(g.estate.routes.has("route_upper_house_1"), "Separate upper interiors must retain stable routes")
+	for point in [Vector3(-24, 0, 121), Vector3(-9, 0, 121), Vector3(-9, 0, 134)]:
+		await g._walk_to(point)
+	assert(g.state.world == "town" and g.player.position.y > 12.0, "Upper street must remain inside the raised shared exterior")
+	print("CONTIGUOUS TOWN PHASE 1 / STEP 4 PASS: Pickman, business, and upper quarter share one exterior")
 	quit(0)

@@ -18,6 +18,19 @@ Implemented September 13, 2026:
 
 No Web export was produced.
 
+## Step 4 — Shared upper-quarter exterior
+
+Implemented September 13, 2026:
+
+- Extracted the existing upper-quarter geometry into a reusable builder so old hub saves and the contiguous exterior use the same layout.
+- Placed the upper street on its established plateau at the top of the physical climb.
+- Removed the `route_upper` and upper `route_pickman` loading boundaries from new continuous play.
+- Preserved every residence interior and stable route ID, with returns transformed to the corresponding upper-street doorway.
+- Retained direct loading of the former upper hub for save compatibility and updated its regression accordingly.
+- Expanded the shared movement bounds through the complete upper block.
+
+Validated by walking from Pickman through business and onto the upper street without changing exterior state. The dialogue catalog also passes. No Web export was produced.
+
 ### Retaining-works repair
 
 After visual playtesting, the raised business ground read as an unsupported bridge from the Pickman incline. Added a masonry retaining face, side walls, irregular buttresses, and a supported gateway around the incline. The walking surface and route remain unchanged.
@@ -49,6 +62,6 @@ No Web export was produced.
 
 ## Remaining seams
 
-1. Fold the upper district into the shared exterior and provide a different physical return route to Pickman Street.
+1. Add a different physical return route from the upper quarter to Pickman Street.
 2. Remap scheduled exterior NPC positions into shared coordinates while retaining every current NPC ID and separate interior destination.
 3. Profile the complete Phase 1 exterior on desktop and Web before introducing streamed cells, HLOD, or model upgrades.

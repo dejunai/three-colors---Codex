@@ -136,6 +136,7 @@ func _street() -> void:
 	contiguous.build_pickman_edge(self)
 	contiguous.build_business(self)
 	contiguous.build_upper_approach(self)
+	contiguous.build_upper(self)
 
 func _room_shell() -> void:
 	box(self,Vector3(0,-0.3,0),Vector3(18,0.5,20),"747d6b",true)

@@ -5,8 +5,10 @@ extends RefCounted
 # their roofline for the next seam.
 
 const BusinessStreet = preload("res://scripts/chapters/business_street.gd")
+const UpperStreet = preload("res://scripts/chapters/upper_street.gd")
 const Places = preload("res://scripts/chapters/town_places.gd")
 const BUSINESS_ORIGIN = Vector3(0, 5.5, 67)
+const UPPER_ORIGIN = Vector3(0, 12.5, 134)
 
 class PlacementProxy extends Node3D:
 	var host: Node
@@ -28,6 +30,12 @@ class PlacementProxy extends Node3D:
 
 	func lamp(p: Vector3, tall: bool = true) -> void:
 		host.lamp(position + p, tall)
+
+	func cylinder(_parent: Node, p: Vector3, radius: float, height: float, color: String, top: float = -1.0):
+		return host.cylinder(self, p, radius, height, color, top)
+
+	func tree(p: Vector3) -> void:
+		host.tree(position + p)
 
 static func build_pickman_edge(g: Node) -> void:
 	var root = Node3D.new()
@@ -62,16 +70,6 @@ static func build_pickman_edge(g: Node) -> void:
 			var z = 27.0 + section * 6.0
 			var y = 0.9 + section * 1.25
 			g.box(root, Vector3(8 + side * 4.2, y, z), Vector3(0.65, 1.8 + section * 0.7, 6.4), "505d53", true)
-
-	# The upper quarter is only a silhouette in this seam. Its mass and lamps are
-	# already visible above business roofs, fixing the permanent vertical order.
-	for spec in [[-6.0, 12.5, 8.0], [5.0, 15.0, 10.5], [18.0, 11.0, 7.2]]:
-		var x: float = spec[0]
-		var h: float = spec[1]
-		var w: float = spec[2]
-		g.box(root, Vector3(x, 13.0 + h * 0.5, 145), Vector3(w, h, 7), "4b594f")
-		g.box(root, Vector3(x, 13.2 + h, 145), Vector3(w + 0.6, 0.45, 7.5), "303d35")
-	for x in [-8.0, 8.0, 20.0]: g.lamp(Vector3(x, 12.9, 139))
 
 	# Step 1's compatibility route is removed after build_business folds the
 	# existing street into this exterior.
@@ -145,10 +143,31 @@ static func build_upper_approach(g: Node) -> void:
 	g.target("route_upper", "Continue uphill to the upper quarter", Vector3(-24, 12.6, 117))
 	g.routes["route_upper"] = ["upper", Vector3(10, 0.1, 25), 0.0]
 
+static func build_upper(g: Node) -> void:
+	var phase_root = g.get_node("ContiguousTownPhaseOne")
+	var proxy = PlacementProxy.new(g)
+	proxy.name = "UpperDistrictExterior"
+	proxy.position = UPPER_ORIGIN
+	phase_root.add_child(proxy)
+	UpperStreet.new().build(proxy)
+	# The existing climb is now the district boundary; exterior route portals
+	# disappear while all residence routes remain stable.
+	for id in ["route_upper", "route_pickman"]:
+		g.points.erase(id)
+		g.routes.erase(id)
+
 static func business_return(interior_id: String) -> Variant:
 	var specs: Array = Places.BUILDINGS.business
 	for index in specs.size():
 		if String(specs[index][0]) != interior_id: continue
 		var toward_street = Vector3(0, 0.1, 1.5 if index < 3 else -1.5)
 		return BUSINESS_ORIGIN + Places.front(index) + toward_street
+	return null
+
+static func upper_return(interior_id: String) -> Variant:
+	var specs: Array = Places.BUILDINGS.upper
+	for index in specs.size():
+		if String(specs[index][0]) != interior_id: continue
+		var toward_street = Vector3(0, 0.1, 1.5 if index < 3 else -1.5)
+		return UPPER_ORIGIN + Places.front(index) + toward_street
 	return null

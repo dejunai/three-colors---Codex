@@ -59,16 +59,21 @@ func run() -> void:
 	assert(restored.rose_bodies_removed and not restored.birch_bodies_removed and restored.estate_visits_completed==1)
 	# Every public entrance can be reached and returns to the correct street point.
 	for hub in ["business","upper","lower"]:
-		g._travel("town",Vector3(0,0.1,8))
-		var id="route_"+hub
-		var target=g.estate.points[id].pos
-		await walk(g,Vector3(target.x+3.5,0,8))
-		await walk(g,Vector3(target.x+3.5,0,20))
-		await walk(g,Vector3(target.x,0,20))
-		await walk(g,target)
-		assert(g.focused==id,"Street entrance focus: "+hub)
-		g._interact(id)
-		assert(g.state.world==hub)
+		if hub == "lower":
+			g._travel("town",Vector3(0,0.1,8))
+			var id="route_"+hub
+			var target=g.estate.points[id].pos
+			await walk(g,Vector3(target.x+3.5,0,8))
+			await walk(g,Vector3(target.x+3.5,0,20))
+			await walk(g,Vector3(target.x,0,20))
+			await walk(g,target)
+			assert(g.focused==id,"Street entrance focus: "+hub)
+			g._interact(id)
+			assert(g.state.world==hub)
+		else:
+			# Business and upper are continuous in new games. Their old hub worlds
+			# remain loadable so saves made before the migration still work.
+			g._travel(hub,Vector3(10,0.1,25))
 		await settle()
 		await walk(g,Vector3(10,0,8))
 		assert(g.player.position.distance_to(Vector3(10,0.1,8))<1)
