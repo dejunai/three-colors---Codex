@@ -66,7 +66,7 @@ func sleep(g:Node) -> void:
 		g._button("Get up",g._close)
 		g._focus_first()
 	else:
-		g._cards(g.TownStory.SCENES.close_day,func(): g.state.finished=true; g._save_game(); g._town_complete())
+		g._cards(g.TownStory.SCENES.close_day,func(): g.playthrough_log.day3_bed_reached(); g.state.finished=true; g._save_game(); g._town_complete())
 
 func draw_montage(g:Node) -> void:
 	var index = g.state.montage_index

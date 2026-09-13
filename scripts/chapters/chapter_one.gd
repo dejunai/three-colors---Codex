@@ -17,6 +17,7 @@ var staging=preload("res://scripts/chapters/chapter_one_staging.gd").new()
 var scripted_dialogue=preload("res://scripts/chapters/chapter_one_dialogue.gd").new()
 var archive=preload("res://scripts/chapters/chapter_one_archive.gd").new()
 var prologue=preload("res://scripts/shared/prologue_presentation.gd").new()
+var playthrough_log=preload("res://scripts/shared/playthrough_log.gd").new()
 var rig: Node3D
 var state = CaseState.new()
 var estate: Node3D
@@ -98,8 +99,10 @@ func start(player_rig:Node3D) -> void:
 	facts.merge(TownStory.FACTS)
 	facts.merge(TunnelStory.FACTS)
 	scripted_dialogue.setup(self)
+	add_child(playthrough_log)
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--capture="): capture_mode = arg.trim_prefix("--capture=")
+	playthrough_log.enabled = not test_mode and capture_mode.is_empty()
 	_load_settings()
 	estate = Estate.new()
 	estate.name = "OphionEstate"
@@ -200,6 +203,7 @@ func _new_game() -> void:
 	tunnel_dead = false
 	comfort_time = 0
 	state = CaseState.new()
+	playthrough_log.begin(state,scripted_dialogue.FILES.keys())
 	_travel("estate",state.position,0,false)
 	player.position = state.position
 	yaw = 0
@@ -283,6 +287,7 @@ func tick_world(delta:float) -> void:
 	if page != "play": return
 	state.minutes += delta/60
 	DayClock.advance(state,delta*DayClock.WANDER_RATE)
+	playthrough_log.observe(state,scripted_dialogue.FILES.keys())
 	if is_instance_valid(daylight): daylight.update_clock(state.clock_minutes,player.position)
 	var phase=DayClock.phase(state.clock_minutes)
 	if phase!=last_clock_phase:
@@ -560,6 +565,7 @@ func _save_game() -> bool:
 func _load_game() -> void:
 	var d=save_store.read(_available_save_path())
 	if d.is_empty() or not state.restore(d): _toast("The save could not be read. Begin a new investigation.",5); return
+	playthrough_log.resume(state,scripted_dialogue.FILES.keys())
 	prologue.hide_all()
 	prologue.stop_music()
 	tunnel_checkpoint=_normalize_snapshot(d.get("tunnel_checkpoint",{}))
@@ -589,6 +595,7 @@ func _toast(text:String,duration:float = 4) -> void:
 
 func _notification(what:int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		playthrough_log.end(state,"closed")
 		_save_game()
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and page == "play" and not test_mode and capture_mode.is_empty(): _pause()
 
@@ -604,6 +611,7 @@ func _walk_to(destination:Vector3) -> void:
 func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,elapsed_travel:bool=false) -> void:
 	scripted_dialogue.clear()
 	if destination == "lounge" and not state.visited.has("almy"): return
+	var from_world:String = state.world
 	if save or elapsed_travel: DayClock.advance(state,DayClock.travel_cost(state.world,destination))
 	if save and state.world == "estate" and destination == "town":
 		state.estate_visits_completed += 1
@@ -636,6 +644,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	else:
 		cough_player.stop()
 	state.world=destination
+	playthrough_log.district_transition(from_world,destination,state)
 	scripted_dialogue.populate(self)
 	player.position=spawn
 	player.velocity=Vector3.ZERO
@@ -835,6 +844,7 @@ func _board() -> void:
 	archive._board(self)
 
 func _town_complete() -> void:
+	playthrough_log.end(state,"completed")
 	archive._town_complete(self)
 
 func _qa_town() -> void:
