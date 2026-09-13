@@ -14,9 +14,16 @@ Phase 2 grows east and downhill from Pickman Street through the lower district, 
 
 No Web export is produced from this branch.
 
+## Step 2 — Waterfront approach and sightline
+
+- Add a continuous lane descending south through a gap in the lower frontage.
+- Move the stable waterfront handoff to the bottom of that physical lane.
+- Extend town fall recovery below the future quay elevation.
+- Keep a low, unreachable whaling-station silhouette visible down the lane without exposing an island route.
+- Leave the detailed waterfront in its existing hub until the approach passes independently.
+
 ## Remaining seams
 
-1. Walk and visually review the Pickman-to-lower transition.
-2. Establish a downhill route and sightline from lower town to the waterfront.
-3. Fold the waterfront into the shared exterior while preserving its island whaling-station view and all NPC schedules.
-4. Profile the complete exterior before deciding whether streaming or LOD is justified.
+1. Walk and visually review the Pickman-to-lower and lower-to-waterfront transitions.
+2. Fold the waterfront into the shared exterior while preserving its island whaling-station view and all NPC schedules.
+3. Profile the complete exterior before deciding whether streaming or LOD is justified.

@@ -10,6 +10,7 @@ var pitch = 0.38
 var distance = 6.3
 var animation_time = 0.0
 var movement_bounds = Rect2(-31,-18.4,62,60.4)
+var fall_reset_y = -3.0
 # Guarantees a keydown/keyup pair resolves as movement even if it completes within one physics frame (synthetic/automated input).
 const MOVE_LATCH_MIN = 0.15
 var move_latch_timer = {"walk_forward":0.0,"walk_back":0.0,"walk_left":0.0,"walk_right":0.0}
@@ -141,7 +142,7 @@ func _physics_process(delta:float) -> void:
 	player.move_and_slide()
 	player.position.x = clampf(player.position.x,movement_bounds.position.x,movement_bounds.end.x)
 	player.position.z = clampf(player.position.z,movement_bounds.position.y,movement_bounds.end.y)
-	if player.position.y < -3: player.position = Vector3(0,0.1,30)
+	if player.position.y < fall_reset_y: player.position = Vector3(0,0.1,30)
 	if movement.length() > 0.1:
 		model.rotation.y = lerp_angle(model.rotation.y,atan2(-movement.x,-movement.z),delta*10)
 		animation_time += delta*speed*3

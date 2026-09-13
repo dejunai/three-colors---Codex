@@ -120,17 +120,15 @@ func _street() -> void:
 	target("route_post","Enter the post office",Vector3(-24,0,22))
 	routes["route_post"]=["post_office",Vector3(0,0.1,6),0.0]
 
-	# Street's western end opens downhill toward the harbor.
-	lettering("WATERFRONT",Vector3(-28,2.7,7),30).rotation.y=PI/2
-	target("route_waterfront","Go downhill to the waterfront",Vector3(-27,0,7))
-	routes["route_waterfront"]=["waterfront",Vector3(0,0.1,23),0.0]
 	var contiguous = preload("res://scripts/chapters/contiguous_town_phase_one.gd")
 	contiguous.build_pickman_edge(self)
 	contiguous.build_business(self)
 	contiguous.build_upper_approach(self)
 	contiguous.build_upper(self)
 	contiguous.build_return_loop(self)
-	preload("res://scripts/chapters/contiguous_town_phase_two.gd").build(self)
+	var phase_two = preload("res://scripts/chapters/contiguous_town_phase_two.gd")
+	phase_two.build(self)
+	phase_two.build_waterfront_approach(self)
 
 func _room_shell() -> void:
 	box(self,Vector3(0,-0.3,0),Vector3(18,0.5,20),"747d6b",true)

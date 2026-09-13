@@ -41,6 +41,38 @@ static func build(g: Node) -> void:
 		g.points.erase(id)
 		g.routes.erase(id)
 
+static func build_waterfront_approach(g: Node) -> void:
+	var root = g.get_node("ContiguousTownPhaseTwo")
+	var run = 14.0
+	var drop = 2.7
+	var length = sqrt(run * run + drop * drop)
+	var center = Vector3(100, -3.85, -24)
+	var ramp = g.box(root, center, Vector3(5.5, 0.42, length), "59665f")
+	ramp.name = "WaterfrontDescent"
+	ramp.rotation.x = -atan2(drop, run)
+	var body = StaticBody3D.new()
+	body.name = "WaterfrontDescentCollision"
+	body.position = center
+	body.rotation = ramp.rotation
+	root.add_child(body)
+	var collision = CollisionShape3D.new()
+	var shape = BoxShape3D.new()
+	shape.size = Vector3(5.5, 0.42, length)
+	collision.shape = shape
+	body.add_child(collision)
+	for side in [-1.0, 1.0]:
+		g.box(root, Vector3(100 + side * 3.2, -3.5, -24), Vector3(0.5, 2.7, 15), "46534c", true)
+	g.target("route_waterfront", "Continue downhill to the waterfront", Vector3(100, -5.0, -31))
+	g.routes["route_waterfront"] = ["waterfront", Vector3(0, 0.1, 23), 0.0]
+	# A low, unreachable preview keeps the abandoned island visible throughout
+	# the descent without turning it into a destination.
+	var station = Node3D.new()
+	station.name = "DistantWhalingStation"
+	root.add_child(station)
+	g.box(station, Vector3(103, -6.8, -128), Vector3(30, 2.0, 13), "626b62")
+	g.box(station, Vector3(102, -4.8, -128), Vector3(14, 4.2, 6), "46534d")
+	g.box(station, Vector3(95, -2.7, -129), Vector3(1.8, 8.0, 1.8), "3d4b45")
+
 static func _build_pickman_descent(g: Node, root: Node3D) -> void:
 	var run = 8.0
 	var drop = 2.3
