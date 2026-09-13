@@ -18,6 +18,10 @@ Implemented September 13, 2026:
 
 No Web export was produced.
 
+### Retaining-works repair
+
+After visual playtesting, the raised business ground read as an unsupported bridge from the Pickman incline. Added a masonry retaining face, side walls, irregular buttresses, and a supported gateway around the incline. The walking surface and route remain unchanged.
+
 ## Step 2 — Shared Pickman and business exterior
 
 Implemented September 13, 2026:

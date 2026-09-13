@@ -85,11 +85,28 @@ static func build_business(g: Node) -> void:
 	proxy.position = BUSINESS_ORIGIN
 	phase_root.add_child(proxy)
 	BusinessStreet.new().build(proxy)
+	_build_business_retaining_works(g, phase_root)
 	# The incline is now the exterior connection. Keep interior route IDs, but
 	# remove both obsolete exterior-to-exterior transition targets.
 	for id in ["route_business", "route_pickman"]:
 		g.points.erase(id)
 		g.routes.erase(id)
+
+static func _build_business_retaining_works(g: Node, root: Node3D) -> void:
+	# The raised business block is earth retained by old masonry, rather than a
+	# street-width slab hanging in the air. Its southern face leaves one gateway
+	# around the Pickman incline and closes the exposed void on either side.
+	g.box(root, Vector3(-14.65, 2.45, 50.0), Vector3(36.7, 4.9, 1.2), "4d5850", true)
+	g.box(root, Vector3(22.65, 2.45, 50.0), Vector3(20.7, 4.9, 1.2), "4d5850", true)
+	# Deep side walls make the plateau read as terrain fitted between buildings.
+	for x in [-32.4, 32.4]:
+		g.box(root, Vector3(x, 2.35, 77.0), Vector3(1.2, 4.7, 53.0), "465249", true)
+	# Uneven buttresses and a heavy gateway lintel keep the support hand-built.
+	for x in [-30.0, -19.0, -7.0, 15.0, 27.0]:
+		g.box(root, Vector3(x, 2.55, 49.25), Vector3(1.6, 5.1, 2.3), "5c675b", true)
+	g.box(root, Vector3(8.0, 4.55, 49.35), Vector3(8.6, 0.8, 2.0), "626d60", true)
+	for x in [4.0, 12.0]:
+		g.box(root, Vector3(x, 2.0, 49.2), Vector3(0.75, 4.0, 2.2), "596459", true)
 
 static func build_upper_approach(g: Node) -> void:
 	var root = g.get_node("ContiguousTownPhaseOne")
