@@ -33,5 +33,8 @@ func run() -> void:
 	for point in [Vector3(-24, 0, 121), Vector3(-9, 0, 121), Vector3(-9, 0, 134)]:
 		await g._walk_to(point)
 	assert(g.state.world == "town" and g.player.position.y > 12.0, "Upper street must remain inside the raised shared exterior")
-	print("CONTIGUOUS TOWN PHASE 1 / STEP 4 PASS: Pickman, business, and upper quarter share one exterior")
+	for point in [Vector3(9, 0, 134), Vector3(9, 0, 117), Vector3(9, 0, 108), Vector3(9, 0, 99), Vector3(9, 0, 76), Vector3(-9, 0, 76), Vector3(-9, 0, 50), Vector3(-9, 0, 37), Vector3(-9, 0, 24)]:
+		await g._walk_to(point)
+	assert(g.state.world == "town" and g.player.position.y < 1.0, "Alternate return must reach Pickman without an exterior reload")
+	print("CONTIGUOUS TOWN PHASE 1 / STEP 5 PASS: complete Pickman-business-upper walking loop")
 	quit(0)

@@ -84,7 +84,8 @@ func _street() -> void:
 	for x in [21.8,22.6,23.4,24.2]:
 		box(self,Vector3(x,0.8,-6.9),Vector3(0.24,0.22,0.5),"8d977f")
 	# Far-side warehouses frame the street but do not imply explorable doors.
-	for x in [-24,-10,25]:
+	# The center warehouse footprint is now the western descent's opening.
+	for x in [-24,25]:
 		box(self,Vector3(x,4.0,28),Vector3(12,8,7),"536156",true)
 		box(self,Vector3(x,8.2,28),Vector3(12.6,0.4,7.5),"303f35")
 	for x in [-25,-10,7,25]: lamp(Vector3(x,0,0))
@@ -137,6 +138,7 @@ func _street() -> void:
 	contiguous.build_business(self)
 	contiguous.build_upper_approach(self)
 	contiguous.build_upper(self)
+	contiguous.build_return_loop(self)
 
 func _room_shell() -> void:
 	box(self,Vector3(0,-0.3,0),Vector3(18,0.5,20),"747d6b",true)

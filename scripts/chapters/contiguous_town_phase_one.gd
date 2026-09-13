@@ -156,6 +156,40 @@ static func build_upper(g: Node) -> void:
 		g.points.erase(id)
 		g.routes.erase(id)
 
+static func build_return_loop(g: Node) -> void:
+	var root = g.get_node("ContiguousTownPhaseOne")
+	# A separate eastern descent reaches business through aligned residential
+	# and storefront alleys. A second descent west of the original Pickman climb
+	# completes the loop to street level.
+	_build_incline(g, root, "UpperEastDescent", 9.0, 99.0, 117.0, 5.5, 12.5, 5.0)
+	_build_incline(g, root, "BusinessWestDescent", -9.0, 24.0, 50.0, 0.0, 5.5, 5.4)
+	for spec in [[9.0, 108.0, 18.0, 8.7], [-9.0, 37.0, 25.0, 2.6]]:
+		var x: float = spec[0]
+		var z: float = spec[1]
+		var length: float = spec[2]
+		var y: float = spec[3]
+		for side in [-1.0, 1.0]:
+			g.box(root, Vector3(x + side * 3.15, y, z), Vector3(0.45, 2.2, length), "505b52", true)
+
+static func _build_incline(g: Node, root: Node3D, title: String, x: float, z0: float, z1: float, y0: float, y1: float, width: float) -> void:
+	var run = z1 - z0
+	var rise = y1 - y0
+	var slope_length = sqrt(run * run + rise * rise)
+	var center = Vector3(x, (y0 + y1) * 0.5 - 0.25, (z0 + z1) * 0.5)
+	var ramp = g.box(root, center, Vector3(width, 0.42, slope_length), "70796e")
+	ramp.name = title
+	ramp.rotation.x = -atan2(rise, run)
+	var body = StaticBody3D.new()
+	body.name = title + "Collision"
+	body.position = center
+	body.rotation = ramp.rotation
+	root.add_child(body)
+	var collision = CollisionShape3D.new()
+	var shape = BoxShape3D.new()
+	shape.size = Vector3(width, 0.42, slope_length)
+	collision.shape = shape
+	body.add_child(collision)
+
 static func business_return(interior_id: String) -> Variant:
 	var specs: Array = Places.BUILDINGS.business
 	for index in specs.size():

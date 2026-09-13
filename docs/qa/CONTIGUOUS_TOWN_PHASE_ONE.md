@@ -31,6 +31,17 @@ Implemented September 13, 2026:
 
 Validated by walking from Pickman through business and onto the upper street without changing exterior state. The dialogue catalog also passes. No Web export was produced.
 
+## Step 5 — Alternate physical return
+
+Implemented September 13, 2026:
+
+- Added an eastern upper-to-business incline through aligned gaps between the residence and storefront rows.
+- Added a separate western business-to-Pickman descent, producing a complete walking loop rather than a single dead-end climb.
+- Kept both descents as continuous collision surfaces with restrained retaining walls and no loading targets.
+- Extended the traversal regression around the entire loop and back to Pickman elevation without changing exterior state.
+
+No Web export was produced.
+
 ### Retaining-works repair
 
 After visual playtesting, the raised business ground read as an unsupported bridge from the Pickman incline. Added a masonry retaining face, side walls, irregular buttresses, and a supported gateway around the incline. The walking surface and route remain unchanged.
@@ -62,6 +73,5 @@ No Web export was produced.
 
 ## Remaining seams
 
-1. Add a different physical return route from the upper quarter to Pickman Street.
-2. Remap scheduled exterior NPC positions into shared coordinates while retaining every current NPC ID and separate interior destination.
-3. Profile the complete Phase 1 exterior on desktop and Web before introducing streamed cells, HLOD, or model upgrades.
+1. Remap scheduled exterior NPC positions into shared coordinates while retaining every current NPC ID and separate interior destination.
+2. Profile the complete Phase 1 exterior on desktop and Web before introducing streamed cells, HLOD, or model upgrades.
