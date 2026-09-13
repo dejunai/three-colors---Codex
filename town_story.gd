@@ -87,6 +87,12 @@ const SCENES = {
 		["WALTER CORWIN", "What do you mean, the old ones?"],
 		["THE OLD WOMAN", "Beware the old gods, Officer. They have no boundaries, and no need of them.\n\nMen name the ocean too. Doesn't mean the ocean knows."],
 		["WALTER'S NOTEBOOK", "She is gone before he finishes the sentence.\n\nHe writes what he remembers of it, exactly as given. He does not yet have a place on the board where it belongs."]],
+	"speakeasy_bar": [
+		["AT THE BAR", "Walter takes a stool and says nothing. In a room like this, silence gets you further than a badge."],
+		["A VOICE DOWN THE BAR", "...paid the widows off quiet as church mice, and not one soul in this town'll say a word against the club for it."],
+		["ANOTHER VOICE", "Say a word? Half of Widow's Bight is still paying off what the club lent their grandfathers.\n\nYou don't bite the hand, friend."],
+		["THE FIRST VOICE", "Funny thing is, nobody remembers the crew's names either. Just the six who lived long enough to spend the money."],
+		["WALTER CORWIN", "[He writes nothing down. A stool at a bar is not a witness stand, and nothing said here would survive being repeated.]"]],
 	"supplement": [
 		["THE INTAKE COUNTER", "Walter files the witness's name, the source of the identification, and only the additional observations he has actually recorded.\n\nThe original report remains as received."],
 		["THE INTAKE CLERK", "Received as a supplement.\n\nI can stamp it.\nI can't make the captain read it.", "trombone_bureaucratic_medium_v2"]],
