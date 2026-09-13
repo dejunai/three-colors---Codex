@@ -139,7 +139,7 @@ func _room_shell() -> void:
 	for x in [-5.3,5.3]: box(self,Vector3(x,2.1,8),Vector3(7.2,4.2,0.3),"6e7e68",true)
 	for z in [-7.8,7.8]: box(self,Vector3(0,0.14,z),Vector3(18,0.25,0.16),"344b35")
 	for x in [-8.8,8.8]: box(self,Vector3(x,0.14,0),Vector3(0.16,0.25,16),"344b35")
-	var window_xs = [5] if location == "precinct" else [-5, 5]
+	var window_xs = [5] if location == "precinct" else ([-5] if location in ["stationer", "haberdasher", "printer", "repairer"] else [-5, 5])
 	for x in window_xs:
 		box(self,Vector3(x,2.35,-7.78),Vector3(2.5,2.3,0.12),"afb9a0")
 		for dx in [-1.35,0,1.35]: box(self,Vector3(x+dx,2.35,-7.61),Vector3(0.13,2.55,0.16),"3c533e")
