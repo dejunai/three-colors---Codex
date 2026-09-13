@@ -29,7 +29,21 @@ No Web export is produced from this branch.
 - Transform waterfront NPC schedules into shared coordinates without changing authored schedule names or actor IDs.
 - Keep the island visible and physically unreachable.
 
+## Complete-town desktop baseline
+
+Measured September 13, 2026 with the standard Godot 4.7.2 headless build:
+
+- Construction: 113.56 ms
+- Nodes: 2,284
+- Mesh instances: 1,923
+- Bodies / collision shapes: 101 / 101
+- Interaction targets: 37
+- Scheduled actors in the sampled morning state: 16
+- Static memory: 71.84 MiB
+
+Against the Phase 1 baseline, adding lower town and the complete waterfront increased construction time by 6.40 ms and static memory by 4.52 MiB. This does not justify streaming or HLOD by itself. The next architecture decision should wait for a local Web profile and visible frame-time evidence.
+
 ## Remaining seams
 
 1. Walk and visually review the Pickman-to-lower and lower-to-waterfront transitions.
-2. Profile the complete exterior before deciding whether streaming or LOD is justified.
+2. Run the complete exterior through the local Web-profile handoff before deciding whether streaming or HLOD is justified.
