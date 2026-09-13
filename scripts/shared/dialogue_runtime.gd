@@ -182,12 +182,7 @@ static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 	return {"default_topic": default_topic, "default_topics": eligible_defaults, "entries": entries}
 
 static func topic_available(topic: Dictionary, ctx: Dictionary) -> bool:
-	if not Lang.evaluate(topic.gate, ctx): return false
-	var check = ctx.get("functions", {}).get("outcome", Callable())
-	if not check is Callable or not check.is_valid(): return true
-	for key in topic.get("outcome_keys", []):
-		if bool(check.call([String(key)])): return false
-	return true
+	return Lang.evaluate(topic.gate, ctx)
 
 static func _choose_default(candidates: Array, dstate, npc: String):
 	if candidates.is_empty(): return null
@@ -241,12 +236,53 @@ static func _empty_result() -> Dictionary:
 # Preparation is side-effect free. The caller acknowledges displayed cards
 # with commit_through(), then passes this result to resume() after a choice.
 # Sessions are transient playback cursors, not save payloads.
-static func render(npc: String, topic: Dictionary, _dstate) -> Dictionary:
+static func render(npc: String, topic: Dictionary, dstate) -> Dictionary:
+	var locked_outcomes: Dictionary = {}
+	for key in topic.get("outcome_keys", []):
+		if dstate.has_outcome(String(key)):
+			locked_outcomes[String(key)] = String(dstate.outcomes[String(key)])
 	var session = {"npc": npc, "topic": topic.id,
 		"stack": [{"steps": topic.steps, "i": 0}], "pending": [],
-		"pending_outcomes": {},
+		"pending_outcomes": {}, "locked_outcomes": locked_outcomes,
 		"tag": topic.get("tag", ""), "timing": topic.get("timing", "")}
 	return _next_segment(session)
+
+static func _outcome_values(steps: Array) -> Dictionary:
+	var found: Dictionary = {}
+	for step in steps:
+		match String(step.get("kind", "")):
+			"outcome":
+				var id = String(step.id)
+				if not found.has(id): found[id] = []
+				if not found[id].has(String(step.value)): found[id].append(String(step.value))
+			"fork":
+				for option in step.options:
+					var nested = _outcome_values(option.steps)
+					for id in nested:
+						if not found.has(id): found[id] = []
+						for value in nested[id]:
+							if not found[id].has(value): found[id].append(value)
+	return found
+
+static func _locked_fork_options(options: Array, locked: Dictionary) -> Array:
+	if locked.is_empty(): return options
+	var authored: Array = []
+	var relevant: Array[String] = []
+	for option in options:
+		var values = _outcome_values(option.steps)
+		authored.append(values)
+		for id in locked:
+			if values.has(id) and not relevant.has(String(id)): relevant.append(String(id))
+	if relevant.is_empty(): return options
+	var matching: Array = []
+	for index in options.size():
+		var accepts = true
+		for id in relevant:
+			if not authored[index].has(id) or not authored[index][id].has(String(locked[id])):
+				accepts = false
+				break
+		if accepts: matching.append(options[index])
+	return matching if not matching.is_empty() else options
 
 static func _next_segment(session: Dictionary) -> Dictionary:
 	var result = _empty_result()
@@ -273,8 +309,9 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 					"text": step.text, "after_cards": result.cards.size(), "applied": false})
 			"outcome": session.pending_outcomes[String(step.id)] = String(step.value)
 			"fork":
-				session.pending = step.options
-				result.fork = {"options": step.options.map(func(o): return o.label)}
+				var options = _locked_fork_options(step.options, session.get("locked_outcomes", {}))
+				session.pending = options
+				result.fork = {"options": options.map(func(o): return o.label)}
 				return result
 	return result
 

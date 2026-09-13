@@ -77,7 +77,7 @@ TOPIC: naomi_sighting
   EVIDENCE: naomi_quay_inquiry
 
 TOPIC: estate_freight_carts
-  GATE: evidence(estate_freight) AND NOT topic_done(quay_docker, estate_freight_carts)
+  GATE: evidence(estate_freight)
   TAG: quay_docker_freight
   LABEL: "Ask about the three carts of stone sent to the estate"
   TIME: 6
@@ -94,8 +94,10 @@ TOPIC: estate_freight_carts
       QUAY DOCKER: "Wet timber. Old balks wrapped in burlap, soaked through with grease and black mud.\nSmelled like the old try-works flats after a three-day blowout."
       NOTEBOOK: docker_cart_weight | "Quay docker confirms third unbilled cart held waterlogged, muddy timber from try-works flats rather than kitchen stone."
       EVIDENCE: tryworks_timber_freight
+      OUTCOME: freight_cart_response = load_weight
     CHOICE: "Ask who took the reins."
       VOICE: trombone_neutral_long_v2
       QUAY DOCKER: "Not one of our teamsters.\nA man from the estate stables in black driver's serge.\nHe wouldn't let any docker touch the tail-rope. Handed me a half-dollar and told me to take my smoke behind the coal bins."
       NOTEBOOK: docker_cart_driver | "Quay docker: the unbilled third cart was driven by estate staff in black serge, who bribed dockers to look away."
       EVIDENCE: estate_private_driver
+      OUTCOME: freight_cart_response = private_driver

@@ -43,7 +43,7 @@ TOPIC: the_stranger_woman
   EVIDENCE: naomi_unapologetic_presence
 
 TOPIC: the_estate_talk
-  GATE: evidence(naomi) AND NOT topic_done(school_parent, the_estate_talk)
+  GATE: evidence(naomi)
   TAG: parent_estate_rumor
   LABEL: "Ask what the ridge families are saying about the club deaths"
   TIME: 7
@@ -59,8 +59,10 @@ TOPIC: the_estate_talk
       MRS. TEAGUE: "Knotted with heavy hemp, Officer. So he wouldn't sleepwalk toward the cliff in the dark."
       NOTEBOOK: parent_wexford_mirrors | "Judge Wexford's housemaid quit after finding mirrors turned to the wall, 30 lbs of salt under carpets, and Wexford sleeping upright with boots tied together to prevent sleepwalking to the cliff."
       EVIDENCE: turned_mirrors
+      OUTCOME: estate_rumor_response = judge_wexford
     CHOICE: "Ask about Dr. Fenn."
       VOICE: violin_angry_long_v1
       MRS. TEAGUE: "Dr. Fenn delivered both my boys. A gentleman, though he grew peculiar after his sister passed.\nHe wouldn't prescribe camphor anymore. Said the smell 'attracted things from the cellar.'\nWe thought it was his age."
       NOTEBOOK: parent_fenn_peculiar | "Dr. Fenn stopped prescribing camphor, claiming the odor 'attracted things from the cellar.'"
       EVIDENCE: fenn_camphor_taboo
+      OUTCOME: estate_rumor_response = doctor_fenn

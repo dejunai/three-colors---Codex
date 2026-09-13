@@ -44,7 +44,7 @@ TOPIC: naomi_letters
   EVIDENCE: new_bedford_letters
 
 TOPIC: ophion_club_mail
-  GATE: NOT topic_done(post_office_clerk, ophion_club_mail)
+  GATE: always
   TAG: postal_club_mail
   LABEL: "Ask about correspondence received by the Ophion Club"
   TIME: 6
@@ -58,11 +58,13 @@ TOPIC: ophion_club_mail
       MR. CRUMP: "Heavy packets from Liverpool and Smyrna. Burlap-wrapped parcels stamped by maritime customs in Boston.\nAlways insured to the maximum ceiling. Smelled of camphor and dry brine."
       NOTEBOOK: postal_foreign_packets | "Ophion Club received heavy insured parcels from Liverpool and Smyrna, smelling of camphor and brine."
       EVIDENCE: club_foreign_freight
+      OUTCOME: club_mail_response = foreign_post
     CHOICE: "Ask about banking correspondence."
       VOICE: trombone_neutral_long_v2
       MR. CRUMP: "Drafts from the Boston Marine Bank. Monthly registered statements addressed to 'The Overseer.'\nNever an individual's name on the envelope. Just the box number and that title."
       NOTEBOOK: postal_overseer_drafts | "Monthly registered bank drafts arrived from Boston Marine Bank addressed solely to 'The Overseer.'"
       EVIDENCE: postal_overseer_statements
+      OUTCOME: club_mail_response = bank_drafts
 
 TOPIC: holding_the_letters
   GATE: evidence(new_bedford_letters) AND NOT topic_done(post_office_clerk, holding_the_letters)

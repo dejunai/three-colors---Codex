@@ -23,7 +23,7 @@ TOPIC: default
   MR. PENCE: "He sent six notices of sudden decease for probate indexing.\nThe forms are standard."
 
 TOPIC: wage_claim_inquiry
-  GATE: evidence(lay_lead) AND evidence(new_bedford_letters) AND evidence(postal_bureaucracy_refusal) AND NOT topic_done(county_clerk, wage_claim_inquiry)
+  GATE: evidence(lay_lead) AND evidence(new_bedford_letters) AND evidence(postal_bureaucracy_refusal)
   TAG: clerk_wage_claim
   LABEL: "Attempt to file Naomi Freeman's wage claim"
   TIME: 10
@@ -49,6 +49,7 @@ TOPIC: wage_claim_inquiry
       MR. PENCE: "It does not evaporate, Corwin. It abates.\nA claimant must appear to stand for himself. Until he signs the docket in ink, that is the nature of the statute, not a flaw in it."
       NOTEBOOK: clerk_claim_minor | "Registrar: a wage claim requires a living claimant able to appear and stand for himself. Naomi's surviving son is grown and gone on his own account with whereabouts unknown; the claim has no one to stand for it."
       EVIDENCE: claim_no_claimant
+      OUTCOME: wage_claim_response = statutory_abatement
     CHOICE: "Insist on filing in triplicate under police authority."
       WALTER CORWIN: "Enter the claim in triplicate under my name as reporting officer, to preserve the record until the son comes forward."
       [Mr. Pence looks up over wire spectacles, pen poised.]
@@ -57,6 +58,7 @@ TOPIC: wage_claim_inquiry
       NOTEBOOK: clerk_claim_triplicate | "Wage claim submitted in triplicate as police correspondence to preserve the record for Naomi's surviving grown son, whose whereabouts are unknown; filed inertly in county dead-records drawer."
       EVIDENCE: claim_filed_inert
 
+      OUTCOME: wage_claim_response = triplicate_filing
 TOPIC: ophion_settlement
   GATE: evidence(behan_name) OR evidence(ophion_myth_classical)
   TAG: clerk_ophion_records

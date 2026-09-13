@@ -88,7 +88,7 @@ TOPIC: the_drowned_island
   EVIDENCE: harbor_children_discipline
 
 TOPIC: the_slain_boy
-  GATE: evidence(naomi) AND evidence(reader_omission_letter) AND NOT topic_done(schoolteacher, the_slain_boy)
+  GATE: evidence(naomi) AND evidence(reader_omission_letter)
   TAG: teacher_boy
   LABEL: "Ask if Naomi's young son ever came to the school"
   TIME: 6
@@ -105,6 +105,7 @@ TOPIC: the_slain_boy
       MISS HALLOWELL: "I told him a hundred. He wrote the number on his slate, rubbed it out with his sleeve, and said his mother was going to collect it today."
       NOTEBOOK: teacher_boy_slate | "The murdered boy stood outside the schoolhouse asking about a century's span, saying his mother was going to collect 'it' that day; what he meant was not established."
       EVIDENCE: boy_century_slate
+      OUTCOME: slain_boy_response = boy_demeanor
     CHOICE: "Ask why he wasn't admitted."
       VOICE: violin_bureaucratic_long_v1
       MISS HALLOWELL: "Our district requires proof of county residence, Officer.\nA tax receipt or an employer's voucher. He had neither.\nI gave him a hard biscuit from my drawer and told him to go back to the boardinghouse."
@@ -113,6 +114,7 @@ TOPIC: the_slain_boy
       MISS HALLOWELL: "I did not do him an injury, Officer. I followed the district regulations."
       NOTEBOOK: teacher_boy_turned_away | "Schoolteacher turned away Naomi's son for lack of county residence proof: 'I followed the district regulations.'"
       EVIDENCE: boy_district_refusal
+      OUTCOME: slain_boy_response = district_refusal
 
 TOPIC: reader_letter
   GATE: evidence(curriculum_abridgment) AND NOT topic_done(schoolteacher, reader_letter)

@@ -43,7 +43,7 @@ TOPIC: ship_origin
   EVIDENCE: ophion_myth_classical
 
 TOPIC: dr_fenn_library
-  GATE: evidence(ophion_myth_classical) AND evidence(club_talk) AND NOT topic_done(local_historian, dr_fenn_library)
+  GATE: evidence(ophion_myth_classical) AND evidence(club_talk)
   TAG: historian_fenn_books
   LABEL: "Ask what Dr. Fenn was researching in the archives"
   TIME: 6
@@ -58,12 +58,14 @@ TOPIC: dr_fenn_library
       MR. ABERNATHY: "He was manic with his pencil. Underlining passages about gods that were not slain, only 'displaced.'\nI told him he was reading modern occultist rubbish into straightforward Athenian allegory, but a wealthy doctor does not welcome correction from a curator."
       NOTEBOOK: historian_fenn_annotations | "Fenn studied Aegean mystery rites, obsessively annotating passages regarding gods 'displaced rather than slain.'"
       EVIDENCE: displaced_god_doctrine
+      OUTCOME: fenn_library_response = annotations
     CHOICE: "Ask what Fenn took from the collection."
       VOICE: trombone_haunting_long_v1
       MR. ABERNATHY: "A survey map drawn by the try-works overseer in 1822, showing subterranean drainage conduits beneath the kitchen bluff.\nHe never returned the plate. Claimed it was lost to damp."
       NOTEBOOK: historian_fenn_map | "Dr. Fenn borrowed and never returned an 1822 survey showing underground drainage conduits beneath the estate's kitchen bluff."
       EVIDENCE: estate_conduit_map
 
+      OUTCOME: fenn_library_response = removed_volume
 TOPIC: the_free_crew
   GATE: evidence(lay_lead) AND topic_done(local_historian, crew_omission_followup) AND NOT topic_done(local_historian, the_free_crew)
   TAG: historian_crew_lineage

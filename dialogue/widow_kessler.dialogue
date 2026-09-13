@@ -54,7 +54,7 @@ TOPIC: club_standing
   EVIDENCE: kessler_carriages
 
 TOPIC: butcher_parcels
-  GATE: evidence(kessler_carriages) AND NOT topic_done(widow_kessler, butcher_parcels)
+  GATE: evidence(kessler_carriages)
   TAG: kessler_parcels
   LABEL: "Ask what Otto brought to the meetings"
   TIME: 6
@@ -67,6 +67,7 @@ TOPIC: butcher_parcels
       MRS. KESSLER: "Salt. Coarse gray curing salt from the harbor sheds, three pounds at a time, pressed into cakes.\nHe said the kitchen cellar required it dry."
       NOTEBOOK: kessler_salt_parcels | "Kessler carried parcels of coarse gray harbor salt to the estate meetings, ostensibly for the kitchen cellar."
       EVIDENCE: gray_salt_cakes
+      OUTCOME: butcher_parcel_response = salt_parcels
     CHOICE: "Ask about what he carried away."
       VOICE: violin_neutral_medium_v1
       MRS. KESSLER: "He came back with empty pockets and dirt under his nails."
@@ -75,6 +76,7 @@ TOPIC: butcher_parcels
       MRS. KESSLER: "Wet sand. Sea silt. It smelled like the low-tide flats behind the old try-works.\nI washed his cuffs myself. You don't get that stink from river mud."
       NOTEBOOK: kessler_silt_cuffs | "Kessler returned from meetings with sea silt and low-tide try-works stench beneath his nails and cuffs."
       EVIDENCE: tryworks_silt
+      OUTCOME: butcher_parcel_response = silt_cuffs
 
 TOPIC: the_mother
   GATE: evidence(club_devotion) AND NOT topic_done(widow_kessler, the_mother)

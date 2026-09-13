@@ -68,7 +68,7 @@ TOPIC: example_account
 # CHOICE above is linear speech. Only a FORK makes selectable alternatives.
 # This example closes through its explicit topic_done gate. For a consequential
 # branch, put OUTCOME: decision_id = value_id in each choice instead; completion
-# then records the chosen value and automatically retires the source topic.
+# records the chosen value and future visits show only that committed branch.
 # Nested FORKs work. The parent tail always resumes.
 TOPIC: example_approach
   GATE: evidence(example_door_account) AND NOT topic_done(example_witness, example_approach)
@@ -94,8 +94,8 @@ TOPIC: example_approach
   [The witness folds the newspaper again.]
 
 # OUTCOME is reserved for a consequential FORK. The selected value commits
-# only after its full path completes, survives saves, cannot be overwritten,
-# and automatically removes this topic from future menus.
+# only after its full path completes, survives saves, and cannot be overwritten.
+# On revisit the topic remains, but the fork shows only the committed branch.
 TOPIC: example_decision
   GATE: evidence(example_door_account)
   LABEL: "Decide how to handle the account"

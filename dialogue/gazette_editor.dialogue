@@ -40,7 +40,7 @@ TOPIC: the_omitted_two
   EVIDENCE: press_suppression
 
 TOPIC: press_the_arithmetic
-  GATE: evidence(press_suppression) AND evidence(lay_lead) AND NOT evidence(gazette_correction_printed) AND NOT topic_done(gazette_editor, press_the_arithmetic)
+  GATE: evidence(press_suppression) AND evidence(lay_lead) AND NOT evidence(gazette_correction_printed)
   TAG: editor_arithmetic
   LABEL: "Demand an honest retraction"
   TIME: 6
@@ -53,6 +53,7 @@ TOPIC: press_the_arithmetic
       MR. HALLECK: "Josiah Pruitt owns the mortgage on this building. Corliss's firm writes our libel insurance.\nI have eleven men working those flatbed presses who have children to feed on Saturday. That isn't conspiracy. That's arithmetic."
       NOTEBOOK: editor_mortgage | "Pruitt and Corliss held the Gazette's building mortgage and libel bond; the paper cannot print allegations against the club."
       EVIDENCE: gazette_leverage
+      OUTCOME: press_retraction_response = advertiser_pressure
     CHOICE: "Describe Almy's account of the wage inquiry."
       VOICE: trombone_questioning_medium_v2
       MR. HALLECK: "A hundred-year-old whaler's claim from before the Civil War?"
@@ -62,6 +63,7 @@ TOPIC: press_the_arithmetic
       NOTEBOOK: editor_lay_dismissed | "Gazette editor refused the Freeman wage claim as ancient history unsuited for news print."
       EVIDENCE: lay_publicity_refused
 
+      OUTCOME: press_retraction_response = wage_claim_argument
 TOPIC: gas_main_origin
   GATE: evidence(press_suppression) AND NOT topic_done(gazette_editor, gas_main_origin)
   TAG: editor_gas_source

@@ -26,7 +26,7 @@ TOPIC: subscriptions_and_credit
   EVIDENCE: civic_arithmetic
 
 TOPIC: name_the_dead
-  GATE: evidence(civic_arithmetic) AND NOT topic_done(mr_whitehouse, name_the_dead)
+  GATE: evidence(civic_arithmetic)
   TAG: whitehouse_dead
   LABEL: "Ask whether confidence matters more than the dead"
   TIME: 6
@@ -37,6 +37,7 @@ TOPIC: name_the_dead
       VOICE: trombone_dismissive_long_v1
       MR. WHITEHOUSE: "No. But the bank run becomes real, the paper goes under, and every laundress and porter paid from those accounts discovers that your honesty has a payroll attached to it."
       NOTEBOOK: whitehouse_eight_payroll | "Whitehouse argued that acknowledging all eight dead would trigger wider economic harm the town's laboring people would bear."
+      OUTCOME: dead_count_response = eight_dead
     CHOICE: "Say that silence is still a choice."
       VOICE: trombone_neutral_short_v2
       MR. WHITEHOUSE: "Of course it is."
@@ -45,3 +46,4 @@ TOPIC: name_the_dead
       MR. WHITEHOUSE: "Adulthood consists largely of choosing which damage will be entered into the record and which will merely be survived."
       NOTEBOOK: whitehouse_silence_choice | "Whitehouse openly described public silence as a deliberate civic choice, not an accident."
       EVIDENCE: silence_is_choice
+      OUTCOME: dead_count_response = silence_challenged
