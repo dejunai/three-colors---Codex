@@ -28,6 +28,8 @@
 
 **This document is expected to change often and change fast. Its job is to stay honest about the current state of the build, not to be permanently settled — including this document's own mistakes, corrected in place rather than smoothed over.**
 
+**This revision (v26), 2026-09-13, is a stopping-point checkpoint — Codex is on a 2-hour cooldown, so this is the literal end of today's Phase 1 work, confirmed against source rather than taken from the report alone. Branch `dev/contiguous-town-phase-1`, six steps landed: (1) a walkable stone incline replaces the flat Pickman-to-business portal; (2) the existing business-street geometry now sits at the top of that incline in the same exterior, interiors unchanged, exit positions transformed to the correct storefront via `business_return()`; (3) a second climb reaches toward the upper quarter, silhouette-only at first; (4) the upper quarter itself is folded in the same way, via a new shared `upper_street.gd` builder also used by the old flat hub; (5) a return loop (a second climb and a second descent) closes the walk into a full loop instead of a dead end, plus a self-corrected retaining-wall pass after a playtest made the raised business ground read as an unsupported bridge; (6) scheduled business/upper NPC positions are now translated into the shared exterior's real coordinates via a new `ContiguousTown.shared_spot()`, closing the "NPCs still at old coordinates" gap flagged after the first three steps. One regression was found and fixed mid-session (Step 1-3 pass only): the `eight_identified` birch-grove-placard key remap in `chapter_one.gd` had been silently deleted; restored. The second diff pass (Steps 4-6) introduced no regressions. Remaining, per Codex's own doc: profile the complete exterior on desktop and Web before any streaming/LOD/model-upgrade work. No Web export has been produced for any step so far.**
+
 **This revision (v25), 2026-09-13: first attempt at contiguous exteriors began today, on a new branch — Phase 1 (upper ridge, business district, Pickman Street, lower quarter, waterfront, estate, offshore island). Spatial relationship study produced; no implementation yet.**
 
 **This revision (v24) records three items from 2026-09-12. First, a diagnosed but unresolved pacing defect, no solution chosen: see Part Four, "Conversation-time/travel-time scale mismatch" (four confirmed contributing factors — the `CONVERSATION_MINUTES`/`DEFAULT_MINUTES` scale mismatch against `TRAVEL_MINUTES`, the passive `WANDER_RATE` real-time tick, and the author's dev-only brisk-speed multiplier skewing their own playtesting read). Second, closed: the "Fork revisit-with-recap pattern," reported by the author mid-session as Codex quietly "on it," then confirmed against real source and test — see Part Three, "`FORK:`/`OUTCOME:` Resolution With Recap," which supersedes this document's own prior "auto-retirement" description and its own unbuilt "companion recap topic" proposal. All eight previously one-shot-protected forks are confirmed migrated to the new mechanism. Third, unresolved and reported only, not source-confirmed: Captain Odell is said to retain one deliberately one-shot fork (his automatic intake conversation) whose actual source location was not found this pass.**
@@ -220,13 +222,116 @@
 
 **Conversation-time/travel-time scale mismatch — open, diagnosed, no solution chosen, 2026-09-12.** **The author observed that talking to an entire district's worth of NPCs never advances `DayClock.phase()`. Root cause, confirmed against source: two separate time-charging mechanisms coexist. `day_clock.gd`'s `CONVERSATION_MINUTES = 30.0` only fires for a small enumerated list of legacy story-scene conversations (the `ESTATE_TALKS`/`TOWN_TALKS` dictionaries — `boy`, `assistant`, `gardener`, `identify`, `behan`, etc.), not for ordinary dialogue-file topics. Regular `.dialogue` file topics instead go through `dialogue_runtime.gd`'s `commit_through()`, whose real default is `const DEFAULT_MINUTES = 3.0` — matching the author's original recollection exactly. The author has already authored explicit `TIME:` overrides on 38 of the 42 current dialogue files (values mostly 3–10, some to 15, several deliberate 0s for pure description beats), so the grammar is not unused, contrary to this document's own initial (incorrect) read during this pass. The actual problem is scale: `TRAVEL_MINUTES = 30.0` is roughly 10x `DEFAULT_MINUTES = 3.0`, so almost all of a day's clock movement comes from crossing between districts, not from conversation length — a full local roster of NPCs can be exhausted for a fraction of what one district crossing costs, which is why `phase()` never moves during a district-local conversation binge. Two directions were named but neither chosen: raise conversation-time costs enough to rival travel (e.g., defaults closer to 10–15 rather than 3–5), or shrink the phase thresholds (`NOON`/`EVENING`/`NIGHT`) to match the scale conversations already operate at. **Third factor, confirmed against source, 2026-09-12: a passive real-time tick also runs independently of conversations and travel.** `chapter_one.gd`'s `tick_world(delta)` calls `DayClock.advance(state, delta*DayClock.WANDER_RATE)` every frame while `page == "play"`, where `WANDER_RATE = 5.0/60.0` — the clock advances 5 game-minutes per real-time minute regardless of what the player is doing, including standing still. At that passive rate alone, the full `MORNING`-to-`NIGHT` span (840 minutes) elapses in about 168 real minutes (2.8 real hours) of simply being in the free-roam world, with zero conversations or travel. So an idle or wandering player still eventually runs out of day on this passive tick alone — the scale mismatch above is specifically about conversation/travel activity failing to move the clock in proportion to what the player is doing, not about the clock being unable to move at all. **Fourth factor, confirmed against source, 2026-09-12: the author's own playtesting moves through the world at an inflated, dev-only speed.** `main.gd` sets `speed = 10.5` (accel `39.0`) when the `brisk` action (Shift) is held, versus `2.15` (accel `13.0`) normal walk — roughly 4.9x, and per the author this brisk value is itself already 3x whatever brisk speed is intended to ship at. Since `WANDER_RATE` accrues against real elapsed seconds, not distance travelled, moving between NPCs and exits at this speed sharply reduces the real time — and therefore the passive game-minutes — spent in transit compared to a normal-speed player. This means the author's own impression that "time isn't moving fast enough" is being formed at a movement speed no shipped player will ever use, on top of the conversation/travel scale mismatch already logged above — any tuning decision here should be re-checked at normal (non-brisk, or intended ship-speed) movement before being treated as representative. Not a priority while investigation logic is the focus — recorded for later tuning, by feel, once revisited. See Part Six.**
 
+**Missable-NPC redundant-carrier pattern — open, audited, no backups authored yet, 2026-09-13.** **Design goal, stated by the author: NPCs should stop being schedule billboards you can look up and walk to with certainty. If a scheduled NPC is genuinely missed (their window passes, or a future revision adds real absence beyond `SCHEDULE:`'s current fully deterministic `(npc, phase) → location` lookup — confirmed against `dialogue_catalog.gd`'s `slot()`, which has no chance element of any kind today), the fact they would have supplied should still be reachable through a different NPC, differently worded — "the same info in a word salad." No new engine mechanism is needed for this: the existing `EVIDENCE:` / `GATE: ... AND NOT evidence(id)` idiom already does the whole job, the same idiom already used for `crew_omission`'s six-NPC worded-differently convergence, just aimed at redundancy instead of flavor (that pattern itself grants no `EVIDENCE:`, only a `NOTEBOOK:` note, so it doesn't appear in the audit below). The real work is authoring: deciding which facts need a backup carrier and writing one.**
+
+**Audit performed this pass, direct source scan of all 42 `.dialogue` files (excludes `lodging`-style facts granted by examining an object rather than talking to an NPC, and excludes the `{generated}` authoring-template's example ids):**
+
+- **88 distinct `EVIDENCE:` ids exist across live dialogue. 87 of them are granted by exactly one `(NPC, topic)` pair — a single point of failure each. Only one id, `eight`, has more than one source.**
+- **15 of the 88 come from the game's 9 fixed-appointment NPCs (`almy`, `assistant`, `boy`, `crew`, `father_behan`, `gardener`, `odell`, `old_woman`, `steward` — identified structurally as the only dialogue files with no `SCHEDULE:` header at all). These are guaranteed encounters tied to case progression, not something a schedule-timing miss can cost the player, so they're lower priority for this specific pattern even though they're technically single-sourced too.**
+- **The remaining 74 come from `SCHEDULE:`-driven town/business/lower/waterfront/upper NPCs — these are the real candidates, since they're the ones a future "you may not find them" mechanic would put at risk. All 74 currently have zero backup carrier.**
+- **`eight`'s two sources (`odell`/`default` and `assistant`/`default`) are both fixed-appointment NPCs, not an example of the redundancy pattern working as intended — it's coincidental, not authored backup.**
+
+| Evidence ID | Source NPC | Topic | Kind |
+|---|---|---|---|
+| `ancestral_sixth_coat` | `tailor` | `the_sixth_jacket` | Scheduled |
+| `behan_name` | `father_behan` | `behan_name` | Fixed |
+| `boy_century_slate` | `schoolteacher` | `the_slain_boy` | Scheduled |
+| `boy_district_refusal` | `schoolteacher` | `the_slain_boy` | Scheduled |
+| `boy_pebble_survey` | `salt_mender` | `naomi_and_the_boy` | Scheduled |
+| `bulk_opium_spirits` | `apothecary` | `fenn_laudanum` | Scheduled |
+| `cart_record_missing` | `quay_bookkeeper` | `missing_cart` | Scheduled |
+| `cart_unsigned` | `quay_bookkeeper` | `missing_cart` | Scheduled |
+| `cedar_camphor_buyer` | `chandlers_boy` | `cash_buyer_details` | Scheduled |
+| `cellar_candles` | `stationer` | `fenn_orders` | Scheduled |
+| `cellar_desiccation_practice` | `ropewalk_foreman` | `cellar_salt` | Scheduled |
+| `cellar_speakeasy_revealed` | `lamplighter` | `cellar_whispers` | Scheduled |
+| `chandlery_island_delivery` | `chandlers_boy` | `island_delivery` | Scheduled |
+| `civic_arithmetic` | `mr_whitehouse` | `subscriptions_and_credit` | Scheduled |
+| `claim_filed_inert` | `county_clerk` | `wage_claim_inquiry` | Scheduled |
+| `claim_no_claimant` | `county_clerk` | `wage_claim_inquiry` | Scheduled |
+| `club_devotion` | `steward` | `club_devotion` | Fixed |
+| `club_foreign_freight` | `post_office_clerk` | `ophion_club_mail` | Scheduled |
+| `club_talk` | `steward` | `club_talk` | Fixed |
+| `crew` | `crew` | `default` | Fixed |
+| `curated_history` | `miss_wexley` | `museum_story` | Scheduled |
+| `curriculum_abridgment` | `local_historian` | `crew_omission_followup` | Scheduled |
+| `displaced_god_doctrine` | `local_historian` | `dr_fenn_library` | Scheduled |
+| `dory_night_crossing` | `ropewalk_foreman` | `island_confirmed` | Scheduled |
+| `drafting_linen_diagram` | `stationer` | `naomi_supplies` | Scheduled |
+| `eight` | `assistant` | `default` | Fixed |
+| `eight` | `odell` | `default` | Fixed |
+| `estate_conduit_map` | `local_historian` | `dr_fenn_library` | Scheduled |
+| `estate_day_book` | `steward` | `day_book` | Fixed |
+| `estate_freight` | `quay_bookkeeper` | `estate_freight` | Scheduled |
+| `estate_private_driver` | `quay_docker` | `estate_freight_carts` | Scheduled |
+| `eye_anchoring_discipline` | `net_seller` | `copper_rings` | Scheduled |
+| `fabricated_foul_air` | `gazette_editor` | `gas_main_origin` | Scheduled |
+| `fenn_camphor_taboo` | `school_parent` | `the_estate_talk` | Scheduled |
+| `five_tailored_coats` | `tailor` | `cut_jackets` | Scheduled |
+| `freeman_lineage_free` | `local_historian` | `the_free_crew` | Scheduled |
+| `freeman_whisper` | `miss_wexley` | `freeman_claim` | Scheduled |
+| `fused_hairspring_anomaly` | `clockmaker` | `the_stopped_watch` | Scheduled |
+| `gazette_correction_printed` | `gazette_editor` | `print_correction` | Scheduled |
+| `gazette_correction_terms` | `gazette_editor` | `correction_terms` | Scheduled |
+| `gazette_leverage` | `gazette_editor` | `press_the_arithmetic` | Scheduled |
+| `gray_salt_cakes` | `widow_kessler` | `butcher_parcels` | Scheduled |
+| `harbor_children_discipline` | `schoolteacher` | `the_drowned_island` | Scheduled |
+| `heavy_subterranean_tackle` | `ropewalk_foreman` | `estate_mooring_cable` | Scheduled |
+| `inland_subsea_current` | `net_seller` | `harbor_currents` | Scheduled |
+| `insurance_fraud_record` | `county_clerk` | `ophion_settlement` | Scheduled |
+| `island_memory` | `harbor_observer` | `drowned_island` | Scheduled |
+| `kelp_salt_preservative` | `fish_smoker` | `gray_salt_cakes` | Scheduled |
+| `kessler_carriages` | `widow_kessler` | `club_standing` | Scheduled |
+| `kessler_knife_confirmed` | `widow_kessler` | `the_knife` | Scheduled |
+| `lay_lead` | `almy` | `lay_lead` | Fixed |
+| `lay_publicity_refused` | `gazette_editor` | `press_the_arithmetic` | Scheduled |
+| `lay_record_method` | `quay_bookkeeper` | `old_lay` | Scheduled |
+| `legal_claim` | `sebastian_wick` | `claim` | Scheduled |
+| `maternal_delusion` | `widow_kessler` | `the_mother` | Scheduled |
+| `naomi` | `almy` | `identify` | Fixed |
+| `naomi_moral_clarity` | `salt_mender` | `naomi_and_the_boy` | Scheduled |
+| `naomi_quay_inquiry` | `quay_docker` | `naomi_sighting` | Scheduled |
+| `naomi_unapologetic_presence` | `school_parent` | `the_stranger_woman` | Scheduled |
+| `new_bedford_letters` | `post_office_clerk` | `naomi_letters` | Scheduled |
+| `no_water_lungs` | `coroners_assistant_morgue` | `day_two_table` | Scheduled |
+| `observer_color_tell` | `harbor_observer` | `the_ring` | Scheduled |
+| `observer_stone_discipline` | `harbor_observer` | `estate_grounds_crew` | Scheduled |
+| `old_woman` | `old_woman` | `default` | Fixed |
+| `ophion_myth_classical` | `local_historian` | `ship_origin` | Scheduled |
+| `overseer_deed` | `county_clerk` | `sixth_member_deed` | Scheduled |
+| `pantry_lead` | `steward` | `pantry_lead` | Fixed |
+| `postal_bureaucracy_refusal` | `post_office_clerk` | `holding_the_letters` | Scheduled |
+| `postal_overseer_statements` | `post_office_clerk` | `ophion_club_mail` | Scheduled |
+| `press_suppression` | `gazette_editor` | `the_omitted_two` | Scheduled |
+| `quay_inquiry` | `quay_bookkeeper` | `unfamiliar_woman` | Scheduled |
+| `reader_omission_letter` | `schoolteacher` | `reader_letter` | Scheduled |
+| `ridge_haste` | `mrs_pell` | `servant_talk` | Scheduled |
+| `ridge_sighting` | `miriam_ashcroft` | `naomi` | Scheduled |
+| `sanitized_textbook` | `schoolteacher` | `town_founding` | Scheduled |
+| `serpent_hem_motif` | `tailor` | `coat_lining` | Scheduled |
+| `service_work` | `almy` | `service_work` | Fixed |
+| `silence_is_choice` | `mr_whitehouse` | `name_the_dead` | Scheduled |
+| `steward_heard_secondhand` | `steward` | `default` | Fixed |
+| `stone_sinker_discipline` | `net_seller` | `stone_sinkers` | Scheduled |
+| `sub_harbor_drag` | `salt_mender` | `night_sounds` | Scheduled |
+| `sulfur_shell_perimeter` | `crew` | `perimeter_trench` | Fixed |
+| `testimony` | `assistant` | `default` | Fixed |
+| `tryworks_metal_patina` | `clockmaker` | `tryworks_instruments` | Scheduled |
+| `tryworks_silt` | `widow_kessler` | `butcher_parcels` | Scheduled |
+| `tryworks_timber_freight` | `quay_docker` | `estate_freight_carts` | Scheduled |
+| `turned_mirrors` | `school_parent` | `the_estate_talk` | Scheduled |
+| `unlit_night_cart` | `drayman` | `night_freight` | Scheduled |
+| `water_corrosion_inquiry` | `apothecary` | `the_stranger_remedies` | Scheduled |
+
+**Next step is triage, not authoring: the author decides which of the 74 "Scheduled" rows are case-critical enough to need a backup carrier versus which are fine to simply lose on a miss, then a specific pair (or small group) gets authored per chosen fact. Not started. See Part Six.**
+
 **Voice-cue library replacement pipeline — complete for the present 144-cue architecture. The game uses reusable cue IDs, not one recording per line. `tools/build_elevenlabs_voice_library.py` converts the completed 228-file ElevenLabs source batch into the stable twelve-styles/three-lengths/two-takes game matrix. Trombone takes map to complementary delivery styles; violin length variants use pitch-preserving cadence changes from the supplied mood takes. The output is normalized mono 44.1 kHz 16-bit PCM, and the generated manifest preserves source-to-cue provenance. The broader source vocabulary remains available for later selective expansion without forcing dialogue changes now. This closes out this document's own earlier "not a strict drop-in, compatibility mapping planned but not yet built" language (v18–v20) — the mapping is built and shipping.**
 
 # **Part Five — Open Production Questions**
 
 **Ekon's fatal outcome and the preservation/denial archive mechanic are already fully specified in Bible v15; what remains open is narrower — whether his final action includes lighting a sealing fuse, as distinct from the archival "sealing" the bible already describes.**
 
-**The per-protagonist presentation scheme remains unwritten and not currently being worked on. Chapter Two/Three audio is explicitly still deferred. Chapter One now has a confirmed, working instrumental-voice-cue architecture, but that is a Chapter One-scoped implementation, not a decision about Chapters Two or Three. Whether Chapter Two/Three dialogue extends the same cue system, adopts something else, or goes fully voiced for the player character remains open and untouched, and should stay off any "in progress" list until the author actually takes it up. The author's eventual preference for a contiguous town over the current hub-and-spoke geography is recorded as a stated long-term preference, not a current work item. The HPLHS pitch remains a long-term aspiration only.**
+**The per-protagonist presentation scheme remains unwritten and not currently being worked on. Chapter Two/Three audio is explicitly still deferred. Chapter One now has a confirmed, working instrumental-voice-cue architecture, but that is a Chapter One-scoped implementation, not a decision about Chapters Two or Three. Whether Chapter Two/Three dialogue extends the same cue system, adopts something else, or goes fully voiced for the player character remains open and untouched, and should stay off any "in progress" list until the author actually takes it up. The contiguous-town preference is no longer a stated long-term item only — see v25/v26 and Part Six: Phase 1 is an active branch with six steps landed as of 2026-09-13. This line is corrected in place rather than left stale. The HPLHS pitch remains a long-term aspiration only.**
 
 # **Part Six — Next Steps**
 
@@ -243,8 +348,12 @@
 7. **Playtest the completed ElevenLabs compatibility library in context and hand-tune individual `VOICE:` assignments only where delivery clashes with the written line. The stable 144-cue replacement and source mapping are complete.**
 8. **~~Fork revisit-with-recap pattern (Part Three/Four)~~ — RESOLVED, 2026-09-12. Codex implemented resolution-with-recap directly in the runtime (`_locked_fork_options()`), confirmed against source and `tests/dialogue_template_flow.gd`; all eight previously one-shot-protected forks are migrated. Remaining loose end: Odell's reported one-shot intake fork is not yet traced to its actual source location — low priority, note only.**
 9. **Conversation-time/travel-time scale mismatch (Part Four) — diagnosed, no solution chosen. Not a priority while investigation logic is the focus; revisit and pick a direction (raise conversation costs, or shrink phase thresholds) once ready to tune day-clock pacing.**
+10. **Missable-NPC redundant-carrier pattern (Part Four) — audited, no authoring done. 74 candidate facts identified (schedule-driven NPCs, single-sourced). Next step is author triage of which facts need a backup carrier, not further auditing.**
 
-**Explicitly not current priorities: the ontological break and fatal-comprehension ending; Chapter Two's playable slice and trinket/procedural-geometry pipeline; the Chapter Two/Three audio-pipeline architecture decision (Chapter One's completed voice-cue work does not change this — see Part Five); the per-protagonist presentation scheme; Ekon's sealing-fuse staging detail; a contiguous-town geography pass; the Part Seven difficulty screen and achievement registration; gamepad support and full key rebinding; and any further work toward the HPLHS pitch.**
+**Active, not a future item: contiguous-town Phase 1 (see v25/v26, and Part Six item 11).**
+11. **Contiguous-town Phase 1 — active branch `dev/contiguous-town-phase-1`, six steps landed 2026-09-13 (see v26). Remaining, per Codex: profile the complete exterior on desktop and Web before any streaming/LOD/model-upgrade work. No Web export produced yet for any step.**
+
+**Explicitly not current priorities: the ontological break and fatal-comprehension ending; Chapter Two's playable slice and trinket/procedural-geometry pipeline; the Chapter Two/Three audio-pipeline architecture decision (Chapter One's completed voice-cue work does not change this — see Part Five); the per-protagonist presentation scheme; Ekon's sealing-fuse staging detail; the Part Seven difficulty screen and achievement registration; gamepad support and full key rebinding; and any further work toward the HPLHS pitch.**
 
 &nbsp;
 
