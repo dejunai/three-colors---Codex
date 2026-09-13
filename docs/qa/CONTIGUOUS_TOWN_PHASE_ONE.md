@@ -18,10 +18,22 @@ Implemented September 13, 2026:
 
 No Web export was produced.
 
+## Step 2 — Shared Pickman and business exterior
+
+Implemented September 13, 2026:
+
+- Placed the existing business-street geometry at the top of the Pickman incline in the same exterior scene.
+- Removed the `route_business` and `route_pickman` loading boundaries from the shared exterior.
+- Preserved every business interior as a separate scene with its existing stable route ID.
+- Added transformed return positions so leaving a business interior places Walter outside its corresponding storefront in the shared exterior.
+- Moved the upper-quarter silhouettes beyond the business roofs and expanded the shared movement boundary through the complete business block.
+- Extended the traversal regression through the incline and onto the raised business street without changing `state.world` from `town`.
+
+Validated with the Step 2 traversal test and the full dialogue-catalog regression. No Web export was produced.
+
 ## Remaining seams
 
-1. Fold the existing business street geometry into the shared exterior and replace `route_business` with a logical district boundary that does not reload the exterior.
-2. Build the second-stage climb, stairs, alleys, and retaining walls from business level to the upper quarter.
-3. Fold the upper district into the shared exterior and provide a different physical return route to Pickman Street.
-4. Remap scheduled exterior NPC positions into shared coordinates while retaining every current NPC ID and separate interior destination.
-5. Profile the complete Phase 1 exterior on desktop and Web before introducing streamed cells, HLOD, or model upgrades.
+1. Build the second-stage climb, stairs, alleys, and retaining walls from business level to the upper quarter.
+2. Fold the upper district into the shared exterior and provide a different physical return route to Pickman Street.
+3. Remap scheduled exterior NPC positions into shared coordinates while retaining every current NPC ID and separate interior destination.
+4. Profile the complete Phase 1 exterior on desktop and Web before introducing streamed cells, HLOD, or model upgrades.

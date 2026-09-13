@@ -130,7 +130,9 @@ func _street() -> void:
 	lettering("WATERFRONT",Vector3(-28,2.7,7),30).rotation.y=PI/2
 	target("route_waterfront","Go downhill to the waterfront",Vector3(-27,0,7))
 	routes["route_waterfront"]=["waterfront",Vector3(0,0.1,23),0.0]
-	preload("res://scripts/chapters/contiguous_town_phase_one.gd").build_pickman_edge(self)
+	var contiguous = preload("res://scripts/chapters/contiguous_town_phase_one.gd")
+	contiguous.build_pickman_edge(self)
+	contiguous.build_business(self)
 
 func _room_shell() -> void:
 	box(self,Vector3(0,-0.3,0),Vector3(18,0.5,20),"747d6b",true)

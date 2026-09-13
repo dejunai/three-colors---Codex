@@ -641,7 +641,9 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	yaw=view_yaw
 	pitch=0.85 if destination == "town" else (0.38 if destination == "estate" else 0.48)
 	distance=6.3 if destination in ["estate","town"] else 4.8
-	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-6,58,56) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
+	# Pickman and the business street now share one exterior, extending north
+	# through the climb and the full business block.
+	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-6,58,112) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
 	if destination in ["upper","business","lower","waterfront"]:
 		movement_bounds=Rect2(-29,-7,58,36)
 		distance=6.3
@@ -707,8 +709,9 @@ func _town_interaction(id:String) -> bool:
 		"street_estate": _travel("estate",Vector3(0,0.1,35)); return true
 		"interior_exit":
 			var exits={"precinct":Vector3(-18,0.1,-4.5),"boardinghouse":Vector3(-1,0.1,-4.5),"room":Vector3(18,0.1,-4.5)}
+			var business_return = preload("res://scripts/chapters/contiguous_town_phase_one.gd").business_return(state.world)
 			# Frame the arrival from the open street, not from inside the facade.
-			_travel("town",exits.get(state.world,Vector3(0,0.1,17)),0)
+			_travel("town",business_return if business_return != null else exits.get(state.world,Vector3(0,0.1,17)),0)
 			return true
 		"intake": _intake(); return true
 		"supplement": _supplement(); return true
