@@ -71,9 +71,9 @@ static func build_pickman_edge(g: Node) -> void:
 		var x: float = spec[0]
 		var h: float = spec[1]
 		var w: float = spec[2]
-		g.box(root, Vector3(x, 13.0 + h * 0.5, 112), Vector3(w, h, 7), "4b594f")
-		g.box(root, Vector3(x, 13.2 + h, 112), Vector3(w + 0.6, 0.45, 7.5), "303d35")
-	for x in [-8.0, 8.0, 20.0]: g.lamp(Vector3(x, 12.9, 106))
+		g.box(root, Vector3(x, 13.0 + h * 0.5, 145), Vector3(w, h, 7), "4b594f")
+		g.box(root, Vector3(x, 13.2 + h, 145), Vector3(w + 0.6, 0.45, 7.5), "303d35")
+	for x in [-8.0, 8.0, 20.0]: g.lamp(Vector3(x, 12.9, 139))
 
 	# Step 1's compatibility route is removed after build_business folds the
 	# existing street into this exterior.
@@ -92,6 +92,44 @@ static func build_business(g: Node) -> void:
 	for id in ["route_business", "route_pickman"]:
 		g.points.erase(id)
 		g.routes.erase(id)
+
+static func build_upper_approach(g: Node) -> void:
+	var root = g.get_node("ContiguousTownPhaseOne")
+	# The first upper-quarter connection occupies the quieter northwest end of
+	# the business block. An underlying ramp keeps traversal smooth; shallow
+	# stone courses make the grade read as old, repaired steps.
+	var rise = 7.5
+	var run = 18.0
+	var slope_length = sqrt(rise * rise + run * run)
+	# Bury the leading edge slightly below the business pavement so the
+	# CharacterBody never encounters a collision lip at the grade change.
+	var center = Vector3(-24, 8.85, 108)
+	var ramp = g.box(root, center, Vector3(6.0, 0.42, slope_length), "747c70")
+	ramp.name = "UpperQuarterApproach"
+	ramp.rotation.x = -atan2(rise, run)
+	var body = StaticBody3D.new()
+	body.name = "UpperQuarterApproachCollision"
+	body.position = center
+	body.rotation = ramp.rotation
+	root.add_child(body)
+	var collision = CollisionShape3D.new()
+	var shape = BoxShape3D.new()
+	shape.size = Vector3(6.0, 0.42, slope_length)
+	collision.shape = shape
+	body.add_child(collision)
+	for z in range(100, 118):
+		var progress = float(z - 99) / run
+		g.box(root, Vector3(-24, 5.1 + progress * rise + 0.08, z), Vector3(5.4, 0.035, 0.16), "a6aa99")
+	for side in [-1.0, 1.0]:
+		# Leave the first metre open so the approach can be entered laterally
+		# behind the last storefront before the walls close around it.
+		g.box(root, Vector3(-24 + side * 3.45, 8.6, 109), Vector3(0.6, 6.2, 15.0), "4f5b51", true)
+		for z in [100.0, 106.0, 112.0]:
+			g.box(root, Vector3(-24 + side * 3.0, 6.2 + (z - 99.0) * rise / run, z), Vector3(0.25, 1.1, 0.25), "879181")
+	# This remains a compatibility handoff until Step 4 folds the upper street
+	# into the shared exterior. Its location now corresponds to real geography.
+	g.target("route_upper", "Continue uphill to the upper quarter", Vector3(-24, 12.6, 117))
+	g.routes["route_upper"] = ["upper", Vector3(10, 0.1, 25), 0.0]
 
 static func business_return(interior_id: String) -> Variant:
 	var specs: Array = Places.BUILDINGS.business

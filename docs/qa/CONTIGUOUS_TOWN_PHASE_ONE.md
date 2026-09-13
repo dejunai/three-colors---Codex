@@ -31,9 +31,20 @@ Implemented September 13, 2026:
 
 Validated with the Step 2 traversal test and the full dialogue-catalog regression. No Web export was produced.
 
+## Step 3 — Business-to-upper climb
+
+Implemented September 13, 2026:
+
+- Removed the obsolete upper- and business-district portal facades from Pickman Street, leaving the future lower-quarter portal intact.
+- Added a steep but continuously walkable stone approach at the northwest end of the business block, with visible courses, retaining walls, and repaired posts.
+- Moved the upper-quarter silhouettes farther uphill so the next detailed exterior can occupy its proper plateau.
+- Relocated the stable `route_upper` transition to the top of the physical climb. The upper district remains its existing separate exterior for this seam.
+- Extended the traversal regression from Pickman through business and to the upper-quarter handoff.
+
+No Web export was produced.
+
 ## Remaining seams
 
-1. Build the second-stage climb, stairs, alleys, and retaining walls from business level to the upper quarter.
-2. Fold the upper district into the shared exterior and provide a different physical return route to Pickman Street.
-3. Remap scheduled exterior NPC positions into shared coordinates while retaining every current NPC ID and separate interior destination.
-4. Profile the complete Phase 1 exterior on desktop and Web before introducing streamed cells, HLOD, or model upgrades.
+1. Fold the upper district into the shared exterior and provide a different physical return route to Pickman Street.
+2. Remap scheduled exterior NPC positions into shared coordinates while retaining every current NPC ID and separate interior destination.
+3. Profile the complete Phase 1 exterior on desktop and Web before introducing streamed cells, HLOD, or model upgrades.

@@ -113,7 +113,9 @@ func _street() -> void:
 	register_actor("old_woman", old_woman, "old_woman", func(st): return not st.evidence.has("old_woman"))
 	for x in [-28,28]: tree(Vector3(x,0,20))
 	# New destinations occupy the existing far-side frontage.
-	for spec in [[-10,"UPPER RESIDENTIAL","upper"],[8,"BUSINESS DISTRICT","business"],[25,"LOWER RESIDENTIAL","lower"]]:
+	# Upper and business now have physical routes in the contiguous exterior.
+	# Keep only the lower-quarter portal until its later phase.
+	for spec in [[25,"LOWER RESIDENTIAL","lower"]]:
 		var x:float=spec[0]
 		box(self,Vector3(x,1.8,24.35),Vector3(3,3.6,0.15),"263a32")
 		for dx in [-1.65,1.65]: box(self,Vector3(x+dx,1.9,24.15),Vector3(0.2,3.8,0.3),"959d8b")
@@ -133,6 +135,7 @@ func _street() -> void:
 	var contiguous = preload("res://scripts/chapters/contiguous_town_phase_one.gd")
 	contiguous.build_pickman_edge(self)
 	contiguous.build_business(self)
+	contiguous.build_upper_approach(self)
 
 func _room_shell() -> void:
 	box(self,Vector3(0,-0.3,0),Vector3(18,0.5,20),"747d6b",true)
