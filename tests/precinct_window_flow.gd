@@ -46,11 +46,11 @@ func run() -> void:
 		for child in shop.get_children():
 			if child is MeshInstance3D:
 				var pos = child.position
-				var z_match = abs(pos.z - -7.78) < 0.05 or abs(pos.z - -7.61) < 0.05
-				if z_match:
-					if pos.x < -2.0:
+				# Window glass is positioned at z = -7.78
+				if abs(pos.z - -7.78) < 0.05:
+					if abs(pos.x - -5.0) < 0.5:
 						shop_left_window = true
-					if pos.x > 2.0:
+					if abs(pos.x - 5.0) < 0.5:
 						shop_right_window = true
 				if abs(pos.x - 6.0) < 0.1 and abs(pos.z - -7.6) < 0.1 and abs(pos.y - 1.5) < 0.1:
 					shop_rooms_door = true
