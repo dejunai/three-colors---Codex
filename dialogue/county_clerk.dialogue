@@ -22,6 +22,54 @@ TOPIC: default
   VOICE: trombone_bureaucratic_medium_v2
   MR. PENCE: "He sent six notices of sudden decease for probate indexing.\nThe forms are standard."
 
+# Plain coat defaults: civil records, reading-room rules, fee structure
+TOPIC: default
+  GATE: topic_done(county_clerk, default) AND coat = plain
+  TAG: clerk_repeat_plain_dockets
+  WEIGHT: 3
+  [Mr. Pence dips a steel nib into an iron gall inkwell without glancing from the docket.]
+  VOICE: trombone_neutral_medium_v1
+  MR. PENCE: "Twenty cents per volume for genealogical perusal, mister. No ink allowed at the reading desks—pencil only."
+
+TOPIC: default
+  GATE: topic_done(county_clerk, default) AND coat = plain
+  TAG: clerk_repeat_plain_vaults
+  WEIGHT: 2
+  VOICE: trombone_bureaucratic_short_v1
+  MR. PENCE: "The deed vaults close when the courthouse bell strikes four. If you're searching a conveyance, pull the index first."
+
+TOPIC: default
+  GATE: topic_done(county_clerk, default) AND coat = plain
+  TAG: clerk_repeat_plain_quiet
+  WEIGHT: 2
+  [He turns a heavy sheepskin folio leaf that raises a dry puff of paper dust.]
+  VOICE: trombone_dismissive_short_v2
+  MR. PENCE: "State your volume and parcel, or let the room stay quiet. The tax rolls don't copy themselves."
+
+# Police coat / badge defaults: six notices confirmed, precinct bureaucracy, official business
+TOPIC: default
+  GATE: topic_done(county_clerk, default) AND coat != plain
+  TAG: clerk_repeat_badge_notices
+  WEIGHT: 3
+  [Mr. Pence squares a stack of probate cards against the polished counter with a firm wooden tap.]
+  VOICE: trombone_bureaucratic_medium_v2
+  MR. PENCE: "The captain's six notices are already indexed, Corwin. If there are other casualties, bring me coroner's certificates, not questions."
+
+TOPIC: default
+  GATE: topic_done(county_clerk, default) AND coat != plain
+  TAG: clerk_repeat_badge_requisition
+  WEIGHT: 3
+  VOICE: trombone_bureaucratic_short_v2
+  MR. PENCE: "This is a record office, Officer, not a squad room. If Captain Odell requires certified extracts, have him send down a signed voucher."
+
+TOPIC: default
+  GATE: topic_done(county_clerk, default) AND coat != plain
+  TAG: clerk_repeat_badge_entries
+  WEIGHT: 2
+  VOICE: trombone_dismissive_medium_v1
+  MR. PENCE: "I have seventy probate entries to verify before the evening packet leaves. Move along unless you have official papers to tender."
+
+
 TOPIC: wage_claim_inquiry
   GATE: evidence(lay_lead) AND evidence(new_bedford_letters) AND evidence(postal_bureaucracy_refusal)
   TAG: clerk_wage_claim

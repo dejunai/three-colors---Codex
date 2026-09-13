@@ -116,6 +116,10 @@ func day3_bed_reached() -> void:
 	var elapsed := 0.0 if day3_started_ms < 0 else maxf(0.0, float(Time.get_ticks_msec() - day3_started_ms) / 1000.0)
 	_log("day3_bed_reached", {"real_seconds_since_day3_start": elapsed})
 
+func debrief(town_feel:String, time_natural:String) -> void:
+	if session_id.is_empty() or ended: return
+	_log("debrief", {"town_feel": town_feel, "time_natural": time_natural})
+
 func end(state, ended_via:String) -> void:
 	if session_id.is_empty() or ended: return
 	_log("session_end", {

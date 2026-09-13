@@ -99,6 +99,7 @@ func run(g:Node) -> void:
 	for id in ["eight","wounds","gas"]: g.state.discover(id)
 	g.state.complete_report("Full inquest requested")
 	g.state.estate_complete=true
+	g.state.dialogue_state.complete_topic("steward","club_talk")
 	g._travel("precinct",Vector3(0,0.1,-1.3))
 	await settle(g)
 	g._interact("intake")

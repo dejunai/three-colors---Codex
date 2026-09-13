@@ -12,6 +12,7 @@ var scene_bodies: Array[Node3D] = []
 var gardener_actor: Node3D
 var groundskeeper_actor: Node3D
 var opening_knife: Node3D
+var opening_report: Node3D
 var birch_belongings: Node3D
 var opening_staff: Dictionary = {}
 var departure_leaves: Array[Node3D] = []
@@ -25,6 +26,10 @@ func sync_staging(st) -> void:
 	for id in opening_staff:
 		opening_staff[id].visible = not st.estate_complete
 		if st.estate_complete: points.erase(id)
+	if st.estate_complete:
+		points.erase("report")
+	if is_instance_valid(opening_report):
+		opening_report.visible = not st.estate_complete
 	if st.rose_bodies_removed:
 		for id in ["wounds","watch","knife"]: points.erase(id)
 	if st.birch_bodies_removed:
@@ -39,7 +44,8 @@ func sync_staging(st) -> void:
 		target("gardener","Speak to the gardener",gardener_actor.position)
 	if st.visited.has("almy"):
 		target("service_entrance","Enter the smoking lounge through the service entrance",Vector3(-10,0,-18))
-	else: points.erase("service_entrance")
+	else:
+		target("service_entrance","Try the service entrance",Vector3(-10,0,-18))
 
 func register_actor(id: String, node: Node3D, target_id: String = "", condition: Callable = Callable()) -> void:
 	conditional_actors[id] = {
@@ -413,7 +419,7 @@ func _ready() -> void:
 	# A field desk and witness silhouettes.
 	box(self,Vector3(7,0.97,-14),Vector3(2.4,0.15,1.1),"6f7469",true)
 	for x in [6,8]: box(self,Vector3(x,0.45,-14),Vector3(0.13,0.9,0.8),"3b443b")
-	box(self,Vector3(6.6,1.06,-13.8),Vector3(0.52,0.035,0.7),"cccbba")
+	opening_report = box(self,Vector3(6.6,1.06,-13.8),Vector3(0.52,0.035,0.7),"cccbba")
 	box(self,Vector3(7.4,1.06,-13.8),Vector3(0.48,0.035,0.6),"babaa8")
 	person(Vector3(-2,0,31),"555c52").rotation.y = -0.3
 	opening_staff["odell"] = person(Vector3(4,0,-11.5),"272e2b")
@@ -441,6 +447,7 @@ func _ready() -> void:
 	target("gardener","Speak to the gardener",Vector3(-12,0,1))
 	target("odell","Speak to Captain Odell",Vector3(4,0,-11.5))
 	target("report","Write the preliminary report",Vector3(6,0,-13.1))
+	target("service_entrance","Try the service entrance",Vector3(-10,0,-18))
 	target("exit","Leave through the estate gates",Vector3(0,0,37))
 	var gate_bodies: Array[RID] = []
 	for leaf in departure_leaves:

@@ -138,7 +138,11 @@ TOPIC: club_talk
   THE SMOKING LOUNGE: "The steward sets a glass on the sideboard. Walter asks about the conversations he used to overhear while serving the members."
   VOICE: trombone_neutral_medium_v1
   THE STEWARD: "They stopped speaking of power, toward the end.\n\nStarted speaking, tenderly, of her."
+  WALTER CORWIN: "Did they try to bring anyone else in?"
+  VOICE: trombone_neutral_medium_v2
+  THE STEWARD: "Wexford wanted Father Behan at the table. Sent carriages down with formal invitations. Twice.\n\nThe priest sent them back unopened both times."
   NOTEBOOK: "Toward the end of what, he doesn't say.\nHer, he doesn't explain.\n\nWalter writes both down exactly as given."
+  NOTEBOOK: steward_behan_invitation | "The steward reveals Judge Wexford invited Father Behan to join the club twice; Behan declined both invitations and sent them back unopened."
   EVIDENCE: club_talk
 
 TOPIC: club_devotion

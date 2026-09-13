@@ -4,6 +4,7 @@ const EVENT_FIELDS = {
   district_transition: ["from_world", "to_world", "real_seconds_elapsed", "game_minutes_elapsed"],
   phase_change: ["day", "new_phase", "npcs_spoken_to_this_phase"],
   day3_bed_reached: ["real_seconds_since_day3_start"],
+  debrief: ["town_feel", "time_natural"],
   session_end: ["total_real_seconds", "final_day", "ended_via"],
 };
 
@@ -57,6 +58,8 @@ function cleanEvent(raw) {
   }
   if (Object.hasOwn(raw, "new_phase") && !["morning", "noon", "evening", "night"].includes(raw.new_phase)) throw new Error("invalid phase");
   if (Object.hasOwn(raw, "ended_via") && !["closed", "completed"].includes(raw.ended_via)) throw new Error("invalid ending");
+  if (Object.hasOwn(raw, "town_feel") && !["alive", "confusing", "too_large", "easy", "skipped"].includes(raw.town_feel)) throw new Error("invalid town_feel");
+  if (Object.hasOwn(raw, "time_natural") && !["yes", "no", "skipped"].includes(raw.time_natural)) throw new Error("invalid time_natural");
   return Object.fromEntries([...allowed].filter((key) => Object.hasOwn(raw, key)).map((key) => [key, raw[key]]));
 }
 

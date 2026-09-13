@@ -12,14 +12,20 @@ func interact(g:Node,id:String) -> bool:
 	if id in ["club_talk","club_devotion","pantry_lead"] and (g.state.world != "lounge" or not g.state.steward_ready()): return true
 	if id in ["eight","shoes"] and g.state.birch_bodies_removed: return true
 	if id in ["wounds","watch","knife"] and g.state.rose_bodies_removed: return true
-	if id in ["odell","assistant"] and g.state.estate_complete:
-		return true # Cleared bodies and departed staff cannot be interacted with remotely.
+	if id in ["odell","assistant","report"] and g.state.estate_complete:
+		return true # Cleared bodies, departed staff, and filed preliminary report cannot be interacted with remotely.
 	if id == "crew":
 		return g.state.world != "estate" or not g.state.lounge_exited
 	match id:
 		"service_entrance":
-			if g.state.world == "estate" and g.state.visited.has("almy"):
-				g._travel("lounge",Vector3(0,0.1,6))
+			if g.state.world == "estate":
+				if g.state.visited.has("almy"):
+					g._travel("lounge",Vector3(0,0.1,6))
+				else:
+					g._cards([
+						["THE SERVICE ENTRANCE", "A heavy oak door set into the stone of the kitchen wing. The deadbolt is thrown from the inside."],
+						["WALTER CORWIN", "Hours before dawn. The house is locked tight, and nobody inside is answering before daybreak."]
+					], func(): pass, "examine")
 			return true
 		"lounge_exit":
 			if g.state.world == "lounge":
@@ -66,7 +72,37 @@ func sleep(g:Node) -> void:
 		g._button("Get up",g._close)
 		g._focus_first()
 	else:
-		g._cards(g.TownStory.SCENES.close_day,func(): g.playthrough_log.day3_bed_reached(); g.state.finished=true; g._save_game(); g._town_complete())
+		g.playthrough_log.day3_bed_reached()
+		g._cards(g.TownStory.SCENES.close_day,func(): _debrief_town_feel(g))
+
+# Optional, two-question tester debrief shown once, right after the Day 3
+# close_day cards and before the town is marked finished. Answers are
+# recorded through playthrough_log.debrief() alongside the anonymous
+# session id — no free text, single-tap choices only, "Skip" always
+# available. See docs/LOG_PLAYER_ASK.md.
+func _debrief_town_feel(g:Node) -> void:
+	g._panel("case","Before Walter sleeps, one thought lingers.","A QUIET MOMENT")
+	g._paragraph("Did the town feel—")
+	var choose = func(answer:String): _debrief_time_natural(g,answer)
+	g._button("Alive, and hard to fully take in",choose.bind("alive"))
+	g._button("Confusing",choose.bind("confusing"))
+	g._button("Too large for the time given",choose.bind("too_large"))
+	g._button("Easy enough to navigate",choose.bind("easy"))
+	g._button("Skip",choose.bind("skipped"))
+	g._focus_first()
+
+func _debrief_time_natural(g:Node,town_feel:String) -> void:
+	g._panel("case","One more thought.","A QUIET MOMENT")
+	g._paragraph("Did the passage of time feel natural while investigating?")
+	var finish = func(answer:String):
+		g.playthrough_log.debrief(town_feel,answer)
+		g.state.finished=true
+		g._save_game()
+		g._town_complete()
+	g._button("Yes",finish.bind("yes"))
+	g._button("No",finish.bind("no"))
+	g._button("Skip",finish.bind("skipped"))
+	g._focus_first()
 
 func draw_montage(g:Node) -> void:
 	var index = g.state.montage_index

@@ -151,6 +151,7 @@ func _run() -> void:
 	assert(odell_replay.cards.is_empty(), "once answered, topic_done(odell, default) must keep the scene from replaying")
 
 	# --- Father Behan: the real behan_name topic, mutually exclusive with club_invitation ---
+	dstate.complete_topic("steward", "club_talk")
 	var behan_ctx_intro = Runtime.make_context(state, dstate)
 	var behan_intro = Runtime.enter(defs.father_behan, behan_ctx_intro, dstate)
 	_play(behan_intro, state, dstate)
@@ -184,6 +185,20 @@ func _run() -> void:
 	var clerk_ids_after = []
 	for entry in clerk_menu_after.entries: clerk_ids_after.append(entry.id)
 	assert(clerk_ids_after.has("wage_claim_inquiry"), "the county filing topic must appear once the wage lead and postal trail are both in evidence")
+
+	# --- County clerk: repeat defaults must play after initial six-deceased notice ---
+	state.coat = "Police coat"
+	var clerk_badge_ctx = Runtime.make_context(state, dstate)
+	var clerk_first = Runtime.enter(defs.county_clerk, clerk_badge_ctx, dstate)
+	_play(clerk_first, state, dstate)
+	assert(clerk_first.session.tag == "clerk_badge", "initial encounter with badge must deliver the six-deceased notice")
+	var clerk_repeat_badge = Runtime.enter(defs.county_clerk, clerk_badge_ctx, dstate)
+	assert(not clerk_repeat_badge.cards.is_empty(), "Mr. Pence must not become a totem pole after the initial notice")
+	assert(clerk_repeat_badge.session.tag in ["clerk_repeat_badge_notices", "clerk_repeat_badge_requisition", "clerk_repeat_badge_entries"], "repeat encounter with badge must play a badge repeat default")
+	state.coat = "Plain wool coat"
+	var clerk_repeat_plain = Runtime.enter(defs.county_clerk, Runtime.make_context(state, dstate), dstate)
+	assert(not clerk_repeat_plain.cards.is_empty(), "Mr. Pence must speak to plain-coated Walter on repeat visits")
+	assert(clerk_repeat_plain.session.tag in ["clerk_repeat_plain_dockets", "clerk_repeat_plain_vaults", "clerk_repeat_plain_quiet"], "repeat encounter with plain coat must play a plain repeat default")
 
 	print("DIALOGUE CONTENT PASS: gatehouse_boy/coroners_assistant/groundskeeper/gardener/old_woman/mrs_almy/odell/father_behan all reverse-engineered, parsing clean and gating correctly against real game state")
 	quit(0)

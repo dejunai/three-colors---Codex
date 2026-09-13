@@ -5,6 +5,11 @@ This is a Godot 4.7 project (GL Compatibility renderer), Web export (HTML5) as t
 
 **Hard constraint, non-negotiable:** no personal data of any kind. No player name, no account, no device fingerprint, no browser fingerprinting, no IP address collected *in the log payload*, no analytics SDK, no third-party tracking script. The only identifier is a random per-playthrough session id (a v4 UUID or equivalent, generated client-side at New Game). If any implementation choice below would require collecting more than that, stop and flag it rather than proceeding.
 
+## STATUS — this brief is now a historical record, not an open ask
+Everything below shipped. Two things landed differently than originally specified, both accepted by the author and recorded in the TDD (Part Six, item 15):
+- **Hosting is Cloudflare Worker + R2, not Worker + D1** (TASK 3, ACCEPTANCE below). R2 was what actually got deployed at `https://three-colors-worker.dejunai.workers.dev`; it satisfies the same privacy posture (no request metadata persisted, allowlisted fields only) but is not SQL-queryable — aggregate metrics need a small offline script reading the bucket's JSON objects, not a live `SELECT`. Left as-is; a D1 migration is optional future work, not scheduled.
+- **The two subjective questions, originally OUT OF SCOPE for this task (see below), are now built** as a `debrief` event — see TASK 4, added after this brief's original scope was delivered. They are not free text; they're single-tap choices, matching the rest of this codebase's UI, which has never used a text-entry widget.
+
 ## GOAL
 Add lightweight, anonymous logging that answers real pacing/design questions by measurement instead of by the author's own feel — the exact motivation for the recent Shift-brisk-speed fix (`main.gd`), which corrected the author's *own* playtesting speed but did nothing to tell us what an actual first-time tester experiences. Log a defined set of events per playthrough, tagged with a random session id, and upload them automatically to a small collection endpoint so the data reaches the author without any manual step from the tester.
 
@@ -28,17 +33,27 @@ Events to log, mapped to the author's actual questions (see TDD Part Four for th
 
 **Deliberately not a new event type:** "did a player miss a scheduled NPC, and what did they try next" does not need live detection. `district_transition` events already carry world + game-clock time, and `dialogue_catalog.gd`'s `slot()` is a pure, deterministic function of `(npc, phase)` — so whether any given NPC was reachable at any logged moment can be reconstructed later by replaying `slot()` against the log, offline. Do not add a "player missed someone" detection mechanic to satisfy this — that would be new gameplay-adjacent logic for a question the existing data can already answer analytically.
 
-**Also deliberately out of scope for this task:** the two subjective questions in the TDD ("does the town feel alive vs. too large," "does time feel tied to investigation vs. walking") are not loggable events — they need a short exit question to testers, separate from this telemetry system. Not part of this ask; the author will handle that separately (a simple end-of-session prompt, or an external form).
+**Originally out of scope for this task, since built (see TASK 4):** the two subjective questions in the TDD ("does the town feel alive vs. too large," "does time feel tied to investigation vs. walking") were flagged here as not loggable events needing a separate exit-question mechanism. They now are that mechanism's own event — see TASK 4 below.
 
 ## TASK 3 — Upload
 - Transport is decided: automatic upload, not a manual "download and send" flow.
 - Fire an `HTTPRequest` POST (JSON body) at each event above, or batched every few events / on each `district_transition` — whichever is simpler to implement reliably; either is fine as long as a closed tab doesn't lose the whole session's data. If a request fails (offline, endpoint unreachable), don't block or retry aggressively — drop it or retry once on the next event, but never stall gameplay on network state.
-- **Endpoint hosting is open — the author has a Cloudflare account and several other webserver accounts, so pick whatever's least effort to stand up and maintain, and confirm the choice before building against it.** Reasonable options, roughly in order of expected setup effort:
-  1. A Cloudflare Worker, receiving the POST and writing to KV, D1, or R2. No server to patch, generous free tier, and — relevant to the privacy constraint above — Workers request logging is not persisted by default (unlike a conventional web server's access log), which narrows the IP-at-the-infrastructure-level exposure without extra configuration.
-  2. A small endpoint on one of the author's existing webserver accounts (a short PHP or Node script appending JSON lines to a file, or inserting into a database) — viable if any of those accounts already has an easy path to a script + persistent storage, but note that ordinary web server software typically logs the caller's IP in its own access logs by default; if this path is chosen, either disable access logging for that endpoint specifically or accept that tradeoff explicitly.
-  3. Anything else already familiar to Codex that meets the same bar (no server maintenance burden, no persistent IP logging by default, reachable over plain HTTPS from a Web-exported Godot build with no CORS surprises).
+- **Endpoint hosting, as originally decided here: Cloudflare Worker + D1**, for a specific reason beyond "no server to patch": D1 is a real SQL database (SQLite-based), and every metric this feature exists to answer is a plain `SELECT AVG(...)`/`COUNT(...)` query once events land in a table. **As actually deployed: Cloudflare Worker + R2** (`cloudflare/three-colors-worker/`, bucket `three-colors-logs`) — see STATUS above. Each accepted batch is written as one JSON object per request (`events/YYYY-MM-DD/<uuid>.json`); querying means reading those objects with a small script, not `SELECT`. Accepted as-is; not being sent back for a D1 rework.
+  - Workers request logging is not persisted by default (unlike a conventional web server's access log), which narrows the IP-at-the-infrastructure-level exposure named in the constraint above without extra configuration — no optional logging/analytics add-on is enabled, and the deployed `src/index.js` never copies request headers, IP, or user-agent into R2.
 - Whichever is chosen, confirm CORS is configured correctly for a Web-exported Godot build calling it from an arbitrary hosting origin (itch.io, a personal domain, wherever the Web build ends up served from) before treating this as done.
 - Store the endpoint URL as an easily swappable value (an exported variable or a config constant), not hardcoded in multiple places — the author may want to point this at a different account later without a code change.
+
+## TASK 4 — Debrief pairing (added after the above shipped; also built)
+Telemetry answers "what did they do." It doesn't answer "what did they think they were doing, and how did it feel." Rather than a free-text survey (this codebase has no text-entry widget anywhere, by design — the interaction idiom throughout is `_panel`/`_button`), this is two single-tap optional questions shown once, right after the Day 3 "close_day" narrative cards and before the town is marked finished:
+
+1. A choice among: "Alive, and hard to fully take in" / "Confusing" / "Too large for the time given" / "Easy enough to navigate" / "Skip".
+2. Yes / No / Skip to: "Did the passage of time feel natural while investigating?"
+
+Both answers (or `"skipped"`) are logged as one new event:
+
+8. **`debrief`** — fired once, immediately after the Day 3 bed sequence resolves (same moment `day3_bed_reached` fires; `day3_bed_reached` itself was defined in `playthrough_log.gd` from the start but had never actually been wired to a call site until this task — that gap is now closed alongside this one). Fields: `town_feel` (`"alive"` / `"confusing"` / `"too_large"` / `"easy"` / `"skipped"`), `time_natural` (`"yes"` / `"no"` / `"skipped"`).
+
+Implementation landed in `scripts/chapters/chapter_one_staging.gd`'s `sleep()` (the Day-3-success branch) via two new local functions, `_debrief_town_feel()` and `_debrief_time_natural()`, and in `playthrough_log.gd` via a new `debrief(town_feel, time_natural)` method. The Worker's `EVENT_FIELDS` allowlist and field-value validation (`cloudflare/three-colors-worker/src/index.js`) were extended to match and redeployed.
 
 ## ACCEPTANCE / VERIFICATION
 Per this project's existing standard, don't just self-report — check source and, where possible, run it:
@@ -47,11 +62,11 @@ Per this project's existing standard, don't just self-report — check source an
 - Confirm each event's fields actually populate correctly against a real playthrough (a `district_transition` between two real locations shows sane `real_seconds_elapsed`/`game_minutes_elapsed`, a `phase_change` shows a plausible NPC count, etc.) — don't just confirm the request fires, confirm the payload contents are correct.
 - Confirm closing the tab mid-session does not lose previously-flushed events (only whatever hadn't yet been sent should be lost).
 - Confirm this adds no player-visible UI, no toast, no interruption — it should be entirely invisible during play.
-- Confirm the endpoint choice and CORS configuration actually work from a real Web export, not just localhost.
-- Report back whichever hosting option was chosen and why, and hand the author whatever access/dashboard they need to actually read the collected logs afterward.
+- Confirm the Worker/R2 endpoint and its CORS configuration actually work from a real Web export, not just localhost.
+- Querying the logged data means reading the JSON objects out of the `three-colors-logs` R2 bucket (Cloudflare dashboard, or `wrangler r2 object get`) — there is no D1 console for this deployment. An offline aggregation script is future work, not required to call this done.
+- Confirm the `debrief` panel appears exactly once per completed playthrough, offers "Skip" on both questions, and never blocks reaching the town-complete screen even if both are skipped.
 
 ## OUT OF SCOPE (do not touch)
-- The two subjective exit-survey questions — not telemetry, handled separately by the author.
 - Any live "you just missed someone" detection or messaging — this is answered by offline analysis of `district_transition` events against `dialogue_catalog.gd`'s existing `slot()`, not new gameplay logic.
 - The Tab-menu pocket watch itself (TDD Part Six, Stage 5) — build `watch_checked`'s log call when that feature lands, don't build the watch as part of this task.
 - Anything resembling analytics beyond the fields listed above (no session replay, no heatmaps, no third-party analytics SDK of any kind).
