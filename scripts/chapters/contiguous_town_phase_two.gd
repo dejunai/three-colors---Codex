@@ -1,8 +1,10 @@
 extends RefCounted
 
 const LowerStreet = preload("res://scripts/chapters/lower_street.gd")
+const Waterfront = preload("res://scripts/chapters/waterfront_district.gd")
 const Places = preload("res://scripts/chapters/town_places.gd")
 const LOWER_ORIGIN = Vector3(91, -2.3, 0)
+const WATERFRONT_ORIGIN = Vector3(100, -5.0, -60)
 
 class PlacementProxy extends Node3D:
 	var host: Node
@@ -12,8 +14,8 @@ class PlacementProxy extends Node3D:
 		host = owner
 		routes = owner.routes
 
-	func box(_parent: Node, p: Vector3, size: Vector3, color: String, solid: bool = false):
-		return host.box(self, p, size, color, solid)
+	func box(parent: Node, p: Vector3, size: Vector3, color: String, solid: bool = false):
+		return host.box(self if parent == self or parent == host else parent, p, size, color, solid)
 
 	func cylinder(_parent: Node, p: Vector3, radius: float, height: float, color: String, top: float = -1.0):
 		return host.cylinder(self, p, radius, height, color, top)
@@ -73,6 +75,19 @@ static func build_waterfront_approach(g: Node) -> void:
 	g.box(station, Vector3(102, -4.8, -128), Vector3(14, 4.2, 6), "46534d")
 	g.box(station, Vector3(95, -2.7, -129), Vector3(1.8, 8.0, 1.8), "3d4b45")
 
+static func build_waterfront(g: Node) -> void:
+	var root = g.get_node("ContiguousTownPhaseTwo")
+	var preview = root.get_node_or_null("DistantWhalingStation")
+	if preview != null: preview.free()
+	var proxy = PlacementProxy.new(g)
+	proxy.name = "WaterfrontExterior"
+	proxy.position = WATERFRONT_ORIGIN
+	root.add_child(proxy)
+	Waterfront.new().build(proxy)
+	for id in ["route_waterfront", "route_pickman"]:
+		g.points.erase(id)
+		g.routes.erase(id)
+
 static func _build_pickman_descent(g: Node, root: Node3D) -> void:
 	var run = 8.0
 	var drop = 2.3
@@ -105,6 +120,9 @@ static func lower_return(interior_id: String) -> Variant:
 	return null
 
 static func shared_spot(spot: Array) -> Array:
-	if spot.is_empty() or String(spot[0]) != "lower": return spot
+	if spot.is_empty(): return spot
+	var district = String(spot[0])
 	var position: Vector3 = spot[1]
-	return ["town", LOWER_ORIGIN + position]
+	if district == "lower": return ["town", LOWER_ORIGIN + position]
+	if district == "waterfront": return ["town", WATERFRONT_ORIGIN + position]
+	return spot

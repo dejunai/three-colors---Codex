@@ -22,8 +22,14 @@ No Web export is produced from this branch.
 - Keep a low, unreachable whaling-station silhouette visible down the lane without exposing an island route.
 - Leave the detailed waterfront in its existing hub until the approach passes independently.
 
+## Step 3 — Shared waterfront exterior
+
+- Place the existing quay, working buildings, boats, seawall, water, and offshore station at the bottom of the tested descent.
+- Remove the final exterior loading boundary while retaining direct legacy-hub loading for old saves.
+- Transform waterfront NPC schedules into shared coordinates without changing authored schedule names or actor IDs.
+- Keep the island visible and physically unreachable.
+
 ## Remaining seams
 
 1. Walk and visually review the Pickman-to-lower and lower-to-waterfront transitions.
-2. Fold the waterfront into the shared exterior while preserving its island whaling-station view and all NPC schedules.
-3. Profile the complete exterior before deciding whether streaming or LOD is justified.
+2. Profile the complete exterior before deciding whether streaming or LOD is justified.

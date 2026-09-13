@@ -129,6 +129,7 @@ func _street() -> void:
 	var phase_two = preload("res://scripts/chapters/contiguous_town_phase_two.gd")
 	phase_two.build(self)
 	phase_two.build_waterfront_approach(self)
+	phase_two.build_waterfront(self)
 
 func _room_shell() -> void:
 	box(self,Vector3(0,-0.3,0),Vector3(18,0.5,20),"747d6b",true)

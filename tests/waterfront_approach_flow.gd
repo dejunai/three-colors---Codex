@@ -13,11 +13,14 @@ func run() -> void:
 	g.state.started = true
 	g._travel("town", Vector3(100, -2.2, -8), 0, false)
 	await physics_frame
-	assert(g.estate.has_node("ContiguousTownPhaseTwo/DistantWhalingStation"), "Whaling-station sightline must exist before the waterfront loads")
-	assert(g.estate.routes.has("route_waterfront"), "Waterfront compatibility handoff must remain at the descent")
+	assert(g.estate.has_node("ContiguousTownPhaseTwo/WaterfrontExterior/OffshoreWhalingStation"), "Detailed offshore whaling station must remain visible and unreachable")
+	assert(not g.estate.routes.has("route_waterfront") and not g.estate.routes.has("route_pickman"), "Waterfront exterior must not retain a loading boundary")
 	for point in [Vector3(100, 0, -15), Vector3(100, 0, -18), Vector3(100, 0, -24), Vector3(100, 0, -30.5)]:
 		await g._walk_to(point)
-	assert(g.focused == "route_waterfront", "Waterfront handoff must sit at the bottom of the physical descent")
 	assert(g.player.position.y < -4.0, "Waterfront approach must read as downhill from lower town")
-	print("CONTIGUOUS TOWN PHASE 2 / STEP 2 PASS: lower-to-waterfront descent and visible island")
+	for point in [Vector3(100.5, 0, -34), Vector3(100.5, 0, -50), Vector3(100.5, 0, -60)]:
+		await g._walk_to(point)
+	assert(g.state.world == "town" and g.player.position.y < -4.5, "Quay must remain inside the shared exterior")
+	assert(g.estate.points.has("chandlers_boy") and g.estate.points.chandlers_boy.pos.x > 60, "Waterfront schedules must use shared coordinates")
+	print("CONTIGUOUS TOWN PHASE 2 / STEP 3 PASS: continuous lower waterfront, quay schedules, unreachable island")
 	quit(0)

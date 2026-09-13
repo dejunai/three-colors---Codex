@@ -644,7 +644,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	distance=6.3 if destination in ["estate","town"] else 4.8
 	# Pickman and the business street now share one exterior, extending north
 	# through the climb and the full business block.
-	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-35,153,203) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
+	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-75,153,243) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
 	if destination in ["upper","business","lower","waterfront"]:
 		movement_bounds=Rect2(-29,-7,58,36)
 		distance=6.3

@@ -12,11 +12,11 @@ func run() -> void:
 	g.test_mode=true
 	g.state=g.CaseState.new()
 	g.state.started=true
-	g._travel("town",Vector3(-26,0.1,7),0,false)
+	g.state.clock_minutes=390
+	# Direct hub loading remains supported for saves made before the waterfront
+	# became part of the shared town exterior.
+	g._travel("waterfront",Vector3(0,0.1,23),0,false)
 	g._close()
-	await physics_frame
-	assert(g.estate.routes.has("route_waterfront"))
-	g._interact("route_waterfront")
 	await physics_frame
 	assert(g.state.world=="waterfront")
 	assert(g.state.clock_minutes>=390)
