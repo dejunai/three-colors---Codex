@@ -53,10 +53,8 @@ static func build_pickman_edge(g: Node) -> void:
 	ramp_shape.size = Vector3(7.2, 0.42, run)
 	ramp_collision.shape = ramp_shape
 	ramp_body.add_child(ramp_collision)
-	for z in range(22, 50, 3):
-		var progress = float(z - 20) / run
-		var y = progress * rise + 0.08
-		g.box(root, Vector3(8, y, z), Vector3(6.5, 0.025, 0.12), "a1a594")
+	# Keep the walking face uninterrupted. Earlier horizontal course strips were
+	# positioned above the tilted plane and read as floating step barriers.
 
 	# Uneven retaining walls make the climb feel fitted into older construction.
 	for side in [-1.0, 1.0]:
@@ -117,9 +115,8 @@ static func build_upper_approach(g: Node) -> void:
 	shape.size = Vector3(6.0, 0.42, slope_length)
 	collision.shape = shape
 	body.add_child(collision)
-	for z in range(100, 118):
-		var progress = float(z - 99) / run
-		g.box(root, Vector3(-24, 5.1 + progress * rise + 0.08, z), Vector3(5.4, 0.035, 0.16), "a6aa99")
+	# The incline itself remains one continuous surface. Masonry rhythm belongs
+	# on its retaining walls; separate horizontal strips visibly float here.
 	for side in [-1.0, 1.0]:
 		# Leave the first metre open so the approach can be entered laterally
 		# behind the last storefront before the walls close around it.
