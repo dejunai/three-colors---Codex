@@ -381,6 +381,7 @@ func _interact(id:String) -> void:
 	if id == "boy":
 		if state.estate_complete: key = "boy_return"
 		elif state.visited.has("boy"): key = "boy_repeat"
+	if id == "eight" and state.visited.has("eight") and state.evidence.has("naomi"): key = "eight_identified"
 	if not Story.SCENES.has(key): return
 	_cards(Story.SCENES[key],func():
 		if not state.visited.has(id): state.visited.append(id)
