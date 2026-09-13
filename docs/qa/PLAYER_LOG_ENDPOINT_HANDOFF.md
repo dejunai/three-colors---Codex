@@ -4,7 +4,7 @@ The game-side logger is enabled at `https://three-colors-worker.dejunai.workers.
 
 The selected receiver is the `three-colors-worker` Cloudflare Worker backed by the `three-colors-logs` R2 bucket, bound to the Worker as `BUCKET_ONE`. Its source and Wrangler configuration live in `cloudflare/three-colors-worker/`.
 
-Deployment verified on 2026-09-13 as Cloudflare Worker version `a303f9fb-b984-446f-aad8-376a4ae7c3a2`. A live GitHub Pages-origin preflight and a live synthetic `session_start` POST both returned HTTP 204 with the expected CORS origin. Because the Worker awaits `BUCKET_ONE.put()` before returning 204, the successful POST also verifies the R2 write path.
+Deployment verified on 2026-09-13 as Cloudflare Worker version `87e1bd4e-9646-468a-b3be-1397534feb4b`. Live GitHub Pages and itch.io preflights, a synthetic `session_start`, and the later `debrief` event all returned HTTP 204. Because the Worker awaits `BUCKET_ONE.put()` before returning 204, each successful POST also verifies the R2 write path.
 
 The Worker must accept `POST` with a JSON body shaped as `{ "events": [event, ...] }`. Every event has only `session_id`, `event`, and a UTC client timestamp plus the event fields defined in `docs/LOG_PLAYER_ASK.md`. The receiver should reject unknown keys, avoid copying request headers or IP addresses into storage, and return a 2xx response only after storage succeeds.
 

@@ -28,6 +28,18 @@ if (stored.events[0].from_world !== "estate") throw new Error("stored payload ch
 result = await worker.fetch(post({ events: [{ ...valid.events[0], user_agent: "forbidden" }] }), env);
 if (result.status !== 400 || writes.length !== 1) throw new Error("unknown identifying field was accepted");
 
+const debrief = { events: [{
+  session_id: "12345678-1234-4123-8123-123456789abc",
+  event: "debrief",
+  timestamp: "2026-09-13T12:01:00Z",
+  town_feel: "alive",
+  time_natural: "yes",
+}] };
+result = await worker.fetch(post(debrief), env);
+if (result.status !== 204 || writes.length !== 2) throw new Error("valid debrief was not stored");
+result = await worker.fetch(post({ events: [{ ...debrief.events[0], town_feel: "free text" }] }), env);
+if (result.status !== 400 || writes.length !== 2) throw new Error("invalid debrief choice was accepted");
+
 result = await worker.fetch(new Request("https://example.test", {
   method: "OPTIONS",
   headers: { "Origin": "https://html-classic.itch.zone" },

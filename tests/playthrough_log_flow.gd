@@ -45,6 +45,11 @@ func run() -> void:
 	logger.day3_bed_reached()
 	assert(_events(logger,"day3_bed_reached").size() == 1)
 	assert(_events(logger,"day3_bed_reached")[0].real_seconds_since_day3_start >= 0.0)
+	logger.debrief("alive","yes")
+	logger.debrief("confusing","no")
+	assert(_events(logger,"debrief").size() == 1)
+	assert(_events(logger,"debrief")[0].town_feel == "alive")
+	assert(_events(logger,"debrief")[0].time_natural == "yes")
 
 	# Loading during this runtime keeps the same opaque id and emits no second start.
 	logger.resume(state,npcs)
@@ -68,7 +73,7 @@ func _valid_uuid_v4(value:String) -> bool:
 	return regex.search(value) != null
 
 func _payload_is_private(events:Array) -> bool:
-	var allowed = ["session_id","event","timestamp","from_world","to_world","real_seconds_elapsed","game_minutes_elapsed","day","new_phase","npcs_spoken_to_this_phase","real_seconds_since_day3_start","total_real_seconds","final_day","ended_via"]
+	var allowed = ["session_id","event","timestamp","from_world","to_world","real_seconds_elapsed","game_minutes_elapsed","day","new_phase","npcs_spoken_to_this_phase","real_seconds_since_day3_start","town_feel","time_natural","total_real_seconds","final_day","ended_via"]
 	for event in events:
 		for key in event:
 			if not allowed.has(key): return false

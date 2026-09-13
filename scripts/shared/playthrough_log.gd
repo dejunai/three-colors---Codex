@@ -21,6 +21,7 @@ var phase_npcs := {}
 var first_objective_sent := false
 var day3_started_ms := -1
 var day3_bed_sent := false
+var debrief_sent := false
 var ended := false
 
 func _ready() -> void:
@@ -62,6 +63,7 @@ func reset_runtime(clear_id:bool = true) -> void:
 	first_objective_sent = false
 	day3_started_ms = -1
 	day3_bed_sent = false
+	debrief_sent = false
 	ended = false
 
 func _initialize_tracking(state, npc_ids:Array) -> void:
@@ -117,7 +119,8 @@ func day3_bed_reached() -> void:
 	_log("day3_bed_reached", {"real_seconds_since_day3_start": elapsed})
 
 func debrief(town_feel:String, time_natural:String) -> void:
-	if session_id.is_empty() or ended: return
+	if session_id.is_empty() or ended or debrief_sent: return
+	debrief_sent = true
 	_log("debrief", {"town_feel": town_feel, "time_natural": time_natural})
 
 func end(state, ended_via:String) -> void:

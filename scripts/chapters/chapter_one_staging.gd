@@ -54,6 +54,9 @@ func steward(g:Node) -> void:
 	g.scripted_dialogue.interact(g,"barman")
 
 func sleep(g:Node) -> void:
+	if g.state.finished:
+		g._town_complete()
+		return
 	if g.state.steward_visits == 0 or not g.state.intake_done or not g.state.evidence.has("naomi"):
 		g._panel("case","There’s still work to do.","CORWIN'S ROOM")
 		g._paragraph(g._objective(),22)
