@@ -11,6 +11,13 @@ var distance = 6.3
 var animation_time = 0.0
 var movement_bounds = Rect2(-31,-18.4,62,60.4)
 var fall_reset_y = -3.0
+const WALK_SPEED = 2.15
+const BRISK_SPEED = 4.0
+const DEVELOPER_BRISK_SPEED = 10.5
+const WALK_ACCEL = 13.0
+const BRISK_ACCEL = 18.0
+const DEVELOPER_BRISK_ACCEL = 39.0
+var developer_brisk = false
 # Guarantees a keydown/keyup pair resolves as movement even if it completes within one physics frame (synthetic/automated input).
 const MOVE_LATCH_MIN = 0.15
 var move_latch_timer = {"walk_forward":0.0,"walk_back":0.0,"walk_left":0.0,"walk_right":0.0}
@@ -133,8 +140,9 @@ func _physics_process(delta:float) -> void:
 			movement = to_target.normalized()
 	else:
 		movement = Vector3.ZERO
-	var speed = 10.5 if Input.is_action_pressed("brisk") else 2.15
-	var accel = 39.0 if Input.is_action_pressed("brisk") else 13.0
+	var brisk = Input.is_action_pressed("brisk")
+	var speed = (DEVELOPER_BRISK_SPEED if developer_brisk else BRISK_SPEED) if brisk else WALK_SPEED
+	var accel = (DEVELOPER_BRISK_ACCEL if developer_brisk else BRISK_ACCEL) if brisk else WALK_ACCEL
 	player.velocity.x = move_toward(player.velocity.x,movement.x*speed,delta*accel)
 	player.velocity.z = move_toward(player.velocity.z,movement.z*speed,delta*accel)
 	if not player.is_on_floor(): player.velocity.y -= 18*delta
@@ -165,6 +173,9 @@ func _unhandled_input(event:InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F11:
 		var mode = DisplayServer.window_get_mode()
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if mode == DisplayServer.WINDOW_MODE_FULLSCREEN else DisplayServer.WINDOW_MODE_FULLSCREEN)
+	if event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_F3 or event.physical_keycode == KEY_F3):
+		developer_brisk = not developer_brisk
+		print("[movement] Shift pace: ", "DEVELOPER (10.5)" if developer_brisk else "PLAYER BRISK (4.0)")
 	if chapter.page == "play":
 		if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if _suppress_next_motion:
