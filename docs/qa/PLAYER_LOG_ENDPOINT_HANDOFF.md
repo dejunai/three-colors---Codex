@@ -2,13 +2,13 @@
 
 The game-side logger is implemented with its endpoint blank. It stays entirely inert on the network until `three_colors/telemetry_endpoint` is configured in `project.godot` or at deployment time.
 
-The recommended receiver is a Cloudflare Worker backed by D1. It has little maintenance overhead, gives the project a queryable event table, and avoids adding a third-party analytics SDK. This choice still needs the author's approval before the receiver is created or the game is pointed at it.
+The selected receiver is the `three-colors-worker` Cloudflare Worker backed by the `three-colors-logs` R2 bucket, bound to the Worker as `BUCKET_ONE`. Its source and Wrangler configuration live in `cloudflare/three-colors-worker/`.
 
 The Worker must accept `POST` with a JSON body shaped as `{ "events": [event, ...] }`. Every event has only `session_id`, `event`, and a UTC client timestamp plus the event fields defined in `docs/LOG_PLAYER_ASK.md`. The receiver should reject unknown keys, avoid copying request headers or IP addresses into storage, and return a 2xx response only after storage succeeds.
 
 CORS must allow `POST` and `Content-Type` from the GitHub Pages and itch.io origins used for testing. The implementation should answer browser preflight `OPTIONS` requests. Test both deployed origins before enabling the endpoint in a published build.
 
-The author will need read-only access to the D1 database or a small authenticated export route that returns JSON/CSV. Do not expose collected events through a public unauthenticated route.
+The author can inspect or download stored JSON batches through the Cloudflare R2 dashboard. The Worker deliberately has no public read route.
 
 Game-side behavior:
 
