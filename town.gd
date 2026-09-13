@@ -113,17 +113,8 @@ func _street() -> void:
 	target("old_woman","Speak with the woman outside the shop",Vector3(-19.2,0,11.2))
 	register_actor("old_woman", old_woman, "old_woman", func(st): return not st.evidence.has("old_woman"))
 	for x in [-28,28]: tree(Vector3(x,0,20))
-	# New destinations occupy the existing far-side frontage.
-	# Upper and business now have physical routes in the contiguous exterior.
-	# Keep only the lower-quarter portal until its later phase.
-	for spec in [[25,"LOWER RESIDENTIAL","lower"]]:
-		var x:float=spec[0]
-		box(self,Vector3(x,1.8,24.35),Vector3(3,3.6,0.15),"263a32")
-		for dx in [-1.65,1.65]: box(self,Vector3(x+dx,1.9,24.15),Vector3(0.2,3.8,0.3),"959d8b")
-		lettering(spec[1],Vector3(x,4.4,24.0),40).rotation.y=PI
-		var id="route_"+spec[2]
-		target(id,"Take the passage to the "+spec[1].to_lower(),Vector3(x,0,22))
-		routes[id]=[spec[2],Vector3(10,0.1,25),0.0]
+	# District portals have been replaced by physical streets. Interior doors
+	# retain their stable route IDs in the shared exterior.
 	box(self,Vector3(-24,1.6,24.3),Vector3(1.7,3.2,0.16),"283c32")
 	lettering("POST OFFICE",Vector3(-24,3.7,24.05),32).rotation.y=PI
 	target("route_post","Enter the post office",Vector3(-24,0,22))
@@ -139,6 +130,7 @@ func _street() -> void:
 	contiguous.build_upper_approach(self)
 	contiguous.build_upper(self)
 	contiguous.build_return_loop(self)
+	preload("res://scripts/chapters/contiguous_town_phase_two.gd").build(self)
 
 func _room_shell() -> void:
 	box(self,Vector3(0,-0.3,0),Vector3(18,0.5,20),"747d6b",true)

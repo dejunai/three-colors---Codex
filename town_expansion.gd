@@ -42,6 +42,9 @@ func _neighborhood() -> void:
 	if location == "upper":
 		preload("res://scripts/chapters/upper_street.gd").new().build(self)
 		return
+	if location == "lower":
+		preload("res://scripts/chapters/lower_street.gd").new().build(self)
+		return
 	var upper=location=="upper"
 	var lower=location=="lower"
 	box(self,Vector3(0,-0.3,10),Vector3(66,0.5,54),"586052",true)

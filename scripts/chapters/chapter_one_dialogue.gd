@@ -5,6 +5,7 @@ extends RefCounted
 const Runtime = preload("res://scripts/shared/dialogue_runtime.gd")
 const DialogueState = preload("res://scripts/shared/dialogue_state.gd")
 const ContiguousTown = preload("res://scripts/chapters/contiguous_town_phase_one.gd")
+const ContiguousTownTwo = preload("res://scripts/chapters/contiguous_town_phase_two.gd")
 var FILES = {"boy":"gatehouse_boy", "assistant":"coroners_assistant", "crew":"groundskeeper", "gardener":"gardener", "odell":"odell", "almy":"mrs_almy", "behan":"father_behan", "barman":"steward", "old_woman":"old_woman"}
 var TITLES = {"boy":"The gatehouse boys", "assistant":"The coroner's assistant", "crew":"The groundskeeper", "gardener":"The gardener", "odell":"Captain Odell", "almy":"Mrs. Almy", "behan":"Father Behan", "barman":"The club's steward", "old_woman":"The woman outside Kessler's shop"}
 var catalog = preload("res://scripts/chapters/dialogue_catalog.gd").new()
@@ -65,7 +66,7 @@ func allowed(g: Node, actor: String) -> bool:
 
 func _slot(g: Node, actor: String) -> Array:
 	var spot: Array = catalog.slot(actor,g.state)
-	if g.state.world == "town": return ContiguousTown.shared_spot(spot)
+	if g.state.world == "town": return ContiguousTownTwo.shared_spot(ContiguousTown.shared_spot(spot))
 	return spot
 
 func interact(g: Node, actor: String) -> bool:
