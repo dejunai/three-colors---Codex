@@ -1,0 +1,23 @@
+NPC: upper_housemaid
+LOCATION: upper_residential_ridge
+SCHEDULE: morning=upper_west_pavement, midday=upper_center_road, evening=upper_east_pavement, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(upper_housemaid, default)
+  TAG: upper_housemaid_greeting
+  VOICE: violin_cautious_short_v1
+  THE HOUSEMAID: "I am between houses, Officer. My employers dislike delays."
+
+TOPIC: default
+  GATE: topic_done(upper_housemaid, default)
+  WEIGHT: 2
+  TAG: upper_housemaid_repeat_linen
+  VOICE: violin_weary_short_v1
+  THE HOUSEMAID: "Clean linen does not carry itself uphill."
+
+TOPIC: default
+  GATE: topic_done(upper_housemaid, default)
+  WEIGHT: 1
+  TAG: upper_housemaid_repeat_silence
+  VOICE: violin_dismissive_short_v2
+  THE HOUSEMAID: "I have nothing to discuss."

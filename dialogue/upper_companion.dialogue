@@ -1,0 +1,23 @@
+NPC: upper_companion
+LOCATION: upper_residential_ridge
+SCHEDULE: morning=upper_east_pavement, midday=upper_west_pavement, evening=upper_center_road, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(upper_companion, default)
+  TAG: upper_companion_greeting
+  VOICE: violin_neutral_medium_v1
+  THE LADY'S COMPANION: "Mrs. Harcourt is resting. I am taking the air on her behalf."
+
+TOPIC: default
+  GATE: topic_done(upper_companion, default)
+  WEIGHT: 2
+  TAG: upper_companion_repeat_callers
+  VOICE: violin_cautious_short_v2
+  THE LADY'S COMPANION: "Unexpected callers are never unexpected up here."
+
+TOPIC: default
+  GATE: topic_done(upper_companion, default)
+  WEIGHT: 1
+  TAG: upper_companion_repeat_private
+  VOICE: violin_dismissive_short_v1
+  THE LADY'S COMPANION: "Household matters are private."
