@@ -1,4 +1,0 @@
-Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
-
-QA PASS: minimal route; eight opening observations; Odell response choice; deferred steward and groundskeeper; two/three copies; full save/load; protected menus; completion
-QA PASS: actual WASD traversal through gate, garden, birch grove and terrace; departure focus; hedge collision
