@@ -31,7 +31,7 @@ Included topics are appended only when their ID is absent locally. Local topics 
 | `TAG: npc_unique_scene_id` | Optional additional completion identity and timing key. Prefer globally unique tags. |
 | `TIME: 12.5` | In-game minutes charged on first completion. Use finite, nonnegative numbers; `0` is valid. |
 
-Multiple `TOPIC: default` blocks are allowed, and the first eligible block controls selection. If that block has no `WEIGHT`, it wins deterministically, preserving specific-before-fallback gate cascades. If it has `WEIGHT`, the runtime draws only from eligible defaults that explicitly have `WEIGHT`; eligible unweighted defaults remain outside the pool as later fallbacks. Keep each weighted chatter group together after any required defaults. The immediately previous weighted default is excluded whenever another eligible weighted choice exists. This repeat memory is cosmetic and is not saved. Defaults never appear as menu entries. Use weighted defaults for interchangeable exhausted/ambient remarks, and keep required evidence, notes, progression, and unique information in deterministic topics. Other topic IDs must be unique within that NPC. Sharing a topic ID across different NPCs intentionally supports `topic_count()`.
+Multiple `TOPIC: default` blocks are allowed, and the first eligible block controls selection. If that block has no `WEIGHT`, it wins deterministically, preserving specific-before-fallback gate cascades. If it has `WEIGHT`, the runtime draws only from eligible defaults that explicitly have `WEIGHT`; eligible unweighted defaults remain outside the pool as later fallbacks. Keep each weighted chatter group together after any required defaults. The immediately previous weighted default is excluded whenever another eligible weighted choice exists. This repeat memory is cosmetic and is not saved. Defaults never appear as menu entries. Use weighted defaults for interchangeable exhausted/ambient remarks, and keep required evidence, notes, progression, and unique information in deterministic topics. Other topic IDs must be unique within that NPC. Sharing a topic ID across different NPCs intentionally supports `topic_count()`. Always ensure your `TOPIC: default` cascade terminates in an un-gated fallback (or `GATE: always`), so the NPC never runs out of valid dialogue states. If an interaction reaches an NPC with zero eligible greetings and zero menu entries, the runtime fails loudly with an EOF developer card rather than silently dropping the conversation.
 
 | Step | Meaning |
 | --- | --- |
@@ -119,6 +119,19 @@ TOPIC: odell_decision
 TIME is charged once per NPC and TAG (or TOPIC if TAG is omitted). Existing legacy timed-conversation tags are also consulted, so use globally unique TAGs. An explicitly authored numeric `TIME` always wins, including `TIME: 0`. When `TIME` is omitted or nonnumeric, a `default` greeting costs **0 minutes** and every substantive topic falls back to **3 minutes**; words such as `short` do not define a duration. Replaying a completed topic does not repeatedly advance time. Give new default scenes distinct TAGs if each should have its own time charge.
 
 Keep NPC, topic, TAG, note, and evidence identities stable through prose edits: saves and other files depend on them. A later changed account should get its own note ID because existing notes are not overwritten. Saved mid-conversation playback may return control safely if the underlying content changes rather than resuming an obsolete sequence.
+
+## Fail-loud: preventing unresponsive NPC "totem poles"
+
+In a branching narrative with many gated states, an authoring oversight can cause an NPC's default greetings to be fully exhausted or gated out while no inquiry menu topics are currently eligible. In an unprotected system, interacting with such an NPC would evaluate an empty greeting, fall through to an empty menu, and silently close — returning player control while the NPC's 3D avatar remains standing mute and non-reactive ("turning into an unresponsive totem pole").
+
+To prevent broken logic from degrading silently into confusing bugs during development and play:
+- **Authoring expectation:** Every `.dialogue` file should ensure its `TOPIC: default` cascade concludes with an un-gated fallback or that menu topics remain accessible when default greetings end.
+- **Runtime safety net:** If an interaction begins (`Runtime.enter()`) and produces neither an eligible default greeting nor any available menu entries (with explicit exceptions like Odell's post-answer notebook dismissal), `scripts/chapters/chapter_one_dialogue.gd` intercepts the fail state immediately. It emits an engine `push_error()` identifying the NPC and presents an unmistakable developer warning card:
+  ```text
+  [DEVELOPER WARNING]
+  EOF Error: NPC '<npc_id>' has no available dialogue state. Please alert developers.
+  ```
+- This ensures missing dialogue gates surface visibly on screen and in console logs as actionable errors rather than mute interaction dead-ends.
 
 ## Scheduling and placement: current limitations
 

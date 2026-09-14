@@ -1,6 +1,7 @@
 extends RefCounted
 
-# Temporary pacing bridge. Replace the montage with enacted investigation later.
+# Archived pacing bridge retained below for reference and possible captures. Live
+# progression now enacts Day 2 and no longer calls draw_montage().
 const MONTAGE = [
 	["THE SECOND DAY", "Doors opened. Chairs were offered. Walter asked his questions.", 0],
 	["AT THE MORGUE", "The coroner turned a page. Walter waited with his notebook open.", 1],
@@ -63,12 +64,25 @@ func sleep(g:Node) -> void:
 		g._button("Get up",g._close)
 		g._focus_first()
 		return
-	if g.state.day < 3:
+	if g.state.day < 2:
 		g.state.day = 2
 		g.state.clock_minutes = 360.0
-		g.state.montage_index = 0
+		g.state.montage_index = -1
 		g._save_game()
-		draw_montage(g)
+		g._close()
+		g._toast("The second day. The investigation continues.",6)
+	elif g.state.day == 2 and g.state.steward_visits < 2:
+		g._panel("case","The steward has not answered me yet today.","CORWIN'S ROOM")
+		g._paragraph("Return to the smoking lounge through the service entrance.")
+		g._button("Get up",g._close)
+		g._focus_first()
+	elif g.state.day == 2:
+		g.state.day = 3
+		g.state.clock_minutes = 360.0
+		g.state.montage_index = -1
+		g._save_game()
+		g._close()
+		g._toast("The third day. The steward is expecting you.",6)
 	elif g.state.steward_visits < 3:
 		g._panel("case","The steward is expecting me.","CORWIN'S ROOM")
 		g._paragraph("Come back tomorrow, and don't bring your badge.")
@@ -107,6 +121,8 @@ func _debrief_time_natural(g:Node,town_feel:String) -> void:
 	g._button("Skip",finish.bind("skipped"))
 	g._focus_first()
 
+# Archived and intentionally unwired. Keeping this renderer preserves the stills,
+# intertitles and old save/capture reference without putting them in live play.
 func draw_montage(g:Node) -> void:
 	var index = g.state.montage_index
 	if index < 0 or index >= MONTAGE.size(): return

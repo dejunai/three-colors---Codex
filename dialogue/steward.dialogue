@@ -82,7 +82,7 @@ TOPIC: default
   EVIDENCE: steward_heard_secondhand
 
 TOPIC: default
-  GATE: day < 3 AND NOT topic_done(steward, steward_first)
+  GATE: day < 2 AND NOT topic_done(steward, steward_first)
   TAG: steward_first
   WALTER CORWIN: "I need to ask about the people who came through the service entrance."
   VOICE: trombone_haunting_medium_v2
@@ -106,6 +106,18 @@ TOPIC: default
   [The steward continues wiping down the glasses behind the counter without looking up.]
   VOICE: trombone_neutral_short_v1
   THE STEWARD: "Nothing more to tell you today, Walter."
+
+TOPIC: default
+  GATE: day >= 2 AND day < 3 AND (topic_done(steward, steward_first) OR topic_done(steward, steward_first_lead))
+  TAG: steward_second
+  TIME: 3
+  [The steward keeps one hand on the staff day book but does not open it.]
+  WALTER CORWIN: "You told me to come back another day."
+  VOICE: trombone_cautious_medium_v1
+  THE STEWARD: "And now I am telling you to come back tomorrow."
+  WALTER CORWIN: "With the same questions?"
+  VOICE: trombone_dismissive_medium_v2
+  THE STEWARD: "Come back tomorrow, and don't bring your badge."
 
 TOPIC: day_book
   GATE: steward_ready AND evidence(service_work) AND NOT topic_done(steward, day_book)

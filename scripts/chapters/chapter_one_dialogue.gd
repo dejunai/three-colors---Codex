@@ -79,6 +79,21 @@ func interact(g: Node, actor: String) -> bool:
 	var result = Runtime.enter(def, Runtime.make_context(g.state, g.state.dialogue_state), g.state.dialogue_state)
 	if actor == "barman": g.state.dialogue_state.visit_counts[def.npc] = g.state.steward_visits
 	if result.session.is_empty():
+		var entries = Runtime.menu(def, Runtime.make_context(g.state, g.state.dialogue_state)).entries
+		if entries.is_empty() and actor != "odell":
+			push_error("DIALOGUE FAIL-SAFE: NPC '%s' has no eligible default or menu topics! (EOF Error)" % def.npc)
+			result = {
+				"cards": [["[DEVELOPER WARNING]", "EOF Error: NPC '%s' has no available dialogue state. Please alert developers." % def.npc]],
+				"fork": null,
+				"effects": [],
+				"session": {"tag": "eof_error", "npc": def.npc, "topic": "eof_error", "timing": "0"},
+				"acknowledged": -1,
+				"finished": false,
+				"resumed": false,
+				"topic_index": -1
+			}
+			_begin(g, actor, -1, result)
+			return true
 		show_menu(g, actor)
 		return true
 	_begin(g, actor, int(result.get("topic_index", -1)), result)
@@ -109,7 +124,7 @@ func play_topic(g: Node, actor: String, topic_id: String) -> void:
 
 func _begin(g: Node, actor: String, index: int, result: Dictionary) -> void:
 	active = {"actor":actor, "topic_index":index, "choices":[], "consumed":0,
-		"signature": JSON.stringify(definition(actor).topics[index]).sha256_text()}
+		"signature": "" if index < 0 else JSON.stringify(definition(actor).topics[index]).sha256_text()}
 	segment = result
 	_display(g)
 	g._save_game()
@@ -158,9 +173,14 @@ func _segment_done(g: Node) -> void:
 		g._focus_first()
 		return
 	var tag = String(segment.session.tag)
+	if tag == "eof_error":
+		clear()
+		g._close()
+		return
 	if not g.state.visited.has(actor): g.state.visited.append(actor)
 	if actor == "barman":
 		if tag in ["steward_first", "steward_first_lead"] and g.state.steward_visits == 0: g.state.steward_visits = 1
+		elif tag == "steward_second" and g.state.steward_visits == 1: g.state.steward_visits = 2
 		elif tag == "steward_open": g.state.steward_visits = 3
 		g.state.dialogue_state.visit_counts["steward"] = g.state.steward_visits
 	if tag in ["almy_trust", "behan_invitation", "lay_lead", "service_work", "behan_name", "old_woman", "club_talk", "club_devotion", "pantry_lead"]:

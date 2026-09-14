@@ -61,9 +61,9 @@ TDD v6 hypothesized an input-latch fix for `main.gd`'s movement, found no suppor
    - Automated regression test `tests/phase_two_mechanics.gd` (`--qa-phase2`) verifies Phase 2 spill/combat/ammo mechanics; board honesty is covered with the dialogue/usability suites after the Social Inquiry pass.
 ## Chapter One restaging (September 8, 2026)
 
-`chapter_one_staging.gd` owns the temporary day/visit progression, sleep restriction, montage and staged interaction guards. `case_state.gd` schema 5 persists day, steward visits, lounge exit and montage index with migration from 1–4. `Town` builds the smoking-lounge interior; `Estate.sync_staging()` controls cleared bodies, the gardener's later location, the service-entrance target and the groundskeeper after lounge exit. These facts survive travel/load and are independent of Perception.
+`chapter_one_staging.gd` owns day/visit progression, sleep restrictions and staged interaction guards. Sleeping after the required Day 1 work now opens playable Day 2; the steward's former montage visit is enacted in the smoking lounge, and sleeping after that visit opens Day 3. `case_state.gd` still persists the legacy montage index so old saves can resume safely. `Town` builds the smoking-lounge interior; `Estate.sync_staging()` controls cleared bodies, the gardener's later location, the service-entrance target and the groundskeeper after lounge exit. These facts survive travel/load and are independent of Perception.
 
-`chapter_one_notebook.gd` renders detached values only, with a close callback. The existing corkboard retains linking. `montage_still.gd` draws fixed storyboard images under the protected intertitles. No collected facts are synthesized by the montage.
+`chapter_one_notebook.gd` renders detached values only, with a close callback. The existing corkboard retains linking. `montage_still.gd` and `chapter_one_staging.gd::draw_montage()` are archived in place for legacy-save compatibility and reference captures; live progression no longer calls them.
 
 `tests/staging_flow.gd` exercises real traversal, all gates, repeat visits, exact montage resume, source-call bypasses, body removal, legacy migration, notebook immutability, and continuation. See `docs/qa/STAGING_PASS.md` for verification, pacing measurements and explicit placeholders; the TDD remains separately maintained.
 

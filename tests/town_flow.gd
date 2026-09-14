@@ -80,7 +80,15 @@ func run(g:Node) -> void:
 	g._interact("lounge_exit")
 	g._travel("room",Vector3(0,0.1,6))
 	g._interact("sleep")
-	while g.page=="montage": g.content.find_children("*","Button",true,false)[0].pressed.emit()
+	assert(g.state.day==2 and g.page=="play")
+	g._travel("estate",Vector3(-10,0.1,-18))
+	g._interact("service_entrance")
+	g._interact("barman")
+	cards(g)
+	assert(g.state.steward_visits==2)
+	g._travel("room",Vector3(0,0.1,6))
+	g._interact("sleep")
+	assert(g.state.day==3 and g.page=="play")
 	g.state.coat="Plain wool coat"
 	g._travel("estate",Vector3(-10,0.1,-18))
 	g._interact("service_entrance")
@@ -90,7 +98,7 @@ func run(g:Node) -> void:
 	g._travel("room",Vector3(0,0.1,6))
 	g._interact("sleep")
 	cards(g)
-	# The steward's second conversation jumps steward_visits straight to 3 (see
+	# The steward's third conversation jumps steward_visits to 3 (see
 	# chapter_one_dialogue.gd's "steward_open" tag), so this sleep() call hits the
 	# close_day branch: its cards, then the two-question debrief, then the ending.
 	g.content.find_children("*","Button",true,false)[0].pressed.emit()

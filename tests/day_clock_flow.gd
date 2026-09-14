@@ -79,8 +79,10 @@ func run() -> void:
 	g.state.steward_visits=1
 	g._travel("room",Vector3(0,0.1,6))
 	g._interact("sleep")
-	assert(g.page=="montage")
-	while g.page=="montage": g.content.find_children("*","Button",true,false)[0].pressed.emit()
+	assert(g.page=="play" and g.state.day==2 and g.state.clock_minutes==360)
+	g.state.steward_visits=2
+	g.state.dialogue_state.visit_counts["steward"]=2
+	g._interact("sleep")
 	assert(g.state.day==3 and g.state.clock_minutes==360)
-	print("CLOCK PASS: 5x walking; paused dialogue/menus; completion-only authored minute cost; no repeat/refusal farming; district-only travel; four sun/lamp states; night hold; save migration; montage resets morning")
+	print("CLOCK PASS: 5x walking; paused dialogue/menus; completion-only authored minute cost; no repeat/refusal farming; district-only travel; four sun/lamp states; night hold; save migration; enacted day transitions reset morning")
 	quit()

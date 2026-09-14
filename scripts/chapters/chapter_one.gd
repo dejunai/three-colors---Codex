@@ -453,6 +453,8 @@ func _objective() -> String:
 				return "The first appointment with the steward remains open at the estate." + _open_lead()
 			if state.steward_visits == 0:
 				return "Return to the estate's smoking lounge through the service entrance. You can also corroborate Naomi's visit in Almy's meal ledger." if not state.evidence.has("lodging") else "Ask Almy about Naomi's work at the estate, then visit the steward through the service entrance." if not state.evidence.has("service_work") else "Ask the steward about the staff records inside the smoking lounge, through the service entrance."
+			if state.day == 2 and state.steward_visits < 2:
+				return "Continue the second day's inquiry, then return to the smoking lounge. The steward told you to come back another day."
 			if state.day < 3:
 				if state.evidence.has("curriculum_abridgment") and not state.evidence.has("reader_omission_letter"): return "Hallowell has the covering letter Abernathy mentioned. Ask at the school. You may return to your room and sleep when ready."
 				if state.dialogue_state.topic_count("crew_omission") >= 4 and not state.evidence.has("curriculum_abridgment"): return "The question about the crew has met several refusals. Return to Abernathy at the museum, or sleep when ready."

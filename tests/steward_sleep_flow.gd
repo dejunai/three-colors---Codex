@@ -32,15 +32,17 @@ func run() -> void:
 		assert(restored.evidence==g.state.evidence and restored.day==1)
 		g.state=restored
 		g.staging.sleep(g)
-		assert(g.page=="montage" and g.state.day==2)
-		while g.page=="montage":
-			for button in g.content.find_children("*","Button",true,false):
-				if button.text=="Continue":
-					button.pressed.emit()
-					break
-		assert(g.state.day==3 and g.state.steward_visits==2)
+		assert(g.page=="play" and g.state.day==2 and g.state.steward_visits==1)
+		g._travel("lounge",Vector3.ZERO,0,false)
+		g.scripted_dialogue.interact(g,"barman")
+		assert(g.scripted_dialogue.segment.session.tag=="steward_second")
+		while g.page=="dialogue": g._next_card()
+		assert(g.state.day==2 and g.state.steward_visits==2)
+		g._travel("room",Vector3.ZERO,0,false)
+		g.staging.sleep(g)
+		assert(g.state.day==3 and g.page=="play")
 		var later=g.CaseState.new()
 		assert(later.restore(g.state.pack().duplicate(true)))
 		assert(later.steward_visits==2)
-	print("STEWARD SLEEP PASS: both first conversations, incomplete conversation, save repair, montage and day-three visit count")
+	print("STEWARD SLEEP PASS: both first conversations, incomplete conversation, save repair, enacted second visit and day-three visit count")
 	quit()
