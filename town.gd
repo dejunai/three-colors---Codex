@@ -102,7 +102,6 @@ func _street() -> void:
 	box(self,Vector3(-8.6,0.85,-1.6),Vector3(0.5,0.06,0.06),"3a443a")
 	person(Vector3(-8,0,-1),"242423",false).rotation.y=1.8
 	target("behan","Speak with Father Behan",Vector3(-8,0,-1))
-	person(Vector3(12,0,14),"414f42").rotation.y=-1.4
 	# Kessler's shop, shuttered since his death, and a woman who won't give her name.
 	box(self,Vector3(-20,1.1,12),Vector3(3.2,2.2,0.3),"333a2f",true)
 	lettering("KESSLER",Vector3(-20,2.5,11.85),26)

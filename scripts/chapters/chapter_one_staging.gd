@@ -24,7 +24,7 @@ func interact(g:Node,id:String) -> bool:
 				else:
 					g._cards([
 						["THE SERVICE ENTRANCE", "A heavy oak door set into the stone of the kitchen wing. The deadbolt is thrown from the inside."],
-						["WALTER CORWIN", "Hours before dawn. The house is locked tight, and nobody inside is answering before daybreak."]
+						["WALTER CORWIN", "Hours before dawn. The service entrance is locked tight, and nobody inside is answering before daybreak."]
 					], func(): pass, "examine")
 			return true
 		"lounge_exit":
