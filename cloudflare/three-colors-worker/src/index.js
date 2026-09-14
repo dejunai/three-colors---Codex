@@ -12,6 +12,13 @@ const STANDARD_FIELDS = ["session_id", "event", "timestamp"];
 const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const MAX_BODY_BYTES = 64 * 1024;
 const MAX_EVENTS = 32;
+const INSERT_EVENT = `INSERT OR IGNORE INTO game_events (
+  event_key, session_id, event, timestamp,
+  from_world, to_world, real_seconds_elapsed, game_minutes_elapsed,
+  day, new_phase, npcs_spoken_to_this_phase,
+  real_seconds_since_day3_start, town_feel, time_natural,
+  total_real_seconds, final_day, ended_via
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 function corsHeaders(request) {
   const origin = request.headers.get("Origin") || "";
@@ -63,6 +70,24 @@ function cleanEvent(raw) {
   return Object.fromEntries([...allowed].filter((key) => Object.hasOwn(raw, key)).map((key) => [key, raw[key]]));
 }
 
+async function eventKey(event) {
+  const bytes = new TextEncoder().encode(JSON.stringify(event));
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+async function d1Statements(env, events) {
+  return Promise.all(events.map(async (event) => env.DB.prepare(INSERT_EVENT).bind(
+    await eventKey(event), event.session_id, event.event, event.timestamp,
+    event.from_world ?? null, event.to_world ?? null,
+    event.real_seconds_elapsed ?? null, event.game_minutes_elapsed ?? null,
+    event.day ?? null, event.new_phase ?? null, event.npcs_spoken_to_this_phase ?? null,
+    event.real_seconds_since_day3_start ?? null,
+    event.town_feel ?? null, event.time_natural ?? null,
+    event.total_real_seconds ?? null, event.final_day ?? null, event.ended_via ?? null,
+  )));
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") return response(request, 204, null);
@@ -95,9 +120,13 @@ export default {
     const now = new Date();
     const date = now.toISOString().slice(0, 10);
     const key = `events/${date}/${crypto.randomUUID()}.json`;
-    await env.BUCKET_ONE.put(key, JSON.stringify({ events }), {
-      httpMetadata: { contentType: "application/json" },
-    });
+    const statements = await d1Statements(env, events);
+    await Promise.all([
+      env.DB.batch(statements),
+      env.BUCKET_ONE.put(key, JSON.stringify({ events }), {
+        httpMetadata: { contentType: "application/json" },
+      }),
+    ]);
     return response(request, 204, null);
   },
 };

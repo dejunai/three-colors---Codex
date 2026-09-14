@@ -1,7 +1,14 @@
 import worker from "./src/index.js";
 
 const writes = [];
-const env = { BUCKET_ONE: { put: async (key, body, options) => writes.push({ key, body, options }) } };
+const rows = [];
+const env = {
+  BUCKET_ONE: { put: async (key, body, options) => writes.push({ key, body, options }) },
+  DB: {
+    prepare: (sql) => ({ bind: (...values) => ({ sql, values }) }),
+    batch: async (statements) => { rows.push(...statements); },
+  },
+};
 const valid = {
   events: [{
     session_id: "12345678-1234-4123-8123-123456789abc",
@@ -21,9 +28,10 @@ const post = (body) => new Request("https://example.test", {
 });
 
 let result = await worker.fetch(post(valid), env);
-if (result.status !== 204 || writes.length !== 1) throw new Error("valid batch was not stored");
+if (result.status !== 204 || writes.length !== 1 || rows.length !== 1) throw new Error("valid batch was not dual-written");
 const stored = JSON.parse(writes[0].body);
 if (stored.events[0].from_world !== "estate") throw new Error("stored payload changed");
+if (!/^[0-9a-f]{64}$/.test(rows[0].values[0]) || rows[0].values[1] !== valid.events[0].session_id) throw new Error("D1 row key or identity is invalid");
 
 result = await worker.fetch(post({ events: [{ ...valid.events[0], user_agent: "forbidden" }] }), env);
 if (result.status !== 400 || writes.length !== 1) throw new Error("unknown identifying field was accepted");
@@ -36,7 +44,8 @@ const debrief = { events: [{
   time_natural: "yes",
 }] };
 result = await worker.fetch(post(debrief), env);
-if (result.status !== 204 || writes.length !== 2) throw new Error("valid debrief was not stored");
+if (result.status !== 204 || writes.length !== 2 || rows.length !== 2) throw new Error("valid debrief was not dual-written");
+if (rows[1].values[12] !== "alive" || rows[1].values[13] !== "yes") throw new Error("debrief fields were not mapped to D1");
 result = await worker.fetch(post({ events: [{ ...debrief.events[0], town_feel: "free text" }] }), env);
 if (result.status !== 400 || writes.length !== 2) throw new Error("invalid debrief choice was accepted");
 
@@ -46,4 +55,4 @@ result = await worker.fetch(new Request("https://example.test", {
 }), env);
 if (result.status !== 204 || result.headers.get("Access-Control-Allow-Origin") !== "https://html-classic.itch.zone") throw new Error("itch.io preflight failed");
 
-console.log("WORKER PASS: strict schema, R2 write, privacy rejection, and CORS preflight");
+console.log("WORKER PASS: strict schema, idempotent D1 + R2 dual write, privacy rejection, and CORS preflight");
