@@ -1,0 +1,23 @@
+NPC: pickman_resident_05
+LOCATION: pickman_street
+SCHEDULE: morning=pickman_estate_walk, midday=pickman_boarding_walk, evening=pickman_center_bench, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(pickman_resident_05, default)
+  TAG: pickman_resident_05_greeting
+  VOICE: trombone_cautious_short_v2
+  AVERAGE JOE: "Fine morning for somebody else's business, Officer."
+
+TOPIC: default
+  GATE: topic_done(pickman_resident_05, default)
+  WEIGHT: 2
+  TAG: pickman_resident_05_repeat_news
+  VOICE: trombone_neutral_short_v1
+  AVERAGE JOE: "News travels uphill faster than a man does."
+
+TOPIC: default
+  GATE: topic_done(pickman_resident_05, default)
+  WEIGHT: 1
+  TAG: pickman_resident_05_repeat_silence
+  VOICE: trombone_dismissive_short_v2
+  AVERAGE JOE: "I said all I meant to say."
