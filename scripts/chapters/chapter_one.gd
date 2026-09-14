@@ -913,6 +913,7 @@ func _tunnel_interaction(id:String) -> bool:
 			_save_game()
 			_fact("service_recess")
 		"tunnel_record":
+			if objects.interact(self, "tunnel", id): return true
 			_cards([["THE LAST SUPPORT","The plan ends here. The stonework does not.\nWalter measures the distance twice and records both readings."],["THE PASSAGE CONTINUES","A bend carries the passage beyond the reach of his light.\nHe has a measurement to bring back. He turns toward the service stair."]],func():
 				state.discover("lower_foundation")
 				state.record("Walter measured a passage beyond the recorded foundation; the service plan is the comparison source.")

@@ -7,6 +7,17 @@ object" — out of `estate.gd`/`town.gd`/`tunnel.gd` + `story.gd`/`town_story.gd
 `chapter_one.gd`'s hardcoded dispatch, and into a real `objects/*.object` file backed by
 `object_lang.gd`/`object_runtime.gd`/`object_state.gd`.
 
+**Status as of this update: estate's 7 ids, town's 3 ids, and tunnel's 1 id are migrated and live**
+(`objects/estate.object`, `objects/town.object`, `objects/tunnel.object`, wired through
+`scripts/chapters/chapter_one_objects.gd`). Sections 2 and 4 below are now a record of
+how that happened, not a to-do — read them to understand the pattern before touching
+tunnel or any new location. Known gaps found during review, since fixed: FORK/OUTCOME
+now actually presents choices live (§2); `LABEL:` now really drives the hover text;
+`INCLUDE`d files no longer drop repeated cascade variants; `OBJECT`/`TAG`/`EVIDENCE`/
+`NOTEBOOK` ids and `TIME` are now validated at parse time. Still open: visibility is
+one-way only (§4), and unknown GATE fields/functions still parse instead of erroring
+(see `docs/OBJECT_AUTHORING.md`'s "Validation and provenance" for the current list).
+
 Do this **one hotspot at a time**, run the tests after each one, and commit. Do not try
 to migrate a whole location in one pass — the generic fallback in `chapter_one.gd`
 (`_interact()`'s `Story.SCENES[key]` lookup) is shared plumbing for every un-migrated id
@@ -47,12 +58,13 @@ Tunnel's remaining ids (`tunnel_notes`, `tunnel_descent`, `drowned_remains`,
 staggered timers, travel branching) — they are not static examine content and do not
 belong in the flat grammar at all. Don't force them in.
 
-## 2. Prerequisite: the adapter (do this once, before any hotspot)
+## 2. The adapter (already built)
 
-`ObjectRuntime` is currently only called by its own tests — nothing in the live game
-invokes `is_available()`/`enter()`/`commit_through()` yet. You need a small adapter,
-the object-system equivalent of `chapter_one_dialogue.gd`. Create
-`scripts/chapters/chapter_one_objects.gd`:
+`ObjectRuntime` doesn't call itself — something has to invoke
+`is_available()`/`enter()`/`commit_through()`/`resume()`. That's
+`scripts/chapters/chapter_one_objects.gd`, the object-system equivalent of
+`chapter_one_dialogue.gd`. Current content (for reference, and as the template for a
+`tunnel.object` adapter later):
 
 ```gdscript
 extends RefCounted
@@ -60,6 +72,12 @@ extends RefCounted
 # Chapter adapter: maps the shared object-system effects onto the existing case
 # record, mirroring chapter_one_dialogue.gd's own _sync() pattern. Authored
 # GATE/TAG/TIME/EVIDENCE/TAKE stay in .object files; this owns presentation only.
+#
+# Effects (NOTEBOOK/EVIDENCE/TAKE) commit only once the whole displayed segment
+# finishes, not per acknowledged card — this matches every other _cards()-driven
+# examine flow in this codebase, not a shortcut unique to objects. There is no
+# snapshot/restore for a mid-object save, same as those other flows; only the
+# dialogue system has that.
 const Runtime = preload("res://scripts/shared/object_runtime.gd")
 
 func definition(location: String) -> Dictionary:
@@ -68,71 +86,75 @@ func definition(location: String) -> Dictionary:
 func available(g: Node, location: String, object_id: String) -> bool:
 	return Runtime.is_available(definition(location), object_id, Runtime.make_context(g.state))
 
-# Call this from wherever the location currently checks `points.has(id)`/erases a
-# point (e.g. estate.gd's sync_staging()) instead of the ad hoc state check.
+# Also refreshes the hotspot's hover text from the currently-eligible block's
+# LABEL — placement (target()'s position) stays in GDScript, but content picks
+# the text shown for it.
 func sync_points(g: Node, location: String, ids: Array) -> void:
 	var def = definition(location)
 	var ctx = Runtime.make_context(g.state)
 	for id in ids:
-		if not Runtime.is_available(def, id, ctx): g.estate.points.erase(id)
+		if not g.estate or not g.estate.points.has(id): continue
+		if Runtime.is_available(def, id, ctx):
+			g.estate.points[id]["title"] = Runtime.label_for(def, id, ctx)
+		else:
+			g.estate.points.erase(id)
 
-# Call this from _interact() instead of falling through to Story.SCENES[key].
 func interact(g: Node, location: String, object_id: String) -> bool:
 	var def = definition(location)
 	var ctx = Runtime.make_context(g.state)
 	if not Runtime.is_available(def, object_id, ctx): return false
 	var result = Runtime.enter(def, object_id, ctx, g.state)
 	if result.session.is_empty(): return false
+	g.scripted_dialogue.clear()
 	g.card_kind = "examine"
-	_play(g, result)
+	var label = Runtime.label_for(def, object_id, ctx)
+	_play(g, result, object_id, label)
 	return true
 
-func _play(g: Node, result: Dictionary) -> void:
+func _play(g: Node, result: Dictionary, object_id: String, label: String) -> void:
 	g.dialogue.start(result.cards, g._draw_card, func():
 		Runtime.commit_through(result, g.state, result.cards.size())
-		_sync(g)
+		_sync(g, object_id)
 		if result.fork != null:
-			# TODO once a real FORK-bearing object ships: render result.fork.options
-			# as buttons, call Runtime.resume(result, choice), then _play(g, resumed).
-			g._close()
+			_present_fork(g, result, object_id, label)
 			return
 		g._close()
-		g._toast("Recorded in Walter's case file.  [ Tab ]",4)
+		g._toast("Recorded in Walter's case file.  [ Tab ]", 4)
 		g._save_game())
 
-func _sync(g: Node) -> void:
-	# Same rationale as chapter_one_dialogue.gd's _sync(): object_runtime.gd writes
-	# to object_state's own pending tallies (testable without engine references),
-	# so the adapter promotes them into the real case record here.
+func _present_fork(g: Node, result: Dictionary, object_id: String, label: String) -> void:
+	g._panel("witness", label, "WALTER'S CHOICE", false, "examine")
+	for index in result.fork.options.size():
+		var choice_label = String(result.fork.options[index])
+		g._button('"' + choice_label + '"', func(): _choose(g, result, index, object_id, label))
+	g._focus_first()
+
+func _choose(g: Node, result: Dictionary, index: int, object_id: String, label: String) -> void:
+	var resumed = Runtime.resume(result, index)
+	if resumed.is_empty(): return
+	_play(g, resumed, object_id, label)
+
+func _sync(g: Node, object_id: String = "") -> void:
+	if not object_id.is_empty() and not g.state.visited.has(object_id):
+		g.state.visited.append(object_id)
 	for id in g.state.object_state.evidence:
 		if g.facts.has(id): g.state.discover(id)
 	for text in g.state.object_state.facts.values(): g.state.record(text)
 ```
 
-Then wire it into `chapter_one.gd`:
+It's already wired into `chapter_one.gd`:
 
 ```gdscript
-var objects = preload("res://scripts/chapters/chapter_one_objects.gd").new()
+var objects=preload("res://scripts/chapters/chapter_one_objects.gd").new()
 ```
 
-(next to the existing `var scripted_dialogue = ...` / `var staging = ...` declarations),
-and in `_interact()`, add a call **before** the generic `Story.SCENES[key]` fallback —
-right alongside the existing `staging.interact(...)`/`scripted_dialogue.interact(...)`
-lines:
-
-```gdscript
-func _interact(id:String) -> void:
-	if staging.interact(self,id): return
-	if scripted_dialogue.interact(self,id): return
-	if objects.interact(self,"estate",id): return   # <- add this
-	if _tunnel_interaction(id): return
-	if _town_interaction(id): return
-```
-
-Only pass `"estate"` for ids you've actually migrated for that location — see step 4.
-Don't route every id through `objects.interact()` yet; it'll just return `false` for
-anything without a matching `.object` file, which is safe, but there's no reason to
-call it for ids you haven't authored.
+and called from `_interact()` (before the generic `Story.SCENES[key]` fallback),
+`_town_interaction()`/`_town_observation()`, and every `estate.sync_staging(state)` call
+site (see `git show` on commit `b4aee78` for the exact diff if you need the full list of
+call sites for a new location). For a brand-new location, follow that same shape: one
+`objects.interact(self, "<location>", id)` line ahead of the old fallback, one
+`objects.sync_points(self, "<location>", [...ids...])` line next to each
+`sync_staging()`-equivalent call.
 
 ## 3. Per-hotspot recipe
 
@@ -192,11 +214,18 @@ For each id you're migrating:
    with `objects.sync_points(g, "<location>", ["<id>"])` (or fold several ids into one
    call). Confirm the `GATE` you wrote in step 3 reproduces the same visibility.
 
-7. **Remove the old entries** — delete `id` from `Story.FACTS`/`Story.SCENES` (or the
-   town/tunnel equivalent) and from the `"examine" if id in [...]` list in
-   `chapter_one.gd`, once you've confirmed the migrated version works. Don't delete
-   before confirming; a stale-but-unreachable old entry is harmless, a half-migrated id
-   with no content anywhere is a silent dead hotspot.
+7. **Remove the old `SCENES` entry only — leave `FACTS` alone.** Delete `id` from
+   `Story.SCENES`/`TownStory.SCENES` (or the tunnel equivalent) once you've confirmed
+   the migrated version works; it's dead code once `objects.interact()` intercepts the
+   id first. **Do not delete the matching `FACTS` entry.** The adapter's `_sync()` only
+   mirrors newly-discovered evidence into `case_state.evidence` when `g.facts.has(id)`
+   is true, and `g.facts` is still assembled from `Story.FACTS`/`TownStory.FACTS`/
+   `TunnelStory.FACTS` (`chapter_one.gd::start()`). Deleting a migrated id's `FACTS`
+   entry silently stops that evidence from ever reaching the playable case file. Leave
+   `FACTS` in place until the object format grows its own evidence title/body/source
+   metadata and registers it without going through `g.facts` at all. Also trim the id
+   out of the `"examine" if id in [...]` list in `chapter_one.gd` once its `SCENES`
+   entry is gone, so the list stays an accurate "not yet migrated" inventory.
 
 8. **Test.** At minimum: `godot --headless --path . --script res://tests/object_lang_flow.gd`
    stays green (unaffected, but cheap to confirm), then the relevant `--qa-*` flow for
@@ -282,10 +311,11 @@ if state.world == "estate": objects.sync_points(self, "estate", ["wounds","watch
 and delete the corresponding `if st.rose_bodies_removed: for id in [...]: points.erase(id)`
 block from `sync_staging()` itself once this replaces it.
 
-**Once confirmed working**, delete `"wounds"` from `Story.FACTS`, `Story.SCENES`, and
-from the `["wounds","eight","knife","watch","gas","register","shoes"]` list at
-`chapter_one.gd`'s old dispatch site (trim the list down as each id migrates; once it's
-empty, delete the whole fallback branch).
+**Once confirmed working**, delete `"wounds"` from `Story.SCENES` only (leave
+`Story.FACTS["wounds"]` in place — see step 7) and trim it out of the
+`["wounds","eight","knife","watch","gas","register","shoes"]` list at `chapter_one.gd`'s
+old dispatch site as each id migrates; once that list is empty, delete the whole
+fallback branch (but `g.facts`'s three-way `FACTS` merge stays regardless).
 
 ## 5. Suggested order
 

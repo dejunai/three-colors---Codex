@@ -33,15 +33,16 @@ static func load_npc(path: String) -> Dictionary:
 	var source = file.get_as_text()
 	var parsed = Lang.parse(source)
 	_validate_voice_cues(source, parsed.errors)
-	var known: Dictionary = {}
-	for topic in parsed.topics: known[topic.id] = true
+	var local_ids: Dictionary = {}
+	for topic in parsed.topics: local_ids[topic.id] = true
 	for include_value in parsed.get("includes", []):
 		var include_path = include_value if include_value.begins_with("res://") else "res://dialogue/" + include_value
 		var included = load_npc(include_path)
 		for topic in included.topics:
-			if not known.has(topic.id):
-				parsed.topics.append(topic)
-				known[topic.id] = true
+			# Every repeated block for a non-shadowed id is appended, not just the
+			# first — repeated `TOPIC: default` blocks are a legitimate cascade, so
+			# truncating to one variant would silently break an included cascade.
+			if not local_ids.has(topic.id): parsed.topics.append(topic)
 	# Cookbook/shared files use braced placeholder identities and are never live
 	# residents. Do not turn their deliberately incomplete examples into warnings.
 	if not String(parsed.get("npc", "")).begins_with("{"):

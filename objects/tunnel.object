@@ -1,0 +1,9 @@
+LOCATION: tunnel
+
+OBJECT: tunnel_record
+  GATE: always
+  LABEL: "Examine the lower foundation"
+  THE LAST SUPPORT: "The plan ends here. The stonework does not.\nWalter measures the distance twice and records both readings."
+  THE PASSAGE CONTINUES: "A bend carries the passage beyond the reach of his light.\nHe has a measurement to bring back. He turns toward the service stair."
+  NOTEBOOK: lower_foundation_note | "Walter measured a passage beyond the recorded foundation; the service plan is the comparison source."
+  EVIDENCE: lower_foundation

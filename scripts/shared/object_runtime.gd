@@ -32,15 +32,16 @@ static func load_location(path: String) -> Dictionary:
 		_cache[path] = empty
 		return empty
 	var parsed = Lang.parse(file.get_as_text())
-	var known: Dictionary = {}
-	for i in parsed.objects.size(): known[parsed.objects[i].id] = true
+	var local_ids: Dictionary = {}
+	for obj in parsed.objects: local_ids[obj.id] = true
 	for include_value in parsed.get("includes", []):
 		var include_path = include_value if include_value.begins_with("res://") else "res://objects/" + include_value
 		var included = load_location(include_path)
 		for obj in included.objects:
-			if not known.has(obj.id):
-				parsed.objects.append(obj)
-				known[obj.id] = true
+			# Every repeated block for a non-shadowed id is appended, not just the
+			# first — repeated OBJECT ids are the core state-cascade mechanism, so
+			# truncating to one variant would silently break an included cascade.
+			if not local_ids.has(obj.id): parsed.objects.append(obj)
 	for error in parsed.errors:
 		push_error("object parse error (%s:%d): %s" % [path, error.line, error.message])
 	_cache[path] = parsed
@@ -72,13 +73,32 @@ static func make_context(state) -> Dictionary:
 	}
 
 static func is_available(def: Dictionary, object_id: String, ctx: Dictionary) -> bool:
-	return _select(def, object_id, ctx) != null
+	return select(def, object_id, ctx) != null
 
-static func _select(def: Dictionary, object_id: String, ctx: Dictionary):
+# Public: the adapter also uses this to drive a hotspot's hover LABEL, since
+# placement (target()'s title) lives in GDScript but content picks the text.
+static func select(def: Dictionary, object_id: String, ctx: Dictionary):
 	for obj in def.objects:
 		if obj.id != object_id or obj.steps.is_empty(): continue
 		if Lang.evaluate(obj.gate, ctx): return obj
 	return null
+
+# Every distinct id this file authors at least one populated block for,
+# regardless of current GATE state. Lets a caller tell "this id belongs to no
+# OBJECT block here, not our concern" apart from "this id is ours, but nothing
+# is eligible right now" — see chapter_one_objects.gd's fail-loud guard, which
+# only the second case should trigger.
+static func known_ids(def: Dictionary) -> Dictionary:
+	var ids: Dictionary = {}
+	for obj in def.objects:
+		if not obj.steps.is_empty(): ids[obj.id] = true
+	return ids
+
+static func label_for(def: Dictionary, object_id: String, ctx: Dictionary) -> String:
+	var obj = select(def, object_id, ctx)
+	if obj == null: return ""
+	var label = String(obj.get("label", ""))
+	return label if not label.is_empty() else object_id.capitalize()
 
 static func _empty_result() -> Dictionary:
 	return {"cards": [], "fork": null, "effects": [], "session": {}, "acknowledged": -1, "finished": false, "resumed": false}
@@ -88,7 +108,7 @@ static func _empty_result() -> Dictionary:
 static func enter(def: Dictionary, object_id: String, ctx: Dictionary, state) -> Dictionary:
 	var location = String(def.get("location", ""))
 	state.object_state.examine(location, object_id)
-	var selected = _select(def, object_id, ctx)
+	var selected = select(def, object_id, ctx)
 	if selected == null: return _empty_result()
 	return render(location, selected, state)
 

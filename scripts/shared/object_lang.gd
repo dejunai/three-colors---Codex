@@ -81,6 +81,8 @@ static func parse(text: String) -> Dictionary:
 			i += 1
 			continue
 		var object_id = entry.text.substr(7).strip_edges()
+		if not object_id.is_valid_identifier():
+			errors.append({"line": entry.line, "message": "OBJECT id must be a simple lowercase_snake_case identifier"})
 		var j = i + 1
 		var body: Array = []
 		while j < logical.size() and logical[j].indent > 0:
@@ -120,9 +122,14 @@ static func _parse_object_body(body: Array, errors: Array) -> Dictionary:
 			k += 1
 		elif text.begins_with("TAG:"):
 			tag = text.substr(4).strip_edges()
+			if not tag.is_empty() and not tag.is_valid_identifier():
+				errors.append({"line": body[k].line, "message": "TAG must be a simple identifier"})
 			k += 1
 		elif text.begins_with("TIME:"):
-			timing = text.substr(5).strip_edges()
+			var raw_time = text.substr(5).strip_edges()
+			if not raw_time.is_empty() and (not raw_time.is_valid_float() or float(raw_time) < 0.0 or not is_finite(float(raw_time))):
+				errors.append({"line": body[k].line, "message": "TIME must be a finite number greater than or equal to zero"})
+			timing = raw_time
 			k += 1
 		elif text.begins_with("LABEL:"):
 			label = _quoted(text.substr(6))
@@ -147,7 +154,11 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 			steps.append({"kind": "beat", "text": _strip_brackets(line)})
 			k += 1
 		elif line.begins_with("EVIDENCE:"):
-			steps.append({"kind": "evidence", "id": line.substr(9).strip_edges()})
+			var evidence_id = line.substr(9).strip_edges()
+			if not evidence_id.is_valid_identifier():
+				errors.append({"line": entry.line, "message": "EVIDENCE must name a simple identifier"})
+			else:
+				steps.append({"kind": "evidence", "id": evidence_id})
 			k += 1
 		elif line.begins_with("TAKE:"):
 			var item_id = line.substr(5).strip_edges()
@@ -172,7 +183,10 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 				var separator = payload.find("|")
 				note_id = payload.substr(0, separator).strip_edges()
 				payload = payload.substr(separator + 1).strip_edges()
-			steps.append({"kind": "notebook", "id": note_id, "text": _quoted(payload)})
+			if not note_id.is_empty() and not note_id.is_valid_identifier():
+				errors.append({"line": entry.line, "message": "NOTEBOOK id must be a simple identifier"})
+			else:
+				steps.append({"kind": "notebook", "id": note_id, "text": _quoted(payload)})
 			k += 1
 		elif line.begins_with("CHOICE:"):
 			var label = _quoted(line.substr(7))

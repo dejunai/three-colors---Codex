@@ -36,6 +36,15 @@ func _run() -> void:
 	var second_look = Runtime.enter(knife_def, "knife", Runtime.make_context(state), state)
 	assert(second_look.cards[0][1] == "Nothing new now.", "GATE cascade must now select the second block")
 
+	# --- known_ids(): distinguishes "not ours" from "ours, but unavailable" —
+	# the fail-loud guard in chapter_one_objects.gd depends on this distinction
+	# so a correctly-absent hotspot (never clickable) never trips a false alarm.
+	var known = Runtime.known_ids(knife_def)
+	assert(known.has("knife") and not known.has("nonexistent_id"), "known_ids must list every authored id, not just currently-eligible ones")
+	var broken_src = "LOCATION: estate\nOBJECT: drawer\n  GATE: never\n  WALTER CORWIN: \"Unreachable.\"\n"
+	var broken_def = Lang.parse(broken_src)
+	assert(Runtime.known_ids(broken_def).has("drawer") and not Runtime.is_available(broken_def, "drawer", Runtime.make_context(CaseState.new())), "an authored-but-currently-ineligible id must still be 'known' even though it is not available")
+
 	# --- never permanently excludes, regardless of state ---
 	var never_src = "LOCATION: estate\nOBJECT: sealed\n  GATE: never\n  WALTER CORWIN: \"Unreachable.\"\n"
 	var never_def = Lang.parse(never_src)
