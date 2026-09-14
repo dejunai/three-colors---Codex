@@ -1,0 +1,23 @@
+NPC: waterfront_fish_porter
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_east_quay, midday=waterfront_mideast_quay, evening=closed, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(waterfront_fish_porter, default)
+  TAG: waterfront_fish_porter_greeting
+  VOICE: trombone_neutral_medium_v1
+  THE FISH PORTER: "The catch goes to the stores before the sun warms it."
+
+TOPIC: default
+  GATE: topic_done(waterfront_fish_porter, default)
+  WEIGHT: 2
+  TAG: waterfront_fish_porter_repeat_crates
+  VOICE: trombone_weary_short_v1
+  THE FISH PORTER: "Crates get heavier every time somebody stops me."
+
+TOPIC: default
+  GATE: topic_done(waterfront_fish_porter, default)
+  WEIGHT: 1
+  TAG: waterfront_fish_porter_repeat_move
+  VOICE: trombone_dismissive_short_v2
+  THE FISH PORTER: "Nothing to discuss. Make a lane."
