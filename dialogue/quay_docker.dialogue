@@ -76,6 +76,22 @@ TOPIC: naomi_sighting
   NOTEBOOK: docker_naomi_sighting | "The quay docker saw Naomi Freeman three or four days before the inquiry. She was asking about tidal drift records and the mud calendar. He directed her to Peake. He noted she was always writing."
   EVIDENCE: naomi_quay_inquiry
 
+# Redundant-carrier backup: if mr_vale is missed, this supplies the same
+# EVIDENCE so old_lay and records can still open downstream.
+TOPIC: the_office_correction
+  GATE: evidence(naomi) AND NOT evidence(quay_inquiry)
+  TAG: quay_docker_office_correction
+  LABEL: "Ask if he heard how the quay office logged Naomi's visit"
+  TIME: 4
+  WALTER CORWIN: "Naomi Freeman came through the quay office. Did anyone mention how it went?"
+  VOICE: trombone_neutral_medium_v1
+  QUAY DOCKER: "Heard it through the office window, matter of fact. The new clerk wrote her down as an 'inquiry.'"
+  [He coils a length of hemp line over his forearm, unhurried.]
+  VOICE: trombone_cautious_medium_v1
+  QUAY DOCKER: "Vale came out from the back and made him cross it out. Told him to write 'claim' instead, and to spell her name correctly while he was at it.\nVale doesn't correct a clerk for nothing."
+  NOTEBOOK: quay_docker_office_correction_1 | "Quay docker overheard the clerk log Naomi Freeman's visit as an 'inquiry' before Vale corrected the entry to 'claim.'"
+  EVIDENCE: quay_inquiry
+
 TOPIC: estate_freight_carts
   GATE: evidence(estate_freight)
   TAG: quay_docker_freight

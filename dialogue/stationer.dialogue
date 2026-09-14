@@ -106,6 +106,22 @@ TOPIC: naomi_supplies
   NOTEBOOK: stationer_naomi_linen | "Naomi Freeman bought drafting linen and asked for transfer wax to take an impression of an engraved brass plate on an old boiler without damaging patina."
   EVIDENCE: drafting_linen_diagram
 
+# Redundant-carrier backup: if gazette_editor is missed, this supplies the same
+# EVIDENCE so downstream gates (press_the_arithmetic, correction_terms) still open.
+TOPIC: halleck_arithmetic
+  GATE: evidence(eight) AND NOT evidence(press_suppression)
+  TAG: stationer_halleck_arithmetic
+  LABEL: "Ask if Finch has heard how the Gazette explains the six count"
+  TIME: 5
+  WALTER CORWIN: "Eight people died in that garden. The Gazette prints six."
+  VOICE: trombone_neutral_medium_v2
+  MR. FINCH: "Halleck settles his ink account here every first of the month. He said something of the sort to me directly."
+  [He sets down the guillotine shear, unhurried.]
+  VOICE: trombone_bureaucratic_long_v1
+  MR. FINCH: "Six subscribers, he called it. Said a transient's obituary doesn't sell newsprint, and a paper that can't sell newsprint can't pay its ink account.\nI didn't ask him to justify it twice. A shopkeeper doesn't quarrel with a paying customer's arithmetic."
+  NOTEBOOK: stationer_halleck_arithmetic_1 | "Mr. Finch reports Halleck settled his ink account with the same reasoning given Walter directly: six subscribers count, a transient's death does not sell newsprint."
+  EVIDENCE: press_suppression
+
 # Shared inquiry: four different completed refusals make the question travel.
 TOPIC: crew_omission
   GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(stationer, crew_omission)

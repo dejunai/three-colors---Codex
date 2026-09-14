@@ -1,0 +1,28 @@
+# Codex's corrections to TDD v31 — reported, not yet merged
+
+**2026-09-14. Reported by Codex, relayed by the author to Claude (Cowork) with the explicit instruction: record this, but do not fold it into the TDD.** Per the TDD's own standing rule, nothing here should be written into that document until it is independently confirmed against source — these are Codex's claims about its own prior work, not yet re-verified the way the TDD's existing "confirmed against source and test" passes were. This file is the holding area until that verification happens and a proper TDD revision (v33+) can fold in whatever survives it.
+
+One item below (marked) was checked directly during this pass via a plain directory listing, without a `device_bash` shell — everything else is recorded as reported, unverified.
+
+## Codex's list, verbatim in substance
+
+- **Line 31** — wrong. Says game-side telemetry wiring is still open. Codex says that wiring is complete, configured, tested, and documented later in item 15 (i.e., v31's own Part Six item 15 already contradicts its Part One summary).
+- **Line 103** — describes the town as hub-and-spoke pocket spaces. Codex says business, upper, lower, waterfront, and Pickman exteriors are now contiguous; interiors remain separate scenes.
+- **Lines 239–244** — still describe telemetry as "not started" and an open architecture decision. Codex says these paragraphs should be rewritten as historical rationale or removed outright — the feature is deployed.
+- **Line 249** — incorrect provenance. Codex says commit `b39598d` ("Verify and guard player debrief") was Codex's own work in this task, though git may record the repository owner's configured identity as the commit author.
+- **Line 307** — says no Web export has been produced for either contiguous-town phase. Codex says this conflicts with line 128 and commit `085299d`, which contains the new Web export.
+- **Line 312** — overstates "LIVE end to end." Codex says the Worker, R2 write path, CORS responses, Godot logger, and debrief are tested, but a real Web-export playthrough has not yet been observed depositing a complete session — the closing sentence already admits this, but the opening label should read "deployed and transport-tested" until an actual tester session appears.
+- **Line 213** — says the repository's own parallel TDD is currently at v18. Codex says that lineage statement is obsolete now that the document under review is v31.
+- **Lines 105 and 119–120** — repeat the older 35-NPC / 217-topic / 455-line catalog figures. Codex says the repository now contains 42 `.dialogue` files at `HEAD`, and those figures need to be rerun before being presented as current.
+- **Line 209** — says every `.dialogue` file was, at the time Codex reported this, deleted and replaced by an untracked `.dialogue.txt` equivalent in the working tree, calling the statement true of `HEAD` but false of the working directory, and flagging it as possibly a temporary extension-masquerade not meant to be committed. **Checked directly this pass (2026-09-14, via a plain folder listing, not git status):** the working `dialogue/` folder currently shows ordinary `.dialogue` files only — 41 entries by direct count, no `.dialogue.txt` files present, including the eight files this session edited moments earlier, all confirmed as plain `.dialogue`. Whatever state Codex was describing is not the state of the directory as of this listing. **Resolved by the author, 2026-09-14:** the `.dialogue.txt` files are the author's own temporary local workaround, made because some other tool in the author's chain doesn't accept `.dialogue` as a valid extension. It's intentionally temporary and not meant to be committed — not a defect, and not a Codex accuracy question. Closed.
+- **Line 307 (Stage 1 status)** — stale beyond the Web-export sentence. Codex says the complete town baseline and both contiguous phases are finished; Stage 1 should be marked complete, with Web profiling separated out as its one remaining measurement task.
+- **Line 308** — says scheduled-life population has not started. Codex says that's too absolute given the lower-district and speakeasy NPC additions; the larger "life stampede" remains pending, but initial population has begun.
+- **Line 278** — says no eavesdropping system exists. Codex says the broader proximity-based NPC-to-NPC system genuinely does not exist, but a fixed speakeasy-bar eavesdropping interaction does — the TDD should distinguish "no general system" from "no eavesdropping content of any kind."
+
+## Codex's own caveat
+
+Codex says the telemetry and debrief implementation details in lines 247–253 and item 15 are otherwise accurate as written, including Worker version `87e1bd4e-9646-468a-b3be-1397534feb4b`, R2 storage, field allowlisting, debrief deduplication, and the completed-game bed guard — i.e., this isn't a wholesale rejection of that section, just the surrounding summary language elsewhere in the document.
+
+## Before this becomes a TDD revision
+
+Each remaining item needs the same treatment the TDD gives everything else: a source read (dialogue catalog test rerun for the NPC/topic/line counts; `git log`/`git show` for the two commit-provenance claims; a look at whichever file currently documents the repo's own parallel TDD lineage) rather than folding Codex's report straight in. This session doesn't have a `device_bash` shell on the author's machine, so none of the git-dependent items could be checked this pass. The `.dialogue`/`.dialogue.txt` item is the one exception — resolved above by the author directly, no further verification needed.

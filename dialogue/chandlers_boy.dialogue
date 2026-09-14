@@ -76,6 +76,22 @@ TOPIC: island_delivery
   NOTEBOOK: chandlers_boy_island | "A man in a good coat made a cash purchase at the chandlery yard eight weeks ago — two crates of sperm oil and long tapers, not household grade. The transaction was not entered on account. Its destination is unknown; the boy reports no island delivery."
   EVIDENCE: chandlery_island_delivery
 
+# Redundant-carrier backup: if quay_docker is missed, this supplies the same
+# EVIDENCE Naomi's waterfront inquiry relies on downstream.
+TOPIC: the_woman_with_the_notebook
+  GATE: evidence(naomi) AND NOT evidence(naomi_quay_inquiry)
+  TAG: chandlers_boy_woman_notebook
+  LABEL: "Ask if he saw a woman asking about the tides"
+  TIME: 4
+  WALTER CORWIN: "A woman asking questions about tidal drift, the mud calendar. Did you see her near the chandlery?"
+  VOICE: violin_neutral_medium_v1
+  CHANDLER'S BOY: "She stopped at our door first, before she went down to the dockers."
+  [He sets down a coil of lamp wick, thinking back.]
+  VOICE: violin_weary_medium_v2
+  CHANDLER'S BOY: "Asked Mr. Hitch who'd know the old drift records, the ones from before the harbor office kept them proper.\nHe sent her on to Peake. She wrote his name down before she'd even finished thanking him."
+  NOTEBOOK: chandlers_boy_woman_notebook_1 | "The chandler's boy saw Naomi Freeman at the chandlery before the dockers, asking after old tidal drift records and being directed to Peake — matching the docker's own account."
+  EVIDENCE: naomi_quay_inquiry
+
 TOPIC: cash_buyer_details
   GATE: evidence(chandlery_island_delivery) AND NOT topic_done(chandlers_boy, cash_buyer_details)
   TAG: chandlers_boy_buyer

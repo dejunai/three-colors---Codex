@@ -63,3 +63,19 @@ TOPIC: night_freight
   THE DRAYMAN: "Heard the iron rims on the frost gravel. Iron tires, heavy load, two-horse team.\n\nMoving fast, too. No lantern hanging from the axle.\nA man who hauls without a lantern on a turnpike isn't delivering flour."
   NOTEBOOK: drayman_night_wagon | "Giles the Drayman heard an unlit two-horse cart with iron tires racing toward the estate ridge past midnight three nights ago."
   EVIDENCE: unlit_night_cart
+
+# Redundant-carrier backup: if mr_vale is missed, this supplies the same
+# EVIDENCE the estate's freight discrepancy relies on downstream.
+TOPIC: the_kitchen_stone
+  GATE: evidence(service_work) AND NOT evidence(estate_freight)
+  TAG: drayman_kitchen_stone
+  LABEL: "Ask if he hauled stone to the estate kitchen wing"
+  TIME: 5
+  WALTER CORWIN: "Someone billed two carts of kitchen stone to the estate. Was that your team?"
+  VOICE: trombone_cautious_medium_v1
+  THE DRAYMAN: "Wasn't my axles, Walter, and that's the part that sticks with me."
+  [He sets down a trace-chain, frowning at the memory.]
+  VOICE: trombone_haunting_medium_v1
+  THE DRAYMAN: "Everything heavy in this town moves through me or through Vale's manifests. That job did neither.\nThree carts went up that ridge road one morning and not one of them was mine or hired through the yard. Private drivers, private horses. I asked around after. Nobody local hauled it."
+  NOTEBOOK: drayman_kitchen_stone_1 | "Giles the drayman confirms the estate's stone deliveries bypassed both his own team and the regular hire yard entirely — three carts, none locally hauled."
+  EVIDENCE: estate_freight
