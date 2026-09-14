@@ -644,6 +644,10 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	if destination == "estate":
 		estate.sync_staging(state)
 		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes"])
+	elif destination == "tunnel":
+		objects.sync_points(self, "tunnel", ["tunnel_record"])
+	else:
+		objects.sync_points(self, "town", ["gazette","lodging","exemption"])
 	if estate and estate.has_method("sync_actors"):
 		estate.sync_actors(state)
 	elif destination=="town" and state.evidence.has("old_woman") and estate.has_method("dismiss_old_woman"):

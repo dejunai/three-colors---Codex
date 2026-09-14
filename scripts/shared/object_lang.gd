@@ -69,7 +69,13 @@ static func parse(text: String) -> Dictionary:
 		var key = entry.text.substr(0, colon).strip_edges().to_upper()
 		var value = entry.text.substr(colon + 1).strip_edges()
 		match key:
-			"LOCATION": location = value
+			"LOCATION":
+				location = value
+				# The cookbook's {generated} placeholder is deliberately not a real
+				# identifier — braces mark it for a human to replace, same convention
+				# as dialogue's NPC header; skip validation only for that shape.
+				if not location.is_empty() and not location.contains("{") and not location.is_valid_identifier():
+					errors.append({"line": entry.line, "message": "LOCATION must be a simple lowercase_snake_case identifier"})
 			"INCLUDE": includes.append(value)
 			_: errors.append({"line": entry.line, "message": "Unknown header '%s'" % key})
 		i += 1
