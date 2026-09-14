@@ -118,6 +118,11 @@ static func make_context(state, dstate) -> Dictionary:
 			"npc_done": func(args): return dstate.topic_done(args[0], "default") if args.size() > 0 else false,
 			"outcome": func(args): return dstate.has_outcome(args[0]) if args.size() > 0 else false,
 			"outcome_is": func(args): return dstate.outcome_is(args[0], args[1]) if args.size() > 1 else false,
+			# Symmetric with object_runtime.gd's make_context(): lets a dialogue GATE
+			# react to the object system (e.g. an NPC who notices a taken item).
+			"object_done": func(args): return state.object_state.object_done(args[0], args[1]) if args.size() > 1 else false,
+			"object_count": func(args): return state.object_state.object_count(args[0]) if args.size() > 0 else 0,
+			"taken": func(args): return state.has_item(args[0]) if args.size() > 0 else false,
 		},
 		"fields": {
 			"coat": func(): return state.coat,
@@ -125,6 +130,9 @@ static func make_context(state, dstate) -> Dictionary:
 			"phase": func(): return DayClock.phase(state.clock_minutes),
 			"estate_complete": func(): return state.estate_complete,
 			"steward_ready": func(): return state.steward_ready(),
+			"rose_bodies_removed": func(): return state.rose_bodies_removed,
+			"birch_bodies_removed": func(): return state.birch_bodies_removed,
+			"lounge_exited": func(): return state.lounge_exited,
 		}
 	}
 

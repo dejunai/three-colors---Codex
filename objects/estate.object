@@ -1,0 +1,68 @@
+LOCATION: estate
+
+OBJECT: wounds
+  GATE: NOT rose_bodies_removed
+  LABEL: "Examine the six men"
+  THE ROSE GARDEN: "Six men in evening dress, arranged in a half-circle.\n\nWalter knows five of the faces. Judge Wexford. Dr. Fenn. Corliss, the district attorney. Pruitt. Kessler.\n\nThe sixth means nothing to him."
+  EXAMINE · JUDGE WEXFORD: "A wound above the bridge of the nose.\nNo powder scorching.\n\nWalter turns the head.\nThere is no exit wound."
+  WALTER'S NOTEBOOK: "The other five present the same condition.\n\nNo weapon in any visible hand.\nCause and sequence unestablished.\n\nThe observation is exact. It is the explanation that is missing."
+  NOTEBOOK: wounds_note | "Six men in evening dress. A small wound above the bridge of each nose. No corresponding wound behind the skull. No powder marks on the collars."
+  EVIDENCE: wounds
+
+OBJECT: watch
+  GATE: NOT rose_bodies_removed
+  LABEL: "Examine the sixth man's effects"
+  THE SIXTH MAN: "No calling card. No monogram. No wallet.\n\nA watch, stopped at 03:17. Its maker's plate has been filed smooth."
+  WALTER'S NOTEBOOK: "Unknown male, approximately fifty to sixty.\nClub dress. Identity unrecovered.\n\nAsk the steward. Then the tailor. A blank is still something to investigate."
+  NOTEBOOK: watch_note | "The unidentified man's watch is stopped at seventeen minutes past three. The maker's plate has been filed smooth. This alone does not establish the time of death."
+  EVIDENCE: watch
+
+OBJECT: knife
+  GATE: NOT rose_bodies_removed
+  LABEL: "Examine the ground beneath the hedge"
+  BENEATH THE HEDGE: "A knife with a butcher's grip. Walter has seen its like in Kessler's shop.\n\nThe blade is too clean for the earth around it."
+  EVIDENCE ENVELOPE: "He wraps the handle before lifting it.\n\nLocation recorded. Blade preserved for examination.\nAn object can be useful before it has agreed to explain itself."
+  NOTEBOOK: knife_note | "A butcher's knife beneath a hedge root. The blade has been wiped. Its presence is recorded; its use has not been established."
+  EVIDENCE: knife
+
+OBJECT: eight
+  GATE: NOT birch_bodies_removed AND evidence(naomi) AND object_done(estate, eight)
+  LABEL: "Examine the two figures beyond the birches"
+  BEYOND THE BIRCHES: "The woman and the boy lie exactly where they were. No one has come for them yet — but Walter no longer has to call her nothing."
+  WALTER CORWIN: "Naomi Freeman.\n\nThe boy still has no name on any list Walter has seen."
+  WALTER'S NOTEBOOK: "Naomi Freeman, identified. Her son, unidentified male, minor, remains so.\n\nEight people. Two scenes. One investigation — one name closer to whole."
+  NOTEBOOK: eight_identified_note | "Naomi Freeman, identified. Her son, unidentified male, minor, remains so.\n\nEight people. Two scenes. One investigation — one name closer to whole."
+  EVIDENCE: eight
+
+OBJECT: eight
+  GATE: NOT birch_bodies_removed
+  LABEL: "Examine the two figures beyond the birches"
+  BEYOND THE BIRCHES: "A woman and a boy lie apart from the club members.\n\nSomeone has brought two more sheets. These deaths were not clean. Walter leaves the coverings in place."
+  WALTER CORWIN: "No names yet.\n\nThat is a fact about the investigation.\nIt is not a fact about their lives."
+  WALTER'S NOTEBOOK: "Unidentified female. Unidentified male, minor.\nRelationship unconfirmed.\n\nEight people. Two scenes. One investigation."
+  NOTEBOOK: eight_note | "Six men in the rose garden. A woman and a boy beyond the birches. Eight dead at two adjacent scenes. Their relationship and identities remain unconfirmed."
+  EVIDENCE: eight
+
+OBJECT: shoes
+  GATE: NOT birch_bodies_removed
+  LABEL: "Examine the belongings beside the bodies"
+  THE BELONGINGS: "The boy's shoes have been resoled twice.\nThe woman's coat is too light for this hour.\n\nThese are the possessions of people who expected to need them again."
+  A POSSIBLE INQUIRY: "Ask at the boardinghouses on Pickman Street.\nSomeone may have given them a room or a meal.\n\nWalter writes it down before the thought can become somebody else's responsibility."
+  NOTEBOOK: shoes_note | "The boy's shoes have been resoled. The woman's coat is too light for the season. A boardinghouse inquiry may identify them; clothing cannot establish that nobody will miss them."
+  EVIDENCE: shoes
+
+OBJECT: gas
+  GATE: always
+  LABEL: "Examine the terrace windows"
+  THE TERRACE WINDOWS: "The panes facing the garden are intact.\nWalter runs a finger along the sill. Dust, damp, no soot."
+  WALTER'S NOTEBOOK: "No blast damage visible.\nNo burns on the nearest bodies.\n\nIf this was a gas accident, the scene has kept remarkably little of it."
+  NOTEBOOK: gas_note | "Windows facing the garden remain intact. Neither the nearby stone nor the clothing shows scorching. The proposed gas accident is unsupported by the visible scene."
+  EVIDENCE: gas
+
+OBJECT: register
+  GATE: always
+  LABEL: "Examine the seating list"
+  THE STEWARD'S TABLE: "Five names on the seating list. Six places.\n\nThe last line has not been crossed out. It was never filled."
+  WALTER'S NOTEBOOK: "Copy the five names. Preserve the blank.\n\nWEXFORD · FENN · CORLISS\nKESSLER · PRUITT\n\nAn omission is worth keeping in its original shape."
+  NOTEBOOK: register_note | "The steward's seating list names Wexford, Fenn, Corliss, Kessler, and Pruitt. A sixth place is set without a name. A missing name is a missing fact, not an explanation."
+  EVIDENCE: register

@@ -15,6 +15,7 @@ var interface: CanvasLayer
 var presentation: CanvasLayer
 var staging=preload("res://scripts/chapters/chapter_one_staging.gd").new()
 var scripted_dialogue=preload("res://scripts/chapters/chapter_one_dialogue.gd").new()
+var objects=preload("res://scripts/chapters/chapter_one_objects.gd").new()
 var archive=preload("res://scripts/chapters/chapter_one_archive.gd").new()
 var prologue=preload("res://scripts/shared/prologue_presentation.gd").new()
 var playthrough_log=preload("res://scripts/shared/playthrough_log.gd").new()
@@ -371,6 +372,7 @@ func _find_focus() -> void:
 func _interact(id:String) -> void:
 	if staging.interact(self,id): return
 	if scripted_dialogue.interact(self,id): return
+	if objects.interact(self,"estate",id): return
 	if _tunnel_interaction(id): return
 	if _town_interaction(id): return
 	if id == "report":
@@ -483,7 +485,9 @@ func _report_screen() -> void:
 
 func _write_report(mode:String,scene:String) -> void:
 	state.complete_report(mode,_current_sources())
-	if state.world=="estate": estate.sync_staging(state)
+	if state.world=="estate":
+		estate.sync_staging(state)
+		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes"])
 	_save_game()
 	var cards=Story.SCENES[scene].duplicate(true)
 	cards.append(["WALTER CORWIN","That's everything for now. Back through the estate gates."])
@@ -492,6 +496,7 @@ func _write_report(mode:String,scene:String) -> void:
 func _finish() -> void:
 	state.estate_complete = true
 	estate.sync_staging(state)
+	if state.world == "estate": objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes"])
 	_save_game()
 	_cards(TownStory.ARRIVAL,func(): _travel("town",Vector3(0,0.1,17)))
 
@@ -636,7 +641,9 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 		estate.add_child(daylight)
 		daylight.setup(estate)
 		daylight.update_clock(state.clock_minutes,spawn)
-	if destination == "estate": estate.sync_staging(state)
+	if destination == "estate":
+		estate.sync_staging(state)
+		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes"])
 	if estate and estate.has_method("sync_actors"):
 		estate.sync_actors(state)
 	elif destination=="town" and state.evidence.has("old_woman") and estate.has_method("dismiss_old_woman"):
@@ -734,13 +741,15 @@ func _town_interaction(id:String) -> bool:
 		"supplement": _supplement(); return true
 		"survey_drawer": _survey_drawer(); return true
 		"board": _board(); return true
+	if id == "lodging" and not state.evidence.has("naomi"):
+		_panel("case","A private ledger","MRS. ALMY'S PARLOR")
+		_paragraph("Ask Mrs. Almy whose entry you are looking for before copying her book.")
+		_button("Put it down",_close)
+		_focus_first()
+		return true
+	if objects.interact(self, "town", id): return true
 	if TownStory.FACTS.has(id) and TownStory.SCENES.has(id):
-		if id=="lodging" and not state.evidence.has("naomi"):
-			_panel("case","A private ledger","MRS. ALMY'S PARLOR")
-			_paragraph("Ask Mrs. Almy whose entry you are looking for before copying her book.")
-			_button("Put it down",_close)
-			_focus_first()
-		else: _town_observation(id)
+		_town_observation(id)
 		return true
 	return false
 
@@ -749,6 +758,7 @@ func _town_observation(id:String,return_target:Variant=null) -> void:
 	if id in ["lay_lead","service_work"]: scripted_dialogue.play_topic(self,"almy",id); return
 	if id == "behan_name": scripted_dialogue.play_topic(self,"behan",id); return
 	if id=="old_woman" and state.evidence.has(id): return
+	if objects.interact(self, "town", id): return
 	var observation_cards=TownStory.SCENES[id].duplicate(true)
 	if id == "gazette" and state.evidence.has("gazette_correction_printed"):
 		observation_cards.append(["THE CORRECTION SLIP",facts["gazette_correction_printed"][1]])
@@ -854,7 +864,9 @@ func _qa_town() -> void:
 	await load("res://tests/town_flow.gd").new().run(self)
 
 func _refresh_outfit() -> void:
-	if state.world == "estate": estate.sync_staging(state)
+	if state.world == "estate":
+		estate.sync_staging(state)
+		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes"])
 	model.get_node("Coat").material_override=estate.mat("5f6559" if state.coat=="Plain wool coat" else "424b43")
 	if model.has_node("Badge"): model.get_node("Badge").visible=state.coat=="Police coat"
 

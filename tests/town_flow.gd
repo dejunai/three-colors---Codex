@@ -72,7 +72,7 @@ func run(g:Node) -> void:
 	assert(g.focused=="day_close")
 	g._interact("day_close")
 	cards(g)
-	assert(not g.state.finished and g.page=="case","First steward conversation is required before sleep")
+	assert(not g.state.finished and g.page=="case","Reading the notebook is a reflective beat; only 'sleep' advances or finishes the day")
 	g._travel("estate",Vector3(-10,0.1,-18))
 	g._interact("service_entrance")
 	g._interact("barman")
@@ -88,8 +88,13 @@ func run(g:Node) -> void:
 	cards(g)
 	g._interact("lounge_exit")
 	g._travel("room",Vector3(0,0.1,6))
-	g._interact("day_close")
+	g._interact("sleep")
 	cards(g)
+	# The steward's second conversation jumps steward_visits straight to 3 (see
+	# chapter_one_dialogue.gd's "steward_open" tag), so this sleep() call hits the
+	# close_day branch: its cards, then the two-question debrief, then the ending.
+	g.content.find_children("*","Button",true,false)[0].pressed.emit()
+	g.content.find_children("*","Button",true,false)[0].pressed.emit()
 	assert(g.state.finished and g.page=="ending")
 	assert(not g.state.supplement_filed)
 	print("TOWN PASS: actual movement through all three buildings; minimal inquiry and three steward visits reach completion without the board or optional topics")

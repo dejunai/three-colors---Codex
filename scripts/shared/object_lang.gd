@@ -1,54 +1,37 @@
 extends RefCounted
 
-# Flat-file dialogue grammar and its GATE-expression evaluator. Pure text in,
-# structured data out — no engine/game references, so this file is testable
-# in isolation (see tests/dialogue_lang_flow.gd) and the only place that
-# needs to change if the grammar itself grows.
+# Flat-file OBJECT grammar and its GATE-expression evaluator. A deliberate
+# sibling of dialogue_lang.gd, not a subclass of it: world objects are not
+# NPCs, so this grammar drops NPC/SCHEDULE/WEIGHT/VOICE and adds TAKE for
+# carryable items. The GATE mini-language is intentionally identical to
+# dialogue_lang.gd's so one authoring skill covers both formats. Pure text
+# in, structured data out — no engine/game references, so this file is
+# testable in isolation (see tests/object_lang_flow.gd) and is the only
+# place that needs to change if the object grammar itself grows.
 #
 # FILE SHAPE
-#   NPC: father_behan
-#   LOCATION: rectory
-#   INCLUDE: shared_rebuffs.dialogue      (repeatable; optional)
-#   SCHEDULE: dawn={home}, midday={workplace}, ...   (background/template NPCs only)
+#   LOCATION: estate
+#   INCLUDE: shared_object_rebuffs.object      (repeatable; optional)
 #
-#   TOPIC: topic_id
+#   OBJECT: knife
 #     GATE: <expression>          ("never" / "always" / a boolean expression)
-#     WEIGHT: 3                   (optional; default topics only, relative chance)
-#     LABEL: "Menu button text"   (optional; defaults to topic_id.capitalize())
-#     SPEAKER: "Line of dialogue, may
-#               continue across indented lines until the closing quote,
-#               or use \n / \n\n inline to keep one physical line and
-#               still reproduce the source material's paragraph breaks."
-#     VOICE: trombone_cautious_v1  (optional; applies to the next spoken line)
-#     SPEAKER: "A wordless instrumental delivery cue accompanies this card."
-#     [A bracketed line is a stage direction/beat, not spoken dialogue.]
-#     CHOICE: "The player's own line."
-#       SPEAKER: "The reply. CHOICE always opens a nested, linear
-#                 continuation — it never branches by itself."
-#       NOTEBOOK: stable_note_id | "Free text written straight into the record; no separate
-#                  facts table to keep in sync with the dialogue."
-#     FORK:
-#       CHOICE: "Option A — mutually exclusive with any sibling CHOICE here."
-#         SPEAKER: "..."
-#       CHOICE: "Option B."
-#         SPEAKER: "..."
-#         OUTCOME: odell_response = deferred
+#     LABEL: "Recover the knife"  (optional; otherwise object_id.capitalize())
+#     TAG: estate_knife_take      (optional; extra completion/timing key)
+#     TIME: 5                     (optional; minutes charged once per id/TAG)
+#     [A good boning knife, wiped too carefully.]
+#     EVIDENCE: clean_knife
+#     NOTEBOOK: clean_knife_note | "The knife beneath the hedge was wiped clean."
+#     TAKE: clean_knife            (adds to case_state inventory)
 #
-# A `#` at the start of a (stripped) line is a full-line comment. A TOPIC
-# with no dialogue lines under it (just GATE/comments) is a documentation
-# stub — it parses fine and simply never surfaces in play.
+# Unlike TOPIC ids in dialogue, OBJECT ids are expected to repeat: every
+# object interaction is a self-contained encounter (there is no NPC-style
+# topic menu to keep unique), so authoring "the same hotspot, several
+# states" is normal. Multiple `OBJECT: knife` blocks may exist with
+# different GATEs; the first block whose GATE is currently true wins,
+# exactly like dialogue's `TOPIC: default` cascade — write the most
+# specific/gated state first and the fallback last.
 #
-# TOPIC IDS: the id "default" is reserved for an NPC's automatic opening
-# line. Multiple `TOPIC: default` blocks may exist with different GATEs.
-# The first eligible block controls selection. If it is unweighted, it wins.
-# If it has WEIGHT, only eligible explicitly weighted defaults enter the pool;
-# later unweighted defaults remain deterministic fallbacks outside that pool.
-# Defaults are never shown in a menu. Every other topic id is a revisitable
-# menu entry whenever its
-# GATE evaluates true — there is no separate "is this a menu" flag to
-# author or get out of sync as new topics are added later.
-#
-# GATE GRAMMAR: "never" | "always" | <expr>
+# GATE GRAMMAR: identical to dialogue_lang.gd — "never" | "always" | <expr>
 #   expr       := or_expr
 #   or_expr    := and_expr (OR and_expr)*
 #   and_expr   := unary (AND unary)*
@@ -56,32 +39,27 @@ extends RefCounted
 #   atom       := "(" expr ")" | comparison
 #   comparison := NAME ["(" arg ("," arg)* ")"] [cmp value]
 #   cmp        := "<" | "<=" | ">" | ">=" | "=" | "!="
-# A bare NAME with no call and no comparator must itself resolve to a bool.
-# `=`/`!=` compare case-insensitively and match on substring containment
-# (so `coat = plain` matches state.coat == "Plain wool coat" without the
-# author needing to know the exact stored string). `<`/`<=`/`>`/`>=`
-# compare numerically.
+# `=`/`!=` compare case-insensitively via substring containment; `<`/`<=`/
+# `>`/`>=` compare numerically. Built-in functions/fields are registered by
+# the caller via the `ctx` passed to evaluate() — see object_runtime.gd's
+# make_context() for the actual vocabulary (object_done, object_count,
+# examine_count, taken, evidence, filed, flag, outcome, outcome_is, coat,
+# day, phase, estate_complete, steward_ready).
 #
-# Built-in functions/fields are registered by the caller via the `ctx`
-# passed to evaluate() — see dialogue_runtime.gd's make_context() for the
-# actual vocabulary (visit_count, topic_count, spoken_to, evidence, filed,
-# flag, topic_done, npc_done, outcome, outcome_is, object_done, object_count,
-# taken, coat, day, phase, estate_complete, steward_ready). The last three
-# read the sibling object system (scripts/shared/object_lang.gd,
-# object_runtime.gd) so a dialogue GATE can react to an examined/taken object.
-# `npc_done(npc_id)` is sugar for
-# `topic_done(npc_id, "default")`, the existing "has this NPC's opener
-# already played" check.
+# STEPS: beats `[...]`, `SPEAKER: "..."` lines, linear `CHOICE:` (always
+# labelled WALTER CORWIN, matching dialogue), `FORK:`/nested `CHOICE:`,
+# `NOTEBOOK: id | "..."`, `EVIDENCE: id`, `OUTCOME: decision_id = value_id`
+# (only inside a FORK choice), and `TAKE: item_id`. There is no VOICE —
+# examined objects are Walter's own narration and stay unvoiced, same as
+# dialogue's beats/notebook/system cards.
 
 static func parse(text: String) -> Dictionary:
 	var logical = _logical_lines(text)
 	var i = 0
-	var npc = ""
 	var location = ""
-	var schedule: Dictionary = {}
 	var includes: Array = []
 	var errors: Array = []
-	while i < logical.size() and logical[i].indent == 0 and not logical[i].text.begins_with("TOPIC:"):
+	while i < logical.size() and logical[i].indent == 0 and not logical[i].text.begins_with("OBJECT:"):
 		var entry = logical[i]
 		var colon = entry.text.find(":")
 		if colon == -1:
@@ -91,33 +69,29 @@ static func parse(text: String) -> Dictionary:
 		var key = entry.text.substr(0, colon).strip_edges().to_upper()
 		var value = entry.text.substr(colon + 1).strip_edges()
 		match key:
-			"NPC": npc = value
 			"LOCATION": location = value
-			"SCHEDULE": schedule = _parse_schedule(value)
 			"INCLUDE": includes.append(value)
 			_: errors.append({"line": entry.line, "message": "Unknown header '%s'" % key})
 		i += 1
-	var topics: Array = []
+	var objects: Array = []
 	while i < logical.size():
 		var entry = logical[i]
-		if entry.indent != 0 or not entry.text.begins_with("TOPIC:"):
-			errors.append({"line": entry.line, "message": "Expected a TOPIC block, found '%s'" % entry.text})
+		if entry.indent != 0 or not entry.text.begins_with("OBJECT:"):
+			errors.append({"line": entry.line, "message": "Expected an OBJECT block, found '%s'" % entry.text})
 			i += 1
 			continue
-		var topic_id = entry.text.substr(6).strip_edges()
+		var object_id = entry.text.substr(7).strip_edges()
 		var j = i + 1
 		var body: Array = []
 		while j < logical.size() and logical[j].indent > 0:
 			body.append(logical[j])
 			j += 1
-		var parsed = _parse_topic_body(body, errors)
-		parsed["id"] = topic_id
+		var parsed = _parse_object_body(body, errors)
+		parsed["id"] = object_id
 		parsed["line"] = entry.line
-		if bool(parsed.get("has_weight", false)) and topic_id != "default":
-			errors.append({"line": entry.line, "message": "WEIGHT is only valid on TOPIC: default"})
-		topics.append(parsed)
+		objects.append(parsed)
 		i = j
-	return {"npc": npc, "location": location, "schedule": schedule, "includes": includes, "topics": topics, "errors": errors}
+	return {"location": location, "includes": includes, "objects": objects, "errors": errors}
 
 static func evaluate(ast: Dictionary, ctx: Dictionary) -> bool:
 	match String(ast.get("op", "")):
@@ -130,16 +104,14 @@ static func evaluate(ast: Dictionary, ctx: Dictionary) -> bool:
 
 # ---- content parsing ----
 
-static func _parse_topic_body(body: Array, errors: Array) -> Dictionary:
+static func _parse_object_body(body: Array, errors: Array) -> Dictionary:
 	if body.is_empty():
-		return {"gate_src": "never", "gate": {"op": "lit", "value": false}, "label": "", "steps": []}
+		return {"gate_src": "never", "gate": {"op": "lit", "value": false}, "label": "", "tag": "", "timing": "", "outcome_keys": [], "steps": []}
 	var base_indent = body[0].indent
 	var gate_src = "never"
 	var label = ""
 	var tag = ""
 	var timing = ""
-	var weight = 1.0
-	var has_weight = false
 	var k = 0
 	while k < body.size() and body[k].indent == base_indent:
 		var text = body[k].text
@@ -152,14 +124,6 @@ static func _parse_topic_body(body: Array, errors: Array) -> Dictionary:
 		elif text.begins_with("TIME:"):
 			timing = text.substr(5).strip_edges()
 			k += 1
-		elif text.begins_with("WEIGHT:"):
-			var raw_weight = text.substr(7).strip_edges()
-			if not raw_weight.is_valid_float() or float(raw_weight) <= 0.0:
-				errors.append({"line": body[k].line, "message": "WEIGHT must be a number greater than zero"})
-			else:
-				weight = float(raw_weight)
-				has_weight = true
-			k += 1
 		elif text.begins_with("LABEL:"):
 			label = _quoted(text.substr(6))
 			k += 1
@@ -167,11 +131,10 @@ static func _parse_topic_body(body: Array, errors: Array) -> Dictionary:
 			break
 	var steps = _parse_steps(body, k, body.size(), base_indent, errors)
 	return {"gate_src": gate_src, "gate": _parse_gate(gate_src), "label": label, "tag": tag, "timing": timing,
-		"weight": weight, "has_weight": has_weight, "outcome_keys": _collect_outcome_keys(steps), "steps": steps}
+		"outcome_keys": _collect_outcome_keys(steps), "steps": steps}
 
 static func _parse_steps(body: Array, start: int, end: int, indent: int, errors: Array, allow_outcome: bool = false) -> Array:
 	var steps: Array = []
-	var pending_voice = ""
 	var k = start
 	while k < end:
 		var entry = body[k]
@@ -180,17 +143,18 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 			k += 1
 			continue
 		var line = entry.text
-		if line.begins_with("VOICE:"):
-			pending_voice = line.substr(6).strip_edges()
-			if not pending_voice.is_valid_identifier():
-				errors.append({"line": entry.line, "message": "VOICE cue must be a simple asset id"})
-				pending_voice = ""
-			k += 1
-		elif line.begins_with("["):
+		if line.begins_with("["):
 			steps.append({"kind": "beat", "text": _strip_brackets(line)})
 			k += 1
 		elif line.begins_with("EVIDENCE:"):
 			steps.append({"kind": "evidence", "id": line.substr(9).strip_edges()})
+			k += 1
+		elif line.begins_with("TAKE:"):
+			var item_id = line.substr(5).strip_edges()
+			if not item_id.is_valid_identifier():
+				errors.append({"line": entry.line, "message": "TAKE must name a simple item id"})
+			else:
+				steps.append({"kind": "take", "id": item_id})
 			k += 1
 		elif line.begins_with("OUTCOME:"):
 			var assignment = line.substr(8).strip_edges().split("=", true, 1)
@@ -214,15 +178,11 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 			var label = _quoted(line.substr(7))
 			var child_indent = _peek_indent(body, k + 1, end)
 			var child_end = _block_end(body, k + 1, end, child_indent) if child_indent > indent else k + 1
-			steps.append({"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true, "voice": pending_voice})
-			pending_voice = ""
+			steps.append({"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true})
 			if child_indent > indent:
 				steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors, allow_outcome))
 			k = child_end
 		elif line.begins_with("FORK:"):
-			if not pending_voice.is_empty():
-				errors.append({"line": entry.line, "message": "VOICE must precede a spoken line, not FORK"})
-				pending_voice = ""
 			var fork_indent = _peek_indent(body, k + 1, end)
 			var fork_end = _block_end(body, k + 1, end, fork_indent)
 			steps.append({"kind": "fork", "options": _parse_fork(body, k + 1, fork_end, fork_indent, errors)})
@@ -234,11 +194,8 @@ static func _parse_steps(body: Array, start: int, end: int, indent: int, errors:
 				k += 1
 				continue
 			var speaker = line.substr(0, colon).strip_edges()
-			steps.append({"kind": "line", "speaker": speaker, "text": _quoted(line.substr(colon + 1)), "player": false, "voice": pending_voice})
-			pending_voice = ""
+			steps.append({"kind": "line", "speaker": speaker, "text": _quoted(line.substr(colon + 1)), "player": false})
 			k += 1
-	if not pending_voice.is_empty():
-		errors.append({"line": body[end - 1].line, "message": "VOICE cue has no following spoken line"})
 	return steps
 
 static func _collect_outcome_keys(steps: Array) -> Array[String]:
@@ -269,8 +226,8 @@ static func _parse_fork(body: Array, start: int, end: int, indent: int, errors: 
 		var steps: Array = [{"kind": "line", "speaker": "WALTER CORWIN", "text": label, "player": true}]
 		if child_indent > indent:
 			steps.append_array(_parse_steps(body, k + 1, child_end, child_indent, errors, true))
-		# Tag/timing live on the topic (session-level), not per fork option —
-		# every branch of one FORK still belongs to the same topic/session.
+		# Tag/timing live on the object (session-level), not per fork option —
+		# every branch of one FORK still belongs to the same object/session.
 		options.append({"label": label, "steps": steps})
 		k = child_end
 	return options
@@ -325,9 +282,6 @@ static func _quoted(s: String) -> String:
 	var trimmed = s.strip_edges()
 	if trimmed.length() >= 2 and trimmed.begins_with("\"") and trimmed.ends_with("\""):
 		trimmed = trimmed.substr(1, trimmed.length() - 2)
-	# \n lets one physical line hold the source material's paragraph breaks
-	# (e.g. "...ambitions.\n\nI'll discuss...") without relying on space-joined
-	# continuation lines, which would otherwise collapse them to one space.
 	return trimmed.replace("\\\"", "\"").replace("\\n", "\n")
 
 static func _strip_brackets(s: String) -> String:
@@ -335,13 +289,6 @@ static func _strip_brackets(s: String) -> String:
 	if trimmed.begins_with("[") and trimmed.ends_with("]"):
 		trimmed = trimmed.substr(1, trimmed.length() - 2)
 	return trimmed.strip_edges()
-
-static func _parse_schedule(value: String) -> Dictionary:
-	var out: Dictionary = {}
-	for part in value.split(","):
-		var kv = part.split("=", true, 1)
-		if kv.size() == 2: out[kv[0].strip_edges()] = kv[1].strip_edges()
-	return out
 
 # ---- GATE expression parsing ----
 
@@ -461,32 +408,22 @@ static func _comparison(state: Dictionary) -> Dictionary:
 		value = v.value if v != null else null
 	return {"op": "cmp", "name": name, "call": is_call, "args": args, "cmp": cmp, "value": value}
 
-static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary) -> bool:
-	var resolved
-	if ast.call:
-		var fn = ctx.get("functions", {}).get(ast.name)
-		if fn == null:
-			push_error("Unknown dialogue gate function '%s'" % ast.name)
-			return false
-		resolved = fn.call(ast.args)
+static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary):
+	var name = String(ast.name)
+	var result
+	if bool(ast.call):
+		var fn = ctx.get("functions", {}).get(name)
+		result = fn.call(ast.args) if fn is Callable and fn.is_valid() else false
 	else:
-		var fields = ctx.get("fields", {})
-		if not fields.has(ast.name):
-			push_error("Unknown dialogue gate field '%s'" % ast.name)
-			return false
-		resolved = fields[ast.name].call()
-	if String(ast.cmp).is_empty(): return bool(resolved)
-	var value = ast.value
-	if ast.cmp == "=" or ast.cmp == "!=":
-		var left = str(resolved).to_lower()
-		var right = str(value).to_lower()
-		var equal = left == right or left.contains(right) or right.contains(left)
-		return equal if ast.cmp == "=" else not equal
-	var left_num = float(resolved) if (resolved is float or resolved is int) else (float(str(resolved)) if str(resolved).is_valid_float() else 0.0)
-	var right_num = float(value) if str(value).is_valid_float() else 0.0
+		var field = ctx.get("fields", {}).get(name)
+		result = field.call() if field is Callable and field.is_valid() else false
+	if String(ast.cmp).is_empty(): return bool(result)
+	var expected = String(ast.value)
 	match String(ast.cmp):
-		"<": return left_num < right_num
-		"<=": return left_num <= right_num
-		">": return left_num > right_num
-		">=": return left_num >= right_num
-	return false
+		"=": return String(result).to_lower().contains(expected.to_lower()) or expected.to_lower().contains(String(result).to_lower())
+		"!=": return not (String(result).to_lower().contains(expected.to_lower()) or expected.to_lower().contains(String(result).to_lower()))
+		"<": return float(result) < float(expected) if expected.is_valid_float() else false
+		"<=": return float(result) <= float(expected) if expected.is_valid_float() else false
+		">": return float(result) > float(expected) if expected.is_valid_float() else false
+		">=": return float(result) >= float(expected) if expected.is_valid_float() else false
+		_: return false
