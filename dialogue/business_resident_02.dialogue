@@ -1,0 +1,23 @@
+NPC: business_resident_02
+LOCATION: business_district
+SCHEDULE: morning=business_museum_walk, midday=business_stationer_walk, evening=business_clock_crossing, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(business_resident_02, default)
+  TAG: business_resident_02_greeting
+  VOICE: violin_neutral_short_v1
+  AVERAGE JOE: "I'm only comparing prices. I have nothing to report."
+
+TOPIC: default
+  GATE: topic_done(business_resident_02, default)
+  WEIGHT: 2
+  TAG: business_resident_02_repeat_prices
+  VOICE: violin_weary_short_v2
+  AVERAGE JOE: "Thread costs more each week and holds no better."
+
+TOPIC: default
+  GATE: topic_done(business_resident_02, default)
+  WEIGHT: 1
+  TAG: business_resident_02_repeat_nothing
+  VOICE: violin_neutral_short_v2
+  AVERAGE JOE: "No, sir. Nothing else."

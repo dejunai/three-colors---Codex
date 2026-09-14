@@ -1,0 +1,23 @@
+NPC: business_resident_03
+LOCATION: business_district
+SCHEDULE: morning=business_stationer_walk, midday=business_printer_crossing, evening=business_school_crossing, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(business_resident_03, default)
+  TAG: business_resident_03_greeting
+  VOICE: trombone_bureaucratic_short_v1
+  AVERAGE JOE: "Receipts, invoices, and a parcel for home. That's the whole errand."
+
+TOPIC: default
+  GATE: topic_done(business_resident_03, default)
+  WEIGHT: 2
+  TAG: business_resident_03_repeat_receipt
+  VOICE: trombone_neutral_short_v2
+  AVERAGE JOE: "They charged me for the wrapping paper."
+
+TOPIC: default
+  GATE: topic_done(business_resident_03, default)
+  WEIGHT: 1
+  TAG: business_resident_03_repeat_busy
+  VOICE: trombone_dismissive_short_v1
+  AVERAGE JOE: "I'm late already, Officer."
