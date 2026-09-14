@@ -74,11 +74,11 @@ TOPIC: island_supply
   NOTEBOOK: foreman_island_supply | "The rope-walk foreman confirmed no supply run to the island appears in his ledger. He acknowledged that a private boat would leave no record. He did not say one had gone."
 
 TOPIC: cellar_salt
-  GATE: evidence(gray_salt_cakes) AND NOT topic_done(ropewalk_foreman, cellar_salt)
+  GATE: (evidence(gray_salt_cakes) OR evidence(kelp_salt_preservative)) AND NOT topic_done(ropewalk_foreman, cellar_salt)
   TAG: ropewalk_salt
   LABEL: "Ask why someone would carry harbor curing salt inland"
   TIME: 5
-  WALTER CORWIN: "Otto Kessler carried cakes of gray harbor curing salt to the estate.\nWhy would kitchen cellars need harbor salt?"
+  WALTER CORWIN: "Cakes of gray harbor curing salt were brought to the estate cellars.\nWhy would kitchen cellars need harbor salt?"
   VOICE: trombone_neutral_medium_v2
   ROPEWALK FOREMAN: "Curing salt isn't for kitchens, Walter. Kitchen salt is fine white grain."
   [He wipes powdered pitch from his palms onto a leather apron.]

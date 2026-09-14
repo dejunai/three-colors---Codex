@@ -1,6 +1,6 @@
 NPC: eleanor_whitlock
 LOCATION: upper_residential_ridge
-SCHEDULE: dawn={chapel_path}, midday={whitlock_orangery}, evening={charity_hall}
+SCHEDULE: morning={chapel_path}, midday={whitlock_orangery}, evening={charity_hall}, night=closed
 
 # Philanthropist, donor, and social organizer.
 # Represents respectable civic power.

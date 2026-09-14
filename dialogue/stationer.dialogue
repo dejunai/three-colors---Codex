@@ -89,6 +89,19 @@ TOPIC: fenn_orders
   NOTEBOOK: stationer_fenn_supplies | "Dr. Fenn purchased iron-gall ink and heavy smokeless spermaceti candles for closed-cellar work."
   EVIDENCE: cellar_candles
 
+# Redundant-carrier backup: if local_historian's survey fork was missed or taken
+# for annotations, this supplies the same EVIDENCE for the ropewalk foreman lead.
+TOPIC: fenn_conduit_tracing
+  GATE: evidence(cellar_candles) AND NOT evidence(estate_conduit_map)
+  TAG: stationer_conduit_tracing
+  LABEL: "Ask if Dr. Fenn copied architectural or drainage surveys"
+  TIME: 4
+  WALTER CORWIN: "When Dr. Fenn bought drafting materials, did he say what he was copying?"
+  VOICE: trombone_bureaucratic_long_v1
+  MR. FINCH: "He brought in a rolled plate from the historical collection — an 1822 survey of the kitchen bluff.\nWanted tracing vellum cut to match the subterranean drainage conduits running beneath the estate.\nSaid municipal works had forgotten where the old stone drains exited to the salt water."
+  NOTEBOOK: stationer_fenn_conduits | "Mr. Finch recalls Dr. Fenn purchasing vellum to trace an 1822 survey of the kitchen bluff's subterranean drainage conduits running to salt water."
+  EVIDENCE: estate_conduit_map
+
 TOPIC: naomi_supplies
   GATE: evidence(naomi) AND NOT topic_done(stationer, naomi_supplies)
   TAG: stationer_naomi

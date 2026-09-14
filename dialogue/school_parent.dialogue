@@ -70,11 +70,11 @@ TOPIC: the_estate_talk
 # Redundant-carrier backup: if schoolteacher is missed, this supplies the
 # same EVIDENCE the covering-letter lead relies on downstream.
 TOPIC: the_covering_letter
-  GATE: evidence(curriculum_abridgment) AND NOT evidence(reader_omission_letter)
+  GATE: (evidence(curriculum_abridgment) OR evidence(sanitized_textbook)) AND NOT evidence(reader_omission_letter)
   TAG: parent_covering_letter
   LABEL: "Ask if she recalls the covering letter approving the reader"
   TIME: 5
-  WALTER CORWIN: "Mr. Abernathy says the school committee approved a letter cutting the crew list from the reader."
+  WALTER CORWIN: "The school committee approved a letter cutting the crew list from the reader."
   VOICE: violin_neutral_medium_v2
   MRS. TEAGUE: "My husband sits on that committee, Officer. He read it aloud at the Tuesday meeting, proud as anything."
   [She recites from memory, counting the words off on gloved fingers.]
@@ -99,8 +99,13 @@ TOPIC: the_reader_lesson
   [She straightens, reciting in the flat cadence of a memorized lesson.]
   VOICE: violin_haunting_medium_v2
   MRS. TEAGUE: "'The sea received its harvest, and Christian fortitude and the generosity of our founding estates preserved Widow's Bight from ruin.' Chapter Four, page twelve. She's copied it into her fair-hand book twice."
+  WALTER CORWIN: "And the crew? The men who sailed with the fleet?"
+  VOICE: violin_neutral_medium_v2
+  MRS. TEAGUE: "Never a syllable about the men before the mast. The committee had their names stricken from the text before the plates were cast."
   NOTEBOOK: parent_reader_lesson_1 | "Mrs. Teague's daughter recites the school reader's Chapter Four passage from memory: 'The sea received its harvest... founding estates preserved Widow's Bight from ruin.'"
+  NOTEBOOK: parent_curriculum_abridgment | "Mrs. Teague confirms the school edition omitted the crew roster from the 1823 founding history, teaching only the benefactors' survival."
   EVIDENCE: sanitized_textbook
+  EVIDENCE: curriculum_abridgment
 
 # Redundant-carrier backup: if post_office_clerk is missed, this supplies the
 # same EVIDENCE the New Bedford letters lead relies on downstream, building

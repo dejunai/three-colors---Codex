@@ -1,6 +1,6 @@
 NPC: sebastian_wick
 LOCATION: upper_residential_ridge
-SCHEDULE: dawn={veranda}, midday={study}, evening={club_carriage_stop}
+SCHEDULE: morning={veranda}, midday={study}, evening={club_carriage_stop}, night=closed
 
 # Retired attorney. Not a cultist.
 # Knows procedure, records, omissions.

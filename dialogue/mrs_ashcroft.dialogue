@@ -1,6 +1,6 @@
 NPC: miriam_ashcroft
 LOCATION: upper_residential_ridge
-SCHEDULE: dawn={garden_walk}, midday={ashcroft_house}, evening={sunroom}
+SCHEDULE: morning={garden_walk}, midday={ashcroft_house}, evening={sunroom}, night=closed
 
 # Widow of a shipping family whose money predates the club but whose status
 # depends on staying adjacent to it.
