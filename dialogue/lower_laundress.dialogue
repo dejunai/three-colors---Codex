@@ -1,0 +1,23 @@
+NPC: lower_laundress
+LOCATION: lower_residential
+SCHEDULE: morning=lower_west_line, midday=lower_midwest_pavement, evening=lower_west_pavement, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(lower_laundress, default)
+  TAG: lower_laundress_greeting
+  VOICE: violin_neutral_short_v1
+  THE LAUNDRESS: "Mind the line, Officer. Those sheets took all morning."
+
+TOPIC: default
+  GATE: topic_done(lower_laundress, default)
+  WEIGHT: 2
+  TAG: lower_laundress_repeat_damp
+  VOICE: violin_weary_short_v1
+  THE LAUNDRESS: "Nothing dries properly this close to the water."
+
+TOPIC: default
+  GATE: topic_done(lower_laundress, default)
+  WEIGHT: 1
+  TAG: lower_laundress_repeat_work
+  VOICE: violin_dismissive_short_v2
+  THE LAUNDRESS: "I have washing to finish, not news to tell."
