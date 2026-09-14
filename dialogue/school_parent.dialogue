@@ -2,7 +2,7 @@
 # Mrs. Teague: mother of two pupils, resident of Upper Ridge; defensive respectability.
 NPC: school_parent
 LOCATION: business_district
-SCHEDULE: morning=upper_house_3, midday=schoolhouse_gate, evening=upper_house_3, night=upper_house_3
+SCHEDULE: morning=upper_center_road, midday=schoolhouse_gate, evening=upper_east_road, night=closed
 
 TOPIC: default
   GATE: NOT topic_done(school_parent, default) AND coat = plain

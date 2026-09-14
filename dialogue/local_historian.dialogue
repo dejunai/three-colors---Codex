@@ -2,7 +2,7 @@
 # Mr. Abernathy: antiquarian rigor blinded by class reverence; scholarly denial of the Old Gods.
 NPC: local_historian
 LOCATION: business_district
-SCHEDULE: morning=museum, midday=museum, evening=museum, night=upper_house_4
+SCHEDULE: morning=museum, midday=museum, evening=museum, night=closed
 
 TOPIC: default
   GATE: NOT topic_done(local_historian, default) AND coat = plain

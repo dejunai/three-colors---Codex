@@ -2,7 +2,7 @@
 # Miss Hallowell: civic pedagogy, teaching children the sanitized town myth.
 NPC: schoolteacher
 LOCATION: business_district
-SCHEDULE: morning=schoolhouse, midday=schoolhouse, evening=upper_house_2, night=upper_house_2
+SCHEDULE: morning=schoolhouse, midday=schoolhouse, evening=upper_house_6, night=upper_house_6
 
 TOPIC: default
   GATE: NOT topic_done(schoolteacher, default) AND coat = plain
