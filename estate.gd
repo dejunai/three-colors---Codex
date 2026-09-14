@@ -30,10 +30,6 @@ func sync_staging(st) -> void:
 		points.erase("report")
 	if is_instance_valid(opening_report):
 		opening_report.visible = not st.estate_complete
-	if st.rose_bodies_removed:
-		for id in ["wounds","watch","knife"]: points.erase(id)
-	if st.birch_bodies_removed:
-		for id in ["eight","shoes"]: points.erase(id)
 	if is_instance_valid(opening_knife): opening_knife.visible = not st.rose_bodies_removed
 	if is_instance_valid(groundskeeper_actor):
 		groundskeeper_actor.visible = st.lounge_exited

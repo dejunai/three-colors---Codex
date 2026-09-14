@@ -129,7 +129,7 @@ What this system replaces is the *content and logic* behind an id: instead of a 
 1. Calls `ObjectRuntime.is_available(def, object_id, ctx)` (via the adapter's `sync_points()`) wherever it used to decide whether to keep a hotspot visible.
 2. Calls `ObjectRuntime.enter(def, object_id, ctx, state)` (via the adapter's `interact()`) when the player actually interacts, and renders/commits/presents FORK choices the same way `chapter_one_dialogue.gd` does for NPC topics.
 
-`estate.object` and `town.object` are live; see `docs/OBJECT_MIGRATION_HOWTO.md` for the remaining inventory (tunnel's bespoke ids are deliberately not migrated) and the per-hotspot recipe used to get here.
+`estate.object`, `town.object`, and `tunnel.object` are live; see `docs/OBJECT_MIGRATION_HOWTO.md` for the migrated inventory (tunnel's other, bespoke ids are deliberately not migrated) and the per-hotspot recipe used to get here.
 
 ## Validation and provenance
 

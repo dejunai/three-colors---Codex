@@ -12,8 +12,10 @@ object" — out of `estate.gd`/`town.gd`/`tunnel.gd` + `story.gd`/`town_story.gd
 `scripts/chapters/chapter_one_objects.gd`). Sections 2 and 4 below are now a record of
 how that happened, not a to-do — read them to understand the pattern before touching
 tunnel or any new location. Known gaps found during review, since fixed: FORK/OUTCOME
-now actually presents choices live (§2); `LABEL:` now really drives the hover text;
-`INCLUDE`d files no longer drop repeated cascade variants; `OBJECT`/`TAG`/`EVIDENCE`/
+now actually presents choices live (§2); an unresolved-but-clickable hotspot fails loud
+instead of silently doing nothing (§2, `docs/OBJECT_AUTHORING.md`'s "Fail-loud" section);
+`LABEL:` now really drives the hover text, for all three locations (§2/§4); `INCLUDE`d
+files no longer drop repeated cascade variants; `LOCATION`/`OBJECT`/`TAG`/`EVIDENCE`/
 `NOTEBOOK` ids and `TIME` are now validated at parse time. Still open: visibility is
 one-way only (§4), and unknown GATE fields/functions still parse instead of erroring
 (see `docs/OBJECT_AUTHORING.md`'s "Validation and provenance" for the current list).
@@ -63,8 +65,9 @@ belong in the flat grammar at all. Don't force them in.
 `ObjectRuntime` doesn't call itself — something has to invoke
 `is_available()`/`enter()`/`commit_through()`/`resume()`. That's
 `scripts/chapters/chapter_one_objects.gd`, the object-system equivalent of
-`chapter_one_dialogue.gd`. Current content (for reference, and as the template for a
-`tunnel.object` adapter later):
+`chapter_one_dialogue.gd`. It's one shared, location-agnostic adapter (not one file per
+location) — every call takes a `location` string parameter, so estate/town/tunnel (and
+any future location) all go through the same code. Current content, for reference:
 
 ```gdscript
 extends RefCounted
@@ -99,10 +102,21 @@ func sync_points(g: Node, location: String, ids: Array) -> void:
 		else:
 			g.estate.points.erase(id)
 
+# Fail-loud guard: _interact(id) only ever runs for an id currently sitting in
+# estate.points (a hotspot the scene already believes is there). If this id
+# belongs to the object system at all (known_ids) but is not currently available,
+# sync_points() should already have erased it — reaching here anyway means the
+# GATE and the hotspot's visibility have gone out of sync, this system's analogue
+# of dialogue's "silently unresponsive NPC" bug. Surface it loudly instead of
+# falling through to stale/dead content. See docs/OBJECT_AUTHORING.md's
+# "Fail-loud" section for the full rationale.
 func interact(g: Node, location: String, object_id: String) -> bool:
 	var def = definition(location)
+	if not Runtime.known_ids(def).has(object_id): return false
 	var ctx = Runtime.make_context(g.state)
-	if not Runtime.is_available(def, object_id, ctx): return false
+	if not Runtime.is_available(def, object_id, ctx):
+		_fail_loud(g, location, object_id)
+		return true
 	var result = Runtime.enter(def, object_id, ctx, g.state)
 	if result.session.is_empty(): return false
 	g.scripted_dialogue.clear()
@@ -134,6 +148,13 @@ func _choose(g: Node, result: Dictionary, index: int, object_id: String, label: 
 	if resumed.is_empty(): return
 	_play(g, resumed, object_id, label)
 
+func _fail_loud(g: Node, location: String, object_id: String) -> void:
+	push_error("Object hotspot '%s.%s' was clickable but no authored state currently applies to it — GATE and hotspot visibility have gone out of sync." % [location, object_id])
+	g._panel("case", "EOF ERROR — PLEASE ALERT THE DEVELOPERS", "OBJECT UNRESOLVED")
+	g._paragraph("This hotspot was reachable, but nothing currently authored for it applies.\n\nLocation: %s\nObject: %s" % [location, object_id], 20)
+	g._button("Close", g._close)
+	g._focus_first()
+
 func _sync(g: Node, object_id: String = "") -> void:
 	if not object_id.is_empty() and not g.state.visited.has(object_id):
 		g.state.visited.append(object_id)
@@ -149,14 +170,17 @@ var objects=preload("res://scripts/chapters/chapter_one_objects.gd").new()
 ```
 
 and called from `_interact()` (before the generic `Story.SCENES[key]` fallback),
-`_town_interaction()`/`_town_observation()`, and every `estate.sync_staging(state)` call
-site (see `git show` on commit `b4aee78` for the exact diff if you need the full list of
-call sites for a new location). For a brand-new location, follow that same shape: one
+`_town_interaction()`/`_town_observation()`, `_tunnel_interaction()`, and every place
+`chapter_one.gd::_travel()` rebuilds the world's `points` (an `if`/`elif`/`else` on
+`destination` that calls `objects.sync_points()` for `"estate"`, `"tunnel"`, or
+`"town"` respectively) plus `_write_report()`/`_finish()`/`_refresh_outfit()`'s
+estate-only sync calls. For a brand-new location, follow that same shape: one
 `objects.interact(self, "<location>", id)` line ahead of the old fallback, one
-`objects.sync_points(self, "<location>", [...ids...])` line next to each
-`sync_staging()`-equivalent call.
+`objects.sync_points(self, "<location>", [...ids...])` line wherever that location's
+`points` get (re)built.
 
 ## 3. Per-hotspot recipe
+
 
 For each id you're migrating:
 
@@ -272,16 +296,14 @@ OBJECT: wounds
   EVIDENCE: wounds
 ```
 
-Two things to flag honestly about this example, so you don't get surprised elsewhere:
-- **`rose_bodies_removed` is not in the exposed GATE field list** (`docs/OBJECT_AUTHORING.md`
-  only documents `coat`, `day`, `phase`, `estate_complete`, `steward_ready`). You'll need
-  to add a `"rose_bodies_removed": func(): return state.rose_bodies_removed,` entry to
-  `object_runtime.gd::make_context()`'s `"fields"` dict (and, for symmetry, to
-  `dialogue_runtime.gd`'s too, the way this session already added `object_done`/
-  `object_count`/`taken` to it). Expect to do this for a handful of other state fields
-  as you migrate more ids (`birch_bodies_removed`, `lounge_exited`, etc.) — the exposed
-  vocabulary was scoped to what dialogue content needed at the time, not to every field
-  the object migration will want.
+Two things worth knowing about this example, so you don't get surprised elsewhere:
+- **This is why `rose_bodies_removed`/`birch_bodies_removed`/`lounge_exited` are now in
+  the exposed GATE field list** (`docs/OBJECT_AUTHORING.md`'s vocabulary table) —
+  migrating `wounds` needed the first one, and the other two followed for the ids that
+  came after it. `object_runtime.gd::make_context()`'s `"fields"` dict (and, for
+  symmetry, `dialogue_runtime.gd`'s) is scoped to what content actually needs, not
+  every `case_state.gd` field — expect to add more there the same way as new ids need
+  new state to gate on.
 - This example has no `TIME:` — matches current behavior exactly. `DayClock.advance()`
   is never called for these examine cards today (confirmed: `conversation_key()` only
   charges time for ids explicitly listed in `day_clock.gd`'s `ESTATE_TALKS`/
@@ -300,16 +322,21 @@ func _interact(id:String) -> void:
 
 **Cut over visibility.** `estate.gd::sync_staging(st)` only ever receives `state`, not
 the `chapter_one.gd` instance that owns `objects` — don't reach outward from
-`estate.gd` for it. Instead, since every call site already looks like
-`estate.sync_staging(state)` from inside `chapter_one.gd` (four call sites, e.g.
-`scripts/chapters/chapter_one.gd:486`), add the object sync as a second line right
-after each one:
+`estate.gd` for it. At the time `wounds` was migrated, every `estate.sync_staging(state)`
+call site in `chapter_one.gd` got a second line right after it:
 ```gdscript
 estate.sync_staging(state)
 if state.world == "estate": objects.sync_points(self, "estate", ["wounds","watch","knife"])
 ```
-and delete the corresponding `if st.rose_bodies_removed: for id in [...]: points.erase(id)`
-block from `sync_staging()` itself once this replaces it.
+That single-location shape is now superseded: `_travel()` (the one place that rebuilds
+`points` from scratch for whichever destination is entered) was later generalized to an
+`if`/`elif`/`else` covering `"estate"`/`"tunnel"`/every other (town-family) destination,
+so the same LABEL-refresh/erase logic runs for all three live locations, not just
+estate — see §2's current adapter listing and its wiring paragraph for the accurate
+present-day shape. The `_write_report()`/`_finish()`/`_refresh_outfit()` call sites
+stayed estate-only, since none of their triggers are relevant to town/tunnel content.
+The corresponding `if st.rose_bodies_removed: for id in [...]: points.erase(id)` block
+was deleted from `sync_staging()` itself once `sync_points()` replaced it.
 
 **Once confirmed working**, delete `"wounds"` from `Story.SCENES` only (leave
 `Story.FACTS["wounds"]` in place — see step 7) and trim it out of the
