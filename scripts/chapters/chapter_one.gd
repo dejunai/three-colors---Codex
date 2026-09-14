@@ -469,6 +469,9 @@ func _case_file() -> void:
 func _flask() -> void:
 	archive._flask(self)
 
+func _pocket_watch() -> void:
+	archive._pocket_watch(self)
+
 func _journal() -> void:
 	archive._journal(self)
 

@@ -1,6 +1,7 @@
 extends RefCounted
 
 # Chapter One archive content, rendered through the shared panel manager.
+const DayClock = preload("res://scripts/shared/day_clock.gd")
 
 # Meaningful connections between two pieces of evidence, confirmed only when
 # the player draws them on the board rather than revealed automatically.
@@ -101,8 +102,9 @@ func _case_file(g:Node) -> void:
 	right.add_child(g._label("CURRENT INQUIRY",14,false))
 	right.add_child(g._label(g._objective(),23))
 	right.add_child(g._label("EQUIPPED",14,false))
-	var equipped_text = g.state.coat+" · worn leather boots\nNotebook · pencil · service revolver (%d/6 rounds)\n" % g.state.ammo + ("Flask (lost on descent)" if g.state.flask_spilled else "Flask") + (" · sealed knife envelope" if g.state.evidence.has("knife") else "")
+	var equipped_text = g.state.coat+" · worn leather boots\nNotebook · pencil · pocket watch\nService revolver (%d/6 rounds)\n" % g.state.ammo + ("Flask (lost on descent)" if g.state.flask_spilled else "Flask") + (" · sealed knife envelope" if g.state.evidence.has("knife") else "")
 	right.add_child(g._label(equipped_text,21))
+	g._button("Check the pocket watch",g._pocket_watch,right)
 	g._button("Inspect the flask",g._flask,right)
 	g._button("Change to "+("plain wool coat" if g.state.coat == "Police coat" else "police coat"),func():
 		g.state.coat = "Plain wool coat" if g.state.coat == "Police coat" else "Police coat"
@@ -130,6 +132,14 @@ func _flask(g:Node) -> void:
 				g._take_pour()
 				g._close()
 				g._toast("The edges settle. The facts remain.",4))
+	g._button("Put it away",g._case_file)
+	g._focus_first()
+
+func _pocket_watch(g: Node) -> void:
+	g._panel("case","Walter's pocket watch","PERSONAL EFFECTS  /  DAY %d" % g.state.day)
+	g._paragraph(DayClock.display_time(g.state.clock_minutes),42)
+	g._paragraph(DayClock.phase_label(g.state.clock_minutes).to_upper(),17)
+	g._paragraph("The hands move while Walter walks and while his work carries him across town. They hold while he reads.",19)
 	g._button("Put it away",g._case_file)
 	g._focus_first()
 
