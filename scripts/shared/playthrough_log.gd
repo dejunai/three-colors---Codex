@@ -106,16 +106,27 @@ func district_transition(from_world:String, to_world:String, state) -> void:
 	_log("district_transition", {
 		"from_world": from_world,
 		"to_world": to_world,
-		"real_seconds_elapsed": maxf(0.0, float(now - previous_transition_ms) / 1000.0),
-		"game_minutes_elapsed": maxf(0.0, float(state.clock_minutes) - previous_transition_game_minutes)
+		"real_seconds_elapsed": roundi(maxf(0.0, float(now - previous_transition_ms) / 1000.0)),
+		"game_minutes_elapsed": snappedf(maxf(0.0, float(state.clock_minutes) - previous_transition_game_minutes), 0.1)
 	})
 	previous_transition_ms = now
 	previous_transition_game_minutes = float(state.clock_minutes)
 
+func conversation(npc_id:String, topic_id:String, state) -> void:
+	if session_id.is_empty() or ended: return
+	_log("conversation", {
+		"npc_id": npc_id,
+		"topic_id": topic_id,
+		"coat_state": "plain" if String(state.coat) == "Plain wool coat" else "police",
+		"world": String(state.world),
+		"day": int(state.day),
+		"phase": DayClock.phase(float(state.clock_minutes))
+	})
+
 func day3_bed_reached() -> void:
 	if session_id.is_empty() or ended or day3_bed_sent: return
 	day3_bed_sent = true
-	var elapsed := 0.0 if day3_started_ms < 0 else maxf(0.0, float(Time.get_ticks_msec() - day3_started_ms) / 1000.0)
+	var elapsed := 0 if day3_started_ms < 0 else roundi(maxf(0.0, float(Time.get_ticks_msec() - day3_started_ms) / 1000.0))
 	_log("day3_bed_reached", {"real_seconds_since_day3_start": elapsed})
 
 func debrief(town_feel:String, time_natural:String) -> void:
@@ -126,7 +137,7 @@ func debrief(town_feel:String, time_natural:String) -> void:
 func end(state, ended_via:String) -> void:
 	if session_id.is_empty() or ended: return
 	_log("session_end", {
-		"total_real_seconds": maxf(0.0, float(Time.get_ticks_msec() - session_started_ms) / 1000.0),
+		"total_real_seconds": roundi(maxf(0.0, float(Time.get_ticks_msec() - session_started_ms) / 1000.0)),
 		"final_day": int(state.day),
 		"ended_via": ended_via
 	})

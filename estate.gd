@@ -42,6 +42,9 @@ func sync_staging(st) -> void:
 		target("service_entrance","Enter the smoking lounge through the service entrance",Vector3(-10,0,-18))
 	else:
 		target("service_entrance","Try the service entrance",Vector3(-10,0,-18))
+	# Title above is a fallback only; chapter_one_portals.gd's sync_points()
+	# overwrites it from objects/portals/estate.portal's authored LABEL right
+	# after this call returns (see chapter_one.gd's sync_staging() call sites).
 
 func register_actor(id: String, node: Node3D, target_id: String = "", condition: Callable = Callable()) -> void:
 	conditional_actors[id] = {

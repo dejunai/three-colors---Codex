@@ -16,6 +16,7 @@ var presentation: CanvasLayer
 var staging=preload("res://scripts/chapters/chapter_one_staging.gd").new()
 var scripted_dialogue=preload("res://scripts/chapters/chapter_one_dialogue.gd").new()
 var objects=preload("res://scripts/chapters/chapter_one_objects.gd").new()
+var portals=preload("res://scripts/chapters/chapter_one_portals.gd").new()
 var archive=preload("res://scripts/chapters/chapter_one_archive.gd").new()
 var prologue=preload("res://scripts/shared/prologue_presentation.gd").new()
 var playthrough_log=preload("res://scripts/shared/playthrough_log.gd").new()
@@ -179,7 +180,7 @@ func _close() -> void:
 	scripted_dialogue.clear()
 	interface.close()
 	page="play"
-	Input.mouse_mode=Input.MOUSE_MODE_CAPTURED
+	rig.capture_mouse()
 
 func _title() -> void:
 	page="title"
@@ -373,6 +374,7 @@ func _interact(id:String) -> void:
 	if staging.interact(self,id): return
 	if scripted_dialogue.interact(self,id): return
 	if objects.interact(self,"estate",id): return
+	if portals.interact(self,state.world,id): return
 	if _tunnel_interaction(id): return
 	if _town_interaction(id): return
 	if id == "report":
@@ -646,10 +648,15 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	if destination == "estate":
 		estate.sync_staging(state)
 		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes"])
+		portals.sync_points(self, "estate", ["service_entrance"])
 	elif destination == "tunnel":
 		objects.sync_points(self, "tunnel", ["tunnel_record"])
+		portals.sync_points(self, "tunnel", ["tunnel_exit"])
+	elif destination == "lounge":
+		portals.sync_points(self, "lounge", ["lounge_exit"])
 	else:
 		objects.sync_points(self, "town", ["gazette","lodging","exemption"])
+		if destination == "lower": portals.sync_points(self, "lower", ["route_speakeasy"])
 	if estate and estate.has_method("sync_actors"):
 		estate.sync_actors(state)
 	elif destination=="town" and state.evidence.has("old_woman") and estate.has_method("dismiss_old_woman"):
@@ -706,19 +713,15 @@ func _region_name() -> String:
 	return "THE TERRACE" if player.position.z < -10 else ("THE ROSE GARDEN" if player.position.z < 6 else "THE OPHION ESTATE")
 
 func _town_interaction(id:String) -> bool:
-	if id == "route_speakeasy":
-		# The hatch is visible at all times (town_expansion.gd builds it
-		# unconditionally); only whether it actually opens is gated here.
-		var phase=DayClock.phase(state.clock_minutes)
-		if phase == "morning" or phase == "noon":
-			_toast("The bulkhead is bolted from the inside. Nothing stirs down there before dark.",5)
-			return true
-		if state.coat != "Plain wool coat":
-			_toast("A shape behind the peephole sees the badge and the bolt doesn't move. Try again out of uniform.",5)
-			return true
-		var route=estate.routes[id]
-		_travel(route[0],route[1],route[2])
-		return true
+	# Contiguous town keeps state.world == "town" even while standing on the
+	# lower district's shared exterior facade (lower_street.gd, built onto
+	# the town scene by contiguous_town_phase_two.gd) — so route_speakeasy's
+	# raw estate.routes entry (registered unconditionally, with no GATE) is
+	# the only thing _interact()'s portals.interact(self,state.world,id)
+	# check ever reaches for it in that mode, since it never sees "lower".
+	# Check the portal's real, authoritative LOCATION explicitly first so
+	# the phase/coat gate can never be bypassed by walking up contiguously.
+	if portals.interact(self, "lower", id): return true
 	if estate.routes.has(id):
 		var route=estate.routes[id]
 		_travel(route[0],route[1],route[2])
@@ -932,14 +935,6 @@ func _tunnel_interaction(id:String) -> bool:
 			_drowned_encounter()
 		"cultist_encounter":
 			_cultist_encounter()
-		"tunnel_exit":
-			if state.evidence.has("lower_foundation"):
-				state.tunnel_complete=true
-				_travel("precinct",Vector3(0,0.1,5),0,false,true)
-				_cards([["BACK AT THE PRECINCT",_custody_result()],["A LATER PAGE","The lower-foundation measurement is still in Walter's notebook.\nHe can file it as a dated supplement at the side counter. Earlier copies remain as they were received."]],func(): _save_game())
-			else:
-				_travel("room",Vector3(0,0.1,5),0,false,true)
-				_save_game()
 		_:
 			return false
 	return true

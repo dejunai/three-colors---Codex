@@ -1,0 +1,3 @@
+Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
+
+PASS: live portal content audits clean; parse errors/wiring, service_entrance/lounge_exit round trip (including an immediate-GO completion), route_speakeasy gated correctly from the real contiguous town world, both tunnel_exit branches, and authored TIME charging exactly once per portal identity all verified through the real chapter_one.gd adapter

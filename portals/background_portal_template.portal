@@ -1,0 +1,92 @@
+# PORTAL AUTHORING TEMPLATE / COOKBOOK — mirrors the object system's
+# background_object_template.object. Reference: docs/PORTAL_AUTHORING.md.
+# Examples only: these statements and identifiers are NOT new story canon.
+# Copy this file, replace {generated} with your lowercase_snake_case
+# location id, and replace every example_* identifier with the real ids for
+# that location's travel points. Braces do not interpolate. This placeholder
+# header keeps the template out of any live location catalog.
+# Use two spaces per indent, uppercase directives, full-line comments only.
+# There is no VOICE here — portal narration is Walter's own observation and
+# always stays unvoiced, exactly like dialogue's/objects' beats/notebook text.
+LOCATION: {generated}
+# Optional, repeatable header; uncomment only when the real file exists:
+# INCLUDE: shared_portal_rebuffs.portal
+
+# Like OBJECT ids, a PORTAL id is expected to repeat: one hotspot, several
+# gated states, first eligible block wins (file order) — exactly like the
+# object system's cascade. A locked state simply has no GO step: Walter
+# reads/hears something and does not move. An unlocked state's GO step is
+# what actually sends him somewhere.
+PORTAL: example_door
+  GATE: NOT spoken_to(example_witness)
+  LABEL: "Try the door"
+  [A heavy door, bolted from the far side.]
+  WALTER CORWIN: "Locked. Nobody answers before he's spoken to someone inside."
+
+PORTAL: example_door
+  GATE: spoken_to(example_witness)
+  LABEL: "Go inside"
+  GO: example_location | 0,0.1,6 | 0
+
+# GO: destination | x,y,z | yaw | flags
+# destination is a location id (matches a world/state.world value); x,y,z is
+# the spawn position; yaw is optional (radians, default 0); flags is
+# optional and comma-separated: `nosave` mirrors _travel()'s own `save`
+# parameter (inverted), `elapsed` mirrors its `elapsed_travel` parameter —
+# both exist for the same rare case _travel() itself already has one: a
+# transition that should still charge time despite not persisting as a real
+# arrival. Omit flags entirely for an ordinary two-way door.
+PORTAL: example_encounter_exit
+  GATE: always
+  LABEL: "Return to the corridor"
+  GO: example_corridor | 0,0.1,5 | 0 | nosave,elapsed
+
+# Content authored AFTER a GO renders once the caller has actually performed
+# the travel — arrival narration "from the new place," not before it. Time
+# is charged as usual when TIME is authored (see below); GO itself is not a
+# card and never appears as one.
+PORTAL: example_arrival
+  GATE: evidence(example_measurement)
+  LABEL: "Return upstairs"
+  GO: example_upstairs | 0,0.1,5 | 0
+  [Back where he started, the passage behind him already a memory.]
+  WALTER CORWIN: "That's everything down there for now."
+
+# Omitted TIME leaves _travel()'s own existing automatic district-crossing
+# charge alone — unlike the object system, there is no "free by default"
+# rule here, since travel already has a meaningful default cost to preserve.
+# An authored TIME suppresses that automatic charge and applies this amount
+# once, the first time this portal identity completes — chapter_one_portals.gd
+# checks portal_done() itself before charging, so repeat crossings are free
+# without any GATE trick. The second cascaded block below exists only to
+# change the LABEL after the toll is paid, not to avoid a double charge.
+PORTAL: example_toll_gate
+  GATE: NOT portal_done(example_location, example_toll_gate)
+  LABEL: "Pay the toll and cross"
+  TIME: 15
+  NOTEBOOK: example_toll_note | "Walter paid the gatekeeper's toll without comment."
+  GO: example_far_bank | 0,0.1,4 | 0
+
+PORTAL: example_toll_gate
+  GATE: portal_done(example_location, example_toll_gate)
+  LABEL: "Cross again"
+  GO: example_far_bank | 0,0.1,4 | 0
+
+# Shared PORTAL id across different locations counts DISTINCT completed
+# sources, same rationale as object_count()/topic_count().
+PORTAL: example_shared_checkpoint
+  GATE: always
+  LABEL: "Show the checkpoint pass"
+  TAG: example_shared_checkpoint_example_location
+  GO: example_location | 0,0.1,2 | 0
+
+# never disables a populated block; a metadata-only stub is also invisible.
+PORTAL: example_disabled
+  GATE: never
+  WALTER CORWIN: "Draft content; unavailable in play."
+
+PORTAL: example_unwritten
+  GATE: always
+  LABEL: "Unwritten travel point"
+  # Add steps when ready; is_available() reports false until then because
+  # an empty step list never matches, exactly like the object system's.

@@ -49,10 +49,27 @@ if (rows[1].values[12] !== "alive" || rows[1].values[13] !== "yes") throw new Er
 result = await worker.fetch(post({ events: [{ ...debrief.events[0], town_feel: "free text" }] }), env);
 if (result.status !== 400 || writes.length !== 2) throw new Error("invalid debrief choice was accepted");
 
+const conversation = { events: [{
+  session_id: "12345678-1234-4123-8123-123456789abc",
+  event: "conversation",
+  timestamp: "2026-09-13T12:02:00Z",
+  npc_id: "mrs_almy",
+  topic_id: "crew_omission",
+  coat_state: "plain",
+  world: "town",
+  day: 1,
+  phase: "noon",
+}] };
+result = await worker.fetch(post(conversation), env);
+if (result.status !== 204 || writes.length !== 3 || rows.length !== 3) throw new Error("valid conversation was not dual-written");
+if (rows[2].values[17] !== "mrs_almy" || rows[2].values[19] !== "plain") throw new Error("conversation fields were not mapped to D1");
+result = await worker.fetch(post({ events: [{ ...conversation.events[0], coat_state: "raincoat" }] }), env);
+if (result.status !== 400 || writes.length !== 3) throw new Error("invalid coat state was accepted");
+
 result = await worker.fetch(new Request("https://example.test", {
   method: "OPTIONS",
   headers: { "Origin": "https://html-classic.itch.zone" },
 }), env);
 if (result.status !== 204 || result.headers.get("Access-Control-Allow-Origin") !== "https://html-classic.itch.zone") throw new Error("itch.io preflight failed");
 
-console.log("WORKER PASS: strict schema, idempotent D1 + R2 dual write, privacy rejection, and CORS preflight");
+console.log("WORKER PASS: strict schema, conversation context, idempotent D1 + R2 dual write, privacy rejection, and CORS preflight");

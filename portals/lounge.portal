@@ -1,0 +1,6 @@
+LOCATION: lounge
+
+PORTAL: lounge_exit
+  GATE: always
+  LABEL: "Leave through the service entrance"
+  GO: estate | -10,0.1,-17 | 3.14159265

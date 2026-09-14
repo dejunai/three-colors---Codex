@@ -1,0 +1,12 @@
+LOCATION: estate
+
+PORTAL: service_entrance
+  GATE: NOT visited(almy)
+  LABEL: "Try the service entrance"
+  [A heavy oak door set into the stone of the kitchen wing. The deadbolt is thrown from the inside.]
+  WALTER CORWIN: "Hours before dawn. The service entrance is locked tight, and nobody inside is answering before daybreak."
+
+PORTAL: service_entrance
+  GATE: visited(almy)
+  LABEL: "Enter the smoking lounge through the service entrance"
+  GO: lounge | 0,0.1,6 | 0

@@ -25,6 +25,15 @@ WHERE event = 'phase_change'
 GROUP BY day, new_phase
 ORDER BY day, CASE new_phase WHEN 'morning' THEN 1 WHEN 'noon' THEN 2 WHEN 'evening' THEN 3 ELSE 4 END;
 
+-- Completed conversations by NPC, topic, and Walter's coat.
+SELECT npc_id, topic_id, coat_state, COUNT(*) AS completions,
+       COUNT(DISTINCT session_id) AS sessions
+FROM game_events
+WHERE event = 'conversation'
+  AND session_id != '11111111-1111-4111-8111-111111111111'
+GROUP BY npc_id, topic_id, coat_state
+ORDER BY sessions DESC, completions DESC, npc_id, topic_id;
+
 -- End-of-slice tester impressions.
 SELECT town_feel, time_natural, COUNT(*) AS responses
 FROM game_events

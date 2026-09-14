@@ -3,6 +3,7 @@ const EVENT_FIELDS = {
   first_objective: [],
   district_transition: ["from_world", "to_world", "real_seconds_elapsed", "game_minutes_elapsed"],
   phase_change: ["day", "new_phase", "npcs_spoken_to_this_phase"],
+  conversation: ["npc_id", "topic_id", "coat_state", "world", "day", "phase"],
   day3_bed_reached: ["real_seconds_since_day3_start"],
   debrief: ["town_feel", "time_natural"],
   session_end: ["total_real_seconds", "final_day", "ended_via"],
@@ -17,8 +18,9 @@ const INSERT_EVENT = `INSERT OR IGNORE INTO game_events (
   from_world, to_world, real_seconds_elapsed, game_minutes_elapsed,
   day, new_phase, npcs_spoken_to_this_phase,
   real_seconds_since_day3_start, town_feel, time_natural,
-  total_real_seconds, final_day, ended_via
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  total_real_seconds, final_day, ended_via,
+  npc_id, topic_id, coat_state, world, phase
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 function corsHeaders(request) {
   const origin = request.headers.get("Origin") || "";
@@ -63,6 +65,11 @@ function cleanEvent(raw) {
   for (const key of ["from_world", "to_world"]) {
     if (Object.hasOwn(raw, key) && (typeof raw[key] !== "string" || !/^[a-z0-9_]{1,32}$/.test(raw[key]))) throw new Error("invalid world");
   }
+  for (const key of ["npc_id", "topic_id", "world"]) {
+    if (Object.hasOwn(raw, key) && (typeof raw[key] !== "string" || !/^[a-z0-9_]{1,64}$/.test(raw[key]))) throw new Error("invalid identifier");
+  }
+  if (Object.hasOwn(raw, "coat_state") && !["police", "plain"].includes(raw.coat_state)) throw new Error("invalid coat_state");
+  if (Object.hasOwn(raw, "phase") && !["morning", "noon", "evening", "night"].includes(raw.phase)) throw new Error("invalid phase");
   if (Object.hasOwn(raw, "new_phase") && !["morning", "noon", "evening", "night"].includes(raw.new_phase)) throw new Error("invalid phase");
   if (Object.hasOwn(raw, "ended_via") && !["closed", "completed"].includes(raw.ended_via)) throw new Error("invalid ending");
   if (Object.hasOwn(raw, "town_feel") && !["alive", "confusing", "too_large", "easy", "skipped"].includes(raw.town_feel)) throw new Error("invalid town_feel");
@@ -85,6 +92,8 @@ async function d1Statements(env, events) {
     event.real_seconds_since_day3_start ?? null,
     event.town_feel ?? null, event.time_natural ?? null,
     event.total_real_seconds ?? null, event.final_day ?? null, event.ended_via ?? null,
+    event.npc_id ?? null, event.topic_id ?? null, event.coat_state ?? null,
+    event.world ?? null, event.phase ?? null,
   )));
 }
 

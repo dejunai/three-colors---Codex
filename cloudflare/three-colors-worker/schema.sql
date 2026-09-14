@@ -16,10 +16,16 @@ CREATE TABLE IF NOT EXISTS game_events (
   time_natural TEXT,
   total_real_seconds REAL,
   final_day INTEGER,
-  ended_via TEXT
+  ended_via TEXT,
+  npc_id TEXT,
+  topic_id TEXT,
+  coat_state TEXT,
+  world TEXT,
+  phase TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_game_events_session ON game_events(session_id);
 CREATE INDEX IF NOT EXISTS idx_game_events_event ON game_events(event);
 CREATE INDEX IF NOT EXISTS idx_game_events_timestamp ON game_events(timestamp);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_game_events_event_key ON game_events(event_key);
+CREATE INDEX IF NOT EXISTS idx_game_events_conversation_npc ON game_events(npc_id) WHERE event = 'conversation';

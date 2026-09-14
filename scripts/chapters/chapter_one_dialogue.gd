@@ -177,6 +177,10 @@ func _segment_done(g: Node) -> void:
 		clear()
 		g._close()
 		return
+	# Log only after the full authored path completes. Opening a topic menu,
+	# abandoning a card sequence, and intermediate FORK segments are not
+	# completed conversations.
+	g.playthrough_log.conversation(String(segment.session.npc), String(segment.session.topic), g.state)
 	if not g.state.visited.has(actor): g.state.visited.append(actor)
 	if actor == "barman":
 		if tag in ["steward_first", "steward_first_lead"] and g.state.steward_visits == 0: g.state.steward_visits = 1

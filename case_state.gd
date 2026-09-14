@@ -1,8 +1,9 @@
 extends RefCounted
 
-const VERSION = 10
+const VERSION = 11
 var dialogue_state = preload("res://scripts/shared/dialogue_state.gd").new()
 var object_state = preload("res://scripts/shared/object_state.gd").new()
+var portal_state = preload("res://scripts/shared/portal_state.gd").new()
 var evidence: Array[String] = []
 var inventory: Array[String] = [] # Carryable items recorded by the object system's TAKE step.
 var links: Array[String] = []
@@ -108,7 +109,7 @@ func file_supplement(send_county: bool, sources:Dictionary={}) -> void:
 		if not copies.has("County registrar — dated supplement"): copies.append("County registrar — dated supplement")
 
 func pack() -> Dictionary:
-	return {"version":VERSION,"dialogue_state":dialogue_state.pack(),"object_state":object_state.pack(),"inventory":inventory,"clock_minutes":clock_minutes,"timed_conversations":timed_conversations,"rose_bodies_removed":rose_bodies_removed,"birch_bodies_removed":birch_bodies_removed,"estate_visits_completed":estate_visits_completed,"day":day,"steward_visits":steward_visits,"lounge_exited":lounge_exited,"montage_index":montage_index,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
+	return {"version":VERSION,"dialogue_state":dialogue_state.pack(),"object_state":object_state.pack(),"portal_state":portal_state.pack(),"inventory":inventory,"clock_minutes":clock_minutes,"timed_conversations":timed_conversations,"rose_bodies_removed":rose_bodies_removed,"birch_bodies_removed":birch_bodies_removed,"estate_visits_completed":estate_visits_completed,"day":day,"steward_visits":steward_visits,"lounge_exited":lounge_exited,"montage_index":montage_index,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
 		"report":report,"copies":copies,"report_evidence":report_evidence,"report_statements":report_statements,"flask":flask,"coat":coat,"minutes":minutes,
 		"position":[position.x,position.y,position.z],"yaw":yaw,"started":started,"finished":finished,
 		"world":world,"estate_complete":estate_complete,"intake_done":intake_done,
@@ -117,7 +118,7 @@ func pack() -> Dictionary:
 		"ammo":ammo,"flask_spilled":flask_spilled,"flask_spill_amount":flask_spill_amount,"drowned_dead":drowned_dead}
 
 func restore(d: Dictionary) -> bool:
-	if int(d.get("version",0)) not in [1,2,3,4,5,6,7,8,9,VERSION]: return false
+	if int(d.get("version",0)) not in [1,2,3,4,5,6,7,8,9,10,VERSION]: return false
 	for key in ["evidence","links","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history","county_statements","timed_conversations","inventory"]:
 		if not d.get(key,[]) is Array: return false
 		if key!="supplement_history":
@@ -239,4 +240,9 @@ func restore(d: Dictionary) -> bool:
 	object_state=preload("res://scripts/shared/object_state.gd").new()
 	if not object_payload.is_empty():
 		if not object_state.restore(object_payload): return false
+	var portal_payload=d.get("portal_state", {})
+	if not portal_payload is Dictionary: return false
+	portal_state=preload("res://scripts/shared/portal_state.gd").new()
+	if not portal_payload.is_empty():
+		if not portal_state.restore(portal_payload): return false
 	return true

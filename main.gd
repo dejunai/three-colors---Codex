@@ -28,13 +28,14 @@ var move_target = null
 # the entire pointer movement that happened while the mouse was free — including
 # however far it drifted off the game canvas — as one inflated relative delta on the
 # very first motion event after pointer lock re-acquires. That single event was
-# large enough to slam pitch straight into its clamp. _suppress_next_motion discards
-# exactly that one event's delta (yaw/pitch are simply not updated from it) so a
-# recapture can never itself move the camera; every real look-around input after it
-# is unaffected.
+# large enough to slam pitch straight into its clamp. Browsers may emit more than
+# one synthetic sample, and the first sample can arrive before the next physics
+# frame notices the mouse-mode change. Arm a short guard at the capture call itself;
+# every motion sample in that window is discarded.
+const RECAPTURE_MOTION_GUARD_SECONDS = 0.12
 var _prev_mouse_mode = Input.MOUSE_MODE_VISIBLE
 var _recapture_time = -1000.0
-var _suppress_next_motion = false
+var _motion_guard_until = -1000.0
 
 func _ready() -> void:
 	_setup_inputs()
@@ -117,8 +118,7 @@ func _physics_process(delta:float) -> void:
 		return
 	if Input.mouse_mode != _prev_mouse_mode:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			_recapture_time = Time.get_ticks_msec()/1000.0
-			_suppress_next_motion = true
+			_arm_mouse_motion_guard()
 		_prev_mouse_mode = Input.mouse_mode
 	for action in move_latch_timer.keys(): move_latch_timer[action] = maxf(0.0,move_latch_timer[action]-delta)
 	var axis = Vector2(
@@ -167,6 +167,37 @@ func _physics_process(delta:float) -> void:
 func _dir_pressed(action:String) -> bool:
 	return Input.is_action_pressed(action) or move_latch_timer[action] > 0.0
 
+func capture_mouse() -> void:
+	# Called by menu-close paths so the guard exists before pointer-lock can emit
+	# its first synthetic motion event. The physics fallback above still covers a
+	# browser or OS changing capture mode independently.
+	_arm_mouse_motion_guard()
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_prev_mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func _arm_mouse_motion_guard() -> void:
+	_recapture_time = Time.get_ticks_msec()/1000.0
+	_motion_guard_until = _recapture_time + RECAPTURE_MOTION_GUARD_SECONDS
+
+func _mouse_motion_is_guarded() -> bool:
+	return Time.get_ticks_msec()/1000.0 <= _motion_guard_until
+
+func _apply_mouse_look(relative: Vector2) -> bool:
+	if _mouse_motion_is_guarded():
+		print("[camera-pivot-diagnostic] suppressed post-recapture motion event, relative=",relative)
+		return false
+	var sensitivity = float(chapter.settings.sensitivity)
+	var raw_pitch_delta = relative.y*sensitivity*(-1 if chapter.settings.invert_y else 1)
+	var new_pitch = clampf(pitch+raw_pitch_delta,-1.3,1.05)
+	# Retained in case a spike still shows up outside the recapture window —
+	# that would mean pointer-lock timing isn't the whole story.
+	if absf(relative.y) > 40.0 or (new_pitch >= 1.04 and pitch < 1.0) or (new_pitch <= -1.29 and pitch > -1.2):
+		var since_recapture = Time.get_ticks_msec()/1000.0 - _recapture_time
+		print("[camera-pivot-diagnostic] relative=",relative," sensitivity=",sensitivity," pitch ",pitch,"->",new_pitch," seconds_since_recapture=",since_recapture)
+	yaw -= relative.x*sensitivity
+	pitch = new_pitch
+	return true
+
 func _unhandled_input(event:InputEvent) -> void:
 	for action in move_latch_timer.keys():
 		if event.is_action_pressed(action): move_latch_timer[action] = MOVE_LATCH_MIN
@@ -178,23 +209,7 @@ func _unhandled_input(event:InputEvent) -> void:
 		print("[movement] Shift pace: ", "DEVELOPER (10.5)" if developer_brisk else "PLAYER BRISK (4.0)")
 	if chapter.page == "play":
 		if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			if _suppress_next_motion:
-				# Discard exactly one event: the first motion sample after pointer lock
-				# re-acquires. This is the fix for the "camera pivots straight up on
-				# exiting a menu" report — see the field comment near _suppress_next_motion.
-				_suppress_next_motion = false
-				print("[camera-pivot-diagnostic] suppressed post-recapture motion event, relative=",event.relative)
-			else:
-				var sensitivity = float(chapter.settings.sensitivity)
-				var raw_pitch_delta = event.relative.y*sensitivity*(-1 if chapter.settings.invert_y else 1)
-				var new_pitch = clampf(pitch+raw_pitch_delta,-1.3,1.05)
-				# Retained in case a spike still shows up outside the recapture window —
-				# would mean the theory above isn't the whole story.
-				if absf(event.relative.y) > 40.0 or (new_pitch >= 1.04 and pitch < 1.0) or (new_pitch <= -1.29 and pitch > -1.2):
-					var since_recapture = Time.get_ticks_msec()/1000.0 - _recapture_time
-					print("[camera-pivot-diagnostic] relative=",event.relative," sensitivity=",sensitivity," pitch ",pitch,"->",new_pitch," seconds_since_recapture=",since_recapture)
-				yaw -= event.relative.x*sensitivity
-				pitch = new_pitch
+			_apply_mouse_look(event.relative)
 		if event is InputEventMouseButton and event.pressed:
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP: distance = maxf(3.2,distance-0.5)
 			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN: distance = minf(9,distance+0.5)

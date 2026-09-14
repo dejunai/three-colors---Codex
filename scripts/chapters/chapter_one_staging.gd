@@ -18,21 +18,6 @@ func interact(g:Node,id:String) -> bool:
 	if id == "crew":
 		return g.state.world != "estate" or not g.state.lounge_exited
 	match id:
-		"service_entrance":
-			if g.state.world == "estate":
-				if g.state.visited.has("almy"):
-					g._travel("lounge",Vector3(0,0.1,6))
-				else:
-					g._cards([
-						["THE SERVICE ENTRANCE", "A heavy oak door set into the stone of the kitchen wing. The deadbolt is thrown from the inside."],
-						["WALTER CORWIN", "Hours before dawn. The service entrance is locked tight, and nobody inside is answering before daybreak."]
-					], func(): pass, "examine")
-			return true
-		"lounge_exit":
-			if g.state.world == "lounge":
-				g.state.lounge_exited = true
-				g._travel("estate",Vector3(-10,0.1,-17),PI)
-			return true
 		"barman": steward(g); return true
 		"day_close":
 			# Reviewing the notebook at the desk is a reflective beat, not a way to

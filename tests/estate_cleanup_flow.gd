@@ -25,7 +25,8 @@ func run() -> void:
 	assert(g.estate.points["service_entrance"].title == "Try the service entrance", "Opening title must reflect locked state")
 	g._interact("service_entrance")
 	assert(g.page == "dialogue", "Interacting with service entrance before dawn must show locked door cards")
-	assert(g.dialogue.cards[0][0] == "THE SERVICE ENTRANCE", "Must display service entrance card")
+	assert(g.dialogue.cards[0][0] == "", "The locked door opens on an unlabelled beat, not a speaker card")
+	assert(g.dialogue.cards[1][0] == "WALTER CORWIN", "Must display Walter's line after the beat")
 	cards(g)
 	assert(g.page == "play" and g.state.world == "estate", "Player must remain on estate grounds")
 
