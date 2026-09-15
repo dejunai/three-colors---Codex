@@ -380,12 +380,6 @@ func _interact(id:String) -> void:
 	if id == "report":
 		_report_screen()
 		return
-	if id == "exit":
-		if state.report.is_empty():
-			_cards([["WALTER CORWIN","It would be unprofessional to leave the scene without completing the paperwork."]],_close)
-			return
-		_finish()
-		return
 	var key = "gardener_plain" if id == "gardener" and state.estate_complete and state.coat == "Plain wool coat" else id
 	if id == "boy":
 		if state.estate_complete: key = "boy_return"
@@ -648,7 +642,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	if destination == "estate":
 		estate.sync_staging(state)
 		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes"])
-		portals.sync_points(self, "estate", ["service_entrance"])
+		portals.sync_points(self, "estate", ["service_entrance", "exit"])
 	elif destination == "tunnel":
 		objects.sync_points(self, "tunnel", ["tunnel_record"])
 		portals.sync_points(self, "tunnel", ["tunnel_exit"])
@@ -656,6 +650,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 		portals.sync_points(self, "lounge", ["lounge_exit"])
 	else:
 		objects.sync_points(self, "town", ["gazette","lodging","exemption"])
+		if destination == "town": portals.sync_points(self, "town", ["street_precinct", "street_almy", "street_room", "street_estate", "route_post"])
 		if destination == "lower": portals.sync_points(self, "lower", ["route_speakeasy"])
 	if estate and estate.has_method("sync_actors"):
 		estate.sync_actors(state)
@@ -733,10 +728,6 @@ func _town_interaction(id:String) -> bool:
 		_cards([["THE CORONER","The coroner spreads his hands over the row of sheeted tables. He has no answer to offer."]],_close)
 		return true
 	match id:
-		"street_precinct": _travel("precinct",Vector3(0,0.1,6)); return true
-		"street_almy": _travel("boardinghouse",Vector3(0,0.1,6)); return true
-		"street_room": _travel("room",Vector3(0,0.1,6)); return true
-		"street_estate": _travel("estate",Vector3(0,0.1,35)); return true
 		"interior_exit":
 			var exits={"precinct":Vector3(-18,0.1,-4.5),"boardinghouse":Vector3(-1,0.1,-4.5),"room":Vector3(18,0.1,-4.5)}
 			var business_return = preload("res://scripts/chapters/contiguous_town_phase_one.gd").business_return(state.world)

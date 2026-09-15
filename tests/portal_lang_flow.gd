@@ -82,5 +82,11 @@ func _run() -> void:
 	var good_flags = Lang.parse("LOCATION: x\nPORTAL: y\n  GATE: always\n  GO: z | 0,0,0 | 0 | nosave,elapsed\n")
 	assert(good_flags.errors.is_empty(), "nosave and elapsed must remain accepted: %s" % str(good_flags.errors))
 
-	print("PASS: portal grammar parses; GATE cascade, GO/after_go continuation, attempt_count, known_ids, and validation verified")
+	# --- default TIME is 3 when omitted ---
+	var default_time_src = "LOCATION: x\nPORTAL: y\n  GATE: always\n  GO: z | 0,0,0\n"
+	var default_time_def = Lang.parse(default_time_src)
+	assert(default_time_def.errors.is_empty(), str(default_time_def.errors))
+	assert(default_time_def.portals[0].timing == "3", "omitted TIME must default to '3'")
+
+	print("PASS: portal grammar parses; GATE cascade, GO/after_go continuation, attempt_count, known_ids, default TIME: 3, and validation verified")
 	quit(0)

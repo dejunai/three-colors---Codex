@@ -73,14 +73,11 @@ func _advance(g: Node, result: Dictionary) -> void:
 	g._close()
 	g._save_game()
 
-# TIME semantics differ from objects on purpose: an omitted TIME leaves
-# _travel()'s own existing automatic DayClock.travel_cost() charge alone
-# (save/elapsed_travel pass straight through from GO's flags); an authored
-# TIME suppresses that automatic charge and applies the authored amount
-# once, the first time this portal identity ever completes (checked via
-# portal_done(), mirroring object_runtime.gd's first_completion guard) —
-# every crossing after that is free, matching portal_done()'s own bookkeeping,
-# so migrating a portal never silently changes its time cost.
+# TIME: an omitted TIME defaults to 3 minutes (matching dialogue substantive
+# topic defaults), charged once the first time this portal identity ever completes
+# (checked via portal_done(), mirroring object_runtime.gd's first_completion guard) —
+# every crossing after that is free, matching portal_done()'s own bookkeeping.
+# An explicit numeric TIME override (including 0) is respected.
 func _perform_go(g: Node, result: Dictionary) -> void:
 	var go = result.go
 	var portal_id = String(result.session.portal)
@@ -124,12 +121,25 @@ func _perform_go(g: Node, result: Dictionary) -> void:
 # limitation" section. Keep this list short; anything expressible as static
 # prose or a GATE belongs in the .portal file instead.
 func _before_travel(g: Node, portal_id: String, destination: String) -> void:
+	if portal_id == "exit" and destination == "town":
+		g.state.estate_complete = true
+		g.state.estate_visits_completed += 1
+		g.state.rose_bodies_removed = true
+		if is_instance_valid(g.estate) and g.estate.has_method("sync_staging"):
+			g.estate.sync_staging(g.state)
+		if g.state.world == "estate":
+			g.objects.sync_points(g, "estate", ["wounds","watch","knife","eight","shoes"])
+	if portal_id == "street_estate" and destination == "estate":
+		if g.state.day >= 3 and g.state.estate_visits_completed >= 2:
+			g.state.birch_bodies_removed = true
 	if portal_id == "tunnel_exit" and destination == "precinct":
 		g.state.tunnel_complete = true
 	if portal_id == "lounge_exit":
 		g.state.lounge_exited = true
 
 func _extra_cards(g: Node, portal_id: String, destination: String) -> Array:
+	if portal_id == "exit" and destination == "town":
+		return g.TownStory.ARRIVAL
 	if portal_id == "tunnel_exit" and destination == "precinct":
 		return [["BACK AT THE PRECINCT", g._custody_result()]]
 	return []

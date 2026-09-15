@@ -19,9 +19,8 @@ extends RefCounted
 #     GATE: <expression>          ("never" / "always" / a boolean expression)
 #     LABEL: "Try the service entrance"  (optional; otherwise object_id.capitalize())
 #     TAG: estate_service_entrance        (optional; extra completion/timing key)
-#     TIME: 5                     (optional override; omitted defers entirely to
-#                                   the existing DayClock.travel_cost() charge —
-#                                   see portal_runtime.gd's GO handling)
+#     TIME: 5                     (optional override; omitted defaults to 3 minutes,
+#                                   charged once on first completion)
 #     [A heavy oak door set into the stone of the kitchen wing.]
 #     WALTER CORWIN: "Hours before dawn. Nobody inside is answering."
 #
@@ -131,7 +130,7 @@ static func _parse_portal_body(body: Array, errors: Array) -> Dictionary:
 	var gate_src = "never"
 	var label = ""
 	var tag = ""
-	var timing = ""
+	var timing = "3"
 	var k = 0
 	while k < body.size() and body[k].indent == base_indent:
 		var text = body[k].text
@@ -469,7 +468,7 @@ static func _comparison(state: Dictionary) -> Dictionary:
 		value = v.value if v != null else null
 	return {"op": "cmp", "name": name, "call": is_call, "args": args, "cmp": cmp, "value": value}
 
-static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary):
+static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary) -> bool:
 	var name = String(ast.name)
 	var result
 	if bool(ast.call):
@@ -479,12 +478,17 @@ static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary):
 		var field = ctx.get("fields", {}).get(name)
 		result = field.call() if field is Callable and field.is_valid() else false
 	if String(ast.cmp).is_empty(): return bool(result)
-	var expected = String(ast.value)
+	var expected = str(ast.value) if ast.value != null else ""
+	var res_str = str(result) if result != null else ""
 	match String(ast.cmp):
-		"=": return String(result).to_lower().contains(expected.to_lower()) or expected.to_lower().contains(String(result).to_lower())
-		"!=": return not (String(result).to_lower().contains(expected.to_lower()) or expected.to_lower().contains(String(result).to_lower()))
-		"<": return float(result) < float(expected) if expected.is_valid_float() else false
-		"<=": return float(result) <= float(expected) if expected.is_valid_float() else false
-		">": return float(result) > float(expected) if expected.is_valid_float() else false
-		">=": return float(result) >= float(expected) if expected.is_valid_float() else false
+		"=":
+			if expected.is_empty() and res_str.is_empty(): return true
+			return res_str.to_lower().contains(expected.to_lower()) or expected.to_lower().contains(res_str.to_lower())
+		"!=":
+			if expected.is_empty(): return not res_str.is_empty()
+			return not (res_str.to_lower().contains(expected.to_lower()) or expected.to_lower().contains(res_str.to_lower()))
+		"<": return float(res_str) < float(expected) if expected.is_valid_float() else false
+		"<=": return float(res_str) <= float(expected) if expected.is_valid_float() else false
+		">": return float(res_str) > float(expected) if expected.is_valid_float() else false
+		">=": return float(res_str) >= float(expected) if expected.is_valid_float() else false
 		_: return false

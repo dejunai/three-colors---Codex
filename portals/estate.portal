@@ -10,3 +10,13 @@ PORTAL: service_entrance
   GATE: visited(almy)
   LABEL: "Enter the smoking lounge through the service entrance"
   GO: lounge | 0,0.1,6 | 0
+
+PORTAL: exit
+  GATE: report = ""
+  LABEL: "Leave through the estate gates"
+  WALTER CORWIN: "It would be unprofessional to leave the scene without completing the paperwork."
+
+PORTAL: exit
+  GATE: report != ""
+  LABEL: "Leave through the estate gates"
+  GO: town | 0,0.1,17 | 0

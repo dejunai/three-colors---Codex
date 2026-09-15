@@ -17,9 +17,10 @@ const PortalRuntime = preload("res://scripts/shared/portal_runtime.gd")
 # chapter_one.gd's portals.sync_points()/portals.interact() calls expect a
 # given location's .portal file to define.
 const LIVE_FILES = {
-	"estate": ["service_entrance"],
+	"estate": ["service_entrance", "exit"],
 	"lounge": ["lounge_exit"],
 	"lower": ["route_speakeasy"],
+	"town": ["street_precinct", "street_almy", "street_room", "street_estate", "route_post"],
 	"tunnel": ["tunnel_exit"],
 }
 
@@ -30,10 +31,11 @@ func _run() -> void:
 	_check_parse_and_wiring()
 	var g = await _new_game()
 	await _check_service_entrance_and_lounge(g)
+	await _check_town_street_portals(g)
 	await _check_speakeasy_via_contiguous_town(g)
 	await _check_tunnel_exit_both_branches(g)
 	await _check_authored_time_charges_once()
-	print("PASS: live portal content audits clean; parse errors/wiring, service_entrance/lounge_exit round trip (including an immediate-GO completion), route_speakeasy gated correctly from the real contiguous town world, both tunnel_exit branches, and authored TIME charging exactly once per portal identity all verified through the real chapter_one.gd adapter")
+	print("PASS: live portal content audits clean; parse errors/wiring, service_entrance/lounge_exit round trip (including an immediate-GO completion), town street portals, route_speakeasy gated correctly from the real contiguous town world, both tunnel_exit branches, and authored TIME charging exactly once per portal identity all verified through the real chapter_one.gd adapter")
 	quit(0)
 
 func _check_parse_and_wiring() -> void:
@@ -80,6 +82,72 @@ func _check_service_entrance_and_lounge(g) -> void:
 	assert(g.state.world == "estate", "lounge_exit must travel back to the estate")
 	assert(g.state.lounge_exited, "lounge_exit's adapter-side effect (_before_travel) must fire")
 	assert(g.state.portal_state.portal_done("lounge", "lounge_exit"), "lounge_exit's immediate GO must also complete its portal session")
+
+	# Check exit portal:
+	assert(g.state.report.is_empty(), "test setup: report is not filed yet")
+	g._interact("exit")
+	assert(g.page == "dialogue" and g.dialogue.cards[0][1].contains("paperwork"), "uncompleted report must show paperwork card")
+	_drain_cards(g)
+	assert(g.state.world == "estate", "blocked exit must stay in estate")
+	g.state.report = "Observations filed"
+	g._interact("exit")
+	assert(g.page == "dialogue" and g.dialogue.cards[0][0] == "PICKMAN STREET", "unlocked exit must show arrival cards")
+	_drain_cards(g)
+	await process_frame
+	assert(g.state.world == "town", "unlocked exit must travel to town")
+	assert(g.state.estate_complete, "exit portal must trigger estate_complete")
+	assert(g.state.portal_state.portal_done("estate", "exit"), "exit portal session must complete")
+
+func _check_town_street_portals(g) -> void:
+	g._travel("town", Vector3(0, 0.1, 17), 0)
+	await process_frame
+	assert(g.state.world == "town")
+
+	# street_precinct
+	g._interact("street_precinct")
+	await process_frame
+	assert(g.state.world == "precinct", "street_precinct must travel to precinct")
+	assert(g.state.portal_state.portal_done("town", "street_precinct"), "street_precinct must complete portal session")
+
+	# Return to town
+	g._travel("town", Vector3(0, 0.1, 17), 0)
+	await process_frame
+
+	# street_almy
+	g._interact("street_almy")
+	await process_frame
+	assert(g.state.world == "boardinghouse", "street_almy must travel to boardinghouse")
+	assert(g.state.portal_state.portal_done("town", "street_almy"), "street_almy must complete portal session")
+
+	# Return to town
+	g._travel("town", Vector3(0, 0.1, 17), 0)
+	await process_frame
+
+	# street_room
+	g._interact("street_room")
+	await process_frame
+	assert(g.state.world == "room", "street_room must travel to room")
+	assert(g.state.portal_state.portal_done("town", "street_room"), "street_room must complete portal session")
+
+	# Return to town
+	g._travel("town", Vector3(0, 0.1, 17), 0)
+	await process_frame
+
+	# route_post
+	g._interact("route_post")
+	await process_frame
+	assert(g.state.world == "post_office", "route_post must travel to post_office")
+	assert(g.state.portal_state.portal_done("town", "route_post"), "route_post must complete portal session")
+
+	# Return to town
+	g._travel("town", Vector3(0, 0.1, 17), 0)
+	await process_frame
+
+	# street_estate
+	g._interact("street_estate")
+	await process_frame
+	assert(g.state.world == "estate", "street_estate must travel to estate")
+	assert(g.state.portal_state.portal_done("town", "street_estate"), "street_estate must complete portal session")
 
 func _check_speakeasy_via_contiguous_town(g) -> void:
 	g._travel("town", Vector3(0, 0.1, 17), 0)
@@ -163,4 +231,18 @@ func _check_authored_time_charges_once() -> void:
 	var second = PortalRuntime.enter(parsed, "toll_gate", PortalRuntime.make_context(g.state), g.state)
 	g.portals._play(g, second)
 	assert(g.state.clock_minutes == minutes_before_replay, "a repeat crossing of an already-completed timed portal must not charge again")
+
+	# Omitted TIME defaults to 3 minutes, charged once on first completion:
+	var default_time_src = "LOCATION: test_default_time\nPORTAL: default_door\n  GATE: always\n  GO: estate | 0,0.1,35 | 0\n"
+	var default_parsed = Lang.parse(default_time_src)
+	assert(default_parsed.errors.is_empty(), str(default_parsed.errors))
+	var before_default = g.state.clock_minutes
+	var def_first = PortalRuntime.enter(default_parsed, "default_door", PortalRuntime.make_context(g.state), g.state)
+	g.portals._play(g, def_first)
+	assert(g.state.clock_minutes == before_default + 3.0, "omitted TIME must default to 3 minutes on first crossing")
+	assert(g.state.portal_state.portal_done("test_default_time", "default_door"), "first crossing must complete the portal")
+	var before_def_replay = g.state.clock_minutes
+	var def_second = PortalRuntime.enter(default_parsed, "default_door", PortalRuntime.make_context(g.state), g.state)
+	g.portals._play(g, def_second)
+	assert(g.state.clock_minutes == before_def_replay, "repeat crossing of default-timed portal must not charge again")
 

@@ -77,6 +77,7 @@ static func make_context(state) -> Dictionary:
 			"rose_bodies_removed": func(): return state.rose_bodies_removed,
 			"birch_bodies_removed": func(): return state.birch_bodies_removed,
 			"lounge_exited": func(): return state.lounge_exited,
+			"report": func(): return state.report,
 		}
 	}
 
@@ -202,10 +203,8 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 
 # Call only after the first count cards of this segment have been consumed.
 # Returns true exactly once when the whole portal finishes (reaching the true
-# end with no pending FORK/GO): on that first completion, TIME: minutes are
-# charged. Unlike objects, an omitted TIME does not default to free — the
-# caller (chapter_one_portals.gd) leaves the existing automatic
-# DayClock.travel_cost() charge alone unless TIME was explicitly authored.
+# end with no pending FORK/GO). An omitted TIME: defaults to 3 minutes
+# (charged on first completion, mirroring substantive dialogue topics).
 static func commit_through(result: Dictionary, state, count: int) -> bool:
 	if result.session.is_empty() or result.resumed or result.finished: return false
 	if count < result.acknowledged or count > result.cards.size(): return false

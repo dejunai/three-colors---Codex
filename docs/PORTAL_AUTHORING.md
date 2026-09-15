@@ -30,7 +30,7 @@ Use UTF-8 text, two spaces per nesting level, and no tabs. Keep directives upper
 | `GATE: expression` | Availability; omitted means `never`. |
 | `LABEL: "Menu/hover text"` | Optional; otherwise a capitalized version of the portal id. |
 | `TAG: estate_service_entrance` | Optional additional completion identity and timing key, same purpose as dialogue's/objects'. |
-| `TIME: 12.5` | Optional override, finite and nonnegative; `0` is valid. **Omitted leaves the existing automatic `DayClock.travel_cost()` charge alone** — unlike objects, there is no "free by default" rule, since travel already has a meaningful cost to preserve. |
+| `TIME: 12.5` | Optional override, finite and nonnegative; `0` is valid. **Omitted defaults to 3 minutes** (matching dialogue substantive topic defaults), charged once on first completion. |
 
 | Step | Meaning |
 | --- | --- |
@@ -86,7 +86,7 @@ Same completion-only semantics as objects: `NOTEBOOK`/`EVIDENCE` commit once the
 
 `OUTCOME` behaves identically to dialogue's/objects': the selected value commits only when the player finishes the entire chosen path, is immutable, survives save/load, and shares the same store — do not reuse a `decision_id` across a PORTAL and a TOPIC/OBJECT unless they are genuinely the same decision.
 
-`TIME` works differently here on purpose (see the `GO` section above): omitted, `_travel()`'s own existing automatic `DayClock.travel_cost()` charge applies unchanged; authored, it suppresses that automatic charge and applies the authored amount instead. Either way the charge fires once per location+id (or TAG), matching `portal_done()`'s bookkeeping.
+`TIME` defaults to 3 minutes when omitted (matching dialogue's substantive topic default); authored, it overrides that default with the authored amount (0 is valid). Either way the charge fires once per location+id (or TAG) on first completion, matching `portal_done()`'s bookkeeping, with subsequent crossings free.
 
 Evidence written by a PORTAL still needs an authored entry in `chapter_one_archive.gd`'s LINKS table to become linkable, same rule as dialogue/objects.
 

@@ -1,0 +1,30 @@
+LOCATION: town
+
+PORTAL: street_precinct
+  GATE: always
+  LABEL: "Enter precinct 4"
+  TIME: 0
+  GO: precinct | 0,0.1,6 | 0
+
+PORTAL: street_almy
+  GATE: always
+  LABEL: "Enter almy's boardinghouse"
+  TIME: 0
+  GO: boardinghouse | 0,0.1,6 | 0
+
+PORTAL: street_room
+  GATE: always
+  LABEL: "Enter rooms above"
+  TIME: 0
+  GO: room | 0,0.1,6 | 0
+
+PORTAL: street_estate
+  GATE: always
+  LABEL: "Return to the Ophion estate"
+  GO: estate | 0,0.1,35 | 0
+
+PORTAL: route_post
+  GATE: always
+  LABEL: "Enter the post office"
+  TIME: 0
+  GO: post_office | 0,0.1,6 | 0
