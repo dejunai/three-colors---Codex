@@ -80,7 +80,67 @@
 
 &nbsp;
 
+**This holds for the continuous, player-driven degradation itself — it does not retroactively convert every scripted beat into a player-driven one. Chapter One's iris opening at the rose garden remains an authored threshold, tied to a specific story beat and not to player behavior; what it shares with the degradation system is the visual grammar and renderer, not the mechanism. Stated plainly so the two are never confused: an authored transition using degradation's own visual language is not the same claim as degradation itself being scripted.**
+
+&nbsp;
+
 **One design law holds beneath all three chapters: competence delays the end. It never prevents it.**
+
+&nbsp;
+
+**\#\# The Baseline**
+
+&nbsp;
+
+**Beneath the dynamic degradation described above — the continuous, player-driven breakdown of aspect ratio, color, sound, and lens distortion that each chapter runs on its own terms — sits a second, fixed layer that never moves during play: each protagonist's starting color grade, set once, before the player ever touches a control, and never a function of anything the player does. Color measures how much unresolved reality a protagonist's frame has already admitted. More color means more contradiction already carried, not greater instability, moral failure, or clinical madness. This is not a contradiction of the degradation system: degradation still governs everything that happens to a chapter's frame during play; the baseline is simply where each chapter's degradation starts counting down from, and it is set by who the protagonist already is before the story begins, not by what he does in it.**
+
+&nbsp;
+
+**Walter begins in black and white because he is the least challenged of the three protagonists. His categories — friend or foe, us or them, local or transient, elite or common, criminal or law-abiding — have held not because they are true, but because his position as a white police officer, a local man, and a trusted instrument of authority has let him move through life without ever confronting what those categories exclude. His certainty is not proof of sanity, clarity, or moral strength. It is the stability of a closed system that has never been subjected to a serious contradiction. The investigation does not corrupt an otherwise sound worldview; it finally places that worldview under a load it was never built to carry. His baseline color is the visual expression of that stability — a mind that has never had to run on more than two tracks, long before anything cosmic touches it. The binary is not decoration: it is the sorting engine that produces his central failure (Part Three), where elite or common is the same instinct that weighs a wealthy man's word over a housemaid's account. It fails him for the same reason it has always seemed to work — a closed system never has to notice what it can't hold, and his position in the world is exactly what has protected that system from ever being tested until now.**
+
+&nbsp;
+
+**The same binary reaches sound, not only color, and in both cases the point is not that Walter's world contains no exception — it does, in both channels — but that he has never once let the exception become a question. The Observers' jewelry and reflections already carry impossible color in his world (Part Two); he sees it and files it, unremarked, the same way his mind files everything it has no binary slot to interrogate. The cough motif already sounds in his world before anything cosmic intrudes on it; he hears it and does the same. A player may find either detail unsettling on sight — is meant to — but Walter does not, and per Design Law 5 nothing in the chapter lets him investigate either one, or lets the player press him toward doing so. The noticing belongs entirely to the player, unprompted, for as long as Walter's binary holds.**
+
+&nbsp;
+
+**What actually breaks is not his first exposure to color or sound, but his ability to keep filing them without asking why. When the glass shatters — the beat already established in Part Three as his chapter's ontological crack — it should land the way an artifact from a reality that isn't supposed to exist lands in a story built on the premise that the world in front of you is the whole world: a \*Man in the High Castle\* register of vertigo, not a jump-scare cue. It is the first moment his world questions him as hard as he has always, unknowingly, been failing to question it.**
+
+&nbsp;
+
+**Ward Kohistani's baseline is muted, and it reflects an imposed burden, not an intrinsic flaw. His British and Afghan ancestry leaves him classified differently by every institution he moves through, never fully admitted by any of them. He cannot rid himself of that burden, though he has spent much of his life trying to overcome its social consequences through education, rigor, and professional prestige — and that effort has already carried him remarkably far. Ward does not begin the chapter as an unproven aspirant asking the player to make him competent. He is an esteemed archaeologist who has crossed barriers that would have excluded a less exceptional man long before the chapter opens; his methods are disciplined, his scholarship is real, and his appointment is a genuine achievement even though the institution that sent him quietly treats it as a lesser posting. His desire for recognition is therefore neither vanity nor naivety — he has repeatedly seen excellence move the boundary just far enough to let him continue, and has reasonable cause to believe one more discovery might move it again. What he cannot yet see is that full recognition was never being offered: the institution is willing to use his competence and praise it selectively, but not to let achievement dissolve the category into which it has placed him. Muted color is the visual register of a life spent unable to exist fully in any one place, carrying an achievement that is real and a promise that was never on the table, before professional stress and status anxiety ever compound it.**
+
+&nbsp;
+
+**Ekon Freeman's baseline is the fullest, most realistic color in the trilogy, and it does not rank him as the most broken or the least sane of the three. Color here measures how much unresolved reality a protagonist's frame has already had to admit, not a verdict on stability. Walter has been protected from contradiction; Ward has been classified by incompatible institutions that never let him rest in either; Ekon has survived while holding contradictions society refuses to resolve at all — freedom and segregation, having served loyally and still being denied what that service should have earned him, a PTSD that belongs as much to the society he returned to as to the war itself. He is the only protagonist capable of holding two genuinely true, incompatible things at once and continuing to function. That capacity is what "more color" measures, and it is a cost, not a reward — he is the one paying the highest baseline price before his chapter has asked him to do anything at all.**
+
+&nbsp;
+
+**This directly answers the read a chapter-by-chapter demo will otherwise invite — that "three colors" means each chapter should individually look more colorful than the last, and that a black-and-white opening chapter is a shortfall rather than the point. It isn't. Walter's chapter reads as genuinely two-tone because his worldview has never had to be anything else, not because two-tone is a lesser state the trilogy is building out of. The trilogy's three colors are the three baselines read side by side across the whole work — three different relationships to contradiction, not a ladder from least to most colorful, and never a scale from least to most sane. Chapter One's restraint is Design Law 8 working exactly as intended, not a chapter that hasn't earned its title yet.**
+
+&nbsp;
+
+**One thing this framing has to guard against actively: read carelessly, "Walter is least challenged" and "his certainty is not proof of sanity" could still be misheard as crediting his closed-mindedness. It should not be. The baseline names the cost of never having been tested, not a virtue — his stability is privilege and insulation, not health, and the investigation does not corrupt a sound worldview, it finally exposes one that was never sound to begin with. This should read as the same claim his central failure already makes (Part Three) and the same claim Ekon's own Fatal Realization makes in Part Five: recognition, not comfort, is what the trilogy actually respects.**
+
+&nbsp;
+
+**Color is the baseline this section names outright because it's the one that went missing and prompted this whole pass, but it is not the only fixed axis — sound (see the Walter passage above) carries the same logic: set once, per protagonist, before play begins. Aspect ratio does not belong in this list. It is a different kind of system entirely, and is handled separately below (The Frame) rather than forced to look like a third fixed baseline it isn't.**
+
+&nbsp;
+
+**Each protagonist's own section (Parts Three, Four, Five) carries a short cross-reference back to this baseline at the point his color grade is first established on screen.**
+
+&nbsp;
+
+**\#\# The Frame**
+
+&nbsp;
+
+**Aspect ratio does not behave like color or sound, but it isn't baseline-free either — each chapter already has an authored starting frame (Walter's boxed silent-film ratio, Ward's early-sound-era register, Ekon's comparatively realistic frame), and that starting point still matters. What's different is what happens to it during play: color and sound hold their baseline fixed and let the dynamic degradation move independently on top of it, while aspect ratio moves the baseline itself, bidirectionally, in both directions across a single chapter and even within a single sequence. Widening and narrowing are always measured relative to that chapter's authored starting frame, not against some universal zero. The frame widens as a protagonist pushes further into whatever a chapter's madness has to offer; it narrows back toward that starting comfort as he copes, retreats, or steadies. Wider is a direction, toward greater exposure and instability, never a floor or a point any protagonist settles at permanently. Narrower is temporary retreat or steadiness, never an achievement the player banks and keeps.**
+
+&nbsp;
+
+**Real back-and-forth thrashing — the frame widening, narrowing, and widening again within one sequence — is not off the table, as long as three conditions hold. It must never read as an error in the build, held to the same fairness bar Design Law 4 sets everywhere else in the game. It must not become a constant, overused tic that stops registering as meaningful the fiftieth time it happens. And no matter how much a given passage thrashes, the throughline itself must never blur: wider always means greater exposure and instability, narrower always means temporary retreat or steadiness, and a player has to be able to trust that direction even while the frame itself is moving unpredictably from moment to moment.**
 
 &nbsp;
 
@@ -232,7 +292,7 @@
 
 &nbsp;
 
-**One figure is present and recognizable across all three decades — a young laborer in Chapter One, visibly aging and shown teaching someone younger in Chapter Two, elderly but still present, working alongside that same apprentice, in Chapter Three. This is not a handoff structure in which one individual replaces another; it is both payoffs at once, and neither may be sacrificed for the other. An attentive player recognizes the same face surviving twenty years no one else in the trilogy survives, and separately recognizes that same figure visibly passing the discipline on rather than holding it alone. A pure generational-relay version — one laborer simply replaced by the next — is the easier version to default to and loses the continuity beat that makes the device work; it is not an acceptable substitute.**
+**At least one figure is present and recognizable across all three decades — a young laborer in Chapter One, visibly aging and shown teaching someone younger in Chapter Two, elderly but still present, working alongside that same apprentice, in Chapter Three. This is not a handoff structure in which one individual replaces another; it is both payoffs at once, and neither may be sacrificed for the other. And it is one figure among many, not the whole of the population — the Observers are not a sect or a mystical tribe read as a single collective character. They are a category of NPC: named individuals with their own schedules, relationships, and conversations, who happen to share a discipline learned from the same catastrophe. The continuity figure is a device that proves the discipline outlives any one person; it is not what the Observers, as a group, are reducible to. An attentive player recognizes the same face surviving twenty years no one else in the trilogy survives, and separately recognizes that same figure visibly passing the discipline on rather than holding it alone. A pure generational-relay version — one laborer simply replaced by the next — is the easier version to default to and loses the continuity beat that makes the device work; it is not an acceptable substitute.**
 
 &nbsp;
 
@@ -292,7 +352,7 @@
 
 &nbsp;
 
-**A rigid Widow's Bight beat cop, shaped by a closed, insular town that has never had reason to look past its own coastline. Descended, unknowingly, from the drowned crew of the Ophion. Stayed home from the war on a compassionate exemption to care for his mother, Constance Corwin — an abusive, controlling presence whose care he gave out of duty long before he understood it as a wound. His arc across the chapter runs from dutiful son to, in retrospect, abused caretaker — revealed backward, the way everything in this trilogy is revealed, never announced as a twist. The register is closer to \*Ethan Frome\* than to any horror-genre "monstrous mother" trope: a slow erosion inside total isolation, not a jump scare.**
+**A rigid Widow's Bight beat cop, shaped by a closed, insular town that has never had reason to look past its own coastline. Descended, unknowingly, from the drowned crew of the Ophion. Stayed home from the war on a compassionate exemption to care for his mother, Constance Corwin — an abusive, controlling presence whose care he gave out of duty long before he understood it as a wound. His arc across the chapter runs from dutiful son to, in retrospect, abused caretaker — revealed backward, the way everything in this trilogy is revealed, never announced as a twist. The register is closer to \*Ethan Frome\* than to any horror-genre "monstrous mother" trope: a slow erosion inside total isolation, not a jump scare. His baseline color and its origin are established in Part One, The Baseline.**
 
 &nbsp;
 
@@ -356,7 +416,7 @@
 
 &nbsp;
 
-**\*\*Coping mechanism:\*\* a flask. Can be rationed; cannot be outlasted. A forced-spill mechanism punishes players who try to hoard or ration it past its natural point — an anti-optimization beat aimed specifically at the min-max instinct. Like any other loss of a resource the player didn't choose, the spill needs its own visible tell (a stumble the player caused, a beat of overheard dialogue noting it, anything legible in the moment it happens) and a way to confirm afterward how much was lost and why — per Design Law 4, a player must never be left wondering whether an unrationed flask emptying itself was a bug rather than the game acting with intent.**
+**\*\*Coping mechanism:\*\* a flask. Can be rationed; cannot be outlasted. As Walter is turned back from the descent, he staggers and falls during the retreat, losing his badge, his flask, and his whistle together — regardless of how much was left in the flask when it goes. This is not a punitive anti-hoarding mechanic; it is a narrative beat with a specific downstream payoff (see Part Four, Setting): the same objects Ward later disturbs in the tunnel, decontextualized and impossible for him to place. Per Design Law 4, the beat needs its own clear, legible tell in the moment — Walter cannot simply vanish these items off-screen with no confirmation of what happened and why.**
 
 &nbsp;
 
@@ -456,7 +516,7 @@
 
 &nbsp;
 
-**Half-British, half-Afghan archaeologist, born of a wartime liaison he does not carry his father's name from. His mother's family carries real standing — in the vein of the historical pattern of Anglo-Afghan noble houses that secured British colonial favor by collaborating against their own people (a real, documented pattern; this project invents its own family rather than using an actual lineage). Surname Kohistani, a real, common Pashtun geographic surname tied to no single dynasty. First name anglicized to Ward — a legal and social term for someone under another party's protection, chosen by a man trying so hard to belong to an institution that never fully grants him that protection in return.**
+**Half-British, half-Afghan archaeologist, born of a wartime liaison he does not carry his father's name from. His mother's family carries real standing — in the vein of the historical pattern of Anglo-Afghan noble houses that secured British colonial favor by collaborating against their own people (a real, documented pattern; this project invents its own family rather than using an actual lineage). Surname Kohistani, a real, common Pashtun geographic surname tied to no single dynasty. First name anglicized to Ward — a legal and social term for someone under another party's protection, chosen by a man trying so hard to belong to an institution that never fully grants him that protection in return. His baseline color and its origin are established in Part One, The Baseline.**
 
 &nbsp;
 
@@ -468,11 +528,15 @@
 
 &nbsp;
 
+**As with both other protagonists, Ward's chapter begins in Widow's Bight itself, a beat before he engages passage out to the island. The town is the one constant across all three eras and all three protagonists — the actual throughline of the trilogy, even though each chapter's real stage lies elsewhere.**
+
+&nbsp;
+
 **The ruins on the drowned island off Widow's Bight — what remains of the Ophion and the fleet lost with it. The Observers work this ground and appear throughout, in grayscale but for their jewelry and reflections.**
 
 &nbsp;
 
-**Deep enough into the ruins, the excavation meets a tunnel that has no business existing — a passage running beneath open ocean to somewhere Ward has no way of knowing is a private cellar on the mainland (see Part Two, The Tunnel Beneath the Water). He can only record in his Codex that the geometry is wrong and move on. Somewhere in that stretch of tunnel he disturbs small, decontextualized traces — a corroded flask, a police whistle half-buried in silt, scuff marks that read as a struggle to someone who'd know what a struggle looks like, which he doesn't. He never learns whose they were. A returning player might.**
+**Deep enough into the ruins, the excavation meets a tunnel that has no business existing — a passage running beneath open ocean to somewhere Ward has no way of knowing is a private cellar on the mainland (see Part Two, The Tunnel Beneath the Water). He can only record in his Codex that the geometry is wrong and move on. Somewhere in that stretch of tunnel he disturbs small, decontextualized traces — a corroded flask, a police whistle half-buried in silt, scuff marks that read as a struggle to someone who'd know what a struggle looks like, which he doesn't. He never learns whose they were. A returning player might. These are Walter's own effects, lost during his retreat from the tunnel a decade earlier (see Part Three) — a detail the game never states and Ward has no way to know. Both men are categorizers, in different registers: Walter's is binary sorting (see Part One, The Baseline); Ward's is the archaeological impulse — sort, record, catalog everything the ground gives up. When Ward finds the badge, the flask, the whistle, he catalogs them flawlessly, in the same terms as every other artifact he's already logged that day. His ability to categorize them, not his inability, is the chapter's quiet irony: perfect sorting is exactly what prevents him from ever seeing them as a man's last possessions rather than specimens. "Total Recovery" as the chapter's lie, made concrete on the one set of objects that would have meant something, if only cataloging them correctly were the same thing as understanding what they were.**
 
 &nbsp;
 
@@ -492,7 +556,7 @@
 
 &nbsp;
 
-**\*\*Coping mechanism:\*\* field-grade opium, first used for the injuries, migrating to psychological dependency as the chapter progresses. It is finite, and honest — per Design Law 3, it never causes hallucination or distorted color perception itself. It simply runs out, and the gameplay shifts from exploration to a rail-driven, inevitable slide into the maw.**
+**\*\*Coping mechanism:\*\* field-grade opium, first used for the injuries, migrating to psychological dependency as the chapter progresses. It does not heal — the twisted ankle or broken toe stays exactly as permanent as stated above — but a dose temporarily mitigates the injury's mechanical cost, easing jump difficulty and restoring momentum for a stretch of play. When it wears off, the same injury resumes slowing him down; there is no cure, only management, and a player who wants the relief again needs another dose. A player may also discover, undocumented on the label, that opium mitigates the intensity of color shift, aspect distortion, and lens breakdown while active — a hidden presentation effect on the chapter's dynamic degradation only, never on Ward's fixed baseline grade (Part One, The Baseline), and never a probability shift, consistent with Design Law 11. It is finite, and it never causes hallucination or distortion itself — Design Law 3 holds regardless of this side effect, since mitigating dread is not the same failure mode as secretly causing it. Once the supply is genuinely gone, what ends is the relief, not the game: the remaining path gets harder and more exposed exactly the way any other fuel stat's exhaustion does elsewhere in the trilogy (Part Six, The Stat System) — never a resource-depletion fail state, and never what actually seals his fate. What fixes Ward's trajectory toward the end is his own accumulated understanding and the irreversible choices he makes descending toward it (Design Law 1) — comprehension, not an empty vial, is what ends him, exactly as it ends Walter and, in its own register, Ekon. The player is still fully in control the entire way down; opium running out only changes how hard that descent is to survive, never whether it arrives. What the player has been building the entire time — the Codex, the pack, what does or doesn't come out with him — is the record, and the record is the part that stays authored regardless of how the descent ends (Design Law 6). The world can defeat Ward. It cannot erase what he leaves behind.**
 
 &nbsp;
 
@@ -516,7 +580,11 @@
 
 &nbsp;
 
-**The inhabitants Ward must avoid key off light, not sound or motion — the actual skill this chapter is teaching is reading a space and identifying the route around them, closer to a puzzle-platformer's spatial logic than to crouch-and-wait stealth tension. The chapter's sound design runs its own arc in support of this: early galleries play in the muddled, cluttered register of early cinema sound, resolving gradually into clean, exceptional foley as Ward descends. That clarity is a reward, not a threat — the better the space sounds, the more precisely he can place the inhabitants and their light sources, and the safer his routing gets. The trap is what that same clarity buys him: a player hearing the world this well has every reason to keep going, and no mechanical reason left to stop, which is exactly what carries him past the point of turning back. Competence is never punished here — it simply removes the only excuse he had left to quit.**
+**The inhabitants Ward must avoid are not listening for him and are not scanning shadows the way a guard-AI would — there is no hide-and-wait tension, no held breath, none of Thief's or a stealth-platformer's timing games. Direct light or sight exposure beside one of them is a hard fail state, full stop. Sound is not tracked ambiently, but a specific loud, deliberate action — dropping something from the rafters to try to knock a cultist out from above, for instance — produces noise that gets him spotted just as surely as stepping into light would. The actual skill this chapter is teaching is reading a space and routing through it correctly the first time, closer to a puzzle-platformer's spatial logic than to crouch-and-wait stealth tension. Avoiding the fail state is not a guessing game; it is the obvious, legible answer once the space is read. (This makes loud-deliberate-action noise a discrete, authored event rather than an ambient meter — a finite, identifiable list of "loud" actions, not a continuous sound simulation. That list, and how each entry is flagged to the player as risky before it's triggered, is a TDD scoping question, not a Bible one.)**
+
+&nbsp;
+
+**The chapter's sound design runs its own arc in support of this: early galleries play in the muddled, cluttered register of early cinema sound, resolving gradually into clean, exceptional foley as Ward descends. That clarity is a reward, not a threat — the better the space sounds, the more precisely he can place the inhabitants and their light sources, and the safer his routing gets. The trap is what that same clarity buys him: a player hearing the world this well has every reason to keep going, and no mechanical reason left to stop, which is exactly what carries him past the point of turning back. Competence is never punished here — it simply removes the only excuse he had left to quit.**
 
 &nbsp;
 
@@ -584,7 +652,7 @@
 
 &nbsp;
 
-**A Black WWII veteran. First name Ekon — Efik/Ibibio Nigerian in origin, meaning "strong," chosen deliberately by his mother as an act of naming her son what she wanted the world to have to reckon with, consistent with the real, if still uncommon, pan-African naming currents of the 1910s–1920s (Garveyism-adjacent). Surname Freeman — a real, documented surname pattern adopted by formerly free or newly emancipated Black Americans to state their legal status outright. His own family line, however, traces not to formerly enslaved ancestry but to a free Black whaling lineage: Massachusetts abolished slavery through its own courts and constitution in the 1780s, decades before the Ophion's loss in the 1820s, and coastal Massachusetts had substantial, well-documented free Black maritime communities well before the Civil War. The ancestor who sailed and died with the Ophion was free by law from the start — which makes the town's later dismissal of his mother and brother as rootless transients not just cruel, but a specific, disprovable lie: this family's claim to that coastline predates the wealthy families' fortune by a full generation.**
+**A Black WWII veteran. First name Ekon — Efik/Ibibio Nigerian in origin, meaning "strong," chosen deliberately by his mother as an act of naming her son what she wanted the world to have to reckon with, consistent with the real, if still uncommon, pan-African naming currents of the 1910s–1920s (Garveyism-adjacent). Surname Freeman — a real, documented surname pattern adopted by formerly free or newly emancipated Black Americans to state their legal status outright. His own family line, however, traces not to formerly enslaved ancestry but to a free Black whaling lineage: Massachusetts abolished slavery through its own courts and constitution in the 1780s, decades before the Ophion's loss in the 1820s, and coastal Massachusetts had substantial, well-documented free Black maritime communities well before the Civil War. The ancestor who sailed and died with the Ophion was free by law from the start — which makes the town's later dismissal of his mother and brother as rootless transients not just cruel, but a specific, disprovable lie: this family's claim to that coastline predates the wealthy families' fortune by a full generation. His baseline color and its origin are established in Part One, The Baseline.**
 
 &nbsp;
 
@@ -596,7 +664,7 @@
 
 &nbsp;
 
-**His mother had gone in search of documentation proving wages owed to the whaling ancestor — a lay never paid — found it, and hid it before her death. It was not among her listed belongings in the official record: a third dishonest document, alongside the original case file (unreliable but true) and the sanitized replacement file (orderly but false). Ekon knows the document exists and makes serious effort to find it across the chapter. It is held by a local lawyer his mother had engaged — a morally grey figure who has no compulsion to fight for the document but knows better than to destroy any document at all, giving Ekon a real, present-day relationship to work through rather than only inherited grief and artifacts from the past. Ekon does recover it physically, and this is the chapter's clearest Design Law 6 beat — a specific, real, non-cosmic victory. It proves the claim; it does not collect it. The town will not honor a debt this old regardless of proof, and nothing about recovering it changes what happens to Ekon in the caverns. The exact wording of the document — the ship it names, the sum, the ancestor's name as recorded on it — is a content-writing task for the asset pass, not a design decision, and stays open for that reason alone.**
+**His mother had gone in search of documentation proving wages owed to the whaling ancestor — a lay never paid — found it, and hid it before her death. It was not among her listed belongings in the official record: a third dishonest document, alongside the original case file (unreliable but true) and the sanitized replacement file (orderly but false). Ekon knows the document exists and makes serious effort to find it across the chapter. It is held by a local lawyer his mother had engaged — a figure defined by indifference rather than moral compromise — he has no stake in Ekon's mother's claim, no loyalty to the missing persons the file concerns, and no interest in the case at all. What he does have is a single, fixed line: destroying a document is not a decision he is willing to make. That line, not any personal investment, is why the wage claim survived long enough for Ekon to reach it, giving Ekon a real, present-day relationship to work through rather than only inherited grief and artifacts from the past. Ekon does recover it physically, and this is the chapter's clearest Design Law 6 beat — a specific, real, non-cosmic victory. It proves the claim; it does not collect it. The town will not honor a debt this old regardless of proof, and nothing about recovering it changes what happens to Ekon in the caverns. The exact wording of the document — the ship it names, the sum, the ancestor's name as recorded on it — is a content-writing task for the asset pass, not a design decision, and stays open for that reason alone.**
 
 &nbsp;
 
@@ -612,7 +680,7 @@
 
 &nbsp;
 
-**Weapons function flawlessly against physical threats. Against the Old Gods, there is nothing to kill, so his training pivots from assault to containment: severing cables, collapsing tunnels, sealing apertures. Rubble and walls are a delay, not protection — the Old Gods are immutable, and nothing built to stop a man can stop them.**
+**Weapons function flawlessly against physical threats. Against the Old Gods, there is nothing to kill, so his training pivots from assault to containment: severing cables, collapsing tunnels, sealing apertures. That pivot follows a specific realization, not a general instinct — the moment he understands his rifle was never built to defeat something cosmic is what turns "win the ground" into "deny the ground," the same doctrine any trained soldier falls back on once the objective changes from defeating an enemy to denying one that cannot be defeated. Rubble and walls are a delay, not protection — the Old Gods are immutable, and nothing built to stop a man can stop them.**
 
 &nbsp;
 
@@ -620,7 +688,7 @@
 
 &nbsp;
 
-**\*\*Coping mechanism:\*\* cigarettes, which never run out, and matches, which do — the actual scarcity, and the only light in the encroaching dark. Matches are a physically countable, inspectable inventory item — the player can always check how many remain — but no persistent numeric HUD counter or predictive display accompanies them; scarcity is read off the object itself, consistent with Design Law 11's ban on hidden values affecting outcomes. This is Ekon's version of the honest, finite coping resource that the flask and the opium perform for his predecessors (Design Law 3); Chapter Three is not missing an escalating scarcity, it simply declines to attach a player-visible number to it, because his arc is about competence meeting a problem competence cannot solve, not about a build succeeding or failing. This is deliberately the chapter's single riskiest mechanical bet: whether dread carried by writing, pacing, and the matches' physical scarcity alone reads as strongly as the visible-stat-driven dread of Chapters One and Two. It should be an early playtest priority, and should not be "fixed" by adding a fuel stat without playtest data showing the tension is actually reading thinner in practice. Whether a match burns in real time once struck or is spent only at discrete, player-initiated moments is an open production question (TDD: Chapter Three, Match Consumption Model), not one fixed here. What is fixed here, because it is a fairness guarantee rather than a tuning question: if Ekon reaches zero matches before reaching the charges, the encroaching dark is not a wall or a stall, it is exactly as lethal as any other unlit hazard in the tunnel (see Part Two, The Drowned) — running out of light resolves as an ordinary Design Law 11 fail state, death and a reload, never a stranding in the dark waiting for a resource that will not return.**
+**\*\*Coping mechanism:\*\* cigarettes, plentiful enough across the run that rationing them is never a real question, and matches, which are genuinely finite — the actual scarcity, and the only light in the encroaching dark. Nothing in the fiction is literally infinite; cigarettes simply never become the resource that runs out. Matches are a physically countable, inspectable inventory item — the player can always check how many remain — but no persistent numeric HUD counter or predictive display accompanies them; scarcity is read off the object itself, consistent with Design Law 11's ban on hidden values affecting outcomes. This is Ekon's version of the honest, finite coping resource that the flask and the opium perform for his predecessors (Design Law 3); Chapter Three is not missing an escalating scarcity, it simply declines to attach a player-visible number to it, because his arc is about competence meeting a problem competence cannot solve, not about a build succeeding or failing. This is deliberately the chapter's single riskiest mechanical bet: whether dread carried by writing, pacing, and the matches' physical scarcity alone reads as strongly as the visible-stat-driven dread of Chapters One and Two. It should be an early playtest priority, and should not be "fixed" by adding a fuel stat without playtest data showing the tension is actually reading thinner in practice. Whether a match burns in real time once struck or is spent only at discrete, player-initiated moments is an open production question (TDD: Chapter Three, Match Consumption Model), not one fixed here. What is fixed here, because it is a fairness guarantee rather than a tuning question: if Ekon reaches zero matches before reaching the charges, the encroaching dark is not a wall or a stall, it is exactly as lethal as any other unlit hazard in the tunnel (see Part Two, The Drowned) — running out of light resolves as an ordinary Design Law 11 fail state, death and a reload, never a stranding in the dark waiting for a resource that will not return.**
 
 &nbsp;
 
@@ -629,6 +697,10 @@
 &nbsp;
 
 **Ekon shares the same Strength stat as his predecessors, governing carried weight rather than slot count, and a Combat stat that is infrastructure rather than fuel — it keeps him alive against physical, mundane threats without ever bringing him closer to what actually ends him. He has no interest in the artifacts Ward left scattered through the ruins; he is here to demand answers, not to collect. A player who invests Strength into hauling out relics anyway is optimizing for exactly the thing the story says he doesn't want, and pays for it in the Combat investment he didn't make instead — a fail state with the same honesty rule as his predecessors: no silent correction, and per Design Law 11 any resulting death resolves as death and a reload.**
+
+&nbsp;
+
+**The fuel/infrastructure distinction exists mainly so a player opening the character sheet has a legible category for what they're looking at. What actually matters is simpler: Ekon begins demonstrably capable — the skill itself is never in question, never something the player trains him into. Combat measures how much equipment, readiness, and physical reserve he commits to applying that existing skill; a player who invests Strength into hauling relics instead still makes his physical encounters more dangerous by underequipping him, exactly as stated above. What Combat does not do is grow through repeated use — fighting more doesn't make him better at fighting, because he already is. The pivot the player has to make is not mechanical but doctrinal: from "combat is how I win" to "environmental destruction is how I might survive long enough to leave."**
 
 &nbsp;
 
@@ -648,9 +720,7 @@
 
 &nbsp;
 
-**A player who plays Ekon as a preserv**
-
-**er — sending the wage claim home, sealing the ledger and the case file somewhere they might someday surface, choosing deliberately what burns and what doesn't — is playing preservation: the version demonstrated in "Scorched Earth," where the act stays curatorial even at the very end. A player who instead concludes, across the chapter, that a true thing written down is not the same as a true thing kept, and empties the fire on everything he carries rather than leave one more correctly filed, perfectly true, permanently unread document behind — is playing denial: the version demonstrated in the alternate draft of the same title. Neither reading requires a new stat, a new prompt, or a new fail state; both are the same final authored action the Ending already specifies, pointed at a different outcome.**
+**A player who plays Ekon as a preserver — sending the wage claim home, sealing the ledger and the case file somewhere they might someday surface, choosing deliberately what burns and what doesn't — is playing preservation: the version demonstrated in "Scorched Earth," where the act stays curatorial even at the very end. A player who instead concludes, across the chapter, that a true thing written down is not the same as a true thing kept, and empties the fire on everything he carries rather than leave one more correctly filed, perfectly true, permanently unread document behind — is playing denial: the version demonstrated in the alternate draft of the same title. Neither reading requires a new stat, a new prompt, or a new fail state; both are the same final authored action the Ending already specifies, pointed at a different outcome.**
 
 &nbsp;
 
@@ -666,11 +736,19 @@
 
 &nbsp;
 
+**\#\# His Fatal Realization**
+
+&nbsp;
+
+**Ekon does not break the way Walter and Ward do. He persists through the tunnel, past what killed or stalled both men before him, and reaches the abyss to see the Old Gods directly. His death is not the shattering, overwhelmed comprehension Design Law 1 produces in his predecessors — he does not need to be destroyed by understanding in that sense at all. He recognizes them for what they are, adapts, and the fatal realization is simpler and colder than either man's: none of it was ever going to end any other way. Not that malice wins — the Old Gods are indifferent, not cruel — but that indifference at this scale cannot be overcome by training, preparation, or will, no matter how real and complete that preparation is. Comprehension is still what kills him, per Design Law 1 — the causal chain has to stay explicit so this reads as the same Law in a third register rather than an exception to it: recognizing the Old Gods for what they are is what drives his final authored act (see Ending, below — sealing something, collapsing the passage, denying the ground rather than holding it), and it is that act, not the creatures themselves, that physically kills him. Understanding produces the decision; the decision produces the death. This is Design Law 1 in its least dramatic register: Ekon's death is a recognition he arrives at intact, not a mind giving way.**
+
+&nbsp;
+
 **\#\# Ending**
 
 &nbsp;
 
-**He finds Ward's remains and the Codex, and gets his single private moment of validating a dead stranger's work. He reaches the abyss to confront the Old Gods directly. He gets one final, authored, player-chosen action immediately before the end — sealing something, placing the ledger somewhere it might someday surface, choosing what evidence burns — that cannot save him but does define him. Whatever he chooses must produce a distinct, legible difference in the Post-Finish Archive, per Design Law 4; the exact menu of what can be sealed, placed, or burned is a content-pass decision, not fixed here. This is a Chapter Three exclusive: Walter's and Ward's final consequences are emergent, read only in hindsight through what they leave behind, because neither man is lucid enough at the end for a conscious choice to be honest. Ekon is. He is the only protagonist still fully himself in his final moment, which is exactly what makes the scene earned rather than borrowed — the one explicit choice in the trilogy belongs to the one man capable of actually making it.**
+**He finds Ward's remains and the Codex, and gets his single private moment of validating a dead stranger's work. He reaches the abyss to confront the Old Gods directly. He gets one final, authored, player-chosen action immediately before the end — sealing something, placing the ledger somewhere it might someday surface, choosing what evidence burns — that cannot save him but does define him. Whatever he chooses must produce a distinct, legible difference in the Post-Finish Archive, per Design Law 4; the exact menu of what can be sealed, placed, or burned is a content-pass decision, not fixed here. This is a Chapter Three exclusive: Walter's and Ward's final consequences are emergent, read only in hindsight through what they leave behind, because neither man is lucid enough at the end for a conscious choice to be honest. Ekon is. He is the only protagonist still fully himself in his final moment, which is exactly what makes the scene earned rather than borrowed — the one explicit choice in the trilogy belongs to the one man capable of actually making it. (See His Fatal Realization, above, for the causal chain by which this choice is also what kills him.)**
 
 &nbsp;
 
@@ -724,6 +802,10 @@
 
 &nbsp;
 
+**Chapter One's runtime and Chapter Three's are coupled, not independent: a player who minimally engages Walter's chapter — effectively speedrunning it — doesn't just produce a thinner case file (Design Law 13); the legwork Walter never did becomes legwork Ekon has to do instead, which is part of why Chapter Three's stated range runs as high as it does. The principle belongs here; the specific exchange rate does not yet. A promised ratio (such as "roughly one for one") commits production to remembering precisely what Walter skipped and authoring corresponding replacement work for Ekon to encounter — real content, not a difficulty slider — and that needs prototyping and playtest balance before this document states it as settled. Until then, the Bible states the principle only: unperformed Walter investigation may reappear as Ekon's burden. The exact ratio is a TDD question (TDD: Cross-Chapter, Walter-to-Ekon Runtime Coupling Ratio). This does require the game to remember something about Walter's investigation to generate Ekon's extra legwork, which makes it a real persistent-consequence state even though the Post-Finish Archive never displays it directly — it should be counted as one bounded aggregate entry against the six-to-ten budget stated above (a single tracked value, something like Walter's investigation-completeness tier, not a per-clue ledger), rather than treated as exempt from that budget simply because it's felt during play instead of shown after the credits. Keeping the budget honest matters more than keeping this one state off its books.**
+
+&nbsp;
+
 **\#\# Common Interaction Grammar**
 
 &nbsp;
@@ -745,6 +827,10 @@
 &nbsp;
 
 **No persistent HUD. The interface exists only when summoned — a single key opens it in all three chapters, revealing inventory, a sparse paperdoll, and stats. A HUD sitting on screen at all times would compete with the thing actually doing the chapter's work: aspect ratio, grain, distortion. The paperdoll has little to change on it in practice, and it stays in the design anyway, because the UI has to read as an RPG's shell even where the systems beneath it refuse to reward the player the way one normally would. That mismatch — full apparatus, thin content — is deliberate, and truest for Walter, whose ten inventory slots he rarely needs at all.**
+
+&nbsp;
+
+**The ten-slot inventory is identical across all three protagonists at the interface level, but means something different to each: Walter rarely needs more than a fraction of it, Ward's ten slots are never enough for what the chapter tempts him with, and Ekon begins his chapter with the slots already close to full of what he actually needs — he arrives prepared, not empty-handed. This asymmetry is deliberate and needs no new system to support it; selected consequential objects Ward left behind may remain, unclaimed, present in Ekon's version of the same ground — not the full, unbounded contents of everything Ward ever found, which would demand tracking a decade of abandoned inventory and blow well past the six-to-ten persistent-state ceiling. A player has to recognize for themselves that collecting the rest was never Ekon's mission.**
 
 &nbsp;
 
@@ -869,9 +955,3 @@
 &nbsp;
 
 **Descriptions should read like flat case-file or coroner's-note language, never wink at the player. Ekon's description in particular should state plainly that he dies — comprehension is what ends him, per Design Law 1, a half-step ahead of the collapse he engineers, but the collapse still kills him. Nothing in the game grants him the fully transformed cultists' immortality; he is never an exception to that rule, and the achievement title names what he understood before the end, not a state he persists in afterward. No hidden fourth achievement, no secret "true ending" unlock, ever — the absence of a victory condition must be legible as an absence, not mistakable for an unsolved puzzle. The menu and the achievement set never cross-reference or explain each other.**
-
-&nbsp;
-
-&nbsp;
-
-&nbsp;
