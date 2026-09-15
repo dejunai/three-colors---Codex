@@ -292,7 +292,7 @@
 
 &nbsp;
 
-**At least one figure is present and recognizable across all three decades — a young laborer in Chapter One, visibly aging and shown teaching someone younger in Chapter Two, elderly but still present, working alongside that same apprentice, in Chapter Three. This is not a handoff structure in which one individual replaces another; it is both payoffs at once, and neither may be sacrificed for the other. And it is one figure among many, not the whole of the population — the Observers are not a sect or a mystical tribe read as a single collective character. They are a category of NPC: named individuals with their own schedules, relationships, and conversations, who happen to share a discipline learned from the same catastrophe. The continuity figure is a device that proves the discipline outlives any one person; it is not what the Observers, as a group, are reducible to. An attentive player recognizes the same face surviving twenty years no one else in the trilogy survives, and separately recognizes that same figure visibly passing the discipline on rather than holding it alone. A pure generational-relay version — one laborer simply replaced by the next — is the easier version to default to and loses the continuity beat that makes the device work; it is not an acceptable substitute.**
+**At least one figure is present and recognizable across all three decades — named Abel Tavares — a young laborer in Chapter One, visibly aging and shown teaching someone younger in Chapter Two (where Ward knows him only by name, never his significance), elderly but still present, working alongside that same apprentice, in Chapter Three. This is not a handoff structure in which one individual replaces another; it is both payoffs at once, and neither may be sacrificed for the other. And it is one figure among many, not the whole of the population — the Observers are not a sect or a mystical tribe read as a single collective character. They are a category of NPC: named individuals with their own schedules, relationships, and conversations, who happen to share a discipline learned from the same catastrophe. The continuity figure is a device that proves the discipline outlives any one person; it is not what the Observers, as a group, are reducible to. An attentive player recognizes the same face surviving twenty years no one else in the trilogy survives, and separately recognizes that same figure visibly passing the discipline on rather than holding it alone. A pure generational-relay version — one laborer simply replaced by the next — is the easier version to default to and loses the continuity beat that makes the device work; it is not an acceptable substitute.**
 
 &nbsp;
 
@@ -356,7 +356,7 @@
 
 &nbsp;
 
-**His central failure, and the hinge Chapter Three turns on: he gave more weight to the town's elite men than to a housemaid's own account and disappearance. This is ordinary, human bias — the same limited epistemic bubble that later fails him against the entity — not supernatural interference. His death cuts an investigation short that his own prejudice was already failing before he ever died.**
+**His central failure, and the hinge Chapter Three turns on: he gave more weight to the town's elite men than to a housemaid's own account and disappearance — the housemaid is Sarah Munn (see Supporting Cast, below). This is ordinary, human bias — the same limited epistemic bubble that later fails him against the entity — not supernatural interference. His death cuts an investigation short that his own prejudice was already failing before he ever died.**
 
 &nbsp;
 
@@ -377,6 +377,8 @@
 **\- \*\*Otto Kessler\*\* — butcher, cultist.**
 
 **\- \*\*Father Behan, Captain Odell\*\* — supporting figures from the town.**
+
+**\- \*\*Sarah Munn\*\* — the housemaid whose account and disappearance Walter's central failure specifically fails. She worked the estate's kitchen alongside the murdered mother and left the position three weeks before the murders; she confirms to Walter that the mother had confided in her about a document naming a debt owed her family from the whaling years, and that Sarah, afraid to be caught holding it, gave it back. Her statement arrives late in Walter's own sequence of witnesses and is weighed by him against the club's denials exactly as the central-failure line describes — an elite man's word over a housemaid's account — and it is her account, not any cultist's, that Walter should have moved on faster than he did.**
 
 &nbsp;
 

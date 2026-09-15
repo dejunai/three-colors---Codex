@@ -195,7 +195,9 @@ func run(g:Node) -> void:
 	g._save_game()
 	g._load_game()
 	g._interact("barman")
-	assert(g.page=="witness")
+	assert(g.page=="dialogue","A restored steward revisit begins with authored repeat chatter")
+	cards(g)
+	assert(g.page=="witness","Completing restored repeat chatter returns to the steward topic menu")
 	# Notebook has exactly one close button and does not mutate any serialized field.
 	g.state.record_link("same_door")
 	for count in [0,6,9]:
@@ -227,8 +229,10 @@ func run(g:Node) -> void:
 	assert(old.restore({"version":4,"visited":["barman"]}))
 	assert(old.day==1 and old.steward_visits==1)
 	g._travel("room",Vector3(0,0.1,6))
-	g._interact("day_close")
+	g._interact("sleep")
 	cards(g)
+	g.content.find_children("*","Button",true,false)[0].pressed.emit()
+	g.content.find_children("*","Button",true,false)[0].pressed.emit()
 	assert(g.state.finished and g.page=="ending")
 	g._begin_tunnel()
 	cards(g)
