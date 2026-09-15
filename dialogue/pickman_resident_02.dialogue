@@ -6,18 +6,18 @@ TOPIC: default
   GATE: NOT topic_done(pickman_resident_02, default)
   TAG: pickman_resident_02_greeting
   VOICE: violin_cautious_short_v1
-  AVERAGE JOE: "You'll pardon me. I'm expected across town."
+  MR. FALLOW: "You'll pardon me. I'm expected across town."
 
 TOPIC: default
   GATE: topic_done(pickman_resident_02, default)
   WEIGHT: 2
   TAG: pickman_resident_02_repeat_errand
   VOICE: violin_neutral_short_v1
-  AVERAGE JOE: "An errand takes twice as long when everyone stops to stare."
+  MR. FALLOW: "An errand takes twice as long when everyone stops to stare."
 
 TOPIC: default
   GATE: topic_done(pickman_resident_02, default)
   WEIGHT: 1
   TAG: pickman_resident_02_repeat_leave
   VOICE: violin_dismissive_short_v2
-  AVERAGE JOE: "No, Officer. Nothing to discuss."
+  MR. FALLOW: "No, Officer. Nothing to discuss."

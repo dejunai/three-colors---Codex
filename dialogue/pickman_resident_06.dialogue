@@ -6,18 +6,18 @@ TOPIC: default
   GATE: NOT topic_done(pickman_resident_06, default)
   TAG: pickman_resident_06_greeting
   VOICE: violin_neutral_short_v2
-  AVERAGE JOE: "Nothing to discuss, sir. I'm just getting home."
+  MR. ABBOTT: "Nothing to discuss, sir. I'm just getting home."
 
 TOPIC: default
   GATE: topic_done(pickman_resident_06, default)
   WEIGHT: 2
   TAG: pickman_resident_06_repeat_shop
   VOICE: violin_weary_short_v2
-  AVERAGE JOE: "Every shop shuts just when you reach its door."
+  MR. ABBOTT: "Every shop shuts just when you reach its door."
 
 TOPIC: default
   GATE: topic_done(pickman_resident_06, default)
   WEIGHT: 1
   TAG: pickman_resident_06_repeat_home
   VOICE: violin_cautious_short_v1
-  AVERAGE JOE: "Best get indoors before the fog settles."
+  MR. ABBOTT: "Best get indoors before the fog settles."
