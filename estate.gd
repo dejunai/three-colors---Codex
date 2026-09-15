@@ -33,7 +33,7 @@ func sync_staging(st) -> void:
 	if is_instance_valid(opening_knife): opening_knife.visible = not st.rose_bodies_removed
 	if is_instance_valid(groundskeeper_actor):
 		groundskeeper_actor.visible = st.lounge_exited
-		if st.lounge_exited: target("crew","Watch the groundskeeper",Vector3(-18.6,0,-16.9))
+		if st.lounge_exited: target("crew","Watch the groundskeeper",Vector3(-13.5,0,-12.0))
 		else: points.erase("crew")
 	if is_instance_valid(gardener_actor):
 		gardener_actor.position = Vector3(-4,0,12) if st.estate_complete else Vector3(-12,0,1)
@@ -375,14 +375,20 @@ func _ready() -> void:
 	for p in [Vector3(20,0,-9),Vector3(26,0,-8),Vector3(27,0,-1),Vector3(22,0,1)]: tree(p,true)
 	# Kitchen wing yard: the grounds crew keeps a fixed distance from the service door.
 	# Previously only ~3 units from the service_entrance target — painfully close in
-	# practice, per Dejunai's playtest, 2026-09-13. Shifted the whole cluster 6 units
-	# further west (x only, so the region still reads as the kitchen wing yard) to a
-	# real ~8.7-unit separation from the service door at Vector3(-10,0,-18).
-	box(self,Vector3(-19.4,0.35,-16.4),Vector3(0.55,0.5,0.55),"3b443b")
-	box(self,Vector3(-19.0,0.85,-16.6),Vector3(0.5,0.42,0.5),"353c36")
-	cylinder(self,Vector3(-18.0,0.06,-15.4),0.32,0.12,"242626")
-	sphere(self,Vector3(-18.0,0.24,-15.4),0.15,"656a66")
-	var groundskeeper = person(Vector3(-18.6,0,-16.6),"3a3f36",true,"7a2a1a")
+	# practice, per Dejunai's playtest, 2026-09-13. An earlier attempt to fix this by
+	# shifting the whole cluster 6 units west put it inside the west wing building's
+	# own solid collision box (x=-14..-20, z=-13.5..-27.5, see "Estate's long facade
+	# and two projecting wings" above); a second attempt (north only) still fell
+	# inside the west garden hedge's blocking range (Vector3(-16,0.65,-4) sized
+	# (1.2,1.3,21), z=-14.5..6.5) — the wing and hedge z-ranges overlap at
+	# x=-14..-20, leaving no walkable gap through that corridor at all. Settled on
+	# staying just east of both obstacles instead: a real ~6.9-unit separation from
+	# the service door at Vector3(-10,0,-18), on open, reachable ground.
+	box(self,Vector3(-13.7,0.35,-11.5),Vector3(0.55,0.5,0.55),"3b443b")
+	box(self,Vector3(-13.3,0.85,-11.7),Vector3(0.5,0.42,0.5),"353c36")
+	cylinder(self,Vector3(-13.5,0.06,-10.5),0.32,0.12,"242626")
+	sphere(self,Vector3(-13.5,0.24,-10.5),0.15,"656a66")
+	var groundskeeper = person(Vector3(-13.5,0,-11.7),"3a3f36",true,"7a2a1a")
 	groundskeeper.rotation.y = 2.4
 	groundskeeper_actor = groundskeeper
 	groundskeeper.hide()

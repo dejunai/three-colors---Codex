@@ -23,7 +23,8 @@ func run() -> void:
 	# Check for all extra_actors (the living town population)
 	var living_actors = g.scripted_dialogue.extra_actors
 	print("Auditing ", living_actors.size(), " living NPCs across phases...")
-	
+	var total_collisions = 0
+
 	for p in phases:
 		g.state.clock_minutes = phase_minutes[p]
 		g.state.day = 3
@@ -52,4 +53,16 @@ func run() -> void:
 		var col_count = 0
 		for key in world_placements:
 			if world_placements[key].size() > 1:
-				pri
+				print("  COLLISION at ", key, ": ", world_placements[key])
+				col_count += 1
+		var raw_col_count = 0
+		for key in raw_placements:
+			if raw_placements[key].size() > 1:
+				raw_col_count += 1
+		print("Collisions (world-space): ", col_count, "  (raw catalog slot): ", raw_col_count)
+		total_collisions += col_count
+
+	print("\nTotal coordinate collisions across all phases: ", total_collisions)
+	assert(total_collisions == 0, "Found %d NPC coordinate collision(s) — see per-phase output above" % total_collisions)
+	print("PLACEMENT AUDIT PASS: %d living NPCs, 0 coordinate collisions across all phases" % living_actors.size())
+	quit()

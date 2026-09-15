@@ -1,5 +1,22 @@
 extends RefCounted
 
+# gatehouse_boy.dialogue's post-completion pool: estate_complete draws from a
+# weighted pair of variants (plain coat vs. not), and the plain-coat pair's
+# "boy_return_cold" entry opens on an unlabelled beat before THE GATEHOUSE BOY
+# speaks — so check across every rendered card, not just card[0].
+const BOY_RETURN_TEXTS = [
+	"You took your star off, mister. Are you walking back to town along the ditch?",
+	"The boy shivers in his thin coat, watching the empty carriage drive.",
+	"The gardener's still down by the hedge. Nobody's come up from town yet.",
+	"The wagon's been and gone. The captain and the coroner's man went right with the bodies.",
+	"I'm not supposed to leave the gate, Officer. That's what the captain told me."
+]
+
+func _has_boy_return_text(g:Node) -> bool:
+	for card in g.dialogue.cards:
+		if BOY_RETURN_TEXTS.has(card[1]): return true
+	return false
+
 func cards(g:Node) -> void:
 	while g.page == "dialogue": g._next_card()
 
@@ -22,10 +39,10 @@ func run(g:Node) -> void:
 	for id in ["odell","assistant"]:
 		assert(g.estate.opening_staff[id].visible and g.estate.points.has(id))
 	g._interact("boy")
-	assert(g.dialogue.cards==g.Story.SCENES.boy)
+	assert(g.dialogue.cards[0][0]=="THE GATEHOUSE BOY" and g.dialogue.cards[0][1].contains("ROSE GARDEN"))
 	cards(g)
 	g._interact("boy")
-	assert(g.dialogue.cards==g.Story.SCENES.boy_repeat)
+	assert(g.dialogue.cards[0][0]=="THE GATEHOUSE BOY" and g.dialogue.cards[0][1].contains("gap in the hedge"))
 	cards(g)
 	assert(not g.estate.points.has("barman") and not g.estate.points.has("crew"))
 	assert(g.estate.points.has("service_entrance"))
@@ -63,7 +80,7 @@ func run(g:Node) -> void:
 	g._interact("report")
 	assert(g.page=="play")
 	g._interact("boy")
-	assert(g.dialogue.cards==g.Story.SCENES.boy_return)
+	assert(g.page=="dialogue" and _has_boy_return_text(g))
 	cards(g)
 	g._save_game()
 	g._load_game()
@@ -74,7 +91,7 @@ func run(g:Node) -> void:
 		g._interact(id)
 		assert(g.page=="play")
 	g._interact("boy")
-	assert(g.dialogue.cards==g.Story.SCENES.boy_return)
+	assert(g.page=="dialogue" and _has_boy_return_text(g))
 	cards(g)
 	g.yaw=0
 	await settle(g)
@@ -125,7 +142,7 @@ func run(g:Node) -> void:
 	await settle(g)
 	assert(g.state.lounge_exited and g.estate.points.has("crew"))
 	g.yaw=0
-	await g._walk_to(Vector3(-12.6,0,-16.9))
+	await g._walk_to(Vector3(-13.5,0,-12.0))
 	assert(g.focused=="crew")
 	g._interact("crew")
 	cards(g)

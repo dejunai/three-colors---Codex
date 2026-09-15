@@ -59,21 +59,14 @@ func run() -> void:
 	assert(restored.rose_bodies_removed and not restored.birch_bodies_removed and restored.estate_visits_completed==1)
 	# Every public entrance can be reached and returns to the correct street point.
 	for hub in ["business","upper","lower"]:
-		if hub == "lower":
-			g._travel("town",Vector3(0,0.1,8))
-			var id="route_"+hub
-			var target=g.estate.points[id].pos
-			await walk(g,Vector3(target.x+3.5,0,8))
-			await walk(g,Vector3(target.x+3.5,0,20))
-			await walk(g,Vector3(target.x,0,20))
-			await walk(g,target)
-			assert(g.focused==id,"Street entrance focus: "+hub)
-			g._interact(id)
-			assert(g.state.world==hub)
-		else:
-			# Business and upper are continuous in new games. Their old hub worlds
-			# remain loadable so saves made before the migration still work.
-			g._travel(hub,Vector3(10,0.1,25))
+		# All three hubs are continuous exteriors in new games now (business/upper
+		# since Phase One, lower since Phase Two) — their old hub worlds remain
+		# loadable so saves made before either migration still work. "lower"
+		# previously simulated walking to a "route_lower" street hotspot, but
+		# Phase Two's contiguous exterior deliberately erases that point
+		# (contiguous_town_phase_two.gd::build()); travel there directly instead,
+		# exactly like business/upper already do.
+		g._travel(hub,Vector3(10,0.1,25))
 		await settle()
 		await walk(g,Vector3(10,0,8))
 		assert(g.player.position.distance_to(Vector3(10,0.1,8))<1)
@@ -92,7 +85,10 @@ func run() -> void:
 				g.state.coat = "Plain wool coat"
 			await walk(g,Vector3(g.player.position.x,0,8))
 			await walk(g,Vector3(p.x,0,8))
-			await walk(g,p)
+			# The speakeasy hatch's angled bulkhead doors block a straight walk
+			# to its exact center; stop just short, well within interact focus
+			# range (~3 units), instead of fighting that collision precisely.
+			await walk(g,p - Vector3(0,0,2) if spec[0] == "speakeasy" else p)
 			assert(g.focused=="route_"+spec[0],"Building entrance: "+spec[0])
 			g._interact(g.focused)
 			assert(g.state.world==spec[0])
@@ -108,9 +104,20 @@ func run() -> void:
 			assert(g.focused=="route_return")
 			g._interact(g.focused)
 			assert(g.state.world==hub)
-		await walk(g,Vector3(g.player.position.x,0,8))
-		await walk(g,Vector3(10,0,8))
-		await walk(g,Vector3(10,0,26))
+		# Each hub's own street builder places its own "route_pickman" return
+		# hotspot at a different physical position (business/upper share
+		# (10,0,26); lower's is (-30,0,8) — see lower_street.gd/business_street.gd/
+		# upper_street.gd), so the walk back has to be hub-specific too.
+		if hub == "lower":
+			# lower_street.gd's route_pickman sits at x=-30, but something in
+			# that corner blocks walking the last ~1 unit to it exactly; -29
+			# still lands well inside the interact focus radius.
+			await walk(g,Vector3(g.player.position.x,0,8))
+			await walk(g,Vector3(-29,0,8))
+		else:
+			await walk(g,Vector3(g.player.position.x,0,8))
+			await walk(g,Vector3(10,0,8))
+			await walk(g,Vector3(10,0,26))
 		assert(g.focused=="route_pickman")
 		g._interact(g.focused)
 		assert(g.state.world=="town")

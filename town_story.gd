@@ -11,7 +11,8 @@ const FACTS = {
 	"gazette_correction_printed": ["THE CORRECTION SLIP", "A later printed slip records the police count of eight and names Naomi with its identification sources. The correction supplements the morning edition; it does not replace the copies already sold.", "Gazette · printed correction slip"],
 	"exemption": ["THE EXEMPTION NOTICE", "Walter's old exemption notice records the need to care for Constance Corwin. It concerns his life before the case. It supplies no evidence about the deaths at the estate.", "Walter's dresser · personal correspondence"],
 	"behan_name": ["NAMED AFTER THE SHIP", "The Ophion Club was named for a vessel lost with its crew a century ago. Father Behan calls the members' belief that the ship had been chosen a delusion, not a fact: men inherit money, then invent a reason they deserved it.", "Father Behan · rectory conversation"],
-	"old_woman": ["BEWARE THE OLD GODS", "An unnamed woman outside Kessler's shuttered shop tells Walter to look at what the six men looked at, not at the men themselves. Pressed to explain, she warns him of something with no boundaries and no need of them, then leaves before he finishes writing it down.", "Kessler's shuttered shop · unnamed witness"]
+	"old_woman": ["BEWARE THE OLD GODS", "An unnamed woman outside Kessler's shuttered shop tells Walter to look at what the six men looked at, not at the men themselves. Pressed to explain, she warns him of something with no boundaries and no need of them, then leaves before he finishes writing it down.", "Kessler's shuttered shop · unnamed witness"],
+	"speakeasy_bar": ["OVERHEARD AT THE BAR", "Two voices at the speakeasy discuss the club's quiet payoffs to the victims' widows, and note that nobody remembers the crew's own names anymore — only the six who lived long enough to spend the money. Walter writes nothing down; a barstool is not a witness stand.", "The speakeasy · overheard, unattributed"]
 }
 
 const ARRIVAL = [
