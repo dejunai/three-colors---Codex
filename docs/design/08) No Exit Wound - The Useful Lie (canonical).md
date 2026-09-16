@@ -455,7 +455,7 @@ Walter went home. He did not sleep.
 
 &nbsp;
 
-He found the tunnel entrance three nights later, beneath the estate's kitchen wing, where the grounds crew gave the mouth of it the same wide, unhurried berth they gave every part of the grounds no club member would set foot near themselves. None of them warned him off directly. One man simply moved his work a little further down the wall as Walter approached, without looking up, without breaking the rhythm of what his hands were doing, and returned to his original spot the moment Walter had passed.
+He found the tunnel entrance three nights later, beneath the estate's kitchen wing, where the grounds crew gave the mouth of it the same wide, unhurried berth they gave every part of the grounds no club member would set foot near themselves. None of them warned him off directly. One man — young, maybe twenty, a ring on one hand catching a color the gray morning had no business allowing it — simply moved his work a little further down the wall as Walter approached, without looking up, without breaking the rhythm of what his hands were doing, and returned to his original spot the moment Walter had passed. Walter would learn the name only in passing, weeks later, from someone else entirely, and would never once connect it to the man at the wall: Abel Tavares.
 
 &nbsp;
 
