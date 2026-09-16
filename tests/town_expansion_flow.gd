@@ -57,8 +57,13 @@ func run() -> void:
 	for key in ["rose_bodies_removed","birch_bodies_removed","estate_visits_completed"]: packed.erase(key)
 	assert(restored.restore(packed))
 	assert(restored.rose_bodies_removed and not restored.birch_bodies_removed and restored.estate_visits_completed==1)
+	var hubs = ["business","upper","lower"]
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--hub="):
+			hubs = [arg.trim_prefix("--hub=")]
+			break
 	# Every public entrance can be reached and returns to the correct street point.
-	for hub in ["business","upper","lower"]:
+	for hub in hubs:
 		# All three hubs are continuous exteriors in new games now (business/upper
 		# since Phase One, lower since Phase Two) — their old hub worlds remain
 		# loadable so saves made before either migration still work. "lower"

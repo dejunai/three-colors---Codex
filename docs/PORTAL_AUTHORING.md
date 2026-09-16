@@ -76,7 +76,7 @@ Boolean grammar is identical to dialogue/objects: `always`, `never`, `NOT`, `AND
 
 | Field | Values/meaning |
 | --- | --- |
-| `coat`, `day`, `phase`, `estate_complete`, `steward_ready`, `rose_bodies_removed`, `birch_bodies_removed`, `lounge_exited` | Identical to the object system's field list — same `case_state.gd`/`DayClock` reads. |
+| `coat`, `day`, `phase`, `estate_complete`, `steward_ready`, `rose_bodies_removed`, `birch_bodies_removed`, `lounge_exited`, `report` | Identical to the object system's field list — same `case_state.gd`/`DayClock` reads (`report` returns the filed report string or `""`). |
 
 `dialogue_runtime.gd::make_context()` and `object_runtime.gd::make_context()` were both given matching `portal_done`/`portal_count` entries for the same symmetry the object system already established with dialogue — a decision or milestone from any of the three formats is readable by the other two. Check the actual dependency id before using a gate; unknown names are not extensions.
 

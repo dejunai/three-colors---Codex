@@ -187,11 +187,26 @@ func _title() -> void:
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 	marker.visible=false
 	var buttons=[]
-	if not _available_save_path().is_empty(): buttons.append(["Continue investigation",_load_game])
-	buttons.append(["Begin at the estate",_new_game])
+	var has_save = not _available_save_path().is_empty()
+	if has_save: buttons.append(["Continue investigation",_load_game])
+	buttons.append(["Begin at the estate",_confirm_new_game if has_save else _new_game])
 	buttons.append(["Accessibility & controls",_title_settings,true])
 	buttons.append(["Quit",func(): get_tree().quit(),true])
 	prologue.show_title(preload("res://assets/prologue/club-night.jpg"),"Three Colors of Madness","Competence delays the end. It never prevents it.","A man does not interrogate the shape of his own eye.",buttons)
+
+func _confirm_new_game() -> void:
+	page="title"
+	var buttons=[
+		["Replace investigation",_new_game],
+		["Cancel",_title,true]
+	]
+	prologue.show_title(
+		preload("res://assets/prologue/club-night.jpg"),
+		"Begin a new investigation?",
+		"Your existing investigation will be replaced.",
+		"Any unfiled observations or saved progress will be lost.",
+		buttons
+	)
 
 func _title_settings() -> void:
 	return_page="title"
