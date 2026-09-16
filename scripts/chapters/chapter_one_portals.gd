@@ -128,7 +128,7 @@ func _before_travel(g: Node, portal_id: String, destination: String) -> void:
 		if is_instance_valid(g.estate) and g.estate.has_method("sync_staging"):
 			g.estate.sync_staging(g.state)
 		if g.state.world == "estate":
-			g.objects.sync_points(g, "estate", ["wounds","watch","knife","eight","shoes"])
+			g.objects.sync_points(g, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
 	if portal_id == "street_estate" and destination == "estate":
 		if g.state.day >= 3 and g.state.estate_visits_completed >= 2:
 			g.state.birch_bodies_removed = true

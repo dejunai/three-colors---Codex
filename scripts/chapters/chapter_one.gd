@@ -485,7 +485,7 @@ func _write_report(mode:String,scene:String) -> void:
 	state.complete_report(mode,_current_sources())
 	if state.world=="estate":
 		estate.sync_staging(state)
-		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes"])
+		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
 	_save_game()
 	var cards=Story.SCENES[scene].duplicate(true)
 	cards.append(["WALTER CORWIN","That's everything for now. Back through the estate gates."])
@@ -494,7 +494,7 @@ func _write_report(mode:String,scene:String) -> void:
 func _finish() -> void:
 	state.estate_complete = true
 	estate.sync_staging(state)
-	if state.world == "estate": objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes"])
+	if state.world == "estate": objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
 	_save_game()
 	_cards(TownStory.ARRIVAL,func(): _travel("town",Vector3(0,0.1,17)))
 
@@ -641,7 +641,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 		daylight.update_clock(state.clock_minutes,spawn)
 	if destination == "estate":
 		estate.sync_staging(state)
-		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes"])
+		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
 		portals.sync_points(self, "estate", ["service_entrance", "exit"])
 	elif destination == "tunnel":
 		objects.sync_points(self, "tunnel", ["tunnel_record"])
@@ -866,7 +866,7 @@ func _qa_town() -> void:
 func _refresh_outfit() -> void:
 	if state.world == "estate":
 		estate.sync_staging(state)
-		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes"])
+		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
 	model.get_node("Coat").material_override=estate.mat("5f6559" if state.coat=="Plain wool coat" else "424b43")
 	if model.has_node("Badge"): model.get_node("Badge").visible=state.coat=="Police coat"
 
