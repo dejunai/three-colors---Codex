@@ -394,7 +394,7 @@
 
 &nbsp;
 
-**The cult — six men in total, of whom the doctor, judge, D.A., landowner, and butcher are known to Walter's investigation — sacrifice whoever is easiest to disappear, believing they are courting a benevolent, protective, maternal power. They have done this before Chapter One and would have done it again. Instantaneous death by materialized bullets; no powder burns, no exit wounds. The victims of the specific murder Walter investigates are officially recorded as transients.**
+**The cult — six men in total, of whom the doctor, judge, D.A., landowner, and butcher are identifiable to Walter's investigation, the sixth never named at all — sacrifice whoever is easiest to disappear, believing they are courting a benevolent, protective, maternal power. They have done this before Chapter One and would have gone on doing it, had this particular invocation not been the one that turned on them: Chapter One opens with all six already dead in the same rose garden as their chosen sacrifice, killed by the same signature method they used on her — instantaneous death by materialized bullets, no powder burns, no exit wounds — having begged, in their last seconds, for the mercy of a mother that was never actually present to give it (see the Fatal Realization, Part Three). The cult's sacrifice and the cult's own deaths are a single event on a single night, discovered together by Walter at the chapter's opening; his investigation is not a hunt for living suspects but a posthumous reconstruction of who these six men were and what they'd been doing for years before it caught up with them. The victims of the specific murder — the mother and her son — are officially recorded as transients, unconnected to the six.**
 
 &nbsp;
 
@@ -402,7 +402,7 @@
 
 &nbsp;
 
-**After Walter's death, his successor files the case as an accident — a gas leak, or similar — and the victims are not mentioned in the official record at all. This produces the first of several dishonest documents that recur across the trilogy (see Part Six).**
+**The county's own file closes within weeks, while Walter is still alive and still working the case on his own time: the six men's deaths ruled a gas-main failure and mourned in full, the mother and son omitted from any official record at all — an omission Walter never manages to overturn before his own death, and one no successor ever revisits, because no successor is ever told there was anything left to revisit. The true count that night was eight. The record, permanently, says six. This produces the first of several dishonest documents that recur across the trilogy (see Part Six).**
 
 &nbsp;
 

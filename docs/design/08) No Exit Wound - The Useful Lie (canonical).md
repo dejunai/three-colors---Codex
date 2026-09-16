@@ -23,43 +23,27 @@ The frame opened the way it always did — a circle of gray narrowing the world 
 
 &nbsp;
 
-Walter had learned, in four years on the force, that Odell's sentences arrived pre-sorted. This one was an instruction wearing the coat of a courtesy.
+Walter had learned, in four years on the force, that Odell's sentences arrived pre-sorted. This one was an instruction wearing the coat of a courtesy, and it did not prepare him for what the coat was covering.
 
 &nbsp;
 
-The garden had been someone's pride once. Roses gone leggy and untended along a low brick wall, thorns catching the hem of Walter's coat as he crouched. The woman lay where the gardener's boy had found her at first light, her son a few feet off, small enough that Walter's mind kept trying to file him under a different word than the one that applied.
+They lay in a half-circle behind the clipped hedges, six men in evening dress, each with a single black hole above the bridge of the nose, precise as a coin pressed into wax. No blood on the grass. No powder scorch on the wool of any collar. When the coroner's assistant turned the nearest head, there was no wound at all where an exit should have been, only the absence of one, as if the bullet had been asked to arrive and had obliged and troubled itself with nothing further. Walter knew four of them on sight before the wagon came — Judge Wexford, Dr. Fenn, District Attorney Corliss, Kessler the butcher — and placed a fifth by reputation alone, Pruitt, land and mills and deeds. The sixth carried nothing that wanted to be found: no calling card, no monogram, no maker's name on a watch stopped at seventeen past three.
 
 &nbsp;
 
-No blood on the grass. No powder scorch on the wool of her coat. When the coroner's assistant turned the boy over, there was no wound at all where the entry should have been, only the absence of one, the fabric untouched, the flesh beneath it simply finished.
+Thirty yards off, past a stand of birches, lay a woman and a boy. Whatever had been done to them had not been done with a single clean motion, and it took Walter a moment longer than it should have to understand that the two scenes were, in every way that mattered, one scene.
 
 &nbsp;
 
-Walter wrote what he saw. He did not yet know how much of it he would keep.
+"Six," Odell said, reading the garden the way a man reads a bill he has already decided he will not be able to pay in full. "Six is already more than this town has ever had to explain at once."
 
 &nbsp;
 
-Two uniformed men from the estate stood at the garden's far edge, watching without watching, the particular attentiveness of men who have been told exactly how much interest to show. Walter noted them and did not approach. That was the first calculation of the day, made before he had eaten or slept: a beat cop crossing an estate's grounds before he understood who owned the silence there was a beat cop who would not be crossing it twice.
+"There are eight."
 
 &nbsp;
 
-"Transients," Odell said, reading from nothing, testing how the word sat.
-
-&nbsp;
-
-"You don't know that."
-
-&nbsp;
-
-"I know how it will read by Thursday," Odell said. "I'm asking how you'd like it to read before then."
-
-&nbsp;
-
-Walter looked at the boy's small, unmarked chest.
-
-&nbsp;
-
-"Give me the week," he said.
+"There are six men whose families will be calling the mayor's office by noon," Odell said, "and a woman and a boy nobody has called about at all. I am not telling you which of those facts matters more, Corwin. I am telling you which of those facts this town is built to survive hearing, and which one it has had a hundred years of practice not hearing."
 
 &nbsp;
 
@@ -67,99 +51,47 @@ It was not resistance. It was not compliance either. It was the shape of a man b
 
 &nbsp;
 
-Odell gave him the week.
+"Give me the week," he said. "On all of it. Not six of it."
 
 &nbsp;
 
-**\#\# II. What the House Would Say**
+Odell gave him the week, and did not promise him the second half of the sentence.
 
 &nbsp;
 
-Judge Wexford received him in a study smelling of pipe smoke and old leather, and answered every question exactly once, exactly fully, in the register of a man who has never once had to lie because the truth had always been arranged in his favor before he needed to reach for it.
+**\#\# II. What the House Left Behind**
 
 &nbsp;
 
-"A tragedy," Wexford said. "Vagrants, I'd imagine, drawn up from the harbor road. The estate's grounds have always been porous that way."
+There was no one left to interview. Walter understood this on the second morning, standing in Judge Wexford's study among pipe smoke that had not yet finished settling out of the leather, and understood it again in Fenn's front hall, and again outside the Corliss house, where a maid with red eyes told him the mistress was receiving no one and did not entirely manage to close the door before he'd seen, past her shoulder, how undisturbed the front rooms already looked, as if grief in that house had been given a schedule and was keeping to it.
 
 &nbsp;
 
-"The gate was locked."
+He built the six men the only way left to him — out of what they'd owned, who'd worked for them, and what the people around them had already decided to say before he ever asked.
 
 &nbsp;
 
-"Gates can be climbed."
+Wexford's study told him a man who had never once had to lie, because the truth had always been arranged in his favor before he needed to reach for it — the sentencing ledgers alone, forty years of them, uniform in their leniency toward every name that could afford this street and uniform in the opposite direction toward every name that couldn't, including, Walter noted without surprise and without satisfaction, his own father's.
 
 &nbsp;
 
-Walter noted the sentence for what it was — not an answer, a permission slip for the answer he was meant to write down himself. He wrote it down anyway. He had learned that a case file which refused every convenient sentence became, eventually, a case file no one wanted attached to their name, and refusal for its own sake was not yet a tool he trusted.
+Fenn's house was warmer, full of a sorrow the staff performed so smoothly that Walter found himself almost persuaded by it before he caught the shape of the performance underneath — grief rehearsed the way a household rehearses anything it has had practice keeping presentable. He did not ask the housekeeper whether the doctor had known the dead woman. He watched her face when he said the woman's name instead, and the face answered before the mouth had the chance not to.
 
 &nbsp;
 
-Dr. Fenn was warmer, offered tea, spoke of the woman with a sorrow so smoothly produced that Walter found himself almost persuaded by it before he caught the shape of the performance underneath.
+On his way out he let himself be seen admiring the doctor's library — the leather spines, the gilt titles, one volume angled slightly proud of its neighbors, as if recently returned to the shelf and not quite reseated. He did not touch it. He noted the title in his own hand later, in the boardinghouse, by lamplight, in case it ever mattered.
 
 &nbsp;
 
-"You knew her," Walter said. Not a question.
+Corliss's own office, when Walter finally talked his way past a clerk with more patience than authority, offered less warmth and more paper — a drawer of correspondence he had no proper standing to read and read anyway, thirty careful minutes with the door unlocked and his own heartbeat loud in his ears, until he found what he'd gone in half-expecting: a letter, unsent, dismissing a wage claim from a family the letter did not bother to name, in language that assumed, throughout, that the claim would simply cease to be anyone's problem given enough time. Corliss had not been surprised by the claim when it crossed his desk. He had priced it, and filed the price, and moved on.
 
 &nbsp;
 
-Fenn's tea cup did not pause.
+With Pruitt and Kessler, Walter tried the household staff, three visits apiece, and understood by the second round that he was not hearing six separate accounts of six separate lives. He was hearing one account, distributed among a dozen mouths that had all, independently, arrived at the same careful unconcern — men who managed the estate's grounds, men who managed its books, men who managed, above all, never to be asked a question in a register that required an answer with consequences attached.
 
 &nbsp;
 
-"I know most families who've worked this house," he said. "It's a small town, Officer Corwin."
-
-&nbsp;
-
-"She worked this house."
-
-&nbsp;
-
-"Briefly. Some months ago." Fenn set the cup down. "You understand how it looks, a domestic found dead on the grounds where she once worked. I'd be careful with that thread. It leads exactly where everyone in town already expects it to, and expectation is a poor substitute for evidence."
-
-&nbsp;
-
-It was good advice. Walter distrusted it precisely because it was good advice, offered by a man with every reason to want him walking somewhere less inconvenient.
-
-&nbsp;
-
-He did not accuse Fenn. He thanked him for the tea, and on the way out let himself be seen admiring the doctor's library — the leather spines, the gilt titles, one volume angled slightly proud of its neighbors as if recently returned to the shelf and not quite reseated. He did not ask about it. He noted the title in his own hand later, in the boardinghouse, by lamplight, in case it ever mattered.
-
-&nbsp;
-
-With Corliss, the District Attorney, Walter tried the opposite approach entirely — direct, almost blunt, betting that a man whose whole profession ran on the appearance of rectitude might flinch from a question asked plainly in his own office.
-
-&nbsp;
-
-"Did you know the boy's mother had a wage claim pending against a family connected to this town's founding fortune?"
-
-&nbsp;
-
-Corliss did not flinch. He smiled, the particular smile of a man deciding whether a threat is worth acknowledging.
-
-&nbsp;
-
-"I know a great many pending claims, Officer. Most of them go nowhere. That's rather what pending means."
-
-&nbsp;
-
-"This one had documentation."
-
-&nbsp;
-
-"Then I'm sure it will surface, if it exists, through the proper channel." Corliss's smile did not move. "You'll find, the longer you're here, that this town has a great many proper channels. All of them slower than the alternative."
-
-&nbsp;
-
-Walter left without pressing further. He had learned something from the attempt even so — not a fact, but a temperature. Corliss had not been surprised by the mention of a wage claim. A man hearing that phrase for the first time reacted differently than a man confirming he'd already priced it.
-
-&nbsp;
-
-With Pruitt, the landowner, and Kessler, the butcher, Walter tried something closer to flattery — asking about the estate's grounds, its history, letting each man talk himself comfortable before circling back to the gate, the locks, who held keys. Both men gave him nearly identical answers, delivered with nearly identical unconcern, and Walter understood by the second interview that he was not hearing four separate accounts. He was hearing one account, distributed among four mouths.
-
-&nbsp;
-
-The sixth man he never found a name for. No door opened to him. No servant would confirm a sixth guest had been present that evening at all. He wrote *unnamed* in the file and left the space beside it blank, the way a man leaves a chair empty at a table for someone who is expected but has not yet arrived.
+The sixth man he never found a name for. No estate ledger listed him. No household staff, pressed from four directions, would confirm a sixth guest had been present that evening at all, though at least two of them, questioned separately, used the identical word — *always* — before catching themselves. Walter wrote *unnamed* in the file and left the space beside it blank, the way a man leaves a chair empty at a table for someone who is expected but has not yet arrived.
 
 &nbsp;
 
@@ -215,7 +147,7 @@ Walter wrote down everything she said. He also, without entirely deciding to, wr
 
 &nbsp;
 
-He should have gone straight to the estate with it. A living witness, a named document, a direct line to motive. Instead he sat with Sarah another hour, asking about the dead woman's habits, her son, whether she'd mentioned anyone by name.
+He should have gone straight to the registrar with it. A named document, a direct line to motive, a thread that ran under six dead men's careful unconcern rather than around it. Instead he sat with Sarah another hour, asking about the dead woman's habits, her son, whether she'd mentioned anyone by name.
 
 &nbsp;
 
@@ -223,7 +155,7 @@ He told himself he was being thorough.
 
 &nbsp;
 
-He was also, though he did not say so to himself in words, weighing what a servant's testimony would be worth against what he had already heard, in confident, unhurried sentences, from a judge, a doctor, and a district attorney. He knew which weighed more in Odell's ledger. He knew which would weigh more in his own case file if he let the knowing happen without deciding it on purpose.
+He was also, though he did not say so to himself in words, weighing what a servant's testimony would be worth against six funerals the town was already, visibly, preparing to grieve properly. He knew which weighed more in Odell's ledger. He knew which would weigh more in his own case file if he let the knowing happen without deciding it on purpose.
 
 &nbsp;
 
@@ -283,7 +215,7 @@ The registrar considered this longer than the request seemed to warrant.
 
 &nbsp;
 
-It was, Walter understood even as he did it, a small and mostly symbolic act. It changed nothing about the case. It simply meant that somewhere in the county's paper, in a drawer no one had reason to open, a fact existed that the estate would have preferred not to.
+It was, Walter understood even as he did it, a small and mostly symbolic act. It changed nothing about the case. It simply meant that somewhere in the county's paper, in a drawer no one had reason to open, a fact existed that six households would have preferred not to share space with.
 
 &nbsp;
 
@@ -291,7 +223,7 @@ At the Gazette, he tried something closer to confrontation, and regretted the re
 
 &nbsp;
 
-"Your paper ran the story as an accident before the coroner's report was final," he said to the editor.
+"Your paper's running it as a gas-main failure," he said to the editor. "Six men, in evening dress, in a garden, with no scorch on a single collar between them."
 
 &nbsp;
 
@@ -315,15 +247,15 @@ He tried once more, softer.
 
 &nbsp;
 
-"I'm not asking you to print anything you can't stand behind. I'm asking whether you'd run a correction if the facts changed."
+"I'm not asking you to print anything you can't stand behind. I'm asking whether you'd run a correction if the facts changed. And whether the paper has room, anywhere in it, for a woman and a boy who died the same night in the same garden and haven't been mentioned once."
 
 &nbsp;
 
-The editor's shoulders eased, fractionally.
+The editor's shoulders eased, fractionally, and then went still again at the second sentence.
 
 &nbsp;
 
-"If the facts changed," he said, "and if I could stand behind them alone, without anyone standing behind me. Those are different conditions, Officer Corwin, and you know it."
+"If the facts changed," he said, "and if I could stand behind them alone, without anyone standing behind me. Those are different conditions, Officer Corwin, and you know it. As for the other two — I'd need someone to first agree they were part of the same story at all, and I don't believe you'll find that agreement anywhere above my own desk."
 
 &nbsp;
 
@@ -343,7 +275,7 @@ Afterward, in the rectory, Behan poured two glasses of something amber and did n
 
 &nbsp;
 
-"I want the town to hear that a mother and her son were murdered. Not that an accident occurred."
+"I want the town to hear that a mother and her son were murdered the same night as six of its most respected men, in the same garden, by the same hand. Not that one was an accident and the other never happened."
 
 &nbsp;
 
@@ -351,7 +283,7 @@ Behan turned his glass slowly.
 
 &nbsp;
 
-"I buried her mother's mother in this parish. I've heard confessions from three of the men whose names you're circling, Officer, though I'll tell you nothing of what was in them, and I'd remind you that you already knew I wouldn't before you asked."
+"I buried her mother's mother in this parish. I've heard confessions from three of the men now laid out in Overlee's parlor, Officer, though I'll tell you nothing of what was in them, and I'd remind you that you already knew I wouldn't before you asked."
 
 &nbsp;
 
@@ -359,7 +291,7 @@ Behan turned his glass slowly.
 
 &nbsp;
 
-"You did." Behan almost smiled. "I'll tell you what I can say from that pulpit, and it isn't nothing, but it isn't what you're hoping for either. I can say the parish grieves two of its own. I can decline, pointedly, to call it an accident, and let the congregation notice the declining. That is the entire distance I am willing to travel in public."
+"You did." Behan almost smiled. "I'll tell you what I can say from that pulpit, and it isn't nothing, but it isn't what you're hoping for either. I can say the parish grieves two of its own, alongside the six the whole town will already be grieving publicly enough for ten parishes. I can decline, pointedly, to call either death an accident, and let the congregation notice the declining. That is the entire distance I am willing to travel in public."
 
 &nbsp;
 
@@ -379,7 +311,7 @@ He drank from the flask at intervals he told himself were disciplined and knew, 
 
 &nbsp;
 
-The cough started sometime in the second week, a faint, wet sound at the edge of hearing whenever he sat too long with the case file open. He did not write it down. It did not seem like the kind of thing that belonged in a record, and some part of him — the part that had learned, from watching Wexford and Fenn and Corliss, that naming a thing was the first step toward being asked to explain it — preferred that it stay unrecorded.
+The cough started sometime in the second week, a faint, wet sound at the edge of hearing whenever he sat too long with the case file open. He did not write it down. It did not seem like the kind of thing that belonged in a record, and some part of him — the part that had spent two weeks watching six careful households arrange their grief into something presentable — preferred that it stay unrecorded.
 
 &nbsp;
 
@@ -399,11 +331,11 @@ At night, in the room above the boardinghouse kitchen, he sometimes thought he h
 
 &nbsp;
 
-"I have witnesses."
+"I have witnesses. I have a document nobody's denied exists. I have a priest who won't say the word accident."
 
 &nbsp;
 
-"You have a housemaid's hearsay, an unofficial notation sitting in a registrar's drawer, an editor who's promised you nothing, and a priest who's agreed to grieve a little louder than usual on Sunday." Odell recited it without heat, which was worse than heat would have been. "That is not a case, Corwin. That is four small stones thrown at four different windows."
+"You have a housemaid's hearsay, an unofficial notation sitting in a registrar's drawer, an editor who's promised you nothing, and a priest who's agreed to grieve a little louder than usual on Sunday." Odell recited it without heat, which was worse than heat would have been. "Against six funerals this county has already agreed, out loud, to call an accident. That is not a case, Corwin. That is four small stones thrown at a wall the town finished building before you got out of bed this morning."
 
 &nbsp;
 
@@ -419,7 +351,7 @@ Odell poured coffee neither of them would drink.
 
 &nbsp;
 
-"I'm not going to tell you to stop," he said. "I'm going to tell you what happens if you don't. The file closes as an accident whether or not you agree it should. Your name stays on it as the investigating officer whether or not you sign the summary. And every man you've spoken to this week will remember, precisely, how much or how little trouble you were, long after they've forgotten the particulars of why you came asking."
+"I'm not going to tell you to stop," he said. "I'm going to tell you what happens if you don't. The file closes as a gas-main failure whether or not you agree it should. The woman and the boy stay unfiled entirely, a separate matter, unrelated, because no one above me is willing to sign a document that puts them in the same garden as six men this town intends to bury with full honors. Your name stays on both files as the investigating officer whether or not you sign either summary."
 
 &nbsp;
 
@@ -455,7 +387,7 @@ Walter went home. He did not sleep.
 
 &nbsp;
 
-He found the tunnel entrance three nights later, beneath the estate's kitchen wing, where the grounds crew gave the mouth of it the same wide, unhurried berth they gave every part of the grounds no club member would set foot near themselves. None of them warned him off directly. One man — young, maybe twenty, a ring on one hand catching a color the gray morning had no business allowing it — simply moved his work a little further down the wall as Walter approached, without looking up, without breaking the rhythm of what his hands were doing, and returned to his original spot the moment Walter had passed. Walter would learn the name only in passing, weeks later, from someone else entirely, and would never once connect it to the man at the wall: Abel Tavares.
+He found the tunnel entrance three nights later, beneath the estate's kitchen wing, where the grounds crew gave the mouth of it the same wide, unhurried berth they gave every part of the grounds no club member had ever needed to set foot near himself. None of them warned him off directly. One man — young, maybe twenty, a ring on one hand catching a color the gray morning had no business allowing it — simply moved his work a little further down the wall as Walter approached, without looking up, without breaking the rhythm of what his hands were doing, and returned to his original spot the moment Walter had passed. Walter would learn the name only in passing, weeks later, from someone else entirely, and would never once connect it to the man at the wall: Abel Tavares.
 
 &nbsp;
 
@@ -487,7 +419,7 @@ He did not run. He told himself later that this had been discipline, and knew, e
 
 &nbsp;
 
-He went a little further. Not far. Far enough to understand, without any character in the entire town ever telling him so, without any document ever spelling it out, that the six men he had interviewed in their studies and offices were not merely negligent, and that whatever they believed they had been courting beneath this ground was not what had actually answered.
+He went a little further. Not far. Far enough to understand, without any character in the entire town ever telling him so, without any document ever spelling it out, that the six men laid out under sheets in Overlee's parlor had knelt in that garden believing, to the last second of their lives, that a mother — any mother, the idea of one, worn like a coat by whatever they'd actually called up from under this ground — would still choose mercy over indifference if they only asked plainly enough. They had been wrong in exactly the way a man is wrong who has never once had to survive being disappointed by someone who was supposed to love him unconditionally. It had not spared them. It had not punished them either. It had simply not been the thing they needed it to be, and it had cost them precisely what it had cost the woman and the boy thirty yards off in the birches — nothing about the reckoning had troubled itself to notice which side of the garden anyone had been standing on, or which side had spent years courting its attention and which side had never once known it existed.
 
 &nbsp;
 
@@ -527,7 +459,7 @@ No one asked him what he'd seen. He would not have known how to answer.
 
 &nbsp;
 
-By the following week, the file closed as Odell had said it would. *Accidental exposure*, the summary read, the mother and the boy unnamed in the final language, folded into a paragraph that would, within a year, be the only paragraph anyone official consulted.
+By the following week, the file closed as Odell had said it would. Six names, in full, with full honors, a gas main blamed and quietly repaired by men who had never once been asked to produce the section of pipe responsible. A separate, shorter document — unsigned by anyone who would later admit to having written it — recorded a woman and a boy under a word that closed several doors at once, quietly, the way a good word does: *transients*. The two documents did not reference each other. They did not need to. A county that could agree, without a single meeting anyone minuted, that six deaths and two deaths from the same garden on the same night belonged in different drawers had already demonstrated everything it needed to about which arithmetic it intended to use going forward. Eight had died. Six would be mourned. The gap between those two numbers was not a clerical accident, and Walter, closing his own copy of the file, understood that he was one of perhaps four men in the county who would ever know to look for it.
 
 &nbsp;
 
@@ -543,7 +475,7 @@ The Gazette printed nothing further.
 
 &nbsp;
 
-Father Behan said, that Sunday, that the parish grieved two of its own, and did not say the word *accident*, and several families noticed the declining, and said nothing about it to anyone outside their own kitchens, which was, in Widow's Bight, very nearly the loudest thing that could be said at all.
+Father Behan said, that Sunday, that the parish grieved two of its own, alongside the six the whole town had already been grieving for a week, and did not say the word *accident* about either, and several families noticed the declining, and said nothing about it to anyone outside their own kitchens, which was, in Widow's Bight, very nearly the loudest thing that could be said at all.
 
 &nbsp;
 
@@ -551,7 +483,7 @@ Walter kept working the case in the weeks that remained to him, some days pressi
 
 &nbsp;
 
-What he understood, in full, arrived later — not in the tunnel, not in any single conversation, but assembled from all of it at once, in a moment the record does not fix a time to.
+What he understood, in full, arrived later — not in the tunnel, not in any single conversation, but assembled from all of it at once, in a moment the record does not fix a time to: that whatever had answered the six men that night had not answered them as punishment, and had not spared the woman and the boy as mercy. It had simply been in the garden, indifferent to which six lives had spent years courting its attention and which two had never once known it existed, and had left with exactly as much interest in either outcome as the tide takes in which six shells it happens to carry back out with it.
 
 &nbsp;
 
