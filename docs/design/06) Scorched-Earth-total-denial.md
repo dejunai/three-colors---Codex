@@ -10,19 +10,19 @@ He had gone to war and come back exactly as capable as the Army had spent three 
 
 [MATCHES: 24]
 
-The lawyer's office smelled like a man who did not open his windows on principle. Adrian Voss had represented Ekon's mother in her last years, badly and half-heartedly, and had not destroyed a single document she'd left in his keeping only because destroying documents was a specific kind of trouble a careful man avoided, not because he had ever once intended to use them for her.
+The lawyer's office smelled like a man who did not open his windows on principle. Adrian Yoss had represented Ekon's mother in her last years, badly and half-heartedly, and had not destroyed a single document she'd left in his keeping only because destroying documents was a specific kind of trouble a careful man avoided, not because he had ever once intended to use them for her.
 
-"The lay," Voss said, turning the word over like a coin he wasn't sure was real currency anymore. "Wages owed a dead whaler off a ship that hasn't existed in a hundred-odd years. You understand there's no court in this county that opens that book again."
+"The lay," Yoss said, turning the word over like a coin he wasn't sure was real currency anymore. "Wages owed a dead whaler off a ship that hasn't existed in a hundred-odd years. You understand there's no court in this county that opens that book again."
 
 "I understand you're still holding the book," Ekon said. "That's the part I came about."
 
-Voss gave it to him in the end — not out of conscience, Ekon was fairly sure, but because handing over a folder cost him nothing and refusing might eventually cost him something. Ekon read it standing in the man's doorway: his ancestor's name, a ship's name, a sum, a lay percentage promised and never once paid, his mother's own hand in the margin where she'd once tried and failed to make her case to somebody who'd stopped listening before she finished the sentence.
+Yoss gave it to him in the end — not out of conscience, Ekon was fairly sure, but because handing over a folder cost him nothing and refusing might eventually cost him something. Ekon read it standing in the man's doorway: his ancestor's name, a ship's name, a sum, a lay percentage promised and never once paid, his mother's own hand in the margin where she'd once tried and failed to make her case to somebody who'd stopped listening before she finished the sentence.
 
 It proved everything and changed nothing, exactly as he'd expected walking in. He folded it and put it inside his coat anyway, and thought, not for the first time, that a fact written down and a fact honored were two entirely different animals, and that this county had spent a hundred years demonstrating it knew the difference perfectly well and simply preferred the first one, because the first one cost nothing to keep filed away and forgotten.
 
-Voss was already turning back to his own desk when he stopped, opened a lower drawer with the particular reluctance of a man remembering an obligation he'd hoped had lapsed, and set a second folder on the blotter — thinner, older, water-stained along one edge.
+Yoss was already turning back to his own desk when he stopped, opened a lower drawer with the particular reluctance of a man remembering an obligation he'd hoped had lapsed, and set a second folder on the blotter — thinner, older, water-stained along one edge.
 
-"This isn't yours to claim, and I couldn't tell you how it ended up in with your mother's papers if you asked me twice," Voss said. He did not offer to try a third time. "Take it if you want it. One less thing in my drawer."
+"This isn't yours to claim, and I couldn't tell you how it ended up in with your mother's papers if you asked me twice," Yoss said. He did not offer to try a third time. "Take it if you want it. One less thing in my drawer."
 
 Ekon did not know the name on the cover — W. CORWIN, OFFICER, PRECINCT 4 — and had no reason to. He opened it anyway and read a stranger's cramped, deliberately legible hand recording six men in a rose garden and, beneath them, two more the town's history had never agreed to count: a woman, a boy, and a single stubborn digit — eight — written where every official version he'd ever encountered insisted on six.
 

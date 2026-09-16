@@ -10,19 +10,19 @@ He had gone to war and come back exactly as capable as the Army had spent three 
 
 [MATCHES: 24]
 
-The lawyer's office smelled like a man who did not open his windows on principle. Adrian Voss had represented Ekon's mother in her last years, badly and half-heartedly, and had not destroyed a single document she'd left in his keeping only because destroying documents was a specific kind of trouble a careful man avoided, not because he had ever once intended to use them for her.
+The lawyer's office smelled like a man who did not open his windows on principle. Adrian Yoss had represented Ekon's mother in her last years, badly and half-heartedly, and had not destroyed a single document she'd left in his keeping only because destroying documents was a specific kind of trouble a careful man avoided, not because he had ever once intended to use them for her.
 
-"The lay," Voss said, turning the word over like a coin he wasn't sure was real currency anymore. "Wages owed a dead whaler off a ship that hasn't existed in a hundred-odd years. You understand there's no court in this county that opens that book again."
+"The lay," Yoss said, turning the word over like a coin he wasn't sure was real currency anymore. "Wages owed a dead whaler off a ship that hasn't existed in a hundred-odd years. You understand there's no court in this county that opens that book again."
 
 "I understand you're still holding the book," Ekon said. "That's the part I came about."
 
-Voss gave it to him in the end — not out of conscience, Ekon was fairly sure, but because handing over a folder cost him nothing and refusing might eventually cost him something, and men like Voss ran their whole lives on that particular arithmetic. Ekon read it standing in the man's doorway rather than give him the satisfaction of watching a longer reaction: his ancestor's name, a ship's name, a sum, a lay percentage promised and never once paid, his mother's own hand in the margin where she'd once tried and failed to make the case to somebody who'd stopped listening before she finished the sentence.
+Yoss gave it to him in the end — not out of conscience, Ekon was fairly sure, but because handing over a folder cost him nothing and refusing might eventually cost him something, and men like Yoss ran their whole lives on that particular arithmetic. Ekon read it standing in the man's doorway rather than give him the satisfaction of watching a longer reaction: his ancestor's name, a ship's name, a sum, a lay percentage promised and never once paid, his mother's own hand in the margin where she'd once tried and failed to make the case to somebody who'd stopped listening before she finished the sentence.
 
 It proved everything and changed nothing. The town would not open its books for a hundred-year debt regardless of what any lawyer's drawer produced, and he had known that walking in. He folded the document anyway, careful as a man folding a flag, and put it inside his coat, because some victories are worth having even when nobody official will ever agree to count them.
 
-Voss was already turning back to his own desk when he stopped, opened a lower drawer with the particular reluctance of a man remembering an obligation he'd hoped had lapsed, and set a second folder on the blotter between them — thinner, older, water-stained along one edge.
+Yoss was already turning back to his own desk when he stopped, opened a lower drawer with the particular reluctance of a man remembering an obligation he'd hoped had lapsed, and set a second folder on the blotter between them — thinner, older, water-stained along one edge.
 
-"This isn't yours to claim, and I couldn't tell you how it ended up in with your mother's papers if you asked me twice," Voss said. He did not offer to try a third time. He pushed it an inch closer, the way a man pushes something he wants gone from his own conscience rather than something he means as a gift. "Take it if you want it. One less thing in my drawer."
+"This isn't yours to claim, and I couldn't tell you how it ended up in with your mother's papers if you asked me twice," Yoss said. He did not offer to try a third time. He pushed it an inch closer, the way a man pushes something he wants gone from his own conscience rather than something he means as a gift. "Take it if you want it. One less thing in my drawer."
 
 Ekon did not know the name on the cover — W. CORWIN, OFFICER, PRECINCT 4 — and had no reason to. He opened it anyway, standing in that same doorway, and read a stranger's cramped, deliberately legible hand recording six men in a rose garden and, beneath them in a hand pressed harder than the rest, two more the town's own history had never once agreed to count: a woman, a boy, and a single stubborn digit — eight — written where every official version he'd ever encountered of anything in this town insisted on six.
 
@@ -86,7 +86,7 @@ His training did not abandon him. It simply changed subject, the way a soldier's
 
 [MATCHES: 4]
 
-He went down anyway, before he lit the fuse, because some part of him — the same part that had walked into Voss's office already knowing the town would never pay, the same part that had sat with a stranger's remains and said you did the job to a man who couldn't hear it — needed to look the thing in whatever passed for its face before he did the one thing left to do about it.
+He went down anyway, before he lit the fuse, because some part of him — the same part that had walked into Yoss's office already knowing the town would never pay, the same part that had sat with a stranger's remains and said you did the job to a man who couldn't hear it — needed to look the thing in whatever passed for its face before he did the one thing left to do about it.
 
 What he found down there did not resolve into an answer his eyes were built to hold. It was not the mother-shape that had unmade Walter Corwin, wasn't wearing any face borrowed from Ekon's own life the way it had worn one from his — perhaps because Ekon had no unresolved dead mother's voice sitting close enough to the surface for it to reach for, or perhaps only because it had already spent its favorite trick twenty years back and had no further use for repeating itself on a man who would not have found comfort in a familiar face anyway. It simply was, entire and unbroken and entirely without interest in whether Ekon understood any part of it, and understanding — the same understanding that had cost Walter his life and cost Ward his — arrived in Ekon whole and immediate and did not kill him outright, only because there was, by then, almost nothing left of the passage between them for it to travel through before the charges did their work.
 

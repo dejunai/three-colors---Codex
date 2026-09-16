@@ -17,23 +17,23 @@
 
 Ekon Freeman had crossed half of Europe with the United States Army and come home to a country that still could not decide whether that counted for anything. He had expected, returning to Widow's Bight after twenty years away, to find the town unchanged in the specific, stubborn way small places resisted every war fought on their behalf. He had not expected to find it smaller than memory had kept it — the harbor narrower, the business street shorter, the whole place shrunk down to the size a man's eye could take in without effort, the way anything looks smaller once you've learned what a real distance is.
 
-He was not here for the harbor. He was here for a lawyer named Aldridge, third floor of a building that had not been repainted since Ekon was a boy, and for one document Aldridge's father had apparently held for twenty years without once being asked to explain why.
+He was not here for the harbor. He was here for a lawyer named Yoss, third floor of a building that had not been repainted since Ekon was a boy, and for one document Yoss's father had apparently held for twenty years without once being asked to explain why.
 
-"Your mother came to me in the spring of nineteen twenty-three," Aldridge said, without preamble, once Ekon had stated his name and his purpose. He was younger than his father had been, inheriting the practice along with whatever his father hadn't gotten around to closing out. "I've read the file since. I want to be plain with you before we go further. I have no stake in this claim. I never did. My father had none either."
+"Your mother came to this office in the spring of nineteen twenty-three," Yoss said, without preamble, once Ekon had stated his name and his purpose. He was younger than his father had been, inheriting the practice along with whatever his father hadn't gotten around to closing out. "I've read the file since. I want to be plain with you before we go further. I have no stake in this claim. I never did. My father had none either."
 
 "Then why keep it twenty years."
 
-"Because destroying a document isn't a decision I'm willing to make." Aldridge said it the way a man states a fact about himself he's stopped needing to defend. "Not this one, not any other that's crossed this desk. I don't have to believe a claim to keep the paper that makes it. That's not loyalty to you, Mr. Freeman. It's just the one line I don't cross."
+"Because destroying a document isn't a decision I'm willing to make." Yoss said it the way a man states a fact about himself he's stopped needing to defend. "Not this one, not any other that's crossed this desk. I don't have to believe a claim to keep the paper that makes it. That's not loyalty to you, Mr. Freeman. It's just the one line I don't cross."
 
 Ekon had spent two years learning to read men quickly, in rooms where a wrong read cost lives, and he read this one in under a minute: no ally, no enemy, a fixed point of stubborn indifference that had, for reasons having nothing to do with Ekon's mother or her cause, kept a document safe for two decades that the rest of the town would have burned in an afternoon. He decided, on the spot, that he did not need to like the man to be grateful for him.
 
-Aldridge produced two folders, not one.
+Yoss produced two folders, not one.
 
 The first held what Ekon had come for: his mother's own hand, a faded, careful copy of a lay agreement a full century old, naming an amount, a ship, an ancestor's name recorded plainly where the town's own histories had never once bothered to record it. She had found it before her death. She had hidden it, rather than carry it on her person, in the specific way of a woman who had already begun to understand that being found with it might be more dangerous than not having it at all.
 
 The second folder was thinner, older, its cover softened by handling that had stopped decades before Ekon was ever handed it.
 
-"This isn't mine to have kept either, strictly," Aldridge said. "It turned up folded in with your mother's own papers by the time I inherited the practice. I can't tell you how it got there. I've wondered. I've stopped wondering out loud, because I've never gotten anywhere with it, and I don't intend to try explaining a mystery I can't solve twice in one meeting."
+"This isn't mine to have kept either, strictly," Yoss said. "It turned up folded in with your mother's own papers by the time I inherited the practice. I can't tell you how it got there. I've wondered. I've stopped wondering out loud, because I've never gotten anywhere with it, and I don't intend to try explaining a mystery I can't solve twice in one meeting."
 
 Ekon opened it there, standing in the lawyer's office, before he had even decided whether he wanted to.
 
