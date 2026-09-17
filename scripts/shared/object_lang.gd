@@ -440,8 +440,12 @@ static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary):
 	if String(ast.cmp).is_empty(): return bool(result)
 	var expected = String(ast.value)
 	match String(ast.cmp):
-		"=": return String(result).to_lower().contains(expected.to_lower()) or expected.to_lower().contains(String(result).to_lower())
-		"!=": return not (String(result).to_lower().contains(expected.to_lower()) or expected.to_lower().contains(String(result).to_lower()))
+		"=":
+			if expected.is_empty(): return String(result).is_empty()
+			return String(result).to_lower().contains(expected.to_lower()) or expected.to_lower().contains(String(result).to_lower())
+		"!=":
+			if expected.is_empty(): return not String(result).is_empty()
+			return not (String(result).to_lower().contains(expected.to_lower()) or expected.to_lower().contains(String(result).to_lower()))
 		"<": return float(result) < float(expected) if expected.is_valid_float() else false
 		"<=": return float(result) <= float(expected) if expected.is_valid_float() else false
 		">": return float(result) > float(expected) if expected.is_valid_float() else false

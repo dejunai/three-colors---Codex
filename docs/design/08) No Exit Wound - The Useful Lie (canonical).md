@@ -23,7 +23,7 @@ The frame opened the way it always did — a circle of gray narrowing the world 
 
 &nbsp;
 
-Walter had learned, in four years on the force, that Odell's sentences arrived pre-sorted. This one was an instruction wearing the coat of a courtesy, and it did not prepare him for what the coat was covering.
+Walter had learned, in ten years on the force, that Odell's sentences arrived pre-sorted. This one was an instruction wearing the coat of a courtesy, and it did not prepare him for what the coat was covering.
 
 &nbsp;
 
@@ -323,6 +323,22 @@ At night, in the room above the boardinghouse kitchen, he sometimes thought he h
 
 &nbsp;
 
+It was the seventeenth night, by his own count, when the water glass slipped from his hand at the washstand and broke against the basin.
+
+&nbsp;
+
+He had heard nothing, truly heard nothing — not the carriage wheels on Pickman Street, not Mrs. Almy's pot lids below, not his own breath going in and out of him for weeks on end — the way a man does not hear his own pulse until a doctor asks him to notice it. The world had simply arrived to him however much of it his eye required and no more, the way it always had, the way he had never once thought to question before this case started teaching him to. The cough, when it came, had never quite counted as a violation of that silence; some part of him had already decided, without ever saying so, that the cough belonged to whatever he was investigating and not to his own hearing at all. The glass counted. The glass was his. It broke in his own room, in his own hand, and the sound of it — small, ordinary, entirely undramatic — arrived to him with a force no gunshot in his four years on the force had ever managed, because it was the first sound in longer than he could account for that his world had simply let him have, unearned, unexplained, exactly the way any other man's world gave him sound every day of his life without either of them ever once remarking on the gift.
+
+&nbsp;
+
+He stood over the broken glass a long while, in his stocking feet, not moving, understanding nothing about it in words and everything about it in the particular cold that spread up through him regardless. He did not clean it up that night. He did not entirely trust, kneeling to gather the pieces the next morning, that sound would simply go on being there for him the way it had, however briefly, the night before.
+
+&nbsp;
+
+It did. That was, in its own way, the worst part.
+
+&nbsp;
+
 **\#\# VI. What Odell Wanted**
 
 &nbsp;
@@ -459,7 +475,7 @@ No one asked him what he'd seen. He would not have known how to answer.
 
 &nbsp;
 
-By the following week, the file closed as Odell had said it would. Six names, in full, with full honors, a gas main blamed and quietly repaired by men who had never once been asked to produce the section of pipe responsible. A separate, shorter document — unsigned by anyone who would later admit to having written it — recorded a woman and a boy under a word that closed several doors at once, quietly, the way a good word does: *transients*. The two documents did not reference each other. They did not need to. A county that could agree, without a single meeting anyone minuted, that six deaths and two deaths from the same garden on the same night belonged in different drawers had already demonstrated everything it needed to about which arithmetic it intended to use going forward. Eight had died. Six would be mourned. The gap between those two numbers was not a clerical accident, and Walter, closing his own copy of the file, understood that he was one of perhaps four men in the county who would ever know to look for it.
+By the following week, the file closed as Odell had said it would. Six names, in full, with full honors, a gas main blamed and quietly repaired by men who had never once been asked to produce the section of pipe responsible. A separate, shorter document — unsigned by anyone who would later admit to having written it — recorded the names Walter's own investigation had recovered, Naomi Freeman and her son, beside a word that closed several doors at once, quietly, the way a good word does: *transients*. Their names were not missing from the county's paper. They were simply filed under the one word that guaranteed no one would ever go looking for them there. The two documents did not reference each other. They did not need to. A county that could agree, without a single meeting anyone minuted, that six deaths and two deaths from the same garden on the same night belonged in different drawers had already demonstrated everything it needed to about which arithmetic it intended to use going forward. Eight had died. Six would be mourned. The gap between those two numbers was not a clerical accident, and Walter, closing his own copy of the file, understood that he was one of perhaps four men in the county who would ever know to look for it.
 
 &nbsp;
 

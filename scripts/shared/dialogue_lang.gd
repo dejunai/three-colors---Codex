@@ -480,6 +480,8 @@ static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary) -> bool:
 	if ast.cmp == "=" or ast.cmp == "!=":
 		var left = str(resolved).to_lower()
 		var right = str(value).to_lower()
+		if right.is_empty():
+			return left.is_empty() if ast.cmp == "=" else not left.is_empty()
 		var equal = left == right or left.contains(right) or right.contains(left)
 		return equal if ast.cmp == "=" else not equal
 	var left_num = float(resolved) if (resolved is float or resolved is int) else (float(str(resolved)) if str(resolved).is_valid_float() else 0.0)

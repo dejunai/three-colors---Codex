@@ -318,7 +318,7 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 				# Legacy unlabelled notes remain supported without ordinal collisions.
 				# Authors should supply an explicit id to survive future wording edits.
 				if note_id.is_empty(): note_id = "text_" + String(step.text).sha256_text()
-				result.effects.append({"id": session.npc + "." + note_id,
+				result.effects.append({"kind": "notebook", "id": session.npc + "." + note_id,
 					"text": step.text, "after_cards": result.cards.size(), "applied": false})
 			"outcome": session.pending_outcomes[String(step.id)] = String(step.value)
 			"fork":
