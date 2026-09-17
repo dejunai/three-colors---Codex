@@ -268,7 +268,7 @@
 
 &nbsp;
 
-**The lost flagship of the vanished whaling fleet. Named, most likely, by an educated 1820s owner drawing on classical mythology — a common enough practice among New England whaling merchants of real classical education. In Orphic cosmogony, Ophion is a primordial serpent who ruled before being overthrown and cast down, not destroyed. The name's resonance with the Old Gods is coincidence, not original intent: the owner picked a respectable classical flourish, and only later generations, already steeped in something they didn't understand, retroactively decided the name had always meant something. This is deliberately the colder reading: the universe was never paying attention. People just badly want it to have been. No character or document may ever assert otherwise, even ambiguously — the club's belief that the name was prophetic is their delusion to hold, not a fact the game confirms.**
+**The lost flagship of the vanished whaling fleet, and — by the period's own naming convention, in which a fleet is popularly known by its flagship's name — the name the fleet itself went down under as well. "The Ophion was lost" and "the Ophion fleet was lost" describe the identical event; every later document and every later reference in this Bible (the wreck, the Bloodline Secret, the drowned crew, the private club, the Trust) uses "Ophion" in both senses interchangeably, on purpose, the way the historical record it's modeled on actually would. Named, most likely, by an educated 1820s owner drawing on classical mythology — a common enough practice among New England whaling merchants of real classical education. In Orphic cosmogony, Ophion is a primordial serpent who ruled before being overthrown and cast down, not destroyed. The name's resonance with the Old Gods is coincidence, not original intent: the owner picked a respectable classical flourish, and only later generations, already steeped in something they didn't understand, retroactively decided the name had always meant something. This is deliberately the colder reading: the universe was never paying attention. People just badly want it to have been. No character or document may ever assert otherwise, even ambiguously — the club's belief that the name was prophetic is their delusion to hold, not a fact the game confirms.**
 
 &nbsp;
 
@@ -356,6 +356,14 @@
 
 &nbsp;
 
+**The waiver itself is a private wound, not a relief. Walter did not ask for the compassionate exemption; it was given, and he has never stopped experiencing it as a mark of shame rather than mercy, because he believed the era's own recruitment propaganda completely — a war that would make a nine-to-five soldier of any man who went, then hand him back to adoring citizens as a mature man and a hero. He measures himself daily against a version of manhood he was never permitted to test, and has never once connected this private humiliation to the parallel sitting directly beside it: a physical wound can be seen; a psychological wound must be hidden. He hides his own, the exact way he privately resents the soldiers he imagines for supposedly not having to hide theirs, and never once clocks the symmetry — he accepts the town's read of him as "the dutiful son" instead, the same closed-system certainty his baseline color already names as his central limitation (Part One, The Baseline). Neither he nor the era around him had the language for what mechanized war actually leaves behind; that ignorance is period-accurate, not a failure of his own insight alone.**
+
+&nbsp;
+
+**Walter's own self-understanding of what he was to his mother — dutiful son, or a trapped man who never let himself name the trap — is left genuinely contested rather than settled by the Bible itself, on purpose. Both readings are supported by the same facts; neither is flagged in-fiction as the correct one, matching the trilogy's indifferent-universe theme better than a moralized resolution would. Player-facing systems are free to let investigative behavior lean the presentation toward one reading or the other (see the TDD's `walter_certainty` proposal), provided the fixed beats — the waiver, the cough, the glass-shatter crack, the fatal ending — never move regardless of which reading the case file leans into.**
+
+&nbsp;
+
 **His central failure, and the hinge Chapter Three turns on: he gave more weight to the town's elite men than to a housemaid's own account, and let that account arrive too late in his own sequence to matter — in the mixed-method telling she is named, Sarah Munn (see Supporting Cast, below); in the other two canonical tellings the same failure is embodied by an unnamed maid whose trail he follows only after the fact. She does not vanish in any telling — the failure is not that she disappears, only that Walter's own habits of weight and sequence bury her account regardless of whether she is standing in front of him the whole time. This is ordinary, human bias — the same limited epistemic bubble that later fails him against the entity — not supernatural interference. His death cuts an investigation short that his own prejudice was already failing before he ever died.**
 
 &nbsp;
@@ -364,7 +372,7 @@
 
 &nbsp;
 
-**\- \*\*Constance Corwin\*\* — Walter's late mother. Abusive, controlling. "No wire hangers" by way of \*Night of the Hunter\* as touchstones for register, not literal reference.**
+**\- \*\*Constance Corwin\*\* — Walter's late mother. Abusive, controlling, illness used as a trap in the \*Ethan Frome\* register — "no wire hangers" and \*Sunset Blvd.\*'s decayed grande dame as touchstones for that register, not literal reference. Control through abuse, love through manipulation.**
 
 **\- \*\*Judge Absalom Wexford\*\* — cultist.**
 
@@ -414,7 +422,11 @@
 
 &nbsp;
 
-**Opens iris-masked, the Expressionist device \*Caligari\* made famous; the iris opens to full frame for the first time at the rose garden crime scene. A single sustained auditory motif — a faint, subtle cough — carries Pavlovian dread across the whole chapter, structured as the frame's only sound until the ontological crack: the first time Walter hears glass shatter, and realizes, without being told, that sound should not exist in his world and just did.**
+**Opens iris-masked, the Expressionist device \*Caligari\* made famous; the iris opens to full frame for the first time at the rose garden crime scene. A single sustained auditory motif — a faint, subtle cough, a homage to Lang's \*M\* played as a dry rasp rather than a whistled tune — carries Pavlovian dread across the whole chapter, structured as the frame's only sound until the ontological crack: the first time Walter hears glass shatter, and realizes, without being told, that sound should not exist in his world and just did.**
+
+&nbsp;
+
+**The cough is real and diegetic — it is the same rising-sound the transformed cultist population uses in the tunnel (Part Two, The Drowned) — but Walter never registers it as anomalous, because his own grief supplies him a ready, mundane answer before the question can form: he mistakes it, each time, for the memory of his dying mother's own dry, patient cough, and files it as private grief for a woman he could never appease rather than as a sound with no business being in the room. This is the specific mechanism behind the general Baseline rule that he can hear an impossible sound and not question it (Part One, The Baseline) — not merely that his binary worldview has no slot for it, but that his own psychology hands him a false, comfortable slot to file it in instead. The glass-shatter crack works precisely because it offers him no such comfortable misreading: an ordinary sound, entirely his own, arriving with a force that forces the question aloud, if only to himself — is that the way sound works? Is this the way the universe is built? — and in that moment he understands, for the first time, that the universe is larger than he had ever allowed it to be.**
 
 &nbsp;
 
