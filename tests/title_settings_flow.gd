@@ -38,13 +38,22 @@ func run() -> void:
 	var voice_slider:HSlider
 	for slider in g.content.find_children("*","HSlider",true,false):
 		if is_equal_approx(slider.value,float(g.settings.instrument_voice_volume)): voice_slider=slider
-	assert(voice_slider!=null,"Instrument voice volume must be reachable before play")
+	if voice_slider == null:
+		push_error("Instrument voice volume must be reachable before play")
+		quit(1)
+		return
 	var return_button:Button
 	for button in g.content.find_children("*","Button",true,false):
 		if button.text=="Apply & return": return_button=button
-	assert(return_button!=null)
+	if return_button == null:
+		push_error("Apply & return button not found")
+		quit(1)
+		return
 	return_button.pressed.emit()
 	await process_frame
-	assert(g.page=="title" and g.prologue.root.visible)
+	if not (g.page=="title" and g.prologue.root.visible):
+		push_error("Expected return to title with visible prologue")
+		quit(1)
+		return
 	print("TITLE SETTINGS PASS: mouse entry, visible voice slider, return to title")
 	quit()
