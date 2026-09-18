@@ -12,12 +12,12 @@ PORTAL: service_entrance
   GO: lounge | 0,0.1,6 | 0
 
 PORTAL: exit
-  GATE: report = ""
+  GATE: NOT report_filed
   LABEL: "Leave through the estate gates"
   WALTER CORWIN: "It would be unprofessional to leave the scene without completing the paperwork."
 
 PORTAL: exit
-  GATE: report != ""
+  GATE: report_filed
   LABEL: "Leave through the estate gates"
   TIME: 30
   GO: town | 0,0.1,17 | 0

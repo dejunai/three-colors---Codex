@@ -78,6 +78,7 @@ Boolean grammar is identical to dialogue/objects: `always`, `never`, `NOT`, `AND
 | Field | Values/meaning |
 | --- | --- |
 | `coat`, `day`, `phase`, `estate_complete`, `steward_ready`, `rose_bodies_removed`, `birch_bodies_removed`, `lounge_exited`, `report` | Identical to the object system's field list — same `case_state.gd`/`DayClock` reads (`report` returns the filed report string or `""`). |
+| `report_filed` | Portal-only convenience: `true`/`false` form of `report`. Write `GATE: report_filed` / `GATE: NOT report_filed` for a plain locked/unlocked gate instead of comparing `report` against `""` — both are evaluated correctly by `_evaluate_cmp()`, but the empty-string comparison has repeatedly read as a suspected bug on inspection; prefer this field for any new boolean-shaped gate and reserve `report` for authors who need the actual filed text. |
 
 `dialogue_runtime.gd::make_context()` and `object_runtime.gd::make_context()` were both given matching `portal_done`/`portal_count` entries for the same symmetry the object system already established with dialogue — a decision or milestone from any of the three formats is readable by the other two. Check the actual dependency id before using a gate; unknown names are not extensions.
 

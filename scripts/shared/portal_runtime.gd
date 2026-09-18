@@ -80,6 +80,15 @@ static func make_context(state) -> Dictionary:
 			"birch_bodies_removed": func(): return state.birch_bodies_removed,
 			"lounge_exited": func(): return state.lounge_exited,
 			"report": func(): return state.report,
+			# Boolean form of `report`, added so gates can write
+			# `GATE: report_filed` / `GATE: NOT report_filed` instead of
+			# comparing against a literal "" — the substring-containment
+			# semantics of `=`/`!=` (see _evaluate_cmp()) are correct either
+			# way, but an empty-string comparison reads as ambiguous and has
+			# repeatedly been misdiagnosed as a bug on sight. Prefer this
+			# field for any new boolean-shaped gate; `report` itself stays
+			# for authors who need the actual filed text.
+			"report_filed": func(): return not state.report.is_empty(),
 		}
 	}
 
