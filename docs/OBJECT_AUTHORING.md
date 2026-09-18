@@ -61,6 +61,8 @@ Boolean grammar is identical to dialogue: `always`, `never`, `NOT`, `AND`, `OR`,
 | `evidence(evidence_id)` | Case-wide evidence, identical to dialogue's `evidence()` (same alias map, since both read `dialogue_runtime.gd::has_evidence`). |
 | `filed(evidence_id)` | Case-wide filed/received evidence, identical to dialogue's `filed()`. |
 | `flag(flag_id)` | Boolean set by game code, **shared with dialogue** — both systems read/write through the same `case_state.dialogue_state` flag store. |
+| `spoken_to(npc_id)` | Whether any interaction with that NPC began — shared with dialogue, reads `dialogue_state.visit_count()` directly. |
+| `topic_done(npc_id, topic_id_or_tag)` | Whether that NPC's topic id or TAG completed — shared with dialogue, reads `dialogue_state.topic_done()` directly. |
 | `outcome(decision_id)` / `outcome_is(decision_id, value_id)` | Whether/which value committed for a decision, **shared with dialogue** through the same `dialogue_state.outcomes` store. A decision can be started by an OBJECT and later read by a TOPIC, or vice versa. |
 
 | Field | Values/meaning |

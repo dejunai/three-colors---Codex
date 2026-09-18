@@ -52,6 +52,13 @@ OBJECT: shoes
   EVIDENCE: shoes
 
 OBJECT: gas
+  GATE: NOT topic_done(odell, default)
+  TAG: gas_pre_odell
+  LABEL: "Examine the terrace windows"
+  THE TERRACE WINDOWS: "The heavy leaded casements look out across the terrace toward the garden.\n\nEvery pane is whole. A skim of morning damp clings to the glass, undisturbed."
+  WALTER CORWIN: "Nothing broken. The latch is seated from the inside.\n\nWhatever took place in the rose garden began and ended outside."
+
+OBJECT: gas
   GATE: always
   LABEL: "Examine the terrace windows"
   THE TERRACE WINDOWS: "The panes facing the garden are intact.\nWalter runs a finger along the sill. Dust, damp, no soot."

@@ -56,6 +56,8 @@ static func make_context(state) -> Dictionary:
 			"attempt_count": func(args): return state.portal_state.attempt_count(args[0], args[1]) if args.size() > 1 else 0,
 			"taken": func(args): return state.has_item(args[0]) if args.size() > 0 else false,
 			"spoken_to": func(args): return state.dialogue_state.visit_count(args[0]) > 0 if args.size() > 0 else false,
+			"topic_done": func(args): return state.dialogue_state.topic_done(args[0], args[1]) if args.size() > 1 else false,
+			"npc_done": func(args): return state.dialogue_state.topic_done(args[0], "default") if args.size() > 0 else false,
 			# Distinct from spoken_to(): state.visited only records a FULLY completed
 			# interaction (see chapter_one_dialogue.gd::_segment_done()), while
 			# spoken_to() is true the instant a conversation merely begins. Several

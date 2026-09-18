@@ -66,14 +66,22 @@ func _run() -> void:
 	_play(after_departure, state, dstate)
 	assert(after_departure.session.tag in ["boy_return", "boy_return_cold", "boy_return_post"], "estate_complete must win over a mere repeat, regardless of visit count")
 
-	# --- coroner's assistant: two real EVIDENCE ids, one flavor-only card ---
-	var assistant_play = Runtime.play_topic(defs.assistant, dstate, "default")
-	_play(assistant_play, state, dstate)
+	# --- coroner's assistant: pre-Odell flavor, then post-Odell testimony & count ---
+	var assistant_before = Runtime.enter(defs.assistant, ctx, dstate)
+	_play(assistant_before, state, dstate)
+	assert(assistant_before.session.tag == "assistant_pre_odell", "before Odell, assistant must give opening flavor directing Walter to the captain")
+	assert(not dstate.evidence.has("testimony"), "pre-Odell encounter must not grant explosion testimony")
+
+	var post_odell_dstate = DialogueState.new()
+	post_odell_dstate.complete_topic("odell", "default")
+	var post_odell_ctx = Runtime.make_context(state, post_odell_dstate)
+	var assistant_play = Runtime.enter(defs.assistant, post_odell_ctx, post_odell_dstate)
+	_play(assistant_play, state, post_odell_dstate)
 	var has_flavor_card = false
 	for card in assistant_play.cards:
 		if card[0] == "A CLEAN READ": has_flavor_card = true
 	assert(has_flavor_card, "the closing flavor card must still render even though it writes no fact")
-	assert(dstate.evidence.has("testimony") and dstate.evidence.has("eight"), "both bonus discover()s from the source must land as real EVIDENCE ids")
+	assert(post_odell_dstate.evidence.has("testimony") and post_odell_dstate.evidence.has("eight"), "both bonus discover()s from the source must land as real EVIDENCE ids")
 
 	# --- groundskeeper: ephemeral WALTER'S NOTEBOOK card must not be persisted ---
 	var crew_play = Runtime.play_topic(defs.crew, dstate, "default")

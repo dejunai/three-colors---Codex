@@ -60,6 +60,8 @@ static func make_context(state) -> Dictionary:
 			"outcome": func(args): return state.dialogue_state.has_outcome(args[0]) if args.size() > 0 else false,
 			"outcome_is": func(args): return state.dialogue_state.outcome_is(args[0], args[1]) if args.size() > 1 else false,
 			"spoken_to": func(args): return state.dialogue_state.visit_count(args[0]) > 0 if args.size() > 0 else false,
+			"topic_done": func(args): return state.dialogue_state.topic_done(args[0], args[1]) if args.size() > 1 else false,
+			"npc_done": func(args): return state.dialogue_state.topic_done(args[0], "default") if args.size() > 0 else false,
 			# Symmetric with portal_runtime.gd's make_context(): lets an OBJECT GATE
 			# react to travel (e.g. an item that only appears once a place is reached).
 			"portal_done": func(args): return state.portal_state.portal_done(args[0], args[1]) if args.size() > 1 else false,

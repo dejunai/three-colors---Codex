@@ -72,6 +72,7 @@ Boolean grammar is identical to dialogue/objects: `always`, `never`, `NOT`, `AND
 | `visited(id)` | Whether `case_state.gd`'s `visited` array contains that id — a stricter, already-completed sense than `spoken_to()` (`visited` is only appended once a dialogue segment fully finishes; `spoken_to` is true the instant one merely begins). Use whichever matches the original behavior you're migrating. |
 | `evidence(evidence_id)` / `filed(evidence_id)` | Case-wide evidence, identical to dialogue's/objects'. |
 | `flag(flag_id)` | Boolean set by game code, **shared with dialogue and objects**. |
+| `topic_done(npc_id, topic_id_or_tag)` | Whether that NPC's topic id or TAG completed — shared with dialogue, reads `dialogue_state.topic_done()` directly. |
 | `outcome(decision_id)` / `outcome_is(decision_id, value_id)` | Whether/which value committed for a decision, **shared with dialogue and objects** through the same `dialogue_state.outcomes` store. |
 
 | Field | Values/meaning |
