@@ -21,6 +21,7 @@ PORTAL: street_room
 PORTAL: street_estate
   GATE: always
   LABEL: "Return to the Ophion estate"
+  TIME: 30
   GO: estate | 0,0.1,35 | 0
 
 PORTAL: route_post

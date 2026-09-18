@@ -19,4 +19,5 @@ PORTAL: exit
 PORTAL: exit
   GATE: report != ""
   LABEL: "Leave through the estate gates"
+  TIME: 30
   GO: town | 0,0.1,17 | 0
