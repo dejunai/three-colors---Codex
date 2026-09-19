@@ -89,6 +89,19 @@ func mat(c: String, glow: bool = false) -> StandardMaterial3D:
 	mats[key] = m
 	return m
 
+# The Observer color tell (bible Part Two) must show at every hour. A lit material's red
+# falls under film.gdshader's red-dominance band once the scene is dim, and the day clock
+# makes evening and night dim, so the accent ignores lighting and fog entirely.
+func accent_material(c: String) -> StandardMaterial3D:
+	var key = "accent" + c
+	if mats.has(key): return mats[key]
+	var m = StandardMaterial3D.new()
+	m.albedo_color = Color(c)
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.disable_fog = true
+	mats[key] = m
+	return m
+
 func mesh_at(parent: Node3D, mesh: Mesh, pos: Vector3, c: String, glow: bool = false) -> MeshInstance3D:
 	var n = MeshInstance3D.new()
 	n.mesh = mesh
@@ -168,7 +181,10 @@ func person(pos: Vector3, coat: String = "353838", hat: bool = true, accent: Str
 	cylinder(root,Vector3(0,1.08,0),0.32,0.85,coat,0.24).name = "Coat"
 	box(root,Vector3(0,1.48,0),Vector3(0.52,0.27,0.32),coat)
 	if not accent.is_empty():
-		box(root,Vector3(0.16,1.48,-0.17),Vector3(0.07,0.10,0.025),accent).name = "Accent"
+		var jewel = box(root,Vector3(0.16,1.48,-0.17),Vector3(0.11,0.14,0.03),accent)
+		jewel.name = "Accent"
+		jewel.material_override = accent_material(accent)
+		jewel.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	cylinder(root,Vector3(0,1.78,0),0.15,0.3,"a0a095",0.17)
 	box(root,Vector3(0,1.38,-0.18),Vector3(0.08,0.24,0.025),"b9b8ac")
 	for side in [-1,1]:
@@ -184,6 +200,14 @@ func person(pos: Vector3, coat: String = "353838", hat: bool = true, accent: Str
 		root.add_child(arm)
 		cylinder(arm,Vector3(0,-0.29,0),0.095,0.57,coat)
 		sphere(arm,Vector3(0,-0.61,0),0.08,"96968b")
+	if not accent.is_empty():
+		# A band on each wrist, so the tell reads from any side and moves with his arm. A pin
+		# alone faces one way; at play distance it was about 26 pixels and easy to miss.
+		for arm_name in ["LeftArm","RightArm"]:
+			var band = cylinder(root.get_node(arm_name),Vector3(0,-0.5,0),0.115,0.07,accent)
+			band.name = "AccentBand"
+			band.material_override = accent_material(accent)
+			band.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	if hat:
 		cylinder(root,Vector3(0,1.97,0),0.29,0.045,"222526")
 		cylinder(root,Vector3(0,2.06,0),0.2,0.16,"343737",0.16)

@@ -41,7 +41,7 @@ func populate(g: Node) -> void:
 		g.estate.points.erase(actor)
 		var spot = _slot(g,actor)
 		if spot.is_empty() or spot[0] != g.state.world: continue
-		var figure = g.estate.person(spot[1], "55624f", true, "a17643" if actor=="harbor_observer" else "")
+		var figure = g.estate.person(spot[1], "55624f", true, "b8743a" if actor=="harbor_observer" else "")
 		figures[actor] = figure
 		g.estate.target(actor,"Speak with " + TITLES[actor],spot[1])
 		if g.state.world == "stationer": g.estate.points.erase("local_resident")
