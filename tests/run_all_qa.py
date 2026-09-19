@@ -44,6 +44,7 @@ tests = [
     (["--headless", "--path", ".", "--fixed-fps", "60", "--", "--qa-town"], "qa_town_flow"),
     (["--headless", "--path", ".", "--fixed-fps", "60", "--", "--qa-loop"], "qa_loop_flow"),
     (["--headless", "--path", ".", "--fixed-fps", "60", "--", "--qa-usability"], "qa_usability"),
+    (["--headless", "--path", ".", "--script", "res://tests/break_flow.gd"], "break_flow"),
 ]
 
 print(f"Running {len(tests)} QA suites using: {godot}")

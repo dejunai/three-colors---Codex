@@ -14,7 +14,8 @@ Path: steward `pantry_lead` -> boarded pantry door in the smoking lounge -> serv
 tunnel (existing stealth encounter, unchanged) -> the spur takes the flask (unchanged) ->
 "Go on into the dark" (new, optional; "Step back" remains) -> pressure, retreat, badge and
 whistle lost -> home, night -> quiet -> the board goes whole -> frame widens, red twine, amber in
-the glass, the cough -> silence -> the glass breaks -> two cards -> tester questions -> ending.
+the glass, the cough -> silence -> the glass breaks -> tester questions -> ending. The questions
+are the post-slice playtest UI; the glass is the last authored story beat.
 
 ## Decisions made without asking (flag any you disagree with)
 
@@ -49,7 +50,8 @@ degradation vocabulary" question is untouched, and the widening is a slow tween,
 
 ## Verification
 
-- `tests/break_flow.gd` (new): the full path through the real adapters, including the held page
+- `tests/break_flow.gd` (new): the full path through the real adapters, including the live steward
+  inquiry chain (no injected pantry lead), the held page
   (Escape, use and the case file cannot interrupt), no evidence change across the break, the
   point-of-no-return save, one debrief event, no replay.
 - Updated for the new sleep gate: `town_flow`, `staging_flow`, `debrief_flow`; `portal_content_flow`

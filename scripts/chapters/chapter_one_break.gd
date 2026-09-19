@@ -25,11 +25,6 @@ const BOARD = [
 	["THE ROOM","He checks them against everything he has gathered. They are true, whoever wrote them.\n\nThe board is whole enough. Not the courtroom kind of whole. The other kind."]
 ]
 
-const AFTER = [
-	["THE ROOM","He stands over the pieces in his stocking feet, not moving, one hand at his ear as though the sound were still in it.\n\nIt was small. It was ordinary. It was the first sound in longer than he can account for that his world simply let him have."],
-	["WALTER CORWIN","Is that the way sound works?\n\nIs that the way the world is built, and I have simply never once been given the ordinary use of it?"]
-]
-
 var glass_player: AudioStreamPlayer
 var running := false
 var quiet_time := 0.0
@@ -104,7 +99,10 @@ func _play(g: Node) -> void:
 	await _wait(g, 4.5)
 	_caption(g, "")
 	g.cough_player.volume_db = -12.0
-	g._cards(AFTER, func(): _finish(g), "dialogue")
+	# The glass is the final authored story beat. The tester questions that follow
+	# are explicitly outside the fiction; no dialogue card softens or explains the
+	# break after the player hears it.
+	_finish(g)
 
 func _break_glass(g: Node, room: Node) -> void:
 	var flags = g.state.dialogue_state
