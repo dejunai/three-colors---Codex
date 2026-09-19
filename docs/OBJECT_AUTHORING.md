@@ -75,6 +75,8 @@ Boolean grammar is identical to dialogue: `always`, `never`, `NOT`, `AND`, `OR`,
 | `rose_bodies_removed` | Existing estate staging milestone (the six club members' bodies cleared). |
 | `birch_bodies_removed` | Existing estate staging milestone (the woman and boy cleared). |
 | `lounge_exited` | Existing estate staging milestone (Walter has left the smoking lounge once). |
+| `report` | Filed preliminary report mode string, or `""` if not yet completed. |
+| `report_filed` | Boolean convenience (`true`/`false` form of `report`, shared across `.object`, `.portal`, and `.dialogue`): write `GATE: report_filed` / `GATE: NOT report_filed` for a plain locked/unlocked gate instead of comparing `report` against `""`. |
 
 These are the full exposed vocabulary. As of this writing, `dialogue_runtime.gd::make_context()` was also given `object_done`, `object_count`, and `taken` entries so a dialogue `GATE` can react to the object system symmetrically (e.g. an NPC who notices a taken item). Check the actual dependency id before using a gate; unknown names are not extensions.
 

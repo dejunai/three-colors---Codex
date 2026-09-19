@@ -138,6 +138,8 @@ static func make_context(state, dstate) -> Dictionary:
 			"rose_bodies_removed": func(): return state.rose_bodies_removed,
 			"birch_bodies_removed": func(): return state.birch_bodies_removed,
 			"lounge_exited": func(): return state.lounge_exited,
+			"report": func(): return state.report,
+			"report_filed": func(): return not state.report.is_empty(),
 		}
 	}
 

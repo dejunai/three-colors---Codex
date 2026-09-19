@@ -103,6 +103,11 @@ func _run() -> void:
 	var dctx = DialogueRuntime.make_context(fork_state, fork_state.dialogue_state)
 	assert(dctx.functions.taken.call(["old_coin"]), "dialogue_runtime's make_context must expose the same taken() fact")
 	assert(dctx.functions.outcome_is.call(["chest_response", "taken"]), "dialogue GATEs must read an OBJECT's committed OUTCOME")
+	assert(not Runtime.make_context(fork_state).fields.report_filed.call(), "object make_context must expose report_filed false initially")
+	assert(not dctx.fields.report_filed.call(), "dialogue make_context must expose report_filed false initially")
+	fork_state.complete_report("Full inquest requested")
+	assert(Runtime.make_context(fork_state).fields.report_filed.call(), "object make_context must expose report_filed true after report is completed")
+	assert(DialogueRuntime.make_context(fork_state, fork_state.dialogue_state).fields.report_filed.call(), "dialogue make_context must expose report_filed true after report is completed")
 
 	# --- TIME: omitted is free; explicit numeric (including 0) always wins ---
 	var timing_src = "LOCATION: estate\nOBJECT: free_look\n  GATE: always\n  WALTER CORWIN: \"No charge.\"\nOBJECT: priced_look\n  GATE: always\n  TIME: 5\n  WALTER CORWIN: \"Costs time.\"\nOBJECT: zero_look\n  GATE: always\n  TIME: 0\n  WALTER CORWIN: \"Explicitly free.\"\n"

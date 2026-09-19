@@ -51,6 +51,9 @@ var montage_index = -1
 func steward_ready() -> bool:
 	return visited.has("almy") and day == 3 and steward_visits >= 2 and coat == "Plain wool coat"
 
+func report_filed() -> bool:
+	return not report.is_empty()
+
 func strength() -> int:
 	return 2
 

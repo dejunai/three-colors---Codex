@@ -88,5 +88,16 @@ func _run() -> void:
 	assert(default_time_def.errors.is_empty(), str(default_time_def.errors))
 	assert(default_time_def.portals[0].timing == "3", "omitted TIME must default to '3'")
 
-	print("PASS: portal grammar parses; GATE cascade, GO/after_go continuation, attempt_count, known_ids, default TIME: 3, and validation verified")
+	# --- report and report_filed boolean evaluation ---
+	var rep_state = CaseState.new()
+	var rep_ctx = Runtime.make_context(rep_state)
+	assert(not Lang.evaluate(Lang._parse_gate("report_filed"), rep_ctx), "report_filed must evaluate false before report is completed")
+	assert(Lang.evaluate(Lang._parse_gate("NOT report_filed"), rep_ctx), "NOT report_filed must evaluate true before report is completed")
+	rep_state.complete_report("Observations filed")
+	var filed_ctx = Runtime.make_context(rep_state)
+	assert(Lang.evaluate(Lang._parse_gate("report_filed"), filed_ctx), "report_filed must evaluate true after report is completed")
+	assert(not Lang.evaluate(Lang._parse_gate("NOT report_filed"), filed_ctx), "NOT report_filed must evaluate false after report is completed")
+	assert(Lang.evaluate(Lang._parse_gate("report = 'Observations filed'"), filed_ctx), "report mode string must still match for textual reads")
+
+	print("PASS: portal grammar parses; GATE cascade, GO/after_go continuation, attempt_count, known_ids, default TIME: 3, report_filed, and validation verified")
 	quit(0)

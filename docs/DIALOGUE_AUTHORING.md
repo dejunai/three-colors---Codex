@@ -79,6 +79,11 @@ Use `always`, `never`, `NOT`, `AND`, `OR`, parentheses, and `<`, `<=`, `>`, `>=`
 | `phase` | `morning`, **`noon`**, `evening`, `night`. |
 | `estate_complete` | Existing estate investigation completion state. |
 | `steward_ready` | Existing story predicate: Almy visited, Day 3, sufficient steward visits, and plain coat. |
+| `rose_bodies_removed` | Existing estate staging milestone (the six club members' bodies cleared). |
+| `birch_bodies_removed` | Existing estate staging milestone (the woman and boy cleared). |
+| `lounge_exited` | Existing estate staging milestone (Walter has left the smoking lounge once). |
+| `report` | Filed preliminary report mode string, or `""` if not yet completed. |
+| `report_filed` | Boolean convenience (`true`/`false` form of `report`, shared across `.dialogue`, `.object`, and `.portal`): write `GATE: report_filed` / `GATE: NOT report_filed` for a plain locked/unlocked gate instead of comparing `report` against `""`. |
 
 These are the full exposed runtime fields/functions. Clock minutes, Perception, and arbitrary case-state members are not gate fields. Unknown names are not extensions. Check the actual dependency ID before using a gate.
 

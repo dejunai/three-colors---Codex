@@ -145,7 +145,16 @@ func _run() -> void:
 	var malformed_outcome = Lang.parse("NPC: bad\nLOCATION: test\nTOPIC: default\n  GATE: always\n  OUTCOME: outside = fork\n  FORK:\n    CHOICE: \"Bad.\"\n      OUTCOME: missing_value\n      TEST: \"No.\"\n")
 	assert(malformed_outcome.errors.size() == 2, "OUTCOME must be branch-local and use a complete identifier assignment")
 
-	print("DIALOGUE LANG PASS: menu/never/always, linear CHOICE + inline NOTEBOOK, cross-NPC topic tally, FORK branching and resume, doc-only topics hidden, gated and weighted defaults, greeting timing, fuzzy gate matching")
+	# --- report_filed boolean gate symmetry ---
+	var rep_eval_state = CaseState.new()
+	var rep_eval_dstate = DialogueState.new()
+	assert(not Lang.evaluate(Lang._parse_gate("report_filed"), Runtime.make_context(rep_eval_state, rep_eval_dstate)), "report_filed gate must evaluate false initially")
+	assert(Lang.evaluate(Lang._parse_gate("NOT report_filed"), Runtime.make_context(rep_eval_state, rep_eval_dstate)), "NOT report_filed gate must evaluate true initially")
+	rep_eval_state.complete_report("Observations filed")
+	assert(Lang.evaluate(Lang._parse_gate("report_filed"), Runtime.make_context(rep_eval_state, rep_eval_dstate)), "report_filed gate must evaluate true once report is filed")
+	assert(not Lang.evaluate(Lang._parse_gate("NOT report_filed"), Runtime.make_context(rep_eval_state, rep_eval_dstate)), "NOT report_filed gate must evaluate false once report is filed")
+
+	print("DIALOGUE LANG PASS: menu/never/always, linear CHOICE + inline NOTEBOOK, cross-NPC topic tally, FORK branching and resume, doc-only topics hidden, gated and weighted defaults, greeting timing, fuzzy gate matching, report_filed")
 	quit(0)
 
 # Test-only stand-in for consuming every displayed card in a segment.
