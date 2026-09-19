@@ -114,6 +114,7 @@ func button(text: String, callback: Callable, ghost: bool = false) -> Button:
 		b.add_theme_color_override("font_color", BONE)
 		b.add_theme_color_override("font_hover_color", LANTERN)
 		b.add_theme_color_override("font_pressed_color", LANTERN)
+		b.add_theme_color_override("font_focus_color", LANTERN)
 	else:
 		normal.bg_color = BONE
 		hover.bg_color = PAPER
@@ -121,6 +122,7 @@ func button(text: String, callback: Callable, ghost: bool = false) -> Button:
 		b.add_theme_color_override("font_color", INK)
 		b.add_theme_color_override("font_hover_color", INK)
 		b.add_theme_color_override("font_pressed_color", INK)
+		b.add_theme_color_override("font_focus_color", INK)
 	b.add_theme_stylebox_override("normal", normal)
 	b.add_theme_stylebox_override("hover", hover)
 	b.add_theme_stylebox_override("pressed", pressed)

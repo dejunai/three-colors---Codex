@@ -1,8 +1,11 @@
 extends RefCounted
 
-const VERSION = 9
+const VERSION = 11
 var dialogue_state = preload("res://scripts/shared/dialogue_state.gd").new()
+var object_state = preload("res://scripts/shared/object_state.gd").new()
+var portal_state = preload("res://scripts/shared/portal_state.gd").new()
 var evidence: Array[String] = []
+var inventory: Array[String] = [] # Carryable items recorded by the object system's TAKE step.
 var links: Array[String] = []
 var statements: Array[String] = []
 var visited: Array[String] = []
@@ -48,11 +51,20 @@ var montage_index = -1
 func steward_ready() -> bool:
 	return visited.has("almy") and day == 3 and steward_visits >= 2 and coat == "Plain wool coat"
 
+func report_filed() -> bool:
+	return not report.is_empty()
+
 func strength() -> int:
 	return 2
 
 func discover(id: String) -> void:
 	if not evidence.has(id): evidence.append(id)
+
+func take_item(id: String) -> void:
+	if not inventory.has(id): inventory.append(id)
+
+func has_item(id: String) -> bool:
+	return inventory.has(id)
 
 func record(id: String) -> void:
 	if not statements.has(id): statements.append(id)
@@ -100,7 +112,7 @@ func file_supplement(send_county: bool, sources:Dictionary={}) -> void:
 		if not copies.has("County registrar — dated supplement"): copies.append("County registrar — dated supplement")
 
 func pack() -> Dictionary:
-	return {"version":VERSION,"dialogue_state":dialogue_state.pack(),"clock_minutes":clock_minutes,"timed_conversations":timed_conversations,"rose_bodies_removed":rose_bodies_removed,"birch_bodies_removed":birch_bodies_removed,"estate_visits_completed":estate_visits_completed,"day":day,"steward_visits":steward_visits,"lounge_exited":lounge_exited,"montage_index":montage_index,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
+	return {"version":VERSION,"dialogue_state":dialogue_state.pack(),"object_state":object_state.pack(),"portal_state":portal_state.pack(),"inventory":inventory,"clock_minutes":clock_minutes,"timed_conversations":timed_conversations,"rose_bodies_removed":rose_bodies_removed,"birch_bodies_removed":birch_bodies_removed,"estate_visits_completed":estate_visits_completed,"day":day,"steward_visits":steward_visits,"lounge_exited":lounge_exited,"montage_index":montage_index,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
 		"report":report,"copies":copies,"report_evidence":report_evidence,"report_statements":report_statements,"flask":flask,"coat":coat,"minutes":minutes,
 		"position":[position.x,position.y,position.z],"yaw":yaw,"started":started,"finished":finished,
 		"world":world,"estate_complete":estate_complete,"intake_done":intake_done,
@@ -109,8 +121,8 @@ func pack() -> Dictionary:
 		"ammo":ammo,"flask_spilled":flask_spilled,"flask_spill_amount":flask_spill_amount,"drowned_dead":drowned_dead}
 
 func restore(d: Dictionary) -> bool:
-	if int(d.get("version",0)) not in [1,2,3,4,5,6,7,8,VERSION]: return false
-	for key in ["evidence","links","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history","county_statements","timed_conversations"]:
+	if int(d.get("version",0)) not in [1,2,3,4,5,6,7,8,9,10,VERSION]: return false
+	for key in ["evidence","links","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history","county_statements","timed_conversations","inventory"]:
 		if not d.get(key,[]) is Array: return false
 		if key!="supplement_history":
 			for value in d.get(key,[]):
@@ -225,4 +237,15 @@ func restore(d: Dictionary) -> bool:
 	if day < 3 and steward_visits == 0 and visited.has("barman") and dialogue_state.topic_done("steward","default"):
 		steward_visits = 1
 		dialogue_state.visit_counts["steward"] = 1
+	inventory.assign(d.get("inventory",[]))
+	var object_payload=d.get("object_state", {})
+	if not object_payload is Dictionary: return false
+	object_state=preload("res://scripts/shared/object_state.gd").new()
+	if not object_payload.is_empty():
+		if not object_state.restore(object_payload): return false
+	var portal_payload=d.get("portal_state", {})
+	if not portal_payload is Dictionary: return false
+	portal_state=preload("res://scripts/shared/portal_state.gd").new()
+	if not portal_payload.is_empty():
+		if not portal_state.restore(portal_payload): return false
 	return true

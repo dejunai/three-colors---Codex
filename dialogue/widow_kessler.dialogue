@@ -26,7 +26,7 @@ TOPIC: the_knife
   GATE: evidence(knife)
   TAG: kessler_knife
   LABEL: "Ask about Otto's boning knife"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "I found a boning knife beneath a hedge root. Wiped clean.\nMaker's stamp matches the blades on your rack."
   VOICE: violin_neutral_medium_v1
   MRS. KESSLER: "Otto's good knife. Carbon steel. Kept it in grease under the counter."
@@ -40,7 +40,7 @@ TOPIC: club_standing
   GATE: always
   TAG: kessler_standing
   LABEL: "Ask how Otto came to join the club"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Judge Wexford, Dr. Fenn, Corliss, Pruitt. Men of property.\nHow did Kessler join them?"
   VOICE: violin_neutral_short_v2
   MRS. KESSLER: "They needed someone who didn't flinch at gristle."
@@ -57,7 +57,7 @@ TOPIC: butcher_parcels
   GATE: evidence(kessler_carriages)
   TAG: kessler_parcels
   LABEL: "Ask what Otto brought to the meetings"
-  TIME: 6
+  TIME: 8
   FORK:
     CHOICE: "Ask about meat deliveries."
       VOICE: violin_happy_medium_v1
@@ -82,7 +82,7 @@ TOPIC: the_mother
   GATE: evidence(club_devotion) AND NOT topic_done(widow_kessler, the_mother)
   TAG: kessler_mother
   LABEL: "Ask how Otto spoke about the club at the end"
-  TIME: 5
+  TIME: 7
   VOICE: violin_neutral_medium_v2
   MRS. KESSLER: "Toward the end, he stopped bragging about the dinners."
   WALTER CORWIN: "What did he speak about?"

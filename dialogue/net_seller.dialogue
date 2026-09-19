@@ -65,7 +65,7 @@ TOPIC: crew_omission
   GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(net_seller, crew_omission)
   TAG: net_seller_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "The men who drowned in 1823 — their names aren't in any record."
   VOICE: trombone_neutral_short_v2
   NET SELLER: "Ours are."
@@ -81,7 +81,7 @@ TOPIC: harbor_currents
   GATE: evidence(sub_harbor_drag) AND NOT topic_done(net_seller, harbor_currents)
   TAG: net_seller_currents
   LABEL: "Ask about the unnatural stillness before the murders"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "Mrs. Peake said the tide went dead flat at three in the morning, three nights back."
   VOICE: trombone_neutral_medium_v2
   NET SELLER: "Lydia Peake hears with her ears. I watch the lead weights."
@@ -98,7 +98,7 @@ TOPIC: stone_sinkers
   GATE: NOT topic_done(net_seller, stone_sinkers)
   TAG: net_seller_sinkers
   LABEL: "Ask why the skiffs by the slipway use grooved stones instead of iron anchors"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "I noticed three dories tied at the slip with grooved granite stones for anchors. Iron's cheap enough at the chandlery."
   VOICE: trombone_neutral_short_v2
   NET SELLER: "Iron rings."
@@ -111,15 +111,16 @@ TOPIC: stone_sinkers
 TOPIC: copper_rings
   GATE: coat = plain AND evidence(observer_color_tell) AND NOT topic_done(net_seller, copper_rings)
   TAG: net_seller_rings
-  LABEL: "Ask why the harbor people wear beaten copper rings"
-  TIME: 5
-  WALTER CORWIN: "The mason wears a band made from an anchor link. Is that common here?"
+  LABEL: "Ask about the colored jewelry the harbor families wear"
+  TIME: 7
+  WALTER CORWIN: "The observers down here have always worn those colored bands. It's been that way since before I was born. Does your family keep to the tradition?"
   VOICE: trombone_neutral_short_v1
-  NET SELLER: "You'll have to ask him about his belongings."
+  NET SELLER: "You'll have to ask them about their belongings."
   [She lifts a snagged loop clear of the needle. Her thumb rests briefly against the worn metal of her gauge.]
-  WALTER CORWIN: "I thought you might know him."
+  WALTER CORWIN: "I'm not questioning the jewelry, ma'am. Everyone knows it's always been there. I'm asking what the observers are watching for."
   VOICE: trombone_neutral_short_v1
-  NET SELLER: "I know this net wants finishing."
-  NOTEBOOK: net_seller_ring_discipline | "The net seller declined to discuss the mason's band and returned to repairing her net. She offered no explanation for it."
+  NET SELLER: "If you've known it all your life, Walter, you ought to know enough not to pry into what keeps an observer's sight clear.\nI know this net wants finishing."
+  NOTEBOOK: net_seller_ring_discipline | "The net seller refused to discuss the observers' colored jewelry: if Walter had known the tradition all his life, he ought to know not to pry into what keeps an observer's sight clear."
   # Historical evidence ID retained; this records a refusal, not an explained technique.
   EVIDENCE: eye_anchoring_discipline
+

@@ -2,7 +2,7 @@
 # Mrs. Teague: mother of two pupils, resident of Upper Ridge; defensive respectability.
 NPC: school_parent
 LOCATION: business_district
-SCHEDULE: morning=upper_house_3, midday=schoolhouse_gate, evening=upper_house_3, night=upper_house_3
+SCHEDULE: morning=upper_center_road, midday=schoolhouse_gate, evening=upper_east_road, night=closed
 
 TOPIC: default
   GATE: NOT topic_done(school_parent, default) AND coat = plain
@@ -26,7 +26,7 @@ TOPIC: the_stranger_woman
   GATE: evidence(naomi)
   TAG: parent_naomi_sighting
   LABEL: "Ask if she saw Naomi Freeman and her boy"
-  TIME: 7
+  TIME: 9
   WALTER CORWIN: "You walk down from the ridge past the boardinghouse every noon.\nDid you see the colored woman and her son?"
   VOICE: violin_neutral_medium_v2
   MRS. TEAGUE: "I saw them sitting on the low wall by the apothecary three mornings running."
@@ -46,7 +46,7 @@ TOPIC: the_estate_talk
   GATE: evidence(naomi)
   TAG: parent_estate_rumor
   LABEL: "Ask what the ridge families are saying about the club deaths"
-  TIME: 7
+  TIME: 9
   FORK:
     CHOICE: "Ask about Judge Wexford."
       VOICE: violin_neutral_long_v2
@@ -66,3 +66,60 @@ TOPIC: the_estate_talk
       NOTEBOOK: parent_fenn_peculiar | "Dr. Fenn stopped prescribing camphor, claiming the odor 'attracted things from the cellar.'"
       EVIDENCE: fenn_camphor_taboo
       OUTCOME: estate_rumor_response = doctor_fenn
+
+# Redundant-carrier backup: if schoolteacher is missed, this supplies the
+# same EVIDENCE the covering-letter lead relies on downstream.
+TOPIC: the_covering_letter
+  GATE: evidence(curriculum_abridgment) OR evidence(sanitized_textbook)
+  TAG: parent_covering_letter
+  LABEL: "Ask if she recalls the covering letter approving the reader"
+  TIME: 7
+  WALTER CORWIN: "The school committee approved a letter cutting the crew list from the reader."
+  VOICE: violin_neutral_medium_v2
+  MRS. TEAGUE: "My husband sits on that committee, Officer. He read it aloud at the Tuesday meeting, proud as anything."
+  [She recites from memory, counting the words off on gloved fingers.]
+  VOICE: violin_bureaucratic_long_v1
+  MRS. TEAGUE: "'Retain the subscriptions toward rebuilding. Omit the accompanying crew list from the school edition. Approved by the committee.' Signed by Mr. Abernathy himself."
+  WALTER CORWIN: "You remember it word for word."
+  VOICE: violin_conspiratorial_medium_v1
+  MRS. TEAGUE: "A woman remembers exactly the sentence that decided what her own children would and wouldn't be taught, Officer."
+  NOTEBOOK: parent_covering_letter_1 | "Mrs. Teague recites the committee's covering letter from memory, matching Hallowell's copy word for word: rebuilding subscriptions retained, crew list omitted, approved and signed by Abernathy."
+  EVIDENCE: reader_omission_letter
+
+# Redundant-carrier backup: if schoolteacher is missed, this supplies the
+# same EVIDENCE the sanitized-textbook lead relies on downstream.
+TOPIC: the_reader_lesson
+  GATE: always
+  TAG: parent_reader_lesson
+  LABEL: "Ask what her children recite about the 1823 disaster"
+  TIME: 6
+  WALTER CORWIN: "What does the school reader teach about the Ophion?"
+  VOICE: violin_neutral_medium_v1
+  MRS. TEAGUE: "My youngest recites it every Friday for penmanship practice."
+  [She straightens, reciting in the flat cadence of a memorized lesson.]
+  VOICE: violin_haunting_medium_v2
+  MRS. TEAGUE: "'The sea received its harvest, and Christian fortitude and the generosity of our founding estates preserved Widow's Bight from ruin.' Chapter Four, page twelve. She's copied it into her fair-hand book twice."
+  WALTER CORWIN: "And the crew? The men who sailed with the fleet?"
+  VOICE: violin_neutral_medium_v2
+  MRS. TEAGUE: "Never a syllable about the men before the mast. The committee had their names stricken from the text before the plates were cast."
+  NOTEBOOK: parent_reader_lesson_1 | "Mrs. Teague's daughter recites the school reader's Chapter Four passage from memory: 'The sea received its harvest... founding estates preserved Widow's Bight from ruin.'"
+  NOTEBOOK: parent_curriculum_abridgment | "Mrs. Teague confirms the school edition omitted the crew roster from the 1823 founding history, teaching only the benefactors' survival."
+  EVIDENCE: sanitized_textbook
+  EVIDENCE: curriculum_abridgment
+
+# Redundant-carrier backup: if post_office_clerk is missed, this supplies the
+# same EVIDENCE the New Bedford letters lead relies on downstream, building
+# on Mrs. Teague's own already-established sighting of the envelope.
+TOPIC: the_new_bedford_letters
+  GATE: evidence(naomi_unapologetic_presence)
+  TAG: parent_new_bedford_letters
+  LABEL: "Ask what she noticed about the envelope Naomi carried"
+  TIME: 7
+  WALTER CORWIN: "You said Naomi Freeman had an envelope tucked in her glove. Did you see where it was from?"
+  VOICE: violin_neutral_medium_v2
+  MRS. TEAGUE: "I don't make a habit of reading other women's post, Officer. But she wasn't discreet about it, not entirely."
+  [She adjusts her shawl, remembering.]
+  VOICE: violin_conspiratorial_long_v1
+  MRS. TEAGUE: "She told the boy, plain as anything, that his brother's letter had come again from the mission in New Bedford.\nSaid he'd have his answer once she'd 'collected what was owed.' I assumed she meant charity. I understand now she didn't."
+  NOTEBOOK: parent_new_bedford_letters_1 | "Mrs. Teague overheard Naomi tell her son a letter had arrived again from the New Bedford mission, and that he'd have his answer once she'd 'collected what was owed.'"
+  EVIDENCE: new_bedford_letters

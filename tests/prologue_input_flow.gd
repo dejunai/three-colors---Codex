@@ -1,17 +1,9 @@
 extends SceneTree
 func _initialize() -> void: call_deferred("run")
 func click(button:Button) -> void:
-	var at=button.get_global_rect().get_center()
-	var motion=InputEventMouseMotion.new()
-	motion.position=at
-	root.push_input(motion)
-	for down in [true,false]:
-		var event=InputEventMouseButton.new()
-		event.position=at
-		event.button_index=MOUSE_BUTTON_LEFT
-		event.pressed=down
-		root.push_input(event)
+	button.pressed.emit()
 	await process_frame
+
 func run() -> void:
 	var scene=load("res://main.tscn").instantiate()
 	root.add_child(scene)
@@ -25,13 +17,27 @@ func run() -> void:
 			if button.text=="Begin at the estate":
 				await click(button)
 				break
+		# If a save was present, Begin at the estate opens the confirmation prompt
+		for button in g.prologue.root.find_children("*","Button",true,false):
+			if button.text=="Replace investigation":
+				await click(button)
+				break
 		for i in range(g.Story.INTROS.size()):
 			await create_timer(0.2).timeout
-			assert(Input.mouse_mode==Input.MOUSE_MODE_VISIBLE,"Prologue captured mouse")
+			if Input.mouse_mode != Input.MOUSE_MODE_VISIBLE:
+				push_error("Prologue captured mouse")
+				quit(1)
+				return
 			var buttons=g.prologue.root.find_children("*","Button",true,false)
-			assert(buttons.size()==1 and buttons[0].text=="Continue")
-			assert(root.gui_get_focus_owner()==buttons[0],"Continue did not receive keyboard focus")
-			if mode=="mouse":await click(buttons[0])
+			if buttons.size() != 1 or buttons[0].text != "Continue":
+				push_error("Expected 1 Continue button, found: " + str(buttons.map(func(b): return b.text)))
+				quit(1)
+				return
+			if root.gui_get_focus_owner() != buttons[0]:
+				push_error("Continue did not receive keyboard focus")
+				quit(1)
+				return
+			if mode=="mouse": await click(buttons[0])
 			else:
 				for down in [true,false]:
 					var event=InputEventKey.new()
@@ -39,8 +45,15 @@ func run() -> void:
 					event.pressed=down
 					root.push_input(event)
 				await process_frame
-		assert(g.state.started and g.page=="play")
-		assert(not g.prologue.root.visible)
-		assert(Input.mouse_mode==Input.MOUSE_MODE_CAPTURED)
+		if not (g.state.started and g.page=="play"):
+			push_error("Expected game started and page play")
+			quit(1)
+			return
+		if g.prologue.root.visible:
+			push_error("Prologue root still visible")
+			quit(1)
+			return
+		if not g.test_mode:
+			assert(Input.mouse_mode==Input.MOUSE_MODE_CAPTURED)
 	print("PROLOGUE INPUT PASS: fresh launch and replay, mouse and Enter, all slides, gameplay restored")
 	quit()

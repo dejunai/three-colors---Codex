@@ -63,7 +63,7 @@ TOPIC: cut_jackets
   GATE: always
   TAG: tailor_five_jackets
   LABEL: "Ask who ordered the matching club evening dress"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Six men died in identical broadcloth evening coats. Did you cut them?"
   VOICE: trombone_bureaucratic_medium_v1
   MR. KREBS: "I cut five, Officer. Italian wool, satin lapels, horn buttons imported through Boston."
@@ -79,7 +79,7 @@ TOPIC: the_sixth_jacket
   #evidence(five_tailored_coats)
   TAG: tailor_sixth_jacket
   LABEL: "Ask who made the sixth coat"
-  TIME: 7
+  TIME: 9
   WALTER CORWIN: "Six bodies lay in the garden. All six wore identical cut coats."
   VOICE: trombone_bureaucratic_medium_v1
   MR. KREBS: "Then the sixth was cut by someone who didn't buy his cloth in Miskatonic County."
@@ -100,7 +100,7 @@ TOPIC: coat_lining
   #evidence(ancestral_sixth_coat) AND NOT topic_done(tailor, coat_lining)
   TAG: tailor_lining
   LABEL: "Ask what distinguished the Ophion club pattern"
-  TIME: 4
+  TIME: 6
   VOICE: trombone_neutral_medium_v1
   MR. KREBS: "No label inside the collar. That was Mr. Corliss's instruction.\n'A gentleman's jacket requires no card to say where it came from.'"
   WALTER CORWIN: "Was there any marking at all?"
@@ -109,12 +109,62 @@ TOPIC: coat_lining
   NOTEBOOK: tailor_serpent_hem | "All club evening jackets contained a black silk cord stitched inside the inner breast hem, shaped like a coiled eel or worm."
   EVIDENCE: serpent_hem_motif
 
+# Redundant-carrier backup: if local_historian is missed, this supplies the
+# same EVIDENCE the Ophion-naming question relies on downstream.
+TOPIC: pruitt_family_naming
+  GATE: NOT evidence(ophion_myth_classical)
+  TAG: tailor_pruitt_naming
+  LABEL: "Ask if Krebs ever heard why the ship was named Ophion"
+  TIME: 6
+  WALTER CORWIN: "The Ophion. Do you know why they named her that?"
+  VOICE: trombone_neutral_medium_v1
+  MR. KREBS: "Mr. Pruitt mentioned it once, fitting a coat for his grandson. Proud of it, the way some men are proud of a crest."
+  [He measures a length of broadcloth without looking up.]
+  VOICE: trombone_bureaucratic_long_v1
+  MR. KREBS: "Said his great-grandfather Elias had a Harvard education and a taste for the classics, and chose a Greek name because it sounded distinguished on a bill of lading.\nI've cut coats for three generations of that family. None of them ever mentioned it meaning anything more than that."
+  NOTEBOOK: tailor_pruitt_naming_1 | "Mr. Krebs recalls Josiah Pruitt crediting the ship's name to his great-grandfather Elias's classical education — 'nothing more than that,' across three generations of the family the tailor has dressed."
+  EVIDENCE: ophion_myth_classical
+
+# Redundant-carrier backup: if gazette_editor is missed at the very end of
+# the correction thread, this supplies the same EVIDENCE once the terms and
+# filed paperwork already exist — the correction is printed either way; this
+# is simply where Walter learns of it if he never returns to Halleck himself.
+TOPIC: correction_slip_seen
+  GATE: evidence(gazette_correction_terms) AND filed(eight) AND filed(naomi) AND filed(lodging) AND NOT evidence(gazette_correction_printed)
+  TAG: tailor_correction_slip
+  LABEL: "Ask if Krebs has seen the Gazette's correction in circulation"
+  TIME: 6
+  WALTER CORWIN: "Has a corrected Gazette come through your shop?"
+  VOICE: trombone_neutral_medium_v1
+  MR. KREBS: "A customer left his copy on the fitting bench Tuesday. A narrow slip pasted in beside the masthead."
+  [He unfolds a creased newspaper from beneath a bolt of broadcloth.]
+  VOICE: trombone_neutral_long_v1
+  MR. KREBS: "Eight dead, it says now. Some woman named Freeman, and her ledger entry at the boardinghouse.\nNo cause given. The boy's name is still blank."
+  NOTEBOOK: tailor_correction_slip_1 | "Mr. Krebs produced a customer's copy of the corrected Gazette: eight dead, Naomi Freeman identified via Almy's ledger, boy unnamed, no cause established — matching the terms Halleck required."
+  EVIDENCE: gazette_correction_printed
+
+# Redundant-carrier backup: if widow_kessler is missed, this supplies the
+# same EVIDENCE the club-standing lead relies on downstream.
+TOPIC: the_altered_shoulder
+  GATE: NOT evidence(kessler_carriages)
+  TAG: tailor_kessler_carriage
+  LABEL: "Ask how Otto Kessler came to sit with the club"
+  TIME: 7
+  WALTER CORWIN: "Otto Kessler. A butcher, sitting at that table. How did that come about?"
+  VOICE: trombone_neutral_medium_v1
+  MR. KREBS: "I let his coat out across the shoulder myself, Officer. Butcher's bulk doesn't sit like a gentleman's."
+  [He sets down his shears, remembering.]
+  VOICE: trombone_bureaucratic_long_v1
+  MR. KREBS: "He came to collect it in his wedding suit underneath, if you can credit that. Said a carriage was calling for him at the alley door that evening, not the front.\nHe asked me to press the coat twice. Wanted to look proper for men who'd never once shaken his hand in daylight."
+  NOTEBOOK: tailor_kessler_carriage_1 | "Mr. Krebs, who altered Kessler's coat, recalls Otto being collected by carriage at the alley door rather than the front — corroborating a monthly ritual of unequal, unacknowledged inclusion."
+  EVIDENCE: kessler_carriages
+
 # Shared inquiry: four different completed refusals make the question travel.
 TOPIC: crew_omission
   GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(tailor, crew_omission)
   TAG: tailor_crew_omission
-  LABEL: "Ask why the town's history leaves out the crew's names"
-  TIME: 3
+  LABEL: "Ask why the commemorative dinner never toasts the crew"
+  TIME: 5
   WALTER CORWIN: "You still cut coats for the men who get toasted at that dinner every year. None of it goes to the crew who drowned. Why?"
   VOICE: trombone_neutral_medium_v1
   MR. KREBS: "I remember the subscribers' names from the commemorative dinner. That is all."

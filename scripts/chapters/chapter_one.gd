@@ -15,8 +15,12 @@ var interface: CanvasLayer
 var presentation: CanvasLayer
 var staging=preload("res://scripts/chapters/chapter_one_staging.gd").new()
 var scripted_dialogue=preload("res://scripts/chapters/chapter_one_dialogue.gd").new()
+var objects=preload("res://scripts/chapters/chapter_one_objects.gd").new()
+var portals=preload("res://scripts/chapters/chapter_one_portals.gd").new()
+var breaker=preload("res://scripts/chapters/chapter_one_break.gd").new()
 var archive=preload("res://scripts/chapters/chapter_one_archive.gd").new()
 var prologue=preload("res://scripts/shared/prologue_presentation.gd").new()
+var playthrough_log=preload("res://scripts/shared/playthrough_log.gd").new()
 var rig: Node3D
 var state = CaseState.new()
 var estate: Node3D
@@ -67,7 +71,10 @@ const DayClock=preload("res://scripts/shared/day_clock.gd")
 var daylight:Node3D
 var last_clock_phase=""
 var last_region = ""
+var _last_bridge_id: String = ""
+var _last_bridge_time: float = -9999.0
 var return_page = "title"
+var town_exterior_world: String = "town"
 var settings_schema=preload("res://scripts/shared/accessibility_settings.gd").new()
 var save_store=preload("res://scripts/shared/save_store.gd").new()
 var settings = settings_schema.DEFAULTS.duplicate(true)
@@ -98,8 +105,10 @@ func start(player_rig:Node3D) -> void:
 	facts.merge(TownStory.FACTS)
 	facts.merge(TunnelStory.FACTS)
 	scripted_dialogue.setup(self)
+	add_child(playthrough_log)
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--capture="): capture_mode = arg.trim_prefix("--capture=")
+	playthrough_log.enabled = not test_mode and capture_mode.is_empty()
 	_load_settings()
 	estate = Estate.new()
 	estate.name = "OphionEstate"
@@ -144,6 +153,7 @@ func _build_ui() -> void:
 	prologue.layer=20
 	add_child(prologue)
 	_build_cough()
+	breaker.setup(self)
 	instrument_voice_player=AudioStreamPlayer.new()
 	instrument_voice_player.bus="Master"
 	add_child(instrument_voice_player)
@@ -174,19 +184,41 @@ func _close() -> void:
 	_stop_instrument_voice()
 	scripted_dialogue.clear()
 	interface.close()
+	_sync_lounge()
 	page="play"
-	Input.mouse_mode=Input.MOUSE_MODE_CAPTURED
+	rig.capture_mouse()
+
+# The steward's pantry door is offered only once he has named it. Portal sync can
+# only erase a hotspot, so re-offer it whenever a conversation closes in the lounge.
+func _sync_lounge() -> void:
+	if state.world == "lounge" and is_instance_valid(estate) and estate.has_method("sync_pantry"):
+		estate.sync_pantry(state.evidence.has("pantry_lead"))
 
 func _title() -> void:
 	page="title"
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
 	marker.visible=false
 	var buttons=[]
-	if not _available_save_path().is_empty(): buttons.append(["Continue investigation",_load_game])
-	buttons.append(["Begin at the estate",_new_game])
+	var has_save = not _available_save_path().is_empty()
+	if has_save: buttons.append(["Continue investigation",_load_game])
+	buttons.append(["Begin at the estate",_confirm_new_game if has_save else _new_game])
 	buttons.append(["Accessibility & controls",_title_settings,true])
 	buttons.append(["Quit",func(): get_tree().quit(),true])
 	prologue.show_title(preload("res://assets/prologue/club-night.jpg"),"Three Colors of Madness","Competence delays the end. It never prevents it.","A man does not interrogate the shape of his own eye.",buttons)
+
+func _confirm_new_game() -> void:
+	page="title"
+	var buttons=[
+		["Replace investigation",_new_game],
+		["Cancel",_title,true]
+	]
+	prologue.show_title(
+		preload("res://assets/prologue/club-night.jpg"),
+		"Begin a new investigation?",
+		"Your existing investigation will be replaced.",
+		"Any unfiled observations or saved progress will be lost.",
+		buttons
+	)
 
 func _title_settings() -> void:
 	return_page="title"
@@ -200,6 +232,7 @@ func _new_game() -> void:
 	tunnel_dead = false
 	comfort_time = 0
 	state = CaseState.new()
+	playthrough_log.begin(state,scripted_dialogue.FILES.keys())
 	_travel("estate",state.position,0,false)
 	player.position = state.position
 	yaw = 0
@@ -283,6 +316,7 @@ func tick_world(delta:float) -> void:
 	if page != "play": return
 	state.minutes += delta/60
 	DayClock.advance(state,delta*DayClock.WANDER_RATE)
+	playthrough_log.observe(state,scripted_dialogue.FILES.keys())
 	if is_instance_valid(daylight): daylight.update_clock(state.clock_minutes,player.position)
 	var phase=DayClock.phase(state.clock_minutes)
 	if phase!=last_clock_phase:
@@ -290,6 +324,8 @@ func tick_world(delta:float) -> void:
 		last_clock_phase=phase
 		last_region=""
 	_find_focus()
+	breaker.tick(self,delta)
+	if page != "play": return
 	if state.world == "tunnel":
 		estate.reveal(state.perception())
 		if estate.advance(delta,player.position):
@@ -313,7 +349,7 @@ func tick_world(delta:float) -> void:
 func _process(delta:float) -> void:
 	if page == "play": comfort_time = maxf(0,comfort_time-delta)
 	var unease = minf(1.0,float(state.evidence.size())/12.0)
-	hazard_caption.visible = state.world == "tunnel" and page == "play"
+	hazard_caption.visible = (state.world == "tunnel" and page == "play") or page == "break"
 	if state.world == "tunnel" and estate is Tunnel:
 		unease = maxf(unease,clampf((6.0-player.position.z)/30.0,0,1))
 		estate.presentation(unease,comfort_time > 0)
@@ -322,7 +358,9 @@ func _process(delta:float) -> void:
 		if page == "play" and current_phase == "warning" and last_hazard_phase != current_phase:
 			cough_player.play()
 		last_hazard_phase = current_phase
-	if is_instance_valid(cough_player): cough_player.stream_paused = page != "play"
+	if is_instance_valid(cough_player): cough_player.stream_paused = not page in ["play","break"]
+	# The held beat pushes the camera in; the physics loop that normally steers it is idle.
+	if page == "break": _update_camera(delta)
 	presentation.advance(delta,unease,comfort_time > 0,settings)
 	toast_time = maxf(0,toast_time-delta)
 	toast_label.modulate.a = minf(1,toast_time)
@@ -366,21 +404,18 @@ func _find_focus() -> void:
 func _interact(id:String) -> void:
 	if staging.interact(self,id): return
 	if scripted_dialogue.interact(self,id): return
+	if objects.interact(self,"estate",id): return
+	if portals.interact(self,state.world,id): return
 	if _tunnel_interaction(id): return
 	if _town_interaction(id): return
 	if id == "report":
 		_report_screen()
 		return
-	if id == "exit":
-		if state.report.is_empty():
-			_cards([["WALTER CORWIN","It would be unprofessional to leave the scene without completing the paperwork."]],_close)
-			return
-		_finish()
-		return
 	var key = "gardener_plain" if id == "gardener" and state.estate_complete and state.coat == "Plain wool coat" else id
 	if id == "boy":
 		if state.estate_complete: key = "boy_return"
 		elif state.visited.has("boy"): key = "boy_repeat"
+	if id == "eight" and state.visited.has("eight") and state.evidence.has("naomi"): key = "eight_identified"
 	if not Story.SCENES.has(key): return
 	_cards(Story.SCENES[key],func():
 		if not state.visited.has(id): state.visited.append(id)
@@ -436,7 +471,7 @@ func _open_lead() -> String:
 
 func _objective() -> String:
 	if state.world == "tunnel":
-		return "Return to the service stair with the measurements." if state.evidence.has("lower_foundation") else "Compare the lower support with the service plan. The outer service walk remains open."
+		return "The passage goes on beyond the last support." if state.evidence.has("lower_foundation") else "The plan ends at the last support. The outer service walk remains open."
 	if state.estate_complete or state.world != "estate":
 		if not state.intake_done: return "Submit your estate report at the precinct intake counter on Pickman Street."
 		if not state.evidence.has("naomi"): return "Speak to Mrs. Almy at her boardinghouse on Pickman Street. Ask who the woman was."
@@ -445,11 +480,17 @@ func _objective() -> String:
 				return "The first appointment with the steward remains open at the estate." + _open_lead()
 			if state.steward_visits == 0:
 				return "Return to the estate's smoking lounge through the service entrance. You can also corroborate Naomi's visit in Almy's meal ledger." if not state.evidence.has("lodging") else "Ask Almy about Naomi's work at the estate, then visit the steward through the service entrance." if not state.evidence.has("service_work") else "Ask the steward about the staff records inside the smoking lounge, through the service entrance."
+			if state.day == 2 and state.steward_visits < 2:
+				return "Continue the second day's inquiry, then return to the smoking lounge. The steward told you to come back another day."
 			if state.day < 3:
 				if state.evidence.has("curriculum_abridgment") and not state.evidence.has("reader_omission_letter"): return "Hallowell has the covering letter Abernathy mentioned. Ask at the school. You may return to your room and sleep when ready."
 				if state.dialogue_state.topic_count("crew_omission") >= 4 and not state.evidence.has("curriculum_abridgment"): return "The question about the crew has met several refusals. Return to Abernathy at the museum, or sleep when ready."
 				return "The steward has deferred your questions. You can continue investigating or sleep when ready." + _open_lead()
 			if state.steward_visits < 3: return "Return to the smoking lounge. The steward asked you to leave your badge behind."
+			if not state.dialogue_state.flag("glass_broken"):
+				if state.dialogue_state.flag("tunnel_retreated"): return "Home. The board is on the wall."
+				if state.evidence.has("pantry_lead"): return "The steward pointed to the old pantry door, off the smoking lounge."
+				return "The steward has begun to answer. Ask what the members used to talk about."
 		if state.finished: return "The first town inquiry is recorded. You can revisit witnesses, file a supplement, or review Walter's board."
 		return "Continue questioning Mrs. Almy or file a dated supplement at the precinct. Set the notebook on your desk above the cobbler's when ready to end the day."
 	if not state.visited.has("garden") and not state.visited.has("odell"): return "Follow the drive to the rose garden. The gatehouse boy can direct you."
@@ -463,6 +504,9 @@ func _case_file() -> void:
 func _flask() -> void:
 	archive._flask(self)
 
+func _pocket_watch() -> void:
+	archive._pocket_watch(self)
+
 func _journal() -> void:
 	archive._journal(self)
 
@@ -474,7 +518,9 @@ func _report_screen() -> void:
 
 func _write_report(mode:String,scene:String) -> void:
 	state.complete_report(mode,_current_sources())
-	if state.world=="estate": estate.sync_staging(state)
+	if state.world=="estate":
+		estate.sync_staging(state)
+		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
 	_save_game()
 	var cards=Story.SCENES[scene].duplicate(true)
 	cards.append(["WALTER CORWIN","That's everything for now. Back through the estate gates."])
@@ -483,6 +529,7 @@ func _write_report(mode:String,scene:String) -> void:
 func _finish() -> void:
 	state.estate_complete = true
 	estate.sync_staging(state)
+	if state.world == "estate": objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
 	_save_game()
 	_cards(TownStory.ARRIVAL,func(): _travel("town",Vector3(0,0.1,17)))
 
@@ -559,6 +606,7 @@ func _save_game() -> bool:
 func _load_game() -> void:
 	var d=save_store.read(_available_save_path())
 	if d.is_empty() or not state.restore(d): _toast("The save could not be read. Begin a new investigation.",5); return
+	playthrough_log.resume(state,scripted_dialogue.FILES.keys())
 	prologue.hide_all()
 	prologue.stop_music()
 	tunnel_checkpoint=_normalize_snapshot(d.get("tunnel_checkpoint",{}))
@@ -588,6 +636,7 @@ func _toast(text:String,duration:float = 4) -> void:
 
 func _notification(what:int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		playthrough_log.end(state,"closed")
 		_save_game()
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and page == "play" and not test_mode and capture_mode.is_empty(): _pause()
 
@@ -603,6 +652,11 @@ func _walk_to(destination:Vector3) -> void:
 func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,elapsed_travel:bool=false) -> void:
 	scripted_dialogue.clear()
 	if destination == "lounge" and not state.visited.has("almy"): return
+	var from_world:String = state.world
+	if from_world in ["town", "lower", "upper", "business"]:
+		town_exterior_world = from_world
+	elif destination in ["town", "lower", "upper", "business"]:
+		town_exterior_world = destination
 	if save or elapsed_travel: DayClock.advance(state,DayClock.travel_cost(state.world,destination))
 	if save and state.world == "estate" and destination == "town":
 		state.estate_visits_completed += 1
@@ -624,7 +678,20 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 		estate.add_child(daylight)
 		daylight.setup(estate)
 		daylight.update_clock(state.clock_minutes,spawn)
-	if destination == "estate": estate.sync_staging(state)
+	if destination == "estate":
+		estate.sync_staging(state)
+		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
+		portals.sync_points(self, "estate", ["service_entrance", "exit"])
+	elif destination == "tunnel":
+		objects.sync_points(self, "tunnel", ["tunnel_record"])
+		portals.sync_points(self, "tunnel", ["tunnel_exit"])
+	elif destination == "lounge":
+		estate.sync_pantry(state.evidence.has("pantry_lead"))
+		portals.sync_points(self, "lounge", ["lounge_exit", "pantry_door"])
+	else:
+		objects.sync_points(self, "town", ["gazette","lodging","exemption"])
+		if destination == "town": portals.sync_points(self, "town", ["street_precinct", "street_almy", "street_room", "street_estate", "route_post"])
+		if destination == "lower": portals.sync_points(self, "lower", ["route_speakeasy"])
 	if estate and estate.has_method("sync_actors"):
 		estate.sync_actors(state)
 	elif destination=="town" and state.evidence.has("old_woman") and estate.has_method("dismiss_old_woman"):
@@ -635,17 +702,21 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	else:
 		cough_player.stop()
 	state.world=destination
+	playthrough_log.district_transition(from_world,destination,state)
 	scripted_dialogue.populate(self)
 	player.position=spawn
 	player.velocity=Vector3.ZERO
 	yaw=view_yaw
 	pitch=0.85 if destination == "town" else (0.38 if destination == "estate" else 0.48)
 	distance=6.3 if destination in ["estate","town"] else 4.8
-	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-6,58,28) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
+	# Pickman and the business street now share one exterior, extending north
+	# through the climb and the full business block.
+	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-75,153,243) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
 	if destination in ["upper","business","lower","waterfront"]:
 		movement_bounds=Rect2(-29,-7,58,36)
 		distance=6.3
 		pitch=0.38
+	rig.fall_reset_y = -10.0 if destination == "town" else -3.0
 	if destination == "waterfront":
 		movement_bounds=Rect2(-30,-10,60,35)
 		pitch=0.48
@@ -663,6 +734,23 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	_close()
 	if save: _save_game()
 
+func on_bridge_crossed(bridge_id: String) -> void:
+	if page != "play": return
+	var now = Time.get_ticks_msec() / 1000.0
+	if _last_bridge_id == bridge_id and (now - _last_bridge_time) < 3.0:
+		return
+	_last_bridge_id = bridge_id
+	_last_bridge_time = now
+	DayClock.advance(state, 30.0)
+	playthrough_log.observe(state, scripted_dialogue.FILES.keys())
+	if is_instance_valid(daylight):
+		daylight.update_clock(state.clock_minutes, player.position)
+	var phase = DayClock.phase(state.clock_minutes)
+	if phase != last_clock_phase:
+		scripted_dialogue.populate(self)
+		last_clock_phase = phase
+		last_region = ""
+
 func _region_name() -> String:
 	if preload("res://scripts/chapters/town_places.gd").valid(state.world): return preload("res://scripts/chapters/town_places.gd").title(state.world).to_upper()
 	match state.world:
@@ -677,19 +765,15 @@ func _region_name() -> String:
 	return "THE TERRACE" if player.position.z < -10 else ("THE ROSE GARDEN" if player.position.z < 6 else "THE OPHION ESTATE")
 
 func _town_interaction(id:String) -> bool:
-	if id == "route_speakeasy":
-		# The hatch is visible at all times (town_expansion.gd builds it
-		# unconditionally); only whether it actually opens is gated here.
-		var phase=DayClock.phase(state.clock_minutes)
-		if phase == "morning" or phase == "noon":
-			_toast("The bulkhead is bolted from the inside. Nothing stirs down there before dark.",5)
-			return true
-		if state.coat != "Plain wool coat":
-			_toast("A shape behind the peephole sees the badge and the bolt doesn't move. Try again out of uniform.",5)
-			return true
-		var route=estate.routes[id]
-		_travel(route[0],route[1],route[2])
-		return true
+	# Contiguous town keeps state.world == "town" even while standing on the
+	# lower district's shared exterior facade (lower_street.gd, built onto
+	# the town scene by contiguous_town_phase_two.gd) — so route_speakeasy's
+	# raw estate.routes entry (registered unconditionally, with no GATE) is
+	# the only thing _interact()'s portals.interact(self,state.world,id)
+	# check ever reaches for it in that mode, since it never sees "lower".
+	# Check the portal's real, authoritative LOCATION explicitly first so
+	# the phase/coat gate can never be bypassed by walking up contiguously.
+	if portals.interact(self, "lower", id): return true
 	if estate.routes.has(id):
 		var route=estate.routes[id]
 		_travel(route[0],route[1],route[2])
@@ -701,26 +785,31 @@ func _town_interaction(id:String) -> bool:
 		_cards([["THE CORONER","The coroner spreads his hands over the row of sheeted tables. He has no answer to offer."]],_close)
 		return true
 	match id:
-		"street_precinct": _travel("precinct",Vector3(0,0.1,6)); return true
-		"street_almy": _travel("boardinghouse",Vector3(0,0.1,6)); return true
-		"street_room": _travel("room",Vector3(0,0.1,6)); return true
-		"street_estate": _travel("estate",Vector3(0,0.1,35)); return true
 		"interior_exit":
+			if breaker.pending(self):
+				_cards([["CORWIN'S ROOM","He does not go out again tonight."]],_close)
+				return true
 			var exits={"precinct":Vector3(-18,0.1,-4.5),"boardinghouse":Vector3(-1,0.1,-4.5),"room":Vector3(18,0.1,-4.5)}
+			var business_return = preload("res://scripts/chapters/contiguous_town_phase_one.gd").business_return(state.world)
+			var upper_return = preload("res://scripts/chapters/contiguous_town_phase_one.gd").upper_return(state.world)
+			var lower_return = preload("res://scripts/chapters/contiguous_town_phase_two.gd").lower_return(state.world)
 			# Frame the arrival from the open street, not from inside the facade.
-			_travel("town",exits.get(state.world,Vector3(0,0.1,17)),0)
+			var exterior_return = lower_return if lower_return != null else (upper_return if upper_return != null else business_return)
+			_travel("town",exterior_return if exterior_return != null else exits.get(state.world,Vector3(0,0.1,17)),0)
 			return true
 		"intake": _intake(); return true
 		"supplement": _supplement(); return true
 		"survey_drawer": _survey_drawer(); return true
 		"board": _board(); return true
+	if id == "lodging" and not state.evidence.has("naomi"):
+		_panel("case","A private ledger","MRS. ALMY'S PARLOR")
+		_paragraph("Ask Mrs. Almy whose entry you are looking for before copying her book.")
+		_button("Put it down",_close)
+		_focus_first()
+		return true
+	if objects.interact(self, "town", id): return true
 	if TownStory.FACTS.has(id) and TownStory.SCENES.has(id):
-		if id=="lodging" and not state.evidence.has("naomi"):
-			_panel("case","A private ledger","MRS. ALMY'S PARLOR")
-			_paragraph("Ask Mrs. Almy whose entry you are looking for before copying her book.")
-			_button("Put it down",_close)
-			_focus_first()
-		else: _town_observation(id)
+		_town_observation(id)
 		return true
 	return false
 
@@ -729,6 +818,7 @@ func _town_observation(id:String,return_target:Variant=null) -> void:
 	if id in ["lay_lead","service_work"]: scripted_dialogue.play_topic(self,"almy",id); return
 	if id == "behan_name": scripted_dialogue.play_topic(self,"behan",id); return
 	if id=="old_woman" and state.evidence.has(id): return
+	if objects.interact(self, "town", id): return
 	var observation_cards=TownStory.SCENES[id].duplicate(true)
 	if id == "gazette" and state.evidence.has("gazette_correction_printed"):
 		observation_cards.append(["THE CORRECTION SLIP",facts["gazette_correction_printed"][1]])
@@ -827,15 +917,18 @@ func _board() -> void:
 	archive._board(self)
 
 func _town_complete() -> void:
+	playthrough_log.end(state,"completed")
 	archive._town_complete(self)
 
 func _qa_town() -> void:
 	await load("res://tests/town_flow.gd").new().run(self)
 
 func _refresh_outfit() -> void:
-	if state.world == "estate": estate.sync_staging(state)
+	if state.world == "estate":
+		estate.sync_staging(state)
+		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
 	model.get_node("Coat").material_override=estate.mat("5f6559" if state.coat=="Plain wool coat" else "424b43")
-	if model.has_node("Badge"): model.get_node("Badge").visible=state.coat=="Police coat"
+	if model.has_node("Badge"): model.get_node("Badge").visible=state.coat=="Police coat" and not state.dialogue_state.flag("badge_lost")
 
 func _source_for(id:String) -> String:
 	if id=="eight":
@@ -880,6 +973,7 @@ func _tunnel_interaction(id:String) -> bool:
 			_save_game()
 			_fact("service_recess")
 		"tunnel_record":
+			if objects.interact(self, "tunnel", id): return true
 			_cards([["THE LAST SUPPORT","The plan ends here. The stonework does not.\nWalter measures the distance twice and records both readings."],["THE PASSAGE CONTINUES","A bend carries the passage beyond the reach of his light.\nHe has a measurement to bring back. He turns toward the service stair."]],func():
 				state.discover("lower_foundation")
 				state.record("Walter measured a passage beyond the recorded foundation; the service plan is the comparison source.")
@@ -892,14 +986,6 @@ func _tunnel_interaction(id:String) -> bool:
 			_drowned_encounter()
 		"cultist_encounter":
 			_cultist_encounter()
-		"tunnel_exit":
-			if state.evidence.has("lower_foundation"):
-				state.tunnel_complete=true
-				_travel("precinct",Vector3(0,0.1,5),0,false,true)
-				_cards([["BACK AT THE PRECINCT",_custody_result()],["A LATER PAGE","The lower-foundation measurement is still in Walter's notebook.\nHe can file it as a dated supplement at the side counter. Earlier copies remain as they were received."]],func(): _save_game())
-			else:
-				_travel("room",Vector3(0,0.1,5),0,false,true)
-				_save_game()
 		_:
 			return false
 	return true
@@ -920,8 +1006,25 @@ func _tunnel_descent() -> void:
 		_paragraph("The worked masonry gives way to rough-hewn stone descending beneath the seabed. Water seeps through the joints.\n\nCold air carries the faint rhythm of the tide miles overhead.",24)
 		if state.ammo > 0:
 			_paragraph("Revolver: %d rounds in the cylinder." % state.ammo,18)
+		_button("Go on into the dark",_tunnel_go_on)
 		_button("Step back to the foundation support",_close)
 		_focus_first()
+
+# The one step past the spur. The player chooses it; the passage answers by turning
+# him back (Bible Part Three, The Descent: he goes some distance and is physically
+# turned back, not killed). Nothing here can be won or lost by stats or ammunition.
+func _tunnel_go_on() -> void:
+	_cards(TunnelStory.PRESSURE,func(): _cards(TunnelStory.RETREAT,func(): _tunnel_turn_back(),"dialogue"),"dialogue")
+
+func _tunnel_turn_back() -> void:
+	state.dialogue_state.set_flag("tunnel_retreated",true)
+	state.dialogue_state.set_flag("badge_lost",true)
+	state.record("The badge and the whistle were lost on the retreat, with the flask already gone. The passage turned him back.")
+	state.clock_minutes=maxf(state.clock_minutes,DayClock.NIGHT)
+	tunnel_dead=false
+	_travel("room",Vector3(7.0,0.1,-1.4),0.55,false)
+	_refresh_outfit()
+	_save_game()
 
 func _cultist_encounter() -> void:
 	_panel("combat","The Transformed Cultist","CENTRAL PASSAGE")

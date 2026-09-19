@@ -1,0 +1,17 @@
+LOCATION: tunnel
+
+# The BACK AT THE PRECINCT custody-result card that plays before "A LATER
+# PAGE" is genuinely dynamic (chapter_one.gd::_custody_result() branches on
+# which supplement was sent) and stays a small, explicitly named adapter
+# special case in chapter_one_portals.gd — see docs/PORTAL_AUTHORING.md's
+# "Known limitation" section. Likewise state.tunnel_complete = true.
+PORTAL: tunnel_exit
+  GATE: evidence(lower_foundation)
+  LABEL: "Return to Pickman Street"
+  GO: precinct | 0,0.1,5 | 0 | nosave,elapsed
+  A LATER PAGE: "The lower-foundation measurement is still in Walter's notebook.\n\nHe can file it as a dated supplement at the side counter. Earlier copies remain as they were received."
+
+PORTAL: tunnel_exit
+  GATE: always
+  LABEL: "Return to Pickman Street"
+  GO: room | 0,0.1,5 | 0 | nosave,elapsed

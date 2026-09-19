@@ -58,12 +58,11 @@ func run() -> void:
 	# 7. Test eavesdropping at the bar
 	g._interact("speakeasy_bar")
 	assert(g.page == "dialogue", "Interacting with speakeasy_bar should start eavesdrop cards")
-	assert(g.dialogue.cards.size() == 6, "Eavesdrop scene should have 6 cards")
-	assert(g.dialogue.cards[1][0] == "CALEB", "Card 1 should be Caleb speaking")
-	assert(g.dialogue.cards[2][0] == "SILAS", "Card 2 should be Silas speaking")
+	assert(g.dialogue.cards.size() == 5, "Eavesdrop scene should have 5 cards")
+	assert(g.dialogue.cards[1][0] == "A VOICE DOWN THE BAR", "Card 1 should be the first overheard voice")
+	assert(g.dialogue.cards[2][0] == "ANOTHER VOICE", "Card 2 should be the second overheard voice")
 	cards(g)
-	assert(g.state.evidence.has("speakeasy_murders_overheard"), "Should record speakeasy_murders_overheard evidence")
-	assert(g.state.statements.has("Overheard at the speakeasy: Otto Kessler was among the six dead; the estate cellar was freezing cold."))
+	assert(g.state.evidence.has("speakeasy_bar"), "Should record the speakeasy_bar fact once the scene finishes")
 
 	# 8. Test return route from speakeasy back to lower
 	assert(g.estate.routes.has("route_return"), "Missing route_return in speakeasy")

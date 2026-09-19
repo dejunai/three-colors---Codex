@@ -1,0 +1,83 @@
+import subprocess
+import os
+import sys
+import shutil
+
+# Locate Godot executable
+def find_godot():
+    override = os.environ.get("GODOT_BIN")
+    if override and os.path.isfile(override):
+        return override
+
+    candidates = [
+        r"C:\Portables\GodotStandard\Godot_v4.7.2-stable_win64_console.exe",
+        r"C:\Portables\Godot4\Godot_v4.7.2-stable_mono_win64_console.exe",
+        "godot4",
+        "godot"
+    ]
+    for c in candidates:
+        if os.path.isabs(c) and os.path.isfile(c):
+            return c
+        resolved = shutil.which(c)
+        if resolved:
+            return resolved
+    return "godot"
+
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+godot = find_godot()
+
+env = os.environ.copy()
+runtime_dir = os.path.join(repo_root, ".runtime-data")
+os.makedirs(runtime_dir, exist_ok=True)
+env["APPDATA"] = runtime_dir
+
+tests = [
+    (["--headless", "-s", "tests/object_lang_flow.gd"], "object_lang_flow"),
+    (["--headless", "-s", "tests/object_template_flow.gd"], "object_template_flow"),
+    (["--headless", "-s", "tests/dialogue_lang_flow.gd"], "dialogue_lang_flow"),
+    (["--headless", "-s", "tests/dialogue_template_flow.gd"], "dialogue_template_flow"),
+    (["--headless", "-s", "tests/dialogue_content_flow.gd"], "dialogue_content_flow"),
+    (["--headless", "-s", "tests/portal_lang_flow.gd"], "portal_lang_flow"),
+    (["--headless", "-s", "tests/portal_template_flow.gd"], "portal_template_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/portal_content_flow.gd"], "portal_content_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--", "--qa"], "qa_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--", "--qa-town"], "qa_town_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--", "--qa-loop"], "qa_loop_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--", "--qa-usability"], "qa_usability"),
+]
+
+print(f"Running {len(tests)} QA suites using: {godot}")
+failed = []
+
+for args, name in tests:
+    cmd = [godot] + args
+    print(f"\n=== {name} ===")
+    try:
+        res = subprocess.run(cmd, cwd=repo_root, env=env, capture_output=True, text=True, timeout=120)
+        out = res.stdout.strip()
+        err = res.stderr.strip()
+        has_error = (
+            res.returncode != 0
+            or "SCRIPT ERROR:" in out or "SCRIPT ERROR:" in err
+            or "Assertion failed" in out or "Assertion failed" in err
+            or "Parse Error:" in out or "Parse Error:" in err
+        )
+        print("EXIT:", res.returncode)
+        lines = out.splitlines()
+        for l in lines[-4:]:
+            print("  ", l)
+        if has_error:
+            print("FAILURE DETECTED")
+            if err:
+                print("STDERR:\n" + err)
+            failed.append(name)
+    except subprocess.TimeoutExpired:
+        print("TIMEOUT: Suite exceeded limit")
+        failed.append(f"{name} (timeout)")
+
+if failed:
+    print(f"\nQA FAILED ({len(failed)} suites failed): {', '.join(failed)}")
+    sys.exit(1)
+else:
+    print(f"\nALL {len(tests)} QA SUITES PASSED CLEANLY.")
+    sys.exit(0)

@@ -1,0 +1,23 @@
+NPC: business_resident_04
+LOCATION: business_district
+SCHEDULE: morning=business_repair_walk, midday=business_clock_crossing, evening=business_museum_crossing, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(business_resident_04, default)
+  TAG: business_resident_04_greeting
+  VOICE: violin_cautious_short_v1
+  MR. TREADWELL: "My watch loses seven minutes a day. There is your mystery."
+
+TOPIC: default
+  GATE: topic_done(business_resident_04, default)
+  WEIGHT: 2
+  TAG: business_resident_04_repeat_watch
+  VOICE: violin_weary_short_v1
+  MR. TREADWELL: "Mr. Vane says the mainspring is tired. So am I."
+
+TOPIC: default
+  GATE: topic_done(business_resident_04, default)
+  WEIGHT: 1
+  TAG: business_resident_04_repeat_wait
+  VOICE: violin_neutral_short_v2
+  MR. TREADWELL: "I'm waiting for the repair shop."

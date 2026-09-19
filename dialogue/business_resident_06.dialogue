@@ -1,0 +1,23 @@
+NPC: business_resident_06
+LOCATION: business_district
+SCHEDULE: morning=business_printer_crossing, midday=business_repair_walk, evening=business_museum_walk, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(business_resident_06, default)
+  TAG: business_resident_06_greeting
+  VOICE: violin_neutral_short_v2
+  MR. STRAND: "Just the evening edition and then home, Officer."
+
+TOPIC: default
+  GATE: topic_done(business_resident_06, default)
+  WEIGHT: 2
+  TAG: business_resident_06_repeat_gazette
+  VOICE: violin_dismissive_short_v1
+  MR. STRAND: "The Gazette prints yesterday and calls it news."
+
+TOPIC: default
+  GATE: topic_done(business_resident_06, default)
+  WEIGHT: 1
+  TAG: business_resident_06_repeat_home
+  VOICE: violin_weary_short_v2
+  MR. STRAND: "The lamps are coming on. I should be home."

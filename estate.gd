@@ -12,6 +12,7 @@ var scene_bodies: Array[Node3D] = []
 var gardener_actor: Node3D
 var groundskeeper_actor: Node3D
 var opening_knife: Node3D
+var opening_report: Node3D
 var birch_belongings: Node3D
 var opening_staff: Dictionary = {}
 var departure_leaves: Array[Node3D] = []
@@ -25,21 +26,26 @@ func sync_staging(st) -> void:
 	for id in opening_staff:
 		opening_staff[id].visible = not st.estate_complete
 		if st.estate_complete: points.erase(id)
-	if st.rose_bodies_removed:
-		for id in ["wounds","watch","knife"]: points.erase(id)
-	if st.birch_bodies_removed:
-		for id in ["eight","shoes"]: points.erase(id)
-	if is_instance_valid(opening_knife): opening_knife.visible = not st.rose_bodies_removed
+	if st.estate_complete:
+		points.erase("report")
+	if is_instance_valid(opening_report):
+		opening_report.visible = not st.estate_complete
+	if is_instance_valid(opening_knife): opening_knife.visible = not st.rose_bodies_removed and not st.evidence.has("knife")
+	if st.evidence.has("knife"): points.erase("knife")
 	if is_instance_valid(groundskeeper_actor):
 		groundskeeper_actor.visible = st.lounge_exited
-		if st.lounge_exited: target("crew","Watch the groundskeeper",Vector3(-18.6,0,-16.9))
+		if st.lounge_exited: target("crew","Watch the groundskeeper",Vector3(-13.5,0,-12.0))
 		else: points.erase("crew")
 	if is_instance_valid(gardener_actor):
 		gardener_actor.position = Vector3(-4,0,12) if st.estate_complete else Vector3(-12,0,1)
 		target("gardener","Speak to the gardener",gardener_actor.position)
 	if st.visited.has("almy"):
 		target("service_entrance","Enter the smoking lounge through the service entrance",Vector3(-10,0,-18))
-	else: points.erase("service_entrance")
+	else:
+		target("service_entrance","Try the service entrance",Vector3(-10,0,-18))
+	# Title above is a fallback only; chapter_one_portals.gd's sync_points()
+	# overwrites it from objects/portals/estate.portal's authored LABEL right
+	# after this call returns (see chapter_one.gd's sync_staging() call sites).
 
 func register_actor(id: String, node: Node3D, target_id: String = "", condition: Callable = Callable()) -> void:
 	conditional_actors[id] = {
@@ -80,6 +86,19 @@ func mat(c: String, glow: bool = false) -> StandardMaterial3D:
 		m.emission_enabled = true
 		m.emission = Color(c)
 		m.emission_energy_multiplier = 0.5
+	mats[key] = m
+	return m
+
+# The Observer color tell (bible Part Two) must show at every hour. A lit material's red
+# falls under film.gdshader's red-dominance band once the scene is dim, and the day clock
+# makes evening and night dim, so the accent ignores lighting and fog entirely.
+func accent_material(c: String) -> StandardMaterial3D:
+	var key = "accent" + c
+	if mats.has(key): return mats[key]
+	var m = StandardMaterial3D.new()
+	m.albedo_color = Color(c)
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.disable_fog = true
 	mats[key] = m
 	return m
 
@@ -162,7 +181,10 @@ func person(pos: Vector3, coat: String = "353838", hat: bool = true, accent: Str
 	cylinder(root,Vector3(0,1.08,0),0.32,0.85,coat,0.24).name = "Coat"
 	box(root,Vector3(0,1.48,0),Vector3(0.52,0.27,0.32),coat)
 	if not accent.is_empty():
-		box(root,Vector3(0.16,1.48,-0.17),Vector3(0.07,0.10,0.025),accent).name = "Accent"
+		var jewel = box(root,Vector3(0.16,1.48,-0.17),Vector3(0.11,0.14,0.03),accent)
+		jewel.name = "Accent"
+		jewel.material_override = accent_material(accent)
+		jewel.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	cylinder(root,Vector3(0,1.78,0),0.15,0.3,"a0a095",0.17)
 	box(root,Vector3(0,1.38,-0.18),Vector3(0.08,0.24,0.025),"b9b8ac")
 	for side in [-1,1]:
@@ -178,6 +200,14 @@ func person(pos: Vector3, coat: String = "353838", hat: bool = true, accent: Str
 		root.add_child(arm)
 		cylinder(arm,Vector3(0,-0.29,0),0.095,0.57,coat)
 		sphere(arm,Vector3(0,-0.61,0),0.08,"96968b")
+	if not accent.is_empty():
+		# A band on each wrist, so the tell reads from any side and moves with his arm. A pin
+		# alone faces one way; at play distance it was about 26 pixels and easy to miss.
+		for arm_name in ["LeftArm","RightArm"]:
+			var band = cylinder(root.get_node(arm_name),Vector3(0,-0.5,0),0.115,0.07,accent)
+			band.name = "AccentBand"
+			band.material_override = accent_material(accent)
+			band.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	if hat:
 		cylinder(root,Vector3(0,1.97,0),0.29,0.045,"222526")
 		cylinder(root,Vector3(0,2.06,0),0.2,0.16,"343737",0.16)
@@ -311,14 +341,9 @@ func _ready() -> void:
 		box(self,Vector3(x,0.12,-16.1),Vector3(0.8,0.24,0.8),"989b90")
 		box(self,Vector3(x,5.5,-16.1),Vector3(0.7,0.3,0.7),"b5b4a6")
 	box(self,Vector3(0,5.85,-17.5),Vector3(12,0.55,6),"afb0a3")
-	var pediment = CylinderMesh.new()
-	pediment.top_radius = 0
-	pediment.bottom_radius = 7
-	pediment.height = 2.5
-	pediment.radial_segments = 4
-	var roof = mesh_at(self,pediment,Vector3(0,7.3,-17.5),"6a706b")
-	roof.scale.z = 0.45
-	roof.rotation.y = PI/4
+	var pediment = PrismMesh.new()
+	pediment.size = Vector3(12.0, 2.2, 5.8)
+	mesh_at(self, pediment, Vector3(0, 7.225, -17.5), "6a706b")
 	lettering("O P H I O N",Vector3(0,5.87,-14.44),62)
 	# Staff entrance in the kitchen-wing facade; member doors remain scenery.
 	box(self,Vector3(-10,1.4,-19.7),Vector3(1.4,2.8,0.16),"242b28")
@@ -370,14 +395,20 @@ func _ready() -> void:
 	for p in [Vector3(20,0,-9),Vector3(26,0,-8),Vector3(27,0,-1),Vector3(22,0,1)]: tree(p,true)
 	# Kitchen wing yard: the grounds crew keeps a fixed distance from the service door.
 	# Previously only ~3 units from the service_entrance target — painfully close in
-	# practice, per Dejunai's playtest, 2026-09-13. Shifted the whole cluster 6 units
-	# further west (x only, so the region still reads as the kitchen wing yard) to a
-	# real ~8.7-unit separation from the service door at Vector3(-10,0,-18).
-	box(self,Vector3(-19.4,0.35,-16.4),Vector3(0.55,0.5,0.55),"3b443b")
-	box(self,Vector3(-19.0,0.85,-16.6),Vector3(0.5,0.42,0.5),"353c36")
-	cylinder(self,Vector3(-18.0,0.06,-15.4),0.32,0.12,"242626")
-	sphere(self,Vector3(-18.0,0.24,-15.4),0.15,"656a66")
-	var groundskeeper = person(Vector3(-18.6,0,-16.6),"3a3f36",true,"7a2a1a")
+	# practice, per Dejunai's playtest, 2026-09-13. An earlier attempt to fix this by
+	# shifting the whole cluster 6 units west put it inside the west wing building's
+	# own solid collision box (x=-14..-20, z=-13.5..-27.5, see "Estate's long facade
+	# and two projecting wings" above); a second attempt (north only) still fell
+	# inside the west garden hedge's blocking range (Vector3(-16,0.65,-4) sized
+	# (1.2,1.3,21), z=-14.5..6.5) — the wing and hedge z-ranges overlap at
+	# x=-14..-20, leaving no walkable gap through that corridor at all. Settled on
+	# staying just east of both obstacles instead: a real ~6.9-unit separation from
+	# the service door at Vector3(-10,0,-18), on open, reachable ground.
+	box(self,Vector3(-13.7,0.35,-11.5),Vector3(0.55,0.5,0.55),"3b443b")
+	box(self,Vector3(-13.3,0.85,-11.7),Vector3(0.5,0.42,0.5),"353c36")
+	cylinder(self,Vector3(-13.5,0.06,-10.5),0.32,0.12,"242626")
+	sphere(self,Vector3(-13.5,0.24,-10.5),0.15,"656a66")
+	var groundskeeper = person(Vector3(-13.5,0,-11.7),"3a3f36",true,"7a2a1a")
 	groundskeeper.rotation.y = 2.4
 	groundskeeper_actor = groundskeeper
 	groundskeeper.hide()
@@ -413,7 +444,7 @@ func _ready() -> void:
 	# A field desk and witness silhouettes.
 	box(self,Vector3(7,0.97,-14),Vector3(2.4,0.15,1.1),"6f7469",true)
 	for x in [6,8]: box(self,Vector3(x,0.45,-14),Vector3(0.13,0.9,0.8),"3b443b")
-	box(self,Vector3(6.6,1.06,-13.8),Vector3(0.52,0.035,0.7),"cccbba")
+	opening_report = box(self,Vector3(6.6,1.06,-13.8),Vector3(0.52,0.035,0.7),"cccbba")
 	box(self,Vector3(7.4,1.06,-13.8),Vector3(0.48,0.035,0.6),"babaa8")
 	person(Vector3(-2,0,31),"555c52").rotation.y = -0.3
 	opening_staff["odell"] = person(Vector3(4,0,-11.5),"272e2b")
@@ -441,6 +472,7 @@ func _ready() -> void:
 	target("gardener","Speak to the gardener",Vector3(-12,0,1))
 	target("odell","Speak to Captain Odell",Vector3(4,0,-11.5))
 	target("report","Write the preliminary report",Vector3(6,0,-13.1))
+	target("service_entrance","Try the service entrance",Vector3(-10,0,-18))
 	target("exit","Leave through the estate gates",Vector3(0,0,37))
 	var gate_bodies: Array[RID] = []
 	for leaf in departure_leaves:

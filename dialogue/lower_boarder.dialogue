@@ -1,0 +1,23 @@
+NPC: lower_boarder
+LOCATION: lower_residential
+SCHEDULE: morning=lower_east_line, midday=lower_west_pavement, evening=lower_midwest_pavement, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(lower_boarder, default)
+  TAG: lower_boarder_greeting
+  VOICE: violin_neutral_short_v2
+  THE BOARDER: "I rent a bed and half a shelf. There isn't much else to say."
+
+TOPIC: default
+  GATE: topic_done(lower_boarder, default)
+  WEIGHT: 2
+  TAG: lower_boarder_repeat_supper
+  VOICE: violin_weary_short_v1
+  THE BOARDER: "If supper is late, the good chair will already be taken."
+
+TOPIC: default
+  GATE: topic_done(lower_boarder, default)
+  WEIGHT: 1
+  TAG: lower_boarder_repeat_room
+  VOICE: violin_cautious_short_v2
+  THE BOARDER: "My room is somebody else's concern."

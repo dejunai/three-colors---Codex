@@ -1,0 +1,23 @@
+NPC: waterfront_sail_mender
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_mideast_quay, midday=waterfront_west_quay, evening=closed, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(waterfront_sail_mender, default)
+  TAG: waterfront_sail_mender_greeting
+  VOICE: violin_neutral_short_v2
+  THE SAIL MENDER: "A clean tear is easy. Sailors never bring me a clean tear."
+
+TOPIC: default
+  GATE: topic_done(waterfront_sail_mender, default)
+  WEIGHT: 2
+  TAG: waterfront_sail_mender_repeat_canvas
+  VOICE: violin_weary_short_v1
+  THE SAIL MENDER: "Wet canvas fights the needle all afternoon."
+
+TOPIC: default
+  GATE: topic_done(waterfront_sail_mender, default)
+  WEIGHT: 1
+  TAG: waterfront_sail_mender_repeat_nothing
+  VOICE: violin_dismissive_short_v2
+  THE SAIL MENDER: "I mend cloth, Officer, not stories."

@@ -84,7 +84,7 @@ TOPIC: fenn_laudanum
   GATE: evidence(naomi)
   TAG: apothecary_fenn
   LABEL: "Inquire about prescriptions filled for Dr. Aldous Fenn"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Dr. Fenn was a physician, but did he purchase pharmaceuticals here?"
   VOICE: trombone_bureaucratic_medium_v1
   MR. CRANE: "A physician can prescribe, Officer. He cannot compound bulk spirits on his own parlor rug."
@@ -100,11 +100,27 @@ TOPIC: fenn_laudanum
   NOTEBOOK: apothecary_fenn_supplies | "Apothecary: Fenn bought bulk opium and spirits; stopped looking patients in the eye, only examining wrists and ankles to ask if 'the bone feels heavier when the tide comes in.'"
   EVIDENCE: bulk_opium_spirits
 
+# Redundant-carrier backup: if chandlers_boy is missed, this supplies the
+# same EVIDENCE the island-delivery lead relies on downstream.
+TOPIC: the_camphor_stranger
+  GATE: evidence(naomi) AND NOT evidence(chandlery_island_delivery)
+  TAG: apothecary_camphor_stranger
+  LABEL: "Ask if a stranger bought camphor or tapers recently"
+  TIME: 7
+  WALTER CORWIN: "A tall man in a good coat. Cash only. Did he ever come through your shop?"
+  VOICE: trombone_neutral_medium_v1
+  MR. CRANE: "Eight weeks back, near enough. I remember the coin more than the man — gold eagles, pre-war mint."
+  [He adjusts a blue glass reagent bottle, recalling.]
+  VOICE: trombone_haunting_medium_v1
+  MR. CRANE: "He wanted camphor in bulk, the strong compounded kind, not the household tincture.\nI told him the chandlery would have cheaper tapers than mine for whatever he intended. He said he'd already been."
+  NOTEBOOK: apothecary_camphor_stranger_1 | "Mr. Crane recalls a cash buyer in pre-war gold coin purchasing bulk compounded camphor roughly eight weeks ago, who mentioned already having visited the chandlery — corroborating the chandler's boy's account."
+  EVIDENCE: chandlery_island_delivery
+
 TOPIC: the_stranger_remedies
   GATE: evidence(naomi) AND NOT topic_done(apothecary, the_stranger_remedies)
   TAG: apothecary_naomi
   LABEL: "Ask if Naomi Freeman sought medicine for her son"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Did the colored woman come to your counter?"
   VOICE: trombone_neutral_medium_v1
   MR. CRANE: "She did. The boy had angry red salt-hives along his shins from the weed on the low rocks."

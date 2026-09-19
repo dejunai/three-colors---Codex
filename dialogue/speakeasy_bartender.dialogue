@@ -53,7 +53,7 @@ TOPIC: bar_inquiry
   GATE: always
   TAG: bartender_inquiry
   LABEL: "Ask if any of the Ophion gentlemen ever drank down here"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "Did Judge Wexford or Dr. Fenn ever step foot in this cellar?"
   [Barnaby slams a heavy tin funnel onto a whiskey cask with a sharp clang.]
   VOICE: trombone_dismissive_medium_v2

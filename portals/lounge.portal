@@ -1,0 +1,23 @@
+LOCATION: lounge
+
+PORTAL: lounge_exit
+  GATE: always
+  LABEL: "Leave through the service entrance"
+  GO: estate | -10,0.1,-17 | 3.14159265
+
+# The steward's old pantry door (dialogue/steward.dialogue, pantry_lead). The hotspot
+# itself is only offered once that evidence exists (town.gd::sync_pantry); the GATE
+# repeats the condition so a stale hotspot can never bypass it.
+# The tunnel checkpoint and death flag are set by chapter_one_portals.gd's
+# _before_travel()/_after_travel(), not here.
+PORTAL: pantry_door
+  GATE: evidence(pantry_lead)
+  LABEL: "Open the boarded pantry door"
+  TIME: 10
+  THE SERVICE CORRIDOR: "The boards give more easily than they should. Behind them a corridor runs on longer than the club's own floor plan can account for. He has measured the exterior wall against it twice.\n\nThe sconces throw their shadows upward. The whole passage leans a little away from him."
+  THE PANTRY: "Crates. Dust. A single case of gin gone amber with age.\n\nBehind it, where the exterior wall ought to stand, a narrow door is open by two inches on a stair descending into rock."
+  WALTER CORWIN: "He tells himself this is the last errand that will need luck. Then, because the door stands open, and because something in the case has begun to feel like a shape wanting to close, he goes down."
+  GO: tunnel | 0,0.1,7 | 0 | nosave
+  THE STAIR: "The first twenty steps are worked stone. After that the stair stops pretending to belong to any house.\n\nWater breathes somewhere below him."
+  BELOW THE ESTATE: "Beyond the first landing, a figure stands in the central passage. A thin, wet cough. Its head rises. Then, after a while, it turns back to the wall.\n\nA marked service walk bends around the outside of the stonework. A plan lies on a packing case at the foot of the stair, left by whoever worked this passage."
+  WALTER'S NOTEBOOK: "He checks the flask's familiar weight before he starts down."

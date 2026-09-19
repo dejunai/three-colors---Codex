@@ -1,0 +1,23 @@
+NPC: lower_factory_hand
+LOCATION: lower_residential
+SCHEDULE: morning=lower_east_pavement, midday=lower_center_pavement, evening=lower_west_line, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(lower_factory_hand, default)
+  TAG: lower_factory_hand_greeting
+  VOICE: trombone_neutral_medium_v1
+  THE FACTORY HAND: "Shift whistle, dinner pail, shift whistle. Ask me again on Sunday."
+
+TOPIC: default
+  GATE: topic_done(lower_factory_hand, default)
+  WEIGHT: 2
+  TAG: lower_factory_hand_repeat_shift
+  VOICE: trombone_weary_short_v1
+  THE FACTORY HAND: "If I miss the whistle, they dock the hour."
+
+TOPIC: default
+  GATE: topic_done(lower_factory_hand, default)
+  WEIGHT: 1
+  TAG: lower_factory_hand_repeat_late
+  VOICE: trombone_dismissive_short_v2
+  THE FACTORY HAND: "I'm late, Officer."

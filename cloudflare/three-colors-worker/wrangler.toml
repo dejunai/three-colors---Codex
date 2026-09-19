@@ -1,0 +1,12 @@
+name = "three-colors-worker"
+main = "src/index.js"
+compatibility_date = "2026-09-13"
+
+[[r2_buckets]]
+binding = "BUCKET_ONE"
+bucket_name = "three-colors-logs"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "three-colors-db"
+database_id = "c35be61f-08a9-4f87-bb6c-5281caa770cd"

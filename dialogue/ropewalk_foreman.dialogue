@@ -63,7 +63,7 @@ TOPIC: island_supply
   GATE: evidence(naomi) AND NOT topic_done(ropewalk_foreman, island_supply)
   TAG: ropewalk_foreman_island_supply
   LABEL: "Ask about supply runs to the offshore island"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "The whaling station on the island. When did it last take a supply run?"
   VOICE: trombone_alarmed_medium_v2
   ROPEWALK FOREMAN: "That station's been dead ground since the flood.\nNothing goes out there on my log."
@@ -74,11 +74,11 @@ TOPIC: island_supply
   NOTEBOOK: foreman_island_supply | "The rope-walk foreman confirmed no supply run to the island appears in his ledger. He acknowledged that a private boat would leave no record. He did not say one had gone."
 
 TOPIC: cellar_salt
-  GATE: evidence(gray_salt_cakes) AND NOT topic_done(ropewalk_foreman, cellar_salt)
+  GATE: (evidence(gray_salt_cakes) OR evidence(kelp_salt_preservative)) AND NOT topic_done(ropewalk_foreman, cellar_salt)
   TAG: ropewalk_salt
   LABEL: "Ask why someone would carry harbor curing salt inland"
-  TIME: 5
-  WALTER CORWIN: "Otto Kessler carried cakes of gray harbor curing salt to the estate.\nWhy would kitchen cellars need harbor salt?"
+  TIME: 7
+  WALTER CORWIN: "Cakes of gray harbor curing salt were brought to the estate cellars.\nWhy would kitchen cellars need harbor salt?"
   VOICE: trombone_neutral_medium_v2
   ROPEWALK FOREMAN: "Curing salt isn't for kitchens, Walter. Kitchen salt is fine white grain."
   [He wipes powdered pitch from his palms onto a leather apron.]
@@ -94,7 +94,7 @@ TOPIC: estate_mooring_cable
   GATE: evidence(estate_conduit_map) AND NOT topic_done(ropewalk_foreman, estate_mooring_cable)
   TAG: ropewalk_cable
   LABEL: "Ask about heavy hawser supplied to the estate bluff"
-  TIME: 6
+  TIME: 8
   WALTER CORWIN: "Did the estate order heavy marine cordage recently?"
   VOICE: trombone_weary_medium_v1
   ROPEWALK FOREMAN: "Two hundred fathoms of four-inch tarred Manila.\nHeavy enough to anchor an eighty-ton schooner against a nor'easter."
@@ -108,7 +108,7 @@ TOPIC: island_confirmed
   GATE: evidence(chandlery_island_delivery) AND evidence(naomi_quay_inquiry) AND NOT topic_done(ropewalk_foreman, island_confirmed)
   TAG: ropewalk_foreman_island_confirmed
   LABEL: "Tell him about the chandlery sale"
-  TIME: 6
+  TIME: 8
   WALTER CORWIN: "Two crates of sperm oil and long tapers. Cash purchase at the chandlery yard, eight weeks ago.\nDelivered somewhere private."
   [He doesn't pick up the spool he just set down. He looks at the tide line instead.]
   VOICE: trombone_neutral_short_v1

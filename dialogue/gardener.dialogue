@@ -5,7 +5,7 @@ LOCATION: estate
 TOPIC: default
   GATE: estate_complete AND coat = plain AND NOT topic_done(gardener, gardener_plain)
   TAG: gardener_plain
-  TIME: 3
+  TIME: 5
   VOICE: trombone_cautious_short_v1
   THE GARDENER: "You took the badge off."
   WALTER CORWIN: "I'm still asking."
@@ -45,7 +45,7 @@ TOPIC: default
 TOPIC: default
   GATE: always
   TAG: gardener
-  TIME: 3
+  TIME: 5
   VOICE: trombone_dismissive_long_v1
   THE GARDENER: "I keep the roses. I don't keep the hours of the men who walk among them."
   WALTER CORWIN: "You found both scenes?"

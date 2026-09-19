@@ -19,6 +19,22 @@ static func phase(minutes:float) -> String:
 	if minutes >= NOON: return "noon"
 	return "morning"
 
+static func display_time(minutes: float) -> String:
+	var whole_minutes = clampi(floori(minutes), 0, 1439)
+	var hour_24 = whole_minutes / 60
+	var minute = whole_minutes % 60
+	var suffix = "AM" if hour_24 < 12 else "PM"
+	var hour_12 = hour_24 % 12
+	if hour_12 == 0: hour_12 = 12
+	return "%d:%02d %s" % [hour_12, minute, suffix]
+
+static func phase_label(minutes: float) -> String:
+	match phase(minutes):
+		"noon": return "Midday"
+		"evening": return "Evening"
+		"night": return "Night"
+		_: return "Morning"
+
 static func advance(st,amount:float) -> void:
 	if is_finite(amount) and amount>0: st.clock_minutes=minf(NIGHT,st.clock_minutes+amount)
 

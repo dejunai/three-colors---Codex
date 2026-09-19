@@ -1,0 +1,89 @@
+# OBJECT AUTHORING TEMPLATE / COOKBOOK — mirrors dialogue's
+# background_npc_template.dialogue. Reference: docs/OBJECT_AUTHORING.md.
+# Examples only: these statements and identifiers are NOT new story canon.
+# Copy this file, replace {generated} with your lowercase_snake_case
+# location id, and replace every example_* identifier with the real ids for
+# that location's hotspots. Braces do not interpolate. This placeholder
+# header keeps the template out of any live location catalog.
+# Use two spaces per indent, uppercase directives, full-line comments only.
+# There is no VOICE here — examined objects are Walter's own narration and
+# always stay unvoiced, exactly like dialogue's beats/notebook/system cards.
+LOCATION: {generated}
+# Optional, repeatable header; uncomment only when the real file exists:
+# INCLUDE: shared_object_rebuffs.object
+
+# Unlike TOPIC ids in dialogue, an OBJECT id is expected to repeat: one
+# hotspot, several gated states, first eligible block wins (file order) —
+# exactly like dialogue's repeatable `TOPIC: default` cascade. Write the
+# most specific/gated state first and the always-eligible fallback last.
+OBJECT: example_ledger
+  GATE: NOT object_done(example_location, example_ledger)
+  LABEL: "Examine the ledger"
+  TAG: example_ledger_first_look
+  TIME: 5
+  [Walter turns the ledger to the window light.]
+  WALTER CORWIN: "Six names, every final Thursday, for two years."
+  NOTEBOOK: example_ledger_note | "A private ledger records six names meeting monthly for two years."
+  EVIDENCE: example_ledger_account
+
+OBJECT: example_ledger
+  GATE: object_done(example_location, example_ledger)
+  LABEL: "Examine the ledger again"
+  WALTER CORWIN: "The ledger says nothing new on a second look."
+
+# TAKE adds an item to case_state's inventory. Not every examined thing is
+# carryable, so TAKE is a separate step from EVIDENCE — a witness's account
+# of an object is not the object itself. FORK + OUTCOME work exactly like
+# dialogue's: the committed branch is immutable and the only one replayed.
+OBJECT: example_knife
+  GATE: NOT object_done(example_location, example_knife)
+  LABEL: "Recover the knife"
+  TIME: 5
+  [A good boning knife, wiped too carefully, tucked beneath the hedge root.]
+  FORK:
+    CHOICE: "Bag it as evidence."
+      NOTEBOOK: example_knife_note | "The knife beneath the hedge was wiped clean of prints."
+      EVIDENCE: example_clean_knife
+      TAKE: example_clean_knife
+      OUTCOME: example_knife_response = taken
+    CHOICE: "Leave it for the scene photographer."
+      WALTER CORWIN: "Someone else's job, then."
+      OUTCOME: example_knife_response = left
+
+# object_done()/examine_count() read this system's own tallies; evidence(),
+# filed(), flag(), outcome(), outcome_is(), coat, day, phase,
+# estate_complete, and steward_ready are the exact same case-wide facts
+# dialogue GATEs read — an OBJECT can react to a completed conversation and
+# a TOPIC can react to a taken item (see dialogue_runtime.gd's object_done/
+# object_count/taken entries).
+OBJECT: example_locked_drawer
+  GATE: taken(example_clean_knife) AND NOT object_done(example_location, example_locked_drawer)
+  LABEL: "Force the drawer with the knife"
+  TIME: 3
+  WALTER CORWIN: "The blade is thin enough to slip the latch."
+  EVIDENCE: example_drawer_contents
+
+# Shared OBJECT id across different locations counts DISTINCT completed
+# sources, same rationale as dialogue's topic_count(): object_count() is for
+# "how many places has Walter found this," not a running total.
+OBJECT: example_shared_signage
+  GATE: always
+  LABEL: "Read the notice"
+  TAG: example_shared_signage_example_location
+  WALTER CORWIN: "The same notice, word for word."
+
+OBJECT: example_pattern_noticed
+  GATE: object_count(example_shared_signage) >= 3 AND NOT object_done(example_location, example_pattern_noticed)
+  LABEL: "Remark on the repeated notice"
+  WALTER CORWIN: "Three copies now, all identical. Someone printed these to a pattern."
+
+# never disables a populated block; a metadata-only stub is also invisible.
+OBJECT: example_disabled
+  GATE: never
+  WALTER CORWIN: "Draft content; unavailable in play."
+
+OBJECT: example_unwritten
+  GATE: always
+  LABEL: "Unwritten hotspot"
+  # Add steps when ready; is_available() reports false until then because
+  # an empty step list never matches, exactly like dialogue's empty topics.

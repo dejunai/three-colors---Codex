@@ -15,7 +15,7 @@ TOPIC: subscriptions_and_credit
   GATE: always
   TAG: whitehouse_credit
   LABEL: "Ask why everyone keeps calling it arithmetic"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "Every man I speak to gives me a different version of the same excuse."
   VOICE: trombone_neutral_medium_v1
   MR. WHITEHOUSE: "Then you are hearing the truth from several angles at once."
@@ -29,7 +29,7 @@ TOPIC: name_the_dead
   GATE: evidence(civic_arithmetic)
   TAG: whitehouse_dead
   LABEL: "Ask whether confidence matters more than the dead"
-  TIME: 6
+  TIME: 8
   FORK:
     CHOICE: "Say that eight people died, not six."
       VOICE: trombone_questioning_short_v1

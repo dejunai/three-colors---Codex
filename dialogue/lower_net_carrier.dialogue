@@ -1,0 +1,23 @@
+NPC: lower_net_carrier
+LOCATION: lower_residential
+SCHEDULE: morning=lower_center_pavement, midday=lower_west_line, evening=lower_mideast_pavement, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(lower_net_carrier, default)
+  TAG: lower_net_carrier_greeting
+  VOICE: trombone_neutral_short_v1
+  THE NET CARRIER: "These are mended nets, Officer. Nothing more exciting than that."
+
+TOPIC: default
+  GATE: topic_done(lower_net_carrier, default)
+  WEIGHT: 2
+  TAG: lower_net_carrier_repeat_tar
+  VOICE: trombone_weary_short_v2
+  THE NET CARRIER: "Fresh tar sticks to everything except the rope."
+
+TOPIC: default
+  GATE: topic_done(lower_net_carrier, default)
+  WEIGHT: 1
+  TAG: lower_net_carrier_repeat_quay
+  VOICE: trombone_cautious_short_v2
+  THE NET CARRIER: "The quay is waiting on these."

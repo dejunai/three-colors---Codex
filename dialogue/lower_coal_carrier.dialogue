@@ -1,0 +1,23 @@
+NPC: lower_coal_carrier
+LOCATION: lower_residential
+SCHEDULE: morning=lower_midwest_pavement, midday=lower_east_pavement, evening=lower_center_line, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(lower_coal_carrier, default)
+  TAG: lower_coal_carrier_greeting
+  VOICE: trombone_weary_short_v1
+  THE COAL CARRIER: "Three flights up and they order it by the hundredweight."
+
+TOPIC: default
+  GATE: topic_done(lower_coal_carrier, default)
+  WEIGHT: 2
+  TAG: lower_coal_carrier_repeat_soot
+  VOICE: trombone_neutral_short_v2
+  THE COAL CARRIER: "Coal dust tells you everywhere I've been today."
+
+TOPIC: default
+  GATE: topic_done(lower_coal_carrier, default)
+  WEIGHT: 1
+  TAG: lower_coal_carrier_repeat_move
+  VOICE: trombone_dismissive_short_v1
+  THE COAL CARRIER: "Stand aside if you've no order for me."

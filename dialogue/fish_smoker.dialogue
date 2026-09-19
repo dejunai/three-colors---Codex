@@ -53,7 +53,7 @@ TOPIC: gray_salt_cakes
   GATE: always
   TAG: smoker_salt
   LABEL: "Ask where the coarse gray harbor salt is cured"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Cakes of gray salt were found near the estate cellars. Is that harbor curing salt?"
   [Martha wipes brine from her forearms with a scrap of sailcloth.]
   VOICE: violin_cautious_medium_v2
@@ -63,3 +63,4 @@ TOPIC: gray_salt_cakes
   THE FISH SMOKER: "Dining tables? Heavens no. It tastes of bitter iodine and marsh mud.\n\nYou only use that gray muck when you're preserving something heavy that needs to keep in the dark without rotting."
   NOTEBOOK: smoker_salt_preservation | "Martha the Fish Smoker says gray harbor salt is full of kelp ash and bitter iodine, never used for food, only for preserving things in the dark to prevent rot."
   EVIDENCE: kelp_salt_preservative
+  EVIDENCE: gray_salt_cakes

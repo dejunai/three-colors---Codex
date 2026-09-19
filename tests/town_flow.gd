@@ -72,7 +72,7 @@ func run(g:Node) -> void:
 	assert(g.focused=="day_close")
 	g._interact("day_close")
 	cards(g)
-	assert(not g.state.finished and g.page=="case","First steward conversation is required before sleep")
+	assert(not g.state.finished and g.page=="case","Reading the notebook is a reflective beat; only 'sleep' advances or finishes the day")
 	g._travel("estate",Vector3(-10,0.1,-18))
 	g._interact("service_entrance")
 	g._interact("barman")
@@ -80,7 +80,15 @@ func run(g:Node) -> void:
 	g._interact("lounge_exit")
 	g._travel("room",Vector3(0,0.1,6))
 	g._interact("sleep")
-	while g.page=="montage": g.content.find_children("*","Button",true,false)[0].pressed.emit()
+	assert(g.state.day==2 and g.page=="play")
+	g._travel("estate",Vector3(-10,0.1,-18))
+	g._interact("service_entrance")
+	g._interact("barman")
+	cards(g)
+	assert(g.state.steward_visits==2)
+	g._travel("room",Vector3(0,0.1,6))
+	g._interact("sleep")
+	assert(g.state.day==3 and g.page=="play")
 	g.state.coat="Plain wool coat"
 	g._travel("estate",Vector3(-10,0.1,-18))
 	g._interact("service_entrance")
@@ -88,8 +96,19 @@ func run(g:Node) -> void:
 	cards(g)
 	g._interact("lounge_exit")
 	g._travel("room",Vector3(0,0.1,6))
-	g._interact("day_close")
+	# The slice ends at the glass, not the bed (tests/break_flow.gd): sleeping is refused
+	# until the break has played. A save that already carries it keeps this path.
+	g._interact("sleep")
+	assert(g.page=="case" and not g.state.finished,"Sleeping before the break must not end the slice")
+	g._close()
+	g.state.dialogue_state.set_flag("glass_broken",true)
+	g._interact("sleep")
 	cards(g)
+	# The steward's third conversation jumps steward_visits to 3 (see
+	# chapter_one_dialogue.gd's "steward_open" tag), so this sleep() call hits the
+	# close_day branch: its cards, then the two-question debrief, then the ending.
+	g.content.find_children("*","Button",true,false)[0].pressed.emit()
+	g.content.find_children("*","Button",true,false)[0].pressed.emit()
 	assert(g.state.finished and g.page=="ending")
 	assert(not g.state.supplement_filed)
 	print("TOWN PASS: actual movement through all three buildings; minimal inquiry and three steward visits reach completion without the board or optional topics")
@@ -99,6 +118,7 @@ func run(g:Node) -> void:
 	for id in ["eight","wounds","gas"]: g.state.discover(id)
 	g.state.complete_report("Full inquest requested")
 	g.state.estate_complete=true
+	g.state.dialogue_state.complete_topic("steward","club_talk")
 	g._travel("precinct",Vector3(0,0.1,-1.3))
 	await settle(g)
 	g._interact("intake")

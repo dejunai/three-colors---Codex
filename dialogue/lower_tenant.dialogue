@@ -1,0 +1,23 @@
+NPC: lower_tenant
+LOCATION: lower_residential
+SCHEDULE: morning=lower_mideast_pavement, midday=lower_center_line, evening=lower_east_line, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(lower_tenant, default)
+  TAG: lower_tenant_greeting
+  VOICE: violin_cautious_short_v1
+  THE TENANT: "The landlord sent you? No? Then I've nothing to discuss."
+
+TOPIC: default
+  GATE: topic_done(lower_tenant, default)
+  WEIGHT: 2
+  TAG: lower_tenant_repeat_roof
+  VOICE: violin_weary_short_v2
+  THE TENANT: "The roof leaks in places the rain hasn't reached."
+
+TOPIC: default
+  GATE: topic_done(lower_tenant, default)
+  WEIGHT: 1
+  TAG: lower_tenant_repeat_rent
+  VOICE: violin_dismissive_short_v1
+  THE TENANT: "I paid the rent. That's all anyone needs to know."

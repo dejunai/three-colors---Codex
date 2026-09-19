@@ -55,7 +55,7 @@ TOPIC: identify
   GATE: always
   TAG: identify
   LABEL: "Ask for the woman's name"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "I counted eight people.\nI would like to put a name beside each of them."
   VOICE: trombone_neutral_medium_v1
   MRS. ALMY: "Naomi Freeman.\n\nShe ate here. The boy too.\nHe waited for her to begin before touching his own plate."
@@ -68,7 +68,7 @@ TOPIC: lay_lead
   GATE: evidence(naomi)
   TAG: lay_lead
   LABEL: "Ask what brought Naomi to town"
-  TIME: 4
+  TIME: 6
   VOICE: trombone_neutral_medium_v2
   MRS. ALMY: "She was looking for something owed.\nA whaler's wages. A share, she called it. A lay.\nFrom her family's time, long before hers."
   WALTER CORWIN: "Did you see the document?"
@@ -81,7 +81,7 @@ TOPIC: service_work
   GATE: evidence(naomi)
   TAG: service_work
   LABEL: "Ask about work at the estate"
-  TIME: 4
+  TIME: 6
   VOICE: trombone_cautious_medium_v2
   MRS. ALMY: "She asked about work at the estate.\nCleaning, perhaps. They always need someone who can leave by the other door."
   WALTER CORWIN: "Who engaged her?"
@@ -109,7 +109,7 @@ TOPIC: show_printed_correction
   GATE: evidence(gazette_correction_printed) AND NOT topic_done(almy, show_printed_correction)
   TAG: almy_printed_correction
   LABEL: "Show her the correction with Naomi's name"
-  TIME: 3
+  TIME: 5
   [Almy reads the narrow slip without sitting down.]
   VOICE: trombone_neutral_short_v2
   MRS. ALMY: "They have put her name in it."

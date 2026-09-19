@@ -26,7 +26,7 @@ TOPIC: the_omitted_two
   GATE: evidence(eight) AND NOT evidence(gazette_correction_printed)
   TAG: editor_omitted
   LABEL: "Confront him about omitting the mother and boy"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Your morning edition reports six dead in a gas-main mishap.\nEight people died in that garden."
   VOICE: trombone_bureaucratic_medium_v1
   MR. HALLECK: "Six subscribers died, Officer. Six prominent civic trustees whose obituaries take half a page each."
@@ -43,7 +43,7 @@ TOPIC: press_the_arithmetic
   GATE: evidence(press_suppression) AND evidence(lay_lead) AND NOT evidence(gazette_correction_printed)
   TAG: editor_arithmetic
   LABEL: "Demand an honest retraction"
-  TIME: 6
+  TIME: 8
   FORK:
     CHOICE: "Threaten to name advertisers connected to the club."
       VOICE: trombone_neutral_short_v1
@@ -68,7 +68,7 @@ TOPIC: gas_main_origin
   GATE: evidence(press_suppression) AND NOT topic_done(gazette_editor, gas_main_origin)
   TAG: editor_gas_source
   LABEL: "Ask who suggested the 'gas-main' story"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "Who gave you 'gas-main tragedy'?"
   VOICE: trombone_neutral_medium_v2
   MR. HALLECK: "Dr. Fenn's junior associate called before dawn, before the wagon even finished loading."
@@ -82,8 +82,8 @@ TOPIC: gas_main_origin
 TOPIC: crew_omission
   GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(gazette_editor, crew_omission)
   TAG: gazette_editor_crew_omission
-  LABEL: "Ask why the town's history leaves out the crew's names"
-  TIME: 3
+  LABEL: "Ask why the commemorative column never named the crew"
+  TIME: 5
   WALTER CORWIN: "Your paper prints every subscriber's name twice a year. Why does it leave out the crew who drowned in 1823?"
   VOICE: trombone_neutral_short_v1
   MR. HALLECK: "A commemorative column is not a passenger manifest."
@@ -97,7 +97,7 @@ TOPIC: correction_terms
   GATE: evidence(press_suppression) AND evidence(naomi) AND NOT topic_done(gazette_editor, correction_terms)
   TAG: editor_correction_terms
   LABEL: "Ask what he needs to correct the count and print Naomi's name"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "Mrs. Almy identifies the woman as Naomi Freeman. Will you print her name beside the count?"
   VOICE: trombone_questioning_short_v2
   MR. HALLECK: "Her word, and what else?"
@@ -123,7 +123,7 @@ TOPIC: print_correction
   GATE: evidence(gazette_correction_terms) AND filed(eight) AND filed(naomi) AND filed(lodging) AND NOT topic_done(gazette_editor, print_correction)
   TAG: editor_print_correction
   LABEL: "Lay out the received pages and request the correction"
-  TIME: 8
+  TIME: 10
   [Halleck lays the received pages side by side. His finger stops on the entry from Almy's book.]
   VOICE: trombone_neutral_short_v2
   MR. HALLECK: "The first heading remains six."

@@ -1,0 +1,23 @@
+NPC: pickman_resident_01
+LOCATION: pickman_street
+SCHEDULE: morning=pickman_precinct_walk, midday=pickman_west_bench, evening=pickman_post_walk, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(pickman_resident_01, default)
+  TAG: pickman_resident_01_greeting
+  VOICE: trombone_neutral_short_v1
+  MR. BENNETT: "Morning, Officer. I have nothing to discuss."
+
+TOPIC: default
+  GATE: topic_done(pickman_resident_01, default)
+  WEIGHT: 2
+  TAG: pickman_resident_01_repeat_weather
+  VOICE: trombone_weary_short_v1
+  MR. BENNETT: "Fog will be in before the lamps are lit."
+
+TOPIC: default
+  GATE: topic_done(pickman_resident_01, default)
+  WEIGHT: 1
+  TAG: pickman_resident_01_repeat_business
+  VOICE: trombone_neutral_short_v2
+  MR. BENNETT: "Still nothing worth troubling your notebook over."

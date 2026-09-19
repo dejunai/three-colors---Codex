@@ -3,9 +3,18 @@ NPC: assistant
 LOCATION: estate
 
 TOPIC: default
+  GATE: NOT topic_done(odell, default)
+  TAG: assistant_pre_odell
+  VOICE: violin_weary_long_v1
+  THE CORONER'S ASSISTANT: "I'm still laying out the sheets, Corwin.\n\nCaptain Odell is up on the terrace. He's expecting you before anyone else touches the scene."
+  WALTER CORWIN: "What have you got so far?"
+  VOICE: violin_weary_short_v1
+  THE CORONER'S ASSISTANT: "Dead men in evening clothes and cold dew.\n\nGo speak with the captain first. I'll have a proper preliminary count when you come back down."
+
+TOPIC: default
   GATE: always
   TAG: assistant
-  TIME: 5
+  TIME: 7
   VOICE: violin_weary_long_v1
   THE CORONER'S ASSISTANT: "I've counted them twice. Eight.\n\nThe captain wants the identified men prepared first."
   WALTER CORWIN: "Any sign of an explosion?"

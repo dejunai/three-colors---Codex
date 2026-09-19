@@ -66,14 +66,22 @@ func _run() -> void:
 	_play(after_departure, state, dstate)
 	assert(after_departure.session.tag in ["boy_return", "boy_return_cold", "boy_return_post"], "estate_complete must win over a mere repeat, regardless of visit count")
 
-	# --- coroner's assistant: two real EVIDENCE ids, one flavor-only card ---
-	var assistant_play = Runtime.play_topic(defs.assistant, dstate, "default")
-	_play(assistant_play, state, dstate)
+	# --- coroner's assistant: pre-Odell flavor, then post-Odell testimony & count ---
+	var assistant_before = Runtime.enter(defs.assistant, ctx, dstate)
+	_play(assistant_before, state, dstate)
+	assert(assistant_before.session.tag == "assistant_pre_odell", "before Odell, assistant must give opening flavor directing Walter to the captain")
+	assert(not dstate.evidence.has("testimony"), "pre-Odell encounter must not grant explosion testimony")
+
+	var post_odell_dstate = DialogueState.new()
+	post_odell_dstate.complete_topic("odell", "default")
+	var post_odell_ctx = Runtime.make_context(state, post_odell_dstate)
+	var assistant_play = Runtime.enter(defs.assistant, post_odell_ctx, post_odell_dstate)
+	_play(assistant_play, state, post_odell_dstate)
 	var has_flavor_card = false
 	for card in assistant_play.cards:
 		if card[0] == "A CLEAN READ": has_flavor_card = true
 	assert(has_flavor_card, "the closing flavor card must still render even though it writes no fact")
-	assert(dstate.evidence.has("testimony") and dstate.evidence.has("eight"), "both bonus discover()s from the source must land as real EVIDENCE ids")
+	assert(post_odell_dstate.evidence.has("testimony") and post_odell_dstate.evidence.has("eight"), "both bonus discover()s from the source must land as real EVIDENCE ids")
 
 	# --- groundskeeper: ephemeral WALTER'S NOTEBOOK card must not be persisted ---
 	var crew_play = Runtime.play_topic(defs.crew, dstate, "default")
@@ -151,6 +159,7 @@ func _run() -> void:
 	assert(odell_replay.cards.is_empty(), "once answered, topic_done(odell, default) must keep the scene from replaying")
 
 	# --- Father Behan: the real behan_name topic, mutually exclusive with club_invitation ---
+	dstate.complete_topic("steward", "club_talk")
 	var behan_ctx_intro = Runtime.make_context(state, dstate)
 	var behan_intro = Runtime.enter(defs.father_behan, behan_ctx_intro, dstate)
 	_play(behan_intro, state, dstate)
@@ -184,6 +193,20 @@ func _run() -> void:
 	var clerk_ids_after = []
 	for entry in clerk_menu_after.entries: clerk_ids_after.append(entry.id)
 	assert(clerk_ids_after.has("wage_claim_inquiry"), "the county filing topic must appear once the wage lead and postal trail are both in evidence")
+
+	# --- County clerk: repeat defaults must play after initial six-deceased notice ---
+	state.coat = "Police coat"
+	var clerk_badge_ctx = Runtime.make_context(state, dstate)
+	var clerk_first = Runtime.enter(defs.county_clerk, clerk_badge_ctx, dstate)
+	_play(clerk_first, state, dstate)
+	assert(clerk_first.session.tag == "clerk_badge", "initial encounter with badge must deliver the six-deceased notice")
+	var clerk_repeat_badge = Runtime.enter(defs.county_clerk, clerk_badge_ctx, dstate)
+	assert(not clerk_repeat_badge.cards.is_empty(), "Mr. Pence must not become a totem pole after the initial notice")
+	assert(clerk_repeat_badge.session.tag in ["clerk_repeat_badge_notices", "clerk_repeat_badge_requisition", "clerk_repeat_badge_entries"], "repeat encounter with badge must play a badge repeat default")
+	state.coat = "Plain wool coat"
+	var clerk_repeat_plain = Runtime.enter(defs.county_clerk, Runtime.make_context(state, dstate), dstate)
+	assert(not clerk_repeat_plain.cards.is_empty(), "Mr. Pence must speak to plain-coated Walter on repeat visits")
+	assert(clerk_repeat_plain.session.tag in ["clerk_repeat_plain_dockets", "clerk_repeat_plain_vaults", "clerk_repeat_plain_quiet"], "repeat encounter with plain coat must play a plain repeat default")
 
 	print("DIALOGUE CONTENT PASS: gatehouse_boy/coroners_assistant/groundskeeper/gardener/old_woman/mrs_almy/odell/father_behan all reverse-engineered, parsing clean and gating correctly against real game state")
 	quit(0)

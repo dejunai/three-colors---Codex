@@ -1,0 +1,23 @@
+NPC: pickman_resident_04
+LOCATION: pickman_street
+SCHEDULE: morning=pickman_post_walk, midday=pickman_precinct_walk, evening=pickman_west_bench, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(pickman_resident_04, default)
+  TAG: pickman_resident_04_greeting
+  VOICE: violin_neutral_medium_v1
+  MR. WEEMS: "The post came late again. That is all I know."
+
+TOPIC: default
+  GATE: topic_done(pickman_resident_04, default)
+  WEIGHT: 2
+  TAG: pickman_resident_04_repeat_post
+  VOICE: violin_weary_short_v1
+  MR. WEEMS: "Circulars and bills. Nothing from anyone I care to hear from."
+
+TOPIC: default
+  GATE: topic_done(pickman_resident_04, default)
+  WEIGHT: 1
+  TAG: pickman_resident_04_repeat_wait
+  VOICE: violin_neutral_short_v2
+  MR. WEEMS: "I'm only waiting for the street to clear."

@@ -1,0 +1,16 @@
+LOCATION: lower
+
+PORTAL: route_speakeasy
+  GATE: phase = morning OR phase = noon
+  LABEL: "Try the cellar door"
+  CELLAR BULKHEAD: "The bulkhead is bolted from the inside. Nothing stirs down there before dark."
+
+PORTAL: route_speakeasy
+  GATE: coat != plain
+  LABEL: "Try the cellar door"
+  THE VIEWING SLIT: "A shape behind the peephole sees the badge and the bolt doesn't move. Try again out of uniform."
+
+PORTAL: route_speakeasy
+  GATE: always
+  LABEL: "Try the cellar door"
+  GO: speakeasy | 0,0.1,6 | 0

@@ -1,0 +1,23 @@
+NPC: business_resident_05
+LOCATION: business_district
+SCHEDULE: morning=business_school_crossing, midday=business_school_walk, evening=business_stationer_walk, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(business_resident_05, default)
+  TAG: business_resident_05_greeting
+  VOICE: trombone_neutral_medium_v1
+  MR. OAKLEY: "The school bell has rung. The street may be quiet for ten minutes."
+
+TOPIC: default
+  GATE: topic_done(business_resident_05, default)
+  WEIGHT: 2
+  TAG: business_resident_05_repeat_children
+  VOICE: trombone_weary_short_v2
+  MR. OAKLEY: "They come out of that schoolhouse louder than they went in."
+
+TOPIC: default
+  GATE: topic_done(business_resident_05, default)
+  WEIGHT: 1
+  TAG: business_resident_05_repeat_business
+  VOICE: trombone_cautious_short_v1
+  MR. OAKLEY: "I don't know anything about your business."

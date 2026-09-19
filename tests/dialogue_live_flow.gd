@@ -36,7 +36,7 @@ func run() -> void:
 	var buttons = g.content.find_children("*","Button",true,false)
 	assert(buttons.size() == 2)
 	buttons[1].pressed.emit()
-	assert(g.state.clock_minutes == 368 and g.state.statements.size() == 1)
+	assert(g.state.clock_minutes == 370 and g.state.statements.size() == 1)
 	assert(g.state.statements[0].begins_with("Walter wrote EIGHT"))
 	assert(g.state.dialogue_state.topic_done("odell","default"))
 	g._save_game()
@@ -80,7 +80,7 @@ func run() -> void:
 	g._save_game()
 	g._load_game()
 	assert(g.state.inquiry_topics.has("almy_trust"))
-	# First visit, montage second, plain-coat third: retries cannot farm visits.
+	# First visit, enacted Day 2 second, plain-coat Day 3 third: retries cannot farm visits.
 	g._travel("lounge",Vector3(0,0.1,6),0,false)
 	for i in 3:
 		g._interact("barman")
@@ -89,8 +89,14 @@ func run() -> void:
 	g.state.intake_done = true
 	g._travel("room",Vector3(0,0.1,6),0,false)
 	g._interact("sleep")
-	while g.page == "montage": g.content.find_children("*","Button",true,false)[0].pressed.emit()
-	assert(g.state.day == 3 and g.state.dialogue_state.visit_count("steward") == 2)
+	assert(g.state.day == 2 and g.page == "play")
+	g._travel("lounge",Vector3(0,0.1,6),0,false)
+	g._interact("barman")
+	cards(g)
+	assert(g.state.dialogue_state.visit_count("steward") == 2)
+	g._travel("room",Vector3(0,0.1,6),0,false)
+	g._interact("sleep")
+	assert(g.state.day == 3 and g.page == "play")
 	g._travel("lounge",Vector3(0,0.1,6),0,false)
 	g.state.coat = "Police coat"
 	g._interact("barman")
@@ -120,5 +126,5 @@ func run() -> void:
 	old.dialogue_state=g.CaseState.new().dialogue_state.pack()
 	assert(migrated.restore(old))
 	assert(migrated.dialogue_state.topic_done("odell","default"), "Shipped v8 empty dialogue store must migrate the legacy answer")
-	print("DIALOGUE LIVE PASS: actual UI, mid-line and fork saves, silent branch, evidence, both gardener clues, gated menus, three steward visits, montage, clock, legacy migration")
+	print("DIALOGUE LIVE PASS: actual UI, mid-line and fork saves, silent branch, evidence, both gardener clues, gated menus, three enacted steward visits, clock, legacy migration")
 	quit()

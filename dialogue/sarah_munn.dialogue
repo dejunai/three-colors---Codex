@@ -1,0 +1,121 @@
+# Live Chapter 1 content, authored from Design Bible v17 Supporting Cast and
+# reference story 08 ("No Exit Wound - The Useful Lie"), Section III "The Housemaid".
+# Sarah Munn worked the estate's kitchen alongside the murdered mother for the
+# better part of a year, left the position three weeks before the murders, and
+# is found at her sister's rooms above the chandlery. She survives the chapter.
+# Her account is Walter's central failure: an elite man's word outweighs a
+# housemaid's, and her statement is filed late in his own sequence of witnesses.
+NPC: sarah_munn
+LOCATION: waterfront
+SCHEDULE: morning=chandlery_upstairs, midday=chandlery_upstairs, evening=chandlery_upstairs, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(sarah_munn, default) AND coat = plain
+  TAG: sarah_plain
+  VOICE: violin_cautious_medium_v1
+  [She opens the door before he has finished knocking, already dressed as if she has been waiting.]
+  SARAH MUNN: "You'll want to know why I left."
+  WALTER CORWIN: "I hadn't asked yet."
+  VOICE: violin_weary_short_v1
+  SARAH MUNN: "No. But you would have.\n\nCome in out of the cold, then. My sister's asleep."
+
+TOPIC: default
+  GATE: NOT topic_done(sarah_munn, default)
+  TAG: sarah_badge
+  VOICE: violin_alarmed_short_v1
+  [She sees the badge before she sees his face, and her hand tightens on the door frame.]
+  SARAH MUNN: "You'll want to know why I left the position."
+  WALTER CORWIN: "That's part of it."
+  VOICE: violin_cautious_medium_v2
+  SARAH MUNN: "Ask it standing in the hall, then. My sister doesn't need a uniform in her front room to remember what a knock like that usually means."
+
+# Plain coat defaults: grief, domestic fatigue, a woman keeping a small household together
+TOPIC: default
+  GATE: topic_done(sarah_munn, default) AND coat = plain
+  TAG: sarah_repeat_plain_mending
+  WEIGHT: 3
+  [She keeps her hands busy with a stocking she is not really mending.]
+  VOICE: violin_weary_medium_v1
+  SARAH MUNN: "My sister takes in wash. I help where I can until I find another place. It isn't much of a life, but it's mine to keep."
+
+TOPIC: default
+  GATE: topic_done(sarah_munn, default) AND coat = plain
+  TAG: sarah_repeat_plain_kettle
+  WEIGHT: 2
+  VOICE: violin_neutral_short_v1
+  SARAH MUNN: "There's tea, if you'll sit instead of standing over me like the last one did."
+
+# Badge defaults: guarded, aware of what a record can cost a servant
+TOPIC: default
+  GATE: topic_done(sarah_munn, default) AND coat != plain
+  TAG: sarah_repeat_badge_record
+  WEIGHT: 3
+  VOICE: violin_bureaucratic_medium_v1
+  SARAH MUNN: "I've already told you what I know, Officer. I'd rather it not grow a second time in the telling."
+
+TOPIC: default
+  GATE: topic_done(sarah_munn, default) AND coat != plain
+  TAG: sarah_repeat_badge_position
+  WEIGHT: 2
+  [She keeps her eyes on the mending, not on him.]
+  VOICE: violin_dismissive_short_v1
+  SARAH MUNN: "A girl without a position can't afford to be seen too often with the police. Say what you came to say."
+
+TOPIC: sarah_the_document
+  GATE: evidence(naomi) AND NOT topic_done(sarah_munn, sarah_the_document)
+  TAG: sarah_document
+  LABEL: "Ask why she left the position three weeks ago"
+  TIME: 6
+  WALTER CORWIN: "You worked the estate kitchen alongside the woman who died. Why did you leave, three weeks before it happened?"
+  VOICE: violin_cautious_long_v1
+  SARAH MUNN: "Because she asked me to hold something for her, and I was afraid to be caught holding it."
+  [Walter's pencil stops over the page.]
+  WALTER CORWIN: "What was it?"
+  VOICE: violin_neutral_long_v1
+  SARAH MUNN: "A paper. Old. She said it named a debt owed her family, going back to the whaling years.\nShe said if anything happened to her, I was to see it reached someone who'd use it right."
+  WALTER CORWIN: "Do you have it?"
+  VOICE: violin_haunting_medium_v1
+  SARAH MUNN: "No. I gave it back. I told her I couldn't keep it.\n\nI was afraid of losing my position, Officer Corwin. And now she's dead, and her boy's dead, and I keep thinking if I'd kept it—"
+  NOTEBOOK: sarah_document_lead | "Sarah Munn: the dead woman confided a paper naming a debt owed her family from the whaling years, and asked Sarah to see it reached someone if anything happened to her. Sarah returned it out of fear for her position. The document itself is not in evidence."
+  EVIDENCE: sarah_wage_claim_lead
+
+TOPIC: sarah_afraid_of_the_wrong_thing
+  GATE: evidence(sarah_wage_claim_lead) AND NOT topic_done(sarah_munn, sarah_afraid_of_the_wrong_thing)
+  TAG: sarah_afraid
+  LABEL: "Tell her it isn't her fault"
+  TIME: 4
+  WALTER CORWIN: "You didn't kill her."
+  VOICE: violin_pleading_medium_v2
+  SARAH MUNN: "I know that.\n\nI'm telling you I was afraid of the wrong thing."
+  [Her hands twist in her lap, and she does not look up until she has finished speaking.]
+  VOICE: violin_weary_long_v1
+  SARAH MUNN: "I've turned it over every night since. What a paper like that might have bought her, if I'd been braver than I was."
+  NOTEBOOK: sarah_afraid_1 | "Sarah Munn on the document she returned: 'I was afraid of the wrong thing.' She has turned the decision over nightly since the murders."
+
+TOPIC: sarah_press_or_go
+  GATE: evidence(sarah_wage_claim_lead) AND NOT topic_done(sarah_munn, sarah_press_or_go)
+  TAG: sarah_sequence
+  LABEL: "Decide how to leave things with her"
+  TIME: 3
+  FORK:
+    CHOICE: "Stay and ask about the dead woman's habits, her boy, anyone she named."
+      VOICE: violin_weary_medium_v2
+      SARAH MUNN: "There isn't much more. She kept to herself. The boy waited for her to eat first, always, like he'd been taught it somewhere harder than this town."
+      [Walter writes for a long while. Outside, the light changes twice before he rises to go.]
+      NOTEBOOK: sarah_sequence_delayed | "Walter stayed with Sarah Munn well past what the document lead required, filing her statement behind two other matters already ahead of it that morning."
+      OUTCOME: sarah_sequence = delayed
+    CHOICE: "Thank her and take the lead to the registrar directly."
+      VOICE: violin_neutral_medium_v1
+      SARAH MUNN: "That's all, then?"
+      WALTER CORWIN: "For now. I'd rather this reach the registrar today than sit in my coat pocket."
+      [She nods, surprised, and shows him to the door herself.]
+      NOTEBOOK: sarah_sequence_prompt | "Walter carried Sarah Munn's account to the registrar the same day, ahead of the two matters that would otherwise have displaced it."
+      OUTCOME: sarah_sequence = prompt
+
+TOPIC: sarah_coat_trust
+  GATE: coat = plain AND evidence(sarah_wage_claim_lead) AND NOT topic_done(sarah_munn, sarah_coat_trust)
+  TAG: sarah_trust
+  LABEL: "Ask why she's telling a plain coat and not a badge"
+  VOICE: violin_conspiratorial_medium_v1
+  SARAH MUNN: "A badge writes down what a house wants written. You're asking like a man who might write down what happened instead.\n\nI don't know which you'll be by the time it's typed up. I'm telling you anyway."
+  NOTEBOOK: sarah_trust_1 | "Sarah Munn distinguished testifying to a uniform from testifying to a man, and chose to speak regardless of which Walter would prove to be."

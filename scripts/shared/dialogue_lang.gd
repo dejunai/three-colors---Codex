@@ -65,8 +65,10 @@ extends RefCounted
 # Built-in functions/fields are registered by the caller via the `ctx`
 # passed to evaluate() — see dialogue_runtime.gd's make_context() for the
 # actual vocabulary (visit_count, topic_count, spoken_to, evidence, filed,
-# flag, topic_done, npc_done, outcome, outcome_is, coat, day, phase, estate_complete,
-# steward_ready).
+# flag, topic_done, npc_done, outcome, outcome_is, object_done, object_count,
+# taken, coat, day, phase, estate_complete, steward_ready). The last three
+# read the sibling object system (scripts/shared/object_lang.gd,
+# object_runtime.gd) so a dialogue GATE can react to an examined/taken object.
 # `npc_done(npc_id)` is sugar for
 # `topic_done(npc_id, "default")`, the existing "has this NPC's opener
 # already played" check.
@@ -478,6 +480,8 @@ static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary) -> bool:
 	if ast.cmp == "=" or ast.cmp == "!=":
 		var left = str(resolved).to_lower()
 		var right = str(value).to_lower()
+		if right.is_empty():
+			return left.is_empty() if ast.cmp == "=" else not left.is_empty()
 		var equal = left == right or left.contains(right) or right.contains(left)
 		return equal if ast.cmp == "=" else not equal
 	var left_num = float(resolved) if (resolved is float or resolved is int) else (float(str(resolved)) if str(resolved).is_valid_float() else 0.0)

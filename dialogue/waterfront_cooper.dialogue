@@ -1,0 +1,23 @@
+NPC: waterfront_cooper
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_west_quay, midday=waterfront_center_quay, evening=closed, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(waterfront_cooper, default)
+  TAG: waterfront_cooper_greeting
+  VOICE: trombone_neutral_short_v1
+  THE COOPER: "Empty barrels this way, sound barrels the other. Mind which stack you lean on."
+
+TOPIC: default
+  GATE: topic_done(waterfront_cooper, default)
+  WEIGHT: 2
+  TAG: waterfront_cooper_repeat_hoops
+  VOICE: trombone_weary_short_v1
+  THE COOPER: "Iron hoops loosen whenever the fog comes in."
+
+TOPIC: default
+  GATE: topic_done(waterfront_cooper, default)
+  WEIGHT: 1
+  TAG: waterfront_cooper_repeat_work
+  VOICE: trombone_dismissive_short_v2
+  THE COOPER: "Nothing to discuss unless you've brought a cask."

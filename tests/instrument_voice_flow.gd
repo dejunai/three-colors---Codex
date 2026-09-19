@@ -17,13 +17,22 @@ func run() -> void:
 	var voice_cues: Array[String] = []
 	var unvoiced_npc_lines: Array[String] = []
 	var speaker_instruments: Dictionary = {}
+	# Accumulated rather than asserted per-iteration inside _audit_voice_cues():
+	# a failed assert() only aborts that one nested call, not this outer loop or
+	# run() itself, so a per-line/per-speaker violation would otherwise vanish
+	# silently and this file would still print PASS. See TDD v39/pending notes.
+	var audit_errors: Array[String] = []
 	for filename in DirAccess.get_files_at("res://dialogue"):
 		if not filename.ends_with(".dialogue"): continue
 		var definition = Runtime.load_npc("res://dialogue/" + filename)
 		assert(definition.errors.is_empty(), "%s: %s" % [filename, definition.errors])
 		if filename == "background_npc_template.dialogue": continue
 		for topic in definition.topics:
-			_audit_voice_cues(topic.steps, filename, voice_cues, unvoiced_npc_lines, speaker_instruments)
+			_audit_voice_cues(topic.steps, filename, voice_cues, unvoiced_npc_lines, speaker_instruments, audit_errors)
+	if not audit_errors.is_empty():
+		push_error("INSTRUMENT VOICE FAIL: %d violation(s):\n%s" % [audit_errors.size(), "\n".join(audit_errors)])
+		quit(1)
+		return
 	for cue in voice_cues:
 		assert(cue.is_valid_identifier())
 		assert(ResourceLoader.exists("res://assets/audio/instrument_voices/" + cue + ".wav"), "Missing " + cue)
@@ -61,13 +70,13 @@ func run() -> void:
 	print("INSTRUMENT VOICE PASS: 144-cue manifest, %d NPC lines, character consistency, playback stop, independent mute" % voice_cues.size())
 	quit()
 
-func _audit_voice_cues(steps:Array,filename:String,cues:Array[String],unvoiced:Array[String],instruments:Dictionary) -> void:
+func _audit_voice_cues(steps:Array,filename:String,cues:Array[String],unvoiced:Array[String],instruments:Dictionary,errors:Array[String]) -> void:
 	for step in steps:
 		if step.kind == "line":
 			var speaker = String(step.get("speaker", ""))
 			var cue = String(step.get("voice", ""))
 			if speaker in SILENT_SPEAKERS or bool(step.get("player", false)):
-				assert(cue.is_empty(), "Silent/player line was voiced: %s / %s" % [filename, speaker])
+				if not cue.is_empty(): errors.append("Silent/player line was voiced: %s / %s" % [filename, speaker])
 				continue
 			if cue.is_empty():
 				unvoiced.append("%s / %s" % [filename, speaker])
@@ -75,7 +84,7 @@ func _audit_voice_cues(steps:Array,filename:String,cues:Array[String],unvoiced:A
 			cues.append(cue)
 			var instrument = cue.get_slice("_", 0)
 			if instruments.has(speaker):
-				assert(instruments[speaker] == instrument, "Character changed instruments: %s" % speaker)
+				if instruments[speaker] != instrument: errors.append("Character changed instruments: %s (%s vs %s) in %s" % [speaker, instruments[speaker], instrument, filename])
 			else: instruments[speaker] = instrument
 		elif step.kind == "fork":
-			for option in step.options: _audit_voice_cues(option.steps, filename, cues, unvoiced, instruments)
+			for option in step.options: _audit_voice_cues(option.steps, filename, cues, unvoiced, instruments, errors)

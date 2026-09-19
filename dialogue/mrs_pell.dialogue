@@ -56,7 +56,7 @@ TOPIC: club_guests
   GATE: always
   TAG: pell_guests
   LABEL: "Ask who visited the ridge after dark"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "There were carriages on this road after midnight."
   VOICE: violin_neutral_medium_v2
   MRS. PELL: "There are always carriages on this road after midnight. That is half the point of having a ridge to climb to."
@@ -69,7 +69,7 @@ TOPIC: servant_talk
   GATE: coat = plain
   TAG: pell_servants
   LABEL: "Ask whether her maid heard anything from the club road"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "Your maid keeps the back rooms facing the club road."
   VOICE: violin_bureaucratic_medium_v1
   MRS. PELL: "She keeps my rooms, Officer. She is not an extension of your precinct."
@@ -83,7 +83,7 @@ TOPIC: crew_omission
   GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(mrs_pell, crew_omission)
   TAG: mrs_pell_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "The memorial on the common lists every owner who subscribed to the rebuilding fund.\nIt does not list the men who drowned."
   VOICE: violin_haunting_medium_v2
   MRS. PELL: "A subscription is a matter of public record.\nA drowning is a matter of the sea."

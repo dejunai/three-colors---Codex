@@ -1,0 +1,23 @@
+NPC: waterfront_tally_runner
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_midwest_quay, midday=waterfront_east_apron, evening=closed, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(waterfront_tally_runner, default)
+  TAG: waterfront_tally_runner_greeting
+  VOICE: violin_cautious_short_v1
+  THE TALLY RUNNER: "If this sheet gets wet, the freight office will count the whole cart twice."
+
+TOPIC: default
+  GATE: topic_done(waterfront_tally_runner, default)
+  WEIGHT: 2
+  TAG: waterfront_tally_runner_repeat_pencil
+  VOICE: violin_weary_short_v2
+  THE TALLY RUNNER: "A pencil lasts half as long on the quay."
+
+TOPIC: default
+  GATE: topic_done(waterfront_tally_runner, default)
+  WEIGHT: 1
+  TAG: waterfront_tally_runner_repeat_count
+  VOICE: violin_neutral_short_v1
+  THE TALLY RUNNER: "I'm counting crates, Officer. Nothing else."

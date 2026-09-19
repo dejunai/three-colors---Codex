@@ -1,0 +1,72 @@
+# THREE COLORS OF MADNESS — Anonymous playthrough telemetry — build brief for Codex
+
+## CONTEXT
+This is a Godot 4.7 project (GL Compatibility renderer), Web export (HTML5) as the tester-distribution build — no installer, by design, which is also exactly why this is needed: there is currently no way to see what an external tester actually did during a session. The TDD (`docs/design/7) Three Colors of Madness - TDD v21.md`, Part Four, "Playthrough telemetry") has the full design discussion and reasoning behind every choice below; where this brief is thinner than that section, the TDD is the fuller record, not a contradiction.
+
+**Hard constraint, non-negotiable:** no personal data of any kind. No player name, no account, no device fingerprint, no browser fingerprinting, no IP address collected *in the log payload*, no analytics SDK, no third-party tracking script. The only identifier is a random per-playthrough session id (a v4 UUID or equivalent, generated client-side at New Game). If any implementation choice below would require collecting more than that, stop and flag it rather than proceeding.
+
+## STATUS — this brief is now a historical record, not an open ask
+Everything below shipped. Two things landed differently than originally specified, both accepted by the author and recorded in the TDD (Part Six, item 15):
+- **Hosting is Cloudflare Worker + R2, not Worker + D1** (TASK 3, ACCEPTANCE below). R2 was what actually got deployed at `https://three-colors-worker.dejunai.workers.dev`; it satisfies the same privacy posture (no request metadata persisted, allowlisted fields only) but is not SQL-queryable — aggregate metrics need a small offline script reading the bucket's JSON objects, not a live `SELECT`. Left as-is; a D1 migration is optional future work, not scheduled.
+- **The two subjective questions, originally OUT OF SCOPE for this task (see below), are now built** as a `debrief` event — see TASK 4, added after this brief's original scope was delivered. They are not free text; they're single-tap choices, matching the rest of this codebase's UI, which has never used a text-entry widget.
+
+## GOAL
+Add lightweight, anonymous logging that answers real pacing/design questions by measurement instead of by the author's own feel — the exact motivation for the recent Shift-brisk-speed fix (`main.gd`), which corrected the author's *own* playtesting speed but did nothing to tell us what an actual first-time tester experiences. Log a defined set of events per playthrough, tagged with a random session id, and upload them automatically to a small collection endpoint so the data reaches the author without any manual step from the tester.
+
+## TASK 1 — Session id
+- On New Game (not on save/load resume of an existing session), generate a random session id and hold it for the lifetime of that playthrough. Loading a save later in the same playthrough keeps the same id; starting a fresh New Game generates a new one.
+- The id is opaque and random — not derived from system time, hardware, IP, or anything else that could correlate two different sessions to the same person. A plain `String` UUID v4 is fine.
+- The id is never shown to the player and never written anywhere the player could screenshot/share by accident (not in the notebook, not in a save-file field the player's own tooling might inspect and misread as meaningful — a dedicated internal field is fine).
+
+## TASK 2 — Event log, in-memory buffer
+Define an event schema (a flat dictionary is fine — this doesn't need a class hierarchy) with at minimum: `session_id`, `event`, a client wall-clock timestamp, and event-specific fields below. Buffer events in memory and flush them per Task 3 rather than uploading one at a time — a browser tab can close mid-session, so flushing incrementally (not only at the very end) matters more than batching efficiency.
+
+Events to log, mapped to the author's actual questions (see TDD Part Four for the original list) and to existing hook points already in the codebase — this is additive logging at points that already exist, not new game logic:
+
+1. **`session_start`** — fired once at New Game. Fields: none beyond the standard ones.
+2. **`first_objective`** — fired once, the first time `state.discover()` or `state.record()` is called in a session (both already exist as effect hooks — see `chapter_one.gd`'s `_interact()` callback and `_estate_observation()`). If "first meaningful objective" should mean something more specific than "first fact recorded," flag it back to the author rather than guessing — this definition is a reasonable default, not a TDD-mandated one.
+3. **`district_transition`** — fired on every `_travel()` call that changes `state.world`. Fields: `from_world`, `to_world`, `real_seconds_elapsed` (wall-clock since the previous transition), `game_minutes_elapsed` (`state.clock_minutes` delta since the previous transition).
+4. **`phase_change`** — fired whenever `DayClock.phase(state.clock_minutes)` changes value. Fields: `day`, `new_phase`, `npcs_spoken_to_this_phase` (count of distinct entries added to `state.visited` since the previous phase change — reset the counter on each phase change, don't reset `state.visited` itself).
+5. **`watch_checked`** — fired when the player uses the Tab-menu pocket watch (TDD Part Six, Stage 5 — not built yet as of this writing). Fields: `day`, `phase`, `game_minutes`. **This event is a no-op until the pocket watch exists; add the log call when that feature is built, not before.**
+6. **`day3_bed_reached`** — fired when `sleep()` (or wherever Day 3's "turn in for the night" resolves — see `target("sleep", ...)` in `town.gd`'s `_corwin_room()`) succeeds on Day 3 specifically. Fields: `real_seconds_since_day3_start` (wall-clock from the `phase_change` event that first set `day == 3`).
+7. **`session_end`** — fired on quit/tab-close if catchable (`NOTIFICATION_WM_CLOSE_REQUEST` or equivalent), and also at any existing "the end" screen. Fields: `total_real_seconds`, `final_day`, `ended_via` (`"closed"` vs `"completed"` vs whatever states are distinguishable).
+
+**Deliberately not a new event type:** "did a player miss a scheduled NPC, and what did they try next" does not need live detection. `district_transition` events already carry world + game-clock time, and `dialogue_catalog.gd`'s `slot()` is a pure, deterministic function of `(npc, phase)` — so whether any given NPC was reachable at any logged moment can be reconstructed later by replaying `slot()` against the log, offline. Do not add a "player missed someone" detection mechanic to satisfy this — that would be new gameplay-adjacent logic for a question the existing data can already answer analytically.
+
+**Originally out of scope for this task, since built (see TASK 4):** the two subjective questions in the TDD ("does the town feel alive vs. too large," "does time feel tied to investigation vs. walking") were flagged here as not loggable events needing a separate exit-question mechanism. They now are that mechanism's own event — see TASK 4 below.
+
+## TASK 3 — Upload
+- Transport is decided: automatic upload, not a manual "download and send" flow.
+- Fire an `HTTPRequest` POST (JSON body) at each event above, or batched every few events / on each `district_transition` — whichever is simpler to implement reliably; either is fine as long as a closed tab doesn't lose the whole session's data. If a request fails (offline, endpoint unreachable), don't block or retry aggressively — drop it or retry once on the next event, but never stall gameplay on network state.
+- **Endpoint hosting, as originally decided here: Cloudflare Worker + D1**, for a specific reason beyond "no server to patch": D1 is a real SQL database (SQLite-based), and every metric this feature exists to answer is a plain `SELECT AVG(...)`/`COUNT(...)` query once events land in a table. **As actually deployed: Cloudflare Worker + R2** (`cloudflare/three-colors-worker/`, bucket `three-colors-logs`) — see STATUS above. Each accepted batch is written as one JSON object per request (`events/YYYY-MM-DD/<uuid>.json`); querying means reading those objects with a small script, not `SELECT`. Accepted as-is; not being sent back for a D1 rework.
+  - Workers request logging is not persisted by default (unlike a conventional web server's access log), which narrows the IP-at-the-infrastructure-level exposure named in the constraint above without extra configuration — no optional logging/analytics add-on is enabled, and the deployed `src/index.js` never copies request headers, IP, or user-agent into R2.
+- Whichever is chosen, confirm CORS is configured correctly for a Web-exported Godot build calling it from an arbitrary hosting origin (itch.io, a personal domain, wherever the Web build ends up served from) before treating this as done.
+- Store the endpoint URL as an easily swappable value (an exported variable or a config constant), not hardcoded in multiple places — the author may want to point this at a different account later without a code change.
+
+## TASK 4 — Debrief pairing (added after the above shipped; also built)
+Telemetry answers "what did they do." It doesn't answer "what did they think they were doing, and how did it feel." Rather than a free-text survey (this codebase has no text-entry widget anywhere, by design — the interaction idiom throughout is `_panel`/`_button`), this is two single-tap optional questions shown once, right after the Day 3 "close_day" narrative cards and before the town is marked finished:
+
+1. A choice among: "Alive, and hard to fully take in" / "Confusing" / "Too large for the time given" / "Easy enough to navigate" / "Skip".
+2. Yes / No / Skip to: "Did the passage of time feel natural while investigating?"
+
+Both answers (or `"skipped"`) are logged as one new event:
+
+8. **`debrief`** — fired once, immediately after the Day 3 bed sequence resolves (same moment `day3_bed_reached` fires; `day3_bed_reached` itself was defined in `playthrough_log.gd` from the start but had never actually been wired to a call site until this task — that gap is now closed alongside this one). Fields: `town_feel` (`"alive"` / `"confusing"` / `"too_large"` / `"easy"` / `"skipped"`), `time_natural` (`"yes"` / `"no"` / `"skipped"`).
+
+Implementation landed in `scripts/chapters/chapter_one_staging.gd`'s `sleep()` (the Day-3-success branch) via two new local functions, `_debrief_town_feel()` and `_debrief_time_natural()`, and in `playthrough_log.gd` via a new `debrief(town_feel, time_natural)` method. The Worker's `EVENT_FIELDS` allowlist and field-value validation (`cloudflare/three-colors-worker/src/index.js`) were extended to match and redeployed.
+
+## ACCEPTANCE / VERIFICATION
+Per this project's existing standard, don't just self-report — check source and, where possible, run it:
+- Confirm by direct source read that no field anywhere in the log payload or the request itself carries player-identifying data (name, account, device id, IP collected/forwarded intentionally, fingerprinting of any kind) — the only identifier is the random session id.
+- Confirm a new session id is generated on New Game and the same id persists across save/load within one playthrough.
+- Confirm each event's fields actually populate correctly against a real playthrough (a `district_transition` between two real locations shows sane `real_seconds_elapsed`/`game_minutes_elapsed`, a `phase_change` shows a plausible NPC count, etc.) — don't just confirm the request fires, confirm the payload contents are correct.
+- Confirm closing the tab mid-session does not lose previously-flushed events (only whatever hadn't yet been sent should be lost).
+- Confirm this adds no player-visible UI, no toast, no interruption — it should be entirely invisible during play.
+- Confirm the Worker/R2 endpoint and its CORS configuration actually work from a real Web export, not just localhost.
+- Querying the logged data means reading the JSON objects out of the `three-colors-logs` R2 bucket (Cloudflare dashboard, or `wrangler r2 object get`) — there is no D1 console for this deployment. An offline aggregation script is future work, not required to call this done.
+- Confirm the `debrief` panel appears exactly once per completed playthrough, offers "Skip" on both questions, and never blocks reaching the town-complete screen even if both are skipped.
+
+## OUT OF SCOPE (do not touch)
+- Any live "you just missed someone" detection or messaging — this is answered by offline analysis of `district_transition` events against `dialogue_catalog.gd`'s existing `slot()`, not new gameplay logic.
+- The Tab-menu pocket watch itself (TDD Part Six, Stage 5) — build `watch_checked`'s log call when that feature lands, don't build the watch as part of this task.
+- Anything resembling analytics beyond the fields listed above (no session replay, no heatmaps, no third-party analytics SDK of any kind).

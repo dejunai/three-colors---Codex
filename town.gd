@@ -2,6 +2,12 @@ extends "res://estate.gd"
 
 var location = "town"
 var departing_woman: Node3D
+# Corwin's room: a glass planted from the first night, and the board's twine.
+# Both are inert until the chapter's final beat (chapter_one_break.gd).
+var desk_glass: Node3D
+var whiskey: MeshInstance3D
+var board_threads: Array[MeshInstance3D] = []
+var glass_shattered := false
 
 func _ready() -> void:
 	rng.seed = 1924
@@ -84,7 +90,8 @@ func _street() -> void:
 	for x in [21.8,22.6,23.4,24.2]:
 		box(self,Vector3(x,0.8,-6.9),Vector3(0.24,0.22,0.5),"8d977f")
 	# Far-side warehouses frame the street but do not imply explorable doors.
-	for x in [-24,-10,8,25]:
+	# The center warehouse footprint is now the western descent's opening.
+	for x in [-24,25]:
 		box(self,Vector3(x,4.0,28),Vector3(12,8,7),"536156",true)
 		box(self,Vector3(x,8.2,28),Vector3(12.6,0.4,7.5),"303f35")
 	for x in [-25,-10,7,25]: lamp(Vector3(x,0,0))
@@ -101,7 +108,6 @@ func _street() -> void:
 	box(self,Vector3(-8.6,0.85,-1.6),Vector3(0.5,0.06,0.06),"3a443a")
 	person(Vector3(-8,0,-1),"242423",false).rotation.y=1.8
 	target("behan","Speak with Father Behan",Vector3(-8,0,-1))
-	person(Vector3(12,0,14),"414f42").rotation.y=-1.4
 	# Kessler's shop, shuttered since his death, and a woman who won't give her name.
 	box(self,Vector3(-20,1.1,12),Vector3(3.2,2.2,0.3),"333a2f",true)
 	lettering("KESSLER",Vector3(-20,2.5,11.85),26)
@@ -112,24 +118,23 @@ func _street() -> void:
 	target("old_woman","Speak with the woman outside the shop",Vector3(-19.2,0,11.2))
 	register_actor("old_woman", old_woman, "old_woman", func(st): return not st.evidence.has("old_woman"))
 	for x in [-28,28]: tree(Vector3(x,0,20))
-	# New destinations occupy the existing far-side frontage.
-	for spec in [[-10,"UPPER RESIDENTIAL","upper"],[8,"BUSINESS DISTRICT","business"],[25,"LOWER RESIDENTIAL","lower"]]:
-		var x:float=spec[0]
-		box(self,Vector3(x,1.8,24.35),Vector3(3,3.6,0.15),"263a32")
-		for dx in [-1.65,1.65]: box(self,Vector3(x+dx,1.9,24.15),Vector3(0.2,3.8,0.3),"959d8b")
-		lettering(spec[1],Vector3(x,4.4,24.0),40).rotation.y=PI
-		var id="route_"+spec[2]
-		target(id,"Take the passage to the "+spec[1].to_lower(),Vector3(x,0,22))
-		routes[id]=[spec[2],Vector3(10,0.1,25),0.0]
+	# District portals have been replaced by physical streets. Interior doors
+	# retain their stable route IDs in the shared exterior.
 	box(self,Vector3(-24,1.6,24.3),Vector3(1.7,3.2,0.16),"283c32")
 	lettering("POST OFFICE",Vector3(-24,3.7,24.05),32).rotation.y=PI
 	target("route_post","Enter the post office",Vector3(-24,0,22))
 	routes["route_post"]=["post_office",Vector3(0,0.1,6),0.0]
 
-	# Street's western end opens downhill toward the harbor.
-	lettering("WATERFRONT",Vector3(-28,2.7,7),30).rotation.y=PI/2
-	target("route_waterfront","Go downhill to the waterfront",Vector3(-27,0,7))
-	routes["route_waterfront"]=["waterfront",Vector3(0,0.1,23),0.0]
+	var contiguous = preload("res://scripts/chapters/contiguous_town_phase_one.gd")
+	contiguous.build_pickman_edge(self)
+	contiguous.build_business(self)
+	contiguous.build_upper_approach(self)
+	contiguous.build_upper(self)
+	contiguous.build_return_loop(self)
+	var phase_two = preload("res://scripts/chapters/contiguous_town_phase_two.gd")
+	phase_two.build(self)
+	phase_two.build_waterfront_approach(self)
+	phase_two.build_waterfront(self)
 
 func _room_shell() -> void:
 	box(self,Vector3(0,-0.3,0),Vector3(18,0.5,20),"747d6b",true)
@@ -139,7 +144,8 @@ func _room_shell() -> void:
 	for x in [-5.3,5.3]: box(self,Vector3(x,2.1,8),Vector3(7.2,4.2,0.3),"6e7e68",true)
 	for z in [-7.8,7.8]: box(self,Vector3(0,0.14,z),Vector3(18,0.25,0.16),"344b35")
 	for x in [-8.8,8.8]: box(self,Vector3(x,0.14,0),Vector3(0.16,0.25,16),"344b35")
-	for x in [-5,5]:
+	var window_xs = [5] if location == "precinct" else ([-5] if location in ["stationer", "haberdasher", "printer", "repairer"] else [-5, 5])
+	for x in window_xs:
 		box(self,Vector3(x,2.35,-7.78),Vector3(2.5,2.3,0.12),"afb9a0")
 		for dx in [-1.35,0,1.35]: box(self,Vector3(x+dx,2.35,-7.61),Vector3(0.13,2.55,0.16),"3c533e")
 		for dy in [-1.2,0,1.2]: box(self,Vector3(x,2.35+dy,-7.61),Vector3(2.8,0.13,0.16),"3c533e")
@@ -226,6 +232,20 @@ func _corwin_room() -> void:
 	for x in [-1.2,0.1,1.4]:
 		var thread=box(self,Vector3(x,2.15,-7.35),Vector3(1.8,0.016,0.018),"343e2a")
 		thread.rotation.z=0.6
+		board_threads.append(thread)
+	# A tumbler with an inch of something in it, left beside the notebook. Kept
+	# inside the room's gray palette until the break: a warm color anywhere in the
+	# world before then would read as the Observers' tell.
+	desk_glass=Node3D.new()
+	desk_glass.name="DeskGlass"
+	desk_glass.position=Vector3(4.75,1.03,-3.5)
+	add_child(desk_glass)
+	var tumbler=cylinder(desk_glass,Vector3(0,0.12,0),0.095,0.24,"c3cbc2")
+	var tumbler_material=mat("c3cbc2").duplicate()
+	tumbler_material.transparency=BaseMaterial3D.TRANSPARENCY_ALPHA
+	tumbler_material.albedo_color=Color(0.76,0.8,0.76,0.42)
+	tumbler.material_override=tumbler_material
+	whiskey=cylinder(desk_glass,Vector3(0,0.05,0),0.083,0.09,"7e7c6e")
 	var notice_dresser=box(self,Vector3(6.8,0.9,3.5),Vector3(2.6,1.8,1.1),"5c7250",true)
 	box(self,Vector3(6.8,1.84,3.5),Vector3(0.7,0.025,0.45),"c8c7a8")
 	for y in [0.5,1.1]: box(self,Vector3(6.8,y,4.1),Vector3(0.3,0.07,0.06),"b6b798")
@@ -234,6 +254,36 @@ func _corwin_room() -> void:
 	target("sleep","Turn in for the night",Vector3(-3.4,0,-2.2))
 	target("day_close","Set the notebook down for the evening",Vector3(3.5,0,-2.9))
 	tabletop_target("exemption","Examine the folded notice",Vector3(6.8,1.9,3.5),notice_dresser)
+
+# Color returns as materials the film grade already lets through: a red thread
+# (red-dominant, so film.gdshader's preserve band passes it) then amber in the glass.
+func redden_threads() -> void:
+	for thread in board_threads: thread.material_override=mat("a8261d")
+
+func amber_glass() -> void:
+	if is_instance_valid(whiskey): whiskey.material_override=mat("c8842a")
+
+# The break itself. Pieces fall on tweens rather than physics: the beat has to play
+# identically every time, and a stray rigid body must never block the desk or the door.
+func shatter_glass() -> void:
+	if glass_shattered or not is_instance_valid(desk_glass): return
+	glass_shattered=true
+	var origin:Vector3=desk_glass.position
+	desk_glass.visible=false
+	var shards=RandomNumberGenerator.new()
+	shards.seed=1923
+	var fall=create_tween().set_parallel(true)
+	for i in 18:
+		var piece=box(self,origin+Vector3(shards.randf_range(-0.06,0.06),0.12+shards.randf_range(0.0,0.14),shards.randf_range(-0.06,0.06)),Vector3(shards.randf_range(0.025,0.075),0.006,shards.randf_range(0.025,0.06)),"d4dcd3")
+		piece.rotation=Vector3(shards.randf_range(-0.6,0.6),shards.randf_range(0.0,TAU),shards.randf_range(-0.6,0.6))
+		var on_desk=i%2==0
+		var landing=Vector3(origin.x+shards.randf_range(-0.4,0.4),1.045,origin.z+shards.randf_range(-0.2,0.25)) if on_desk else Vector3(origin.x+shards.randf_range(-0.6,0.6),0.02,origin.z+shards.randf_range(0.45,1.1))
+		var drop=0.14 if on_desk else 0.42
+		fall.tween_property(piece,"position",landing,drop+shards.randf_range(0.0,0.08)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		fall.tween_property(piece,"rotation",Vector3(shards.randf_range(-0.2,0.2),shards.randf_range(0.0,TAU),shards.randf_range(-0.2,0.2)),drop+0.1)
+	var pool=box(self,Vector3(origin.x,1.043,origin.z),Vector3(0.05,0.006,0.05),"c8842a")
+	pool.scale=Vector3.ONE
+	create_tween().tween_property(pool,"scale",Vector3(11.0,1.0,7.5),3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 func update_board(evidence:Array) -> void:
 	if location != "room": return
@@ -265,3 +315,17 @@ func _smoking_lounge() -> void:
 	box(self,Vector3(0,1,-5.8),Vector3(3,2,0.8),"394638",true)
 	person(Vector3(0,0,-4.4),"3f4540",false)
 	target("barman","Speak with the club's steward",Vector3(0,0,-3.6))
+	# The steward's boarded pantry door. Only offered once he has pointed to it;
+	# see sync_pantry() and portals/lounge.portal.
+	box(self,Vector3(-8.78,1.55,-3.0),Vector3(0.12,3.1,1.7),"2a302b")
+	for y in [0.7,1.55,2.4]:
+		var board=box(self,Vector3(-8.62,y,-3.0),Vector3(0.1,0.22,2.0),"5b5f52")
+		if y > 2.0: board.rotation.z=0.11
+
+# The old pantry door exists in the wall from the start; the way to it is not
+# offered until the steward has named it. Portal sync only ever erases a hotspot,
+# so the chapter re-offers it here whenever the lounge's conversation closes.
+func sync_pantry(open:bool) -> void:
+	if location != "lounge": return
+	if open: target("pantry_door","Open the boarded pantry door",Vector3(-7.4,0,-3.0))
+	else: points.erase("pantry_door")

@@ -1,0 +1,23 @@
+NPC: waterfront_stevedore
+LOCATION: waterfront
+SCHEDULE: morning=waterfront_center_apron, midday=waterfront_east_quay, evening=closed, night=closed
+
+TOPIC: default
+  GATE: NOT topic_done(waterfront_stevedore, default)
+  TAG: waterfront_stevedore_greeting
+  VOICE: trombone_cautious_short_v1
+  THE STEVEDORE: "Keep off the apron when the sling is moving, Officer."
+
+TOPIC: default
+  GATE: topic_done(waterfront_stevedore, default)
+  WEIGHT: 2
+  TAG: waterfront_stevedore_repeat_rope
+  VOICE: trombone_weary_short_v2
+  THE STEVEDORE: "That rope complains before it parts. Men usually don't."
+
+TOPIC: default
+  GATE: topic_done(waterfront_stevedore, default)
+  WEIGHT: 1
+  TAG: waterfront_stevedore_repeat_clear
+  VOICE: trombone_dismissive_short_v1
+  THE STEVEDORE: "Stand clear and we'll both finish sooner."

@@ -33,15 +33,16 @@ static func load_npc(path: String) -> Dictionary:
 	var source = file.get_as_text()
 	var parsed = Lang.parse(source)
 	_validate_voice_cues(source, parsed.errors)
-	var known: Dictionary = {}
-	for topic in parsed.topics: known[topic.id] = true
+	var local_ids: Dictionary = {}
+	for topic in parsed.topics: local_ids[topic.id] = true
 	for include_value in parsed.get("includes", []):
 		var include_path = include_value if include_value.begins_with("res://") else "res://dialogue/" + include_value
 		var included = load_npc(include_path)
 		for topic in included.topics:
-			if not known.has(topic.id):
-				parsed.topics.append(topic)
-				known[topic.id] = true
+			# Every repeated block for a non-shadowed id is appended, not just the
+			# first — repeated `TOPIC: default` blocks are a legitimate cascade, so
+			# truncating to one variant would silently break an included cascade.
+			if not local_ids.has(topic.id): parsed.topics.append(topic)
 	# Cookbook/shared files use braced placeholder identities and are never live
 	# residents. Do not turn their deliberately incomplete examples into warnings.
 	if not String(parsed.get("npc", "")).begins_with("{"):
@@ -118,6 +119,15 @@ static func make_context(state, dstate) -> Dictionary:
 			"npc_done": func(args): return dstate.topic_done(args[0], "default") if args.size() > 0 else false,
 			"outcome": func(args): return dstate.has_outcome(args[0]) if args.size() > 0 else false,
 			"outcome_is": func(args): return dstate.outcome_is(args[0], args[1]) if args.size() > 1 else false,
+			# Symmetric with object_runtime.gd's make_context(): lets a dialogue GATE
+			# react to the object system (e.g. an NPC who notices a taken item).
+			"object_done": func(args): return state.object_state.object_done(args[0], args[1]) if args.size() > 1 else false,
+			"object_count": func(args): return state.object_state.object_count(args[0]) if args.size() > 0 else 0,
+			"taken": func(args): return state.has_item(args[0]) if args.size() > 0 else false,
+			# Symmetric with portal_runtime.gd's make_context(): lets a dialogue GATE
+			# react to travel (e.g. an NPC who only appears once a place is reached).
+			"portal_done": func(args): return state.portal_state.portal_done(args[0], args[1]) if args.size() > 1 else false,
+			"portal_count": func(args): return state.portal_state.portal_count(args[0]) if args.size() > 0 else 0,
 		},
 		"fields": {
 			"coat": func(): return state.coat,
@@ -125,6 +135,11 @@ static func make_context(state, dstate) -> Dictionary:
 			"phase": func(): return DayClock.phase(state.clock_minutes),
 			"estate_complete": func(): return state.estate_complete,
 			"steward_ready": func(): return state.steward_ready(),
+			"rose_bodies_removed": func(): return state.rose_bodies_removed,
+			"birch_bodies_removed": func(): return state.birch_bodies_removed,
+			"lounge_exited": func(): return state.lounge_exited,
+			"report": func(): return state.report,
+			"report_filed": func(): return not state.report.is_empty(),
 		}
 	}
 
@@ -305,7 +320,7 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 				# Legacy unlabelled notes remain supported without ordinal collisions.
 				# Authors should supply an explicit id to survive future wording edits.
 				if note_id.is_empty(): note_id = "text_" + String(step.text).sha256_text()
-				result.effects.append({"id": session.npc + "." + note_id,
+				result.effects.append({"kind": "notebook", "id": session.npc + "." + note_id,
 					"text": step.text, "after_cards": result.cards.size(), "applied": false})
 			"outcome": session.pending_outcomes[String(step.id)] = String(step.value)
 			"fork":
@@ -322,7 +337,7 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 # DayClock.advance(), giving each topic its own cost instead of a blanket
 # per-interaction charge. Explicit numeric TIME always wins, including zero.
 # Without it, default greetings are free and substantive topics use the fallback.
-const DEFAULT_MINUTES = 3.0
+const DEFAULT_MINUTES = 5.0
 static func commit_through(result: Dictionary, state, dstate, count: int) -> bool:
 	if result.session.is_empty() or result.resumed or result.finished: return false
 	if count < result.acknowledged or count > result.cards.size(): return false
