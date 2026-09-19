@@ -30,7 +30,8 @@ func sync_staging(st) -> void:
 		points.erase("report")
 	if is_instance_valid(opening_report):
 		opening_report.visible = not st.estate_complete
-	if is_instance_valid(opening_knife): opening_knife.visible = not st.rose_bodies_removed
+	if is_instance_valid(opening_knife): opening_knife.visible = not st.rose_bodies_removed and not st.evidence.has("knife")
+	if st.evidence.has("knife"): points.erase("knife")
 	if is_instance_valid(groundskeeper_actor):
 		groundskeeper_actor.visible = st.lounge_exited
 		if st.lounge_exited: target("crew","Watch the groundskeeper",Vector3(-13.5,0,-12.0))
@@ -316,14 +317,9 @@ func _ready() -> void:
 		box(self,Vector3(x,0.12,-16.1),Vector3(0.8,0.24,0.8),"989b90")
 		box(self,Vector3(x,5.5,-16.1),Vector3(0.7,0.3,0.7),"b5b4a6")
 	box(self,Vector3(0,5.85,-17.5),Vector3(12,0.55,6),"afb0a3")
-	var pediment = CylinderMesh.new()
-	pediment.top_radius = 0
-	pediment.bottom_radius = 7
-	pediment.height = 2.5
-	pediment.radial_segments = 4
-	var roof = mesh_at(self,pediment,Vector3(0,7.3,-17.5),"6a706b")
-	roof.scale.z = 0.45
-	roof.rotation.y = PI/4
+	var pediment = PrismMesh.new()
+	pediment.size = Vector3(12.0, 2.2, 5.8)
+	mesh_at(self, pediment, Vector3(0, 7.225, -17.5), "6a706b")
 	lettering("O P H I O N",Vector3(0,5.87,-14.44),62)
 	# Staff entrance in the kitchen-wing facade; member doors remain scenery.
 	box(self,Vector3(-10,1.4,-19.7),Vector3(1.4,2.8,0.16),"242b28")

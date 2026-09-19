@@ -2,6 +2,12 @@ extends "res://estate.gd"
 
 var location = "town"
 var departing_woman: Node3D
+# Corwin's room: a glass planted from the first night, and the board's twine.
+# Both are inert until the chapter's final beat (chapter_one_break.gd).
+var desk_glass: Node3D
+var whiskey: MeshInstance3D
+var board_threads: Array[MeshInstance3D] = []
+var glass_shattered := false
 
 func _ready() -> void:
 	rng.seed = 1924
@@ -226,6 +232,20 @@ func _corwin_room() -> void:
 	for x in [-1.2,0.1,1.4]:
 		var thread=box(self,Vector3(x,2.15,-7.35),Vector3(1.8,0.016,0.018),"343e2a")
 		thread.rotation.z=0.6
+		board_threads.append(thread)
+	# A tumbler with an inch of something in it, left beside the notebook. Kept
+	# inside the room's gray palette until the break: a warm color anywhere in the
+	# world before then would read as the Observers' tell.
+	desk_glass=Node3D.new()
+	desk_glass.name="DeskGlass"
+	desk_glass.position=Vector3(4.75,1.03,-3.5)
+	add_child(desk_glass)
+	var tumbler=cylinder(desk_glass,Vector3(0,0.12,0),0.095,0.24,"c3cbc2")
+	var tumbler_material=mat("c3cbc2").duplicate()
+	tumbler_material.transparency=BaseMaterial3D.TRANSPARENCY_ALPHA
+	tumbler_material.albedo_color=Color(0.76,0.8,0.76,0.42)
+	tumbler.material_override=tumbler_material
+	whiskey=cylinder(desk_glass,Vector3(0,0.05,0),0.083,0.09,"7e7c6e")
 	var notice_dresser=box(self,Vector3(6.8,0.9,3.5),Vector3(2.6,1.8,1.1),"5c7250",true)
 	box(self,Vector3(6.8,1.84,3.5),Vector3(0.7,0.025,0.45),"c8c7a8")
 	for y in [0.5,1.1]: box(self,Vector3(6.8,y,4.1),Vector3(0.3,0.07,0.06),"b6b798")
@@ -234,6 +254,36 @@ func _corwin_room() -> void:
 	target("sleep","Turn in for the night",Vector3(-3.4,0,-2.2))
 	target("day_close","Set the notebook down for the evening",Vector3(3.5,0,-2.9))
 	tabletop_target("exemption","Examine the folded notice",Vector3(6.8,1.9,3.5),notice_dresser)
+
+# Color returns as materials the film grade already lets through: a red thread
+# (red-dominant, so film.gdshader's preserve band passes it) then amber in the glass.
+func redden_threads() -> void:
+	for thread in board_threads: thread.material_override=mat("a8261d")
+
+func amber_glass() -> void:
+	if is_instance_valid(whiskey): whiskey.material_override=mat("c8842a")
+
+# The break itself. Pieces fall on tweens rather than physics: the beat has to play
+# identically every time, and a stray rigid body must never block the desk or the door.
+func shatter_glass() -> void:
+	if glass_shattered or not is_instance_valid(desk_glass): return
+	glass_shattered=true
+	var origin:Vector3=desk_glass.position
+	desk_glass.visible=false
+	var shards=RandomNumberGenerator.new()
+	shards.seed=1923
+	var fall=create_tween().set_parallel(true)
+	for i in 18:
+		var piece=box(self,origin+Vector3(shards.randf_range(-0.06,0.06),0.12+shards.randf_range(0.0,0.14),shards.randf_range(-0.06,0.06)),Vector3(shards.randf_range(0.025,0.075),0.006,shards.randf_range(0.025,0.06)),"d4dcd3")
+		piece.rotation=Vector3(shards.randf_range(-0.6,0.6),shards.randf_range(0.0,TAU),shards.randf_range(-0.6,0.6))
+		var on_desk=i%2==0
+		var landing=Vector3(origin.x+shards.randf_range(-0.4,0.4),1.045,origin.z+shards.randf_range(-0.2,0.25)) if on_desk else Vector3(origin.x+shards.randf_range(-0.6,0.6),0.02,origin.z+shards.randf_range(0.45,1.1))
+		var drop=0.14 if on_desk else 0.42
+		fall.tween_property(piece,"position",landing,drop+shards.randf_range(0.0,0.08)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		fall.tween_property(piece,"rotation",Vector3(shards.randf_range(-0.2,0.2),shards.randf_range(0.0,TAU),shards.randf_range(-0.2,0.2)),drop+0.1)
+	var pool=box(self,Vector3(origin.x,1.043,origin.z),Vector3(0.05,0.006,0.05),"c8842a")
+	pool.scale=Vector3.ONE
+	create_tween().tween_property(pool,"scale",Vector3(11.0,1.0,7.5),3.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 func update_board(evidence:Array) -> void:
 	if location != "room": return
@@ -265,3 +315,17 @@ func _smoking_lounge() -> void:
 	box(self,Vector3(0,1,-5.8),Vector3(3,2,0.8),"394638",true)
 	person(Vector3(0,0,-4.4),"3f4540",false)
 	target("barman","Speak with the club's steward",Vector3(0,0,-3.6))
+	# The steward's boarded pantry door. Only offered once he has pointed to it;
+	# see sync_pantry() and portals/lounge.portal.
+	box(self,Vector3(-8.78,1.55,-3.0),Vector3(0.12,3.1,1.7),"2a302b")
+	for y in [0.7,1.55,2.4]:
+		var board=box(self,Vector3(-8.62,y,-3.0),Vector3(0.1,0.22,2.0),"5b5f52")
+		if y > 2.0: board.rotation.z=0.11
+
+# The old pantry door exists in the wall from the start; the way to it is not
+# offered until the steward has named it. Portal sync only ever erases a hotspot,
+# so the chapter re-offers it here whenever the lounge's conversation closes.
+func sync_pantry(open:bool) -> void:
+	if location != "lounge": return
+	if open: target("pantry_door","Open the boarded pantry door",Vector3(-7.4,0,-3.0))
+	else: points.erase("pantry_door")

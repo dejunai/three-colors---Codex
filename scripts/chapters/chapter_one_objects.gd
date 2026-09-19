@@ -66,6 +66,10 @@ func _play(g: Node, result: Dictionary, object_id: String, label: String) -> voi
 		if result.fork != null:
 			_present_fork(g, result, object_id, label)
 			return
+		if is_instance_valid(g.estate) and g.estate.has_method("sync_staging"):
+			g.estate.sync_staging(g.state)
+		if g.state.world == "estate":
+			sync_points(g, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
 		g._close()
 		g._toast("Recorded in Walter's case file.  [ Tab ]", 4)
 		g._save_game())

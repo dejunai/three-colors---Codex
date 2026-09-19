@@ -70,7 +70,7 @@ TOPIC: the_estate_talk
 # Redundant-carrier backup: if schoolteacher is missed, this supplies the
 # same EVIDENCE the covering-letter lead relies on downstream.
 TOPIC: the_covering_letter
-  GATE: (evidence(curriculum_abridgment) OR evidence(sanitized_textbook)) AND NOT evidence(reader_omission_letter)
+  GATE: evidence(curriculum_abridgment) OR evidence(sanitized_textbook)
   TAG: parent_covering_letter
   LABEL: "Ask if she recalls the covering letter approving the reader"
   TIME: 5
@@ -89,7 +89,7 @@ TOPIC: the_covering_letter
 # Redundant-carrier backup: if schoolteacher is missed, this supplies the
 # same EVIDENCE the sanitized-textbook lead relies on downstream.
 TOPIC: the_reader_lesson
-  GATE: NOT evidence(sanitized_textbook)
+  GATE: always
   TAG: parent_reader_lesson
   LABEL: "Ask what her children recite about the 1823 disaster"
   TIME: 4
@@ -111,7 +111,7 @@ TOPIC: the_reader_lesson
 # same EVIDENCE the New Bedford letters lead relies on downstream, building
 # on Mrs. Teague's own already-established sighting of the envelope.
 TOPIC: the_new_bedford_letters
-  GATE: evidence(naomi_unapologetic_presence) AND NOT evidence(new_bedford_letters)
+  GATE: evidence(naomi_unapologetic_presence)
   TAG: parent_new_bedford_letters
   LABEL: "Ask what she noticed about the envelope Naomi carried"
   TIME: 5

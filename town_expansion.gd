@@ -25,8 +25,24 @@ func _ready() -> void:
 		lettering(Places.title(location) if location=="speakeasy" else spec[1],Vector3(0,3.4,-7.5),32)
 		var hub=Places.parent_hub(location)
 		var index=Places.BUILDINGS[hub].find(spec)
-		var pos=Places.front(index)+Vector3(0,0.1,1.4 if index<3 else -1.4)
-		_exit_to(hub,pos,"Return to the neighborhood",PI if index<3 else 0.0)
+		var exit_dest=hub
+		var exit_pos=Places.front(index)+Vector3(0,0.1,1.4 if index<3 else -1.4)
+		var exit_label="Return to the neighborhood"
+		var parent_chapter=get_parent()
+		var entered_from_hub=parent_chapter!=null and "town_exterior_world" in parent_chapter and parent_chapter.town_exterior_world==hub
+		if not entered_from_hub:
+			var contiguous_pos=null
+			if hub=="upper":
+				contiguous_pos=preload("res://scripts/chapters/contiguous_town_phase_one.gd").upper_return(location)
+			elif hub=="business":
+				contiguous_pos=preload("res://scripts/chapters/contiguous_town_phase_one.gd").business_return(location)
+			elif hub=="lower":
+				contiguous_pos=preload("res://scripts/chapters/contiguous_town_phase_two.gd").lower_return(location)
+			if contiguous_pos!=null:
+				exit_dest="town"
+				exit_pos=contiguous_pos
+				exit_label="Return to the street"
+		_exit_to(exit_dest,exit_pos,exit_label,PI if index<3 else 0.0)
 		if spec[3]=="occupied" and location!="speakeasy":
 			person(Vector3(3,0,-3),"55624f",false)
 			target("local_resident","Speak with the resident",Vector3(3,0,-2))
@@ -34,6 +50,7 @@ func _ready() -> void:
 func _exit_to(destination:String,spawn:Vector3,label:String,angle:float=0.0) -> void:
 	target("route_return",label,Vector3(0,0,7.2))
 	routes["route_return"]=[destination,spawn,angle]
+	routes["interior_exit"]=routes["route_return"]
 
 func _neighborhood() -> void:
 	if location == "business":
@@ -118,7 +135,6 @@ func _neighborhood() -> void:
 		lettering("SCHOOL YARD",Vector3(-25,2.2,-4.8),24)
 	# Return passage sits between the south row, not behind a building.
 	for x in [8,12]: box(self,Vector3(x,1.8,27),Vector3(0.3,3.6,0.4),"8e9b81")
-	lettering("PICKMAN STREET",Vector3(10,3.7,27),27).rotation.y=PI
 	target("route_pickman","Return to Pickman Street",Vector3(10,0,26))
 	var street_x={"upper":-10,"business":8,"lower":25}[location]
 	routes["route_pickman"]=["town",Vector3(street_x,0.1,20),PI]

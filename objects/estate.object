@@ -18,7 +18,7 @@ OBJECT: watch
   EVIDENCE: watch
 
 OBJECT: knife
-  GATE: NOT rose_bodies_removed
+  GATE: NOT rose_bodies_removed AND NOT evidence(knife)
   LABEL: "Examine the ground beneath the hedge"
   BENEATH THE HEDGE: "A knife with a butcher's grip. Walter has seen its like in Kessler's shop.\n\nThe blade is too clean for the earth around it."
   EVIDENCE ENVELOPE: "He wraps the handle before lifting it.\n\nLocation recorded. Blade preserved for examination.\nAn object can be useful before it has agreed to explain itself."

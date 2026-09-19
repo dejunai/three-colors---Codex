@@ -18,7 +18,7 @@ const PortalRuntime = preload("res://scripts/shared/portal_runtime.gd")
 # given location's .portal file to define.
 const LIVE_FILES = {
 	"estate": ["service_entrance", "exit"],
-	"lounge": ["lounge_exit"],
+	"lounge": ["lounge_exit", "pantry_door"],
 	"lower": ["route_speakeasy"],
 	"town": ["street_precinct", "street_almy", "street_room", "street_estate", "route_post"],
 	"tunnel": ["tunnel_exit"],

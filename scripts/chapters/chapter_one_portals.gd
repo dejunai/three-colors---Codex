@@ -96,6 +96,7 @@ func _perform_go(g: Node, result: Dictionary) -> void:
 		g._travel(go.destination, spawn, go.yaw, false, false)
 	else:
 		g._travel(go.destination, spawn, go.yaw, not flags.has("nosave"), flags.has("elapsed"))
+	_after_travel(g, portal_id, go.destination)
 	var extra = _extra_cards(g, portal_id, go.destination)
 	var resumed = Runtime.after_go(result)
 	if resumed.is_empty():
@@ -137,9 +138,20 @@ func _before_travel(g: Node, portal_id: String, destination: String) -> void:
 	if portal_id == "lounge_exit":
 		g.state.lounge_exited = true
 
+# Entering the passage by the pantry door takes the same service-stair checkpoint
+# chapter_one.gd::_begin_tunnel() takes, so a death in the passage reloads here.
+func _after_travel(g: Node, portal_id: String, destination: String) -> void:
+	if portal_id == "pantry_door" and destination == "tunnel":
+		g.tunnel_dead = false
+		g.tunnel_checkpoint = g._session_snapshot()
+		g._save_game()
+		g._toast("Checkpoint saved at the service stair.", 5)
+
 func _extra_cards(g: Node, portal_id: String, destination: String) -> Array:
 	if portal_id == "exit" and destination == "town":
-		return g.TownStory.ARRIVAL
+		if g.state.estate_visits_completed <= 1:
+			return g.TownStory.ARRIVAL
+		return []
 	if portal_id == "tunnel_exit" and destination == "precinct":
 		return [["BACK AT THE PRECINCT", g._custody_result()]]
 	return []

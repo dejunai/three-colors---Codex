@@ -44,6 +44,5 @@ func build(g: Node) -> void:
 		g.tree(Vector3(x, 0, 18))
 	for x in [8, 12]:
 		g.box(g, Vector3(x, 1.8, 27), Vector3(0.3, 3.6, 0.4), "8e9b81")
-	g.lettering("PICKMAN STREET", Vector3(10, 3.7, 27), 27).rotation.y = PI
 	g.target("route_pickman", "Return to Pickman Street", Vector3(10, 0, 26))
 	g.routes["route_pickman"] = ["town", Vector3(-10, 0.1, 20), PI]

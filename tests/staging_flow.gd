@@ -229,6 +229,12 @@ func run(g:Node) -> void:
 	assert(old.restore({"version":4,"visited":["barman"]}))
 	assert(old.day==1 and old.steward_visits==1)
 	g._travel("room",Vector3(0,0.1,6))
+	# The slice no longer ends at the bed: it ends at the glass (tests/break_flow.gd).
+	g._interact("sleep")
+	assert(g.page=="case" and not g.state.finished,"Sleeping before the break must not end the slice")
+	g._close()
+	# A save that already carries the break keeps the legacy close_day path reachable.
+	g.state.dialogue_state.set_flag("glass_broken",true)
 	g._interact("sleep")
 	cards(g)
 	g.content.find_children("*","Button",true,false)[0].pressed.emit()

@@ -96,6 +96,12 @@ func run(g:Node) -> void:
 	cards(g)
 	g._interact("lounge_exit")
 	g._travel("room",Vector3(0,0.1,6))
+	# The slice ends at the glass, not the bed (tests/break_flow.gd): sleeping is refused
+	# until the break has played. A save that already carries it keeps this path.
+	g._interact("sleep")
+	assert(g.page=="case" and not g.state.finished,"Sleeping before the break must not end the slice")
+	g._close()
+	g.state.dialogue_state.set_flag("glass_broken",true)
 	g._interact("sleep")
 	cards(g)
 	# The steward's third conversation jumps steward_visits to 3 (see

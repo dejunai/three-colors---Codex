@@ -140,7 +140,6 @@ func build(g:Node) -> void:
 	block(g,Vector3(-12.6,1.8,-4.3),Vector3(1.3,1.4,0.12),"wood","384d3e")
 	for x in [-12.9,-12.35]: block(g,Vector3(x,1.8,-4.21),Vector3(0.42,0.8,0.02),"plaster","b7bca4")
 	for x in [8,12]: block(g,Vector3(x,1.8,27),Vector3(0.3,3.6,0.4),"stone","8e9b81")
-	g.lettering("PICKMAN STREET",Vector3(10,3.7,27),34).rotation.y=PI
 	g.target("route_pickman","Return to Pickman Street",Vector3(10,0,26))
 	g.routes["route_pickman"]=["town",Vector3(8,0.1,20),PI]
 

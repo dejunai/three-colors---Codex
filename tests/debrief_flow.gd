@@ -17,6 +17,9 @@ func run() -> void:
 	g.state.visited.append("almy")
 	g.state.discover("naomi")
 	g.playthrough_log.begin(g.state,g.scripted_dialogue.FILES.keys())
+	# The debrief now follows the glass (chapter_one_break.gd); a save that already
+	# carries the break still reaches it through the bed.
+	g.state.dialogue_state.set_flag("glass_broken",true)
 
 	g.staging.sleep(g)
 	assert(g.playthrough_log.buffer.filter(func(item): return item.event == "day3_bed_reached").size() == 1)

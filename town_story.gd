@@ -7,7 +7,7 @@ const FACTS = {
 	"lodging": ["A LOCAL ADDRESS", "The boardinghouse meal ledger records N. Freeman and a boy. Mrs. Almy confirms the entry. They were known locally; the record supplies a place from which to continue the inquiry.", "Pickman Street meal ledger · Mrs. Almy"],
 	"lay_lead": ["AN UNPAID LAY", "Mrs. Almy recalls Naomi asking about wages owed to a whaling ancestor. She does not hold the wage document and cannot verify the claim. This is a lead, not proof of a debt or a motive for the killings.", "Mrs. Almy · account of Naomi's inquiry"],
 	"service_work": ["THE SERVICE DOOR", "Mrs. Almy says Naomi sought domestic work at the estate. Neither the dates nor an employer's name is confirmed. Ask the steward for employment records.", "Mrs. Almy · boardinghouse statement"],
-	"gazette": ["THE MORNING EDITION", "The paper names six club members and describes an apparent accident. It names neither the woman nor the boy. Its report supplies no independent explanation of the wounds.", "Gazette · morning edition"],
+	"gazette": ["THE MORNING EDITION", "The paper names five club members and describes an apparent accident. It names neither the woman nor the boy. Its report supplies no independent explanation of the wounds.", "Gazette · morning edition"],
 	"gazette_correction_printed": ["THE CORRECTION SLIP", "A later printed slip records the police count of eight and names Naomi with its identification sources. The correction supplements the morning edition; it does not replace the copies already sold.", "Gazette · printed correction slip"],
 	"exemption": ["THE EXEMPTION NOTICE", "Walter's old exemption notice records the need to care for Constance Corwin. It concerns his life before the case. It supplies no evidence about the deaths at the estate.", "Walter's dresser · personal correspondence"],
 	"behan_name": ["NAMED AFTER THE SHIP", "The Ophion Club was named for a vessel lost with its crew a century ago. Father Behan calls the members' belief that the ship had been chosen a delusion, not a fact: men inherit money, then invent a reason they deserved it.", "Father Behan · rectory conversation"],
@@ -60,7 +60,7 @@ const SCENES = {
 		["MRS. ALMY", "Hers. And the boy's.\n\nThe balance can wait."],
 		["WALTER'S NOTEBOOK", "Copy the entry and record its source.\nThe name and the address corroborate her statement.\n\nFor once, a question has produced exactly what the work needed."]],
 	"gazette": [
-		["THE GAZETTE", "TRAGEDY AT THE OPHION CLUB\n\nSix names. Six professions.\nA paragraph about service to the community."],
+		["THE GAZETTE", "TRAGEDY AT THE OPHION CLUB\n\nFive names. Five professions.\nA paragraph about service to the community."],
 		["WALTER CORWIN", "The birches do not appear in the account.\nNeither does a source for the word accident."]],
 	"exemption": [
 		["THE DRESSER", "An exemption notice, folded along the same worn crease.\nConstance Corwin's name beneath his own.\n\nWalter puts it back.\nThere are other papers requiring him tonight."]],

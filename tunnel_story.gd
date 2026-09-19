@@ -20,6 +20,22 @@ const FLASK_SPILL = [
 	["WALTER'S NOTEBOOK","He does not chase it. He understands, with a calm colder than panic, that the case had only ever let the flask hold as much peace as it had use for, and had decided it needed him thirsty now."]
 ]
 
+# Past the spur, the passage asks for one more step. The pressure is never named;
+# the mind supplies the nearest shape it owns (Bible Part Three, The Entity).
+const PRESSURE = [
+	["THE DARK AHEAD","Past the last of the light there is a pressure in the passage. Not a sound, and not a shape.\n\nHis mind, failing to find a form it can survive holding, begins to dress it in something it knows. A coat. A posture. A particular way of standing, with the weight on one hip."],
+	["WALTER CORWIN","He turns back before it finishes resolving into her.\n\nHe tells himself, going, that he is retreating on purpose."]
+]
+
+# The retreat costs him the last of what he carried (Bible Part Three, Coping
+# Mechanism). The flask is already gone at the spur; the badge and whistle follow.
+# Each loss is stated plainly so it never reads as a bug (Design Law 4).
+const RETREAT = [
+	["THE STAIR","Somewhere in the dark before the stair his foot finds uneven stone and he goes down hard.\n\nThe badge tears loose from its pin. The whistle's cord snaps against the fall. The flask is already somewhere below him, and does not come back.\n\nHe gathers what his hands find and comes up with none of it. He does not go back. Going back means one more second in a place that has already taken more than three objects."],
+	["THE ESTATE GROUNDS","He comes up into gray predawn light, a tired man in a torn coat crossing the grounds a little too early to be proper about it.\n\nNo one asks what he has seen. He would not know how to answer.\n\nHe goes home."],
+	["CORWIN'S ROOM","The room is as he left it. The board on the wall. The desk. A glass beside the notebook with an inch of something in the bottom of it.\n\nHe does not remember pouring it."]
+]
+
 const DROWNED_MEETING = [
 	["THE DROWNED SAILOR","Pale flesh, swollen from long years of seawater, wool coat fused into the shape beneath it.\n\nIt did not drown in judgment; it simply drowned. It shifts against the stone floor with a low, impersonal groan."]
 ]
@@ -31,7 +47,7 @@ const CULTIST_MEETING = [
 # Hazard cue text, held here rather than inline in tunnel.gd's cue(), matching the
 # rest of the codebase's data-table convention (Design Law 4).
 const CUES = {
-	"exposed":"It sees Walter. Get behind stone.",
+	"exposed":"It has seen him.",
 	"warning":"[A thin, wet cough.] Its head lifts toward the central passage.",
 	"watching":"It watches the central passage.",
 	"turned":"It turns toward the wall."

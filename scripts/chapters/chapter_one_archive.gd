@@ -327,6 +327,9 @@ func _link_result(g:Node,first_id:String,second_id:String) -> void:
 	g._focus_first()
 
 func _town_complete(g:Node) -> void:
+	if g.state.dialogue_state.flag("glass_broken"):
+		_slice_complete(g)
+		return
 	g._panel("ending","A name brought home","END OF THE FIRST TOWN INQUIRY")
 	g._paragraph("Naomi Freeman.\n\nThe town has not changed its account.\nWalter's account has become harder to dismiss.",27)
 	g._paragraph("Notebook: %d observations\nEstate report: %d observations, retained as submitted\nDated supplements: %d\nCounty dispatch: %s" % [g.state.evidence.size(),g.state.report_evidence.size(),g.state.supplement_history.size(),"recorded" if g.state.county_dispatched else "none"],20)
@@ -346,3 +349,14 @@ func _town_complete(g:Node) -> void:
 	g._button("Save and quit",func(): g._save_game(); g.get_tree().quit())
 	g._focus_first()
 
+# The slice's ending (chapter_one_break.gd): it stops on the glass. No verdict on the
+# case, no cheer, and no "continue exploring" — the world after the break is not one
+# this slice offers. The record survives; the board can still be read.
+func _slice_complete(g:Node) -> void:
+	g._panel("ending","Is that the way sound works?","END OF THE SLICE")
+	g._paragraph("Notebook: %d observations\nEstate report: %d observations, retained as submitted\nDated supplements: %d\nCounty dispatch: %s" % [g.state.evidence.size(),g.state.report_evidence.size(),g.state.supplement_history.size(),"recorded" if g.state.county_dispatched else "none"],20)
+	g._paragraph("This is where this slice of Three Colors of Madness ends. Thank you for playing.",22)
+	g._button("Review the board",g._board)
+	g._button("Save and return to title",func(): g._save_game(); g._title())
+	g._button("Save and quit",func(): g._save_game(); g.get_tree().quit())
+	g._focus_first()

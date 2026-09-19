@@ -63,7 +63,18 @@ static func build_waterfront_approach(g: Node) -> void:
 	collision.shape = shape
 	body.add_child(collision)
 	for side in [-1.0, 1.0]:
-		g.box(root, Vector3(100 + side * 3.2, -3.5, -24), Vector3(0.5, 2.7, 15), "46534c", true)
+		var rail_pos = Vector3(100 + side * 3.2, center.y + 0.6, center.z)
+		var rail = g.box(root, rail_pos, Vector3(0.5, 1.4, length), "46534c")
+		rail.rotation.x = ramp.rotation.x
+		var rbody = StaticBody3D.new()
+		rbody.position = rail_pos
+		rbody.rotation = ramp.rotation
+		root.add_child(rbody)
+		var rcol = CollisionShape3D.new()
+		var rshape = BoxShape3D.new()
+		rshape.size = Vector3(0.5, 1.4, length)
+		rcol.shape = rshape
+		rbody.add_child(rcol)
 	g.target("route_waterfront", "Continue downhill to the waterfront", Vector3(100, -5.0, -31))
 	g.routes["route_waterfront"] = ["waterfront", Vector3(0, 0.1, 23), 0.0]
 	# A low, unreachable preview keeps the abandoned island visible throughout
@@ -109,13 +120,26 @@ static func _build_pickman_descent(g: Node, root: Node3D) -> void:
 	collision.shape = shape
 	body.add_child(collision)
 	for z in [4.7, 11.3]:
-		g.box(root, Vector3(54, -0.7, z), Vector3(9, 1.5, 0.5), "4b574e", true)
+		var wall_pos = Vector3(center.x, center.y + 0.6, z)
+		var wall = g.box(root, wall_pos, Vector3(length, 1.4, 0.5), "4b574e")
+		wall.rotation.z = ramp.rotation.z
+		var wbody = StaticBody3D.new()
+		wbody.position = wall_pos
+		wbody.rotation = ramp.rotation
+		root.add_child(wbody)
+		var wcol = CollisionShape3D.new()
+		var wshape = BoxShape3D.new()
+		wshape.size = Vector3(length, 1.4, 0.5)
+		wcol.shape = wshape
+		wbody.add_child(wcol)
 
 static func lower_return(interior_id: String) -> Variant:
 	var specs: Array = Places.BUILDINGS.lower
 	for index in specs.size():
 		if String(specs[index][0]) != interior_id: continue
 		var toward_street = Vector3(0, 0.1, 1.5 if index < 3 else -1.5)
+		if interior_id == "speakeasy":
+			toward_street = Vector3(7, 0.1, 6.0)
 		return LOWER_ORIGIN + Places.front(index) + toward_street
 	return null
 

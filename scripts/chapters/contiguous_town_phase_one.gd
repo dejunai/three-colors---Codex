@@ -111,12 +111,11 @@ static func build_upper_approach(g: Node) -> void:
 	# The first upper-quarter connection occupies the quieter northwest end of
 	# the business block. An underlying ramp keeps traversal smooth; shallow
 	# stone courses make the grade read as old, repaired steps.
-	var rise = 7.5
+	var rise = 7.0
 	var run = 18.0
 	var slope_length = sqrt(rise * rise + run * run)
-	# Bury the leading edge slightly below the business pavement so the
-	# CharacterBody never encounters a collision lip at the grade change.
-	var center = Vector3(-24, 8.85, 108)
+	# Align top of ramp with Upper District pavement (y = 12.45) so there is no collision lip.
+	var center = Vector3(-24, 8.75, 108)
 	var ramp = g.box(root, center, Vector3(6.0, 0.42, slope_length), "747c70")
 	ramp.name = "UpperQuarterApproach"
 	ramp.rotation.x = -atan2(rise, run)
@@ -130,14 +129,20 @@ static func build_upper_approach(g: Node) -> void:
 	shape.size = Vector3(6.0, 0.42, slope_length)
 	collision.shape = shape
 	body.add_child(collision)
-	# The incline itself remains one continuous surface. Masonry rhythm belongs
-	# on its retaining walls; separate horizontal strips visibly float here.
+	# Rotated retaining walls follow the ramp's incline rather than projecting horizontally.
 	for side in [-1.0, 1.0]:
-		# Leave the first metre open so the approach can be entered laterally
-		# behind the last storefront before the walls close around it.
-		g.box(root, Vector3(-24 + side * 3.45, 8.6, 109), Vector3(0.6, 6.2, 15.0), "4f5b51", true)
-		for z in [100.0, 106.0, 112.0]:
-			g.box(root, Vector3(-24 + side * 3.0, 6.2 + (z - 99.0) * rise / run, z), Vector3(0.25, 1.1, 0.25), "879181")
+		var wall_pos = Vector3(-24 + side * 3.45, center.y + 0.6, center.z)
+		var wall = g.box(root, wall_pos, Vector3(0.6, 1.6, slope_length), "4f5b51")
+		wall.rotation.x = ramp.rotation.x
+		var wall_body = StaticBody3D.new()
+		wall_body.position = wall_pos
+		wall_body.rotation = ramp.rotation
+		root.add_child(wall_body)
+		var wall_col = CollisionShape3D.new()
+		var wall_shape = BoxShape3D.new()
+		wall_shape.size = Vector3(0.6, 1.6, slope_length)
+		wall_col.shape = wall_shape
+		wall_body.add_child(wall_col)
 	# This remains a compatibility handoff until Step 4 folds the upper street
 	# into the shared exterior. Its location now corresponds to real geography.
 	g.target("route_upper", "Continue uphill to the upper quarter", Vector3(-24, 12.6, 117))
@@ -163,13 +168,6 @@ static func build_return_loop(g: Node) -> void:
 	# completes the loop to street level.
 	_build_incline(g, root, "UpperEastDescent", 9.0, 99.0, 117.0, 5.5, 12.5, 5.0)
 	_build_incline(g, root, "BusinessWestDescent", -9.0, 24.0, 50.0, 0.0, 5.5, 5.4)
-	for spec in [[9.0, 108.0, 18.0, 8.7], [-9.0, 37.0, 25.0, 2.6]]:
-		var x: float = spec[0]
-		var z: float = spec[1]
-		var length: float = spec[2]
-		var y: float = spec[3]
-		for side in [-1.0, 1.0]:
-			g.box(root, Vector3(x + side * 3.15, y, z), Vector3(0.45, 2.2, length), "505b52", true)
 
 static func _build_incline(g: Node, root: Node3D, title: String, x: float, z0: float, z1: float, y0: float, y1: float, width: float) -> void:
 	var run = z1 - z0
@@ -189,6 +187,19 @@ static func _build_incline(g: Node, root: Node3D, title: String, x: float, z0: f
 	shape.size = Vector3(width, 0.42, slope_length)
 	collision.shape = shape
 	body.add_child(collision)
+	for side in [-1.0, 1.0]:
+		var rail_pos = Vector3(x + side * (width * 0.5 + 0.22), center.y + 0.6, center.z)
+		var rail = g.box(root, rail_pos, Vector3(0.45, 1.4, slope_length), "505b52")
+		rail.rotation.x = ramp.rotation.x
+		var rail_body = StaticBody3D.new()
+		rail_body.position = rail_pos
+		rail_body.rotation = ramp.rotation
+		root.add_child(rail_body)
+		var rail_col = CollisionShape3D.new()
+		var rail_shape = BoxShape3D.new()
+		rail_shape.size = Vector3(0.45, 1.4, slope_length)
+		rail_col.shape = rail_shape
+		rail_body.add_child(rail_col)
 
 static func business_return(interior_id: String) -> Variant:
 	var specs: Array = Places.BUILDINGS.business

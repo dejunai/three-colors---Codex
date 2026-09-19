@@ -10,8 +10,8 @@ TOPIC: default
   FATHER BEHAN: "Wexford's temper. Fenn's vanity. Kessler's grudges. Corliss's ambitions.\n\nI'll discuss any of it. None of it explains a hole above the bridge of a nose."
   WALTER CORWIN: "You knew all six."
   VOICE: trombone_bureaucratic_medium_v1
-  FATHER BEHAN: "I knew what men tell a priest, which is not the same as what they are.\n\nAsk your question, Officer. I've answered worse."
-  NOTEBOOK: introduction | "Father Behan discussed five of the men's characters freely and himself not at all."
+  FATHER BEHAN: "Five, Officer. The sixth was never a parishioner of mine, nor any man I could find in my registers.\n\nAs for the five, I knew what men tell a priest, which is not the same as what they are.\n\nAsk your question. I've answered worse."
+  NOTEBOOK: introduction | "Father Behan discussed five of the men's characters freely and made clear he never knew the sixth."
 
 # Plain coat defaults: parish pastoral, memory of Constance, quiet churchyard
 TOPIC: default

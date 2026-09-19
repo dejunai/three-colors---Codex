@@ -73,9 +73,22 @@ func sleep(g:Node) -> void:
 		g._paragraph("Come back tomorrow, and don't bring your badge.")
 		g._button("Get up",g._close)
 		g._focus_first()
+	elif not g.state.dialogue_state.flag("glass_broken"):
+		# The slice no longer ends at the bed. It ends at the glass (chapter_one_break.gd),
+		# reached through the steward's pantry door. Sleeping is refused, in the same
+		# placeholder register as the earlier "still work to do" gate, until then.
+		g._panel("case","There’s still work to do.","CORWIN'S ROOM")
+		g._paragraph(g._objective(),22)
+		g._button("Get up",g._close)
+		g._focus_first()
 	else:
 		g.playthrough_log.day3_bed_reached()
 		g._cards(g.TownStory.SCENES.close_day,func(): _debrief_town_feel(g))
+
+# Public entry for the slice's final beat: the two optional tester questions, then
+# the ending. Kept here so the questions and the telemetry event stay in one place.
+func debrief(g:Node) -> void:
+	_debrief_town_feel(g)
 
 # Optional, two-question tester debrief shown once, right after the Day 3
 # close_day cards and before the town is marked finished. Answers are
@@ -83,7 +96,7 @@ func sleep(g:Node) -> void:
 # session id — no free text, single-tap choices only, "Skip" always
 # available. See docs/LOG_PLAYER_ASK.md.
 func _debrief_town_feel(g:Node) -> void:
-	g._panel("case","Before Walter sleeps, one thought lingers.","A QUIET MOMENT")
+	g._panel("case","Before this closes, one thought lingers.","A QUIET MOMENT")
 	g._paragraph("Did the town feel—")
 	var choose = func(answer:String): _debrief_time_natural(g,answer)
 	g._button("Alive, and hard to fully take in",choose.bind("alive"))

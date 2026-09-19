@@ -42,7 +42,6 @@ func build(w: Node3D) -> void:
 		w.box(w,Vector3(x,1.4,0),Vector3(0.025,1.5,0.025),"94957c")
 	for x in [-27,-12,12,27]: w.lamp(Vector3(x,0,7))
 	# Return lane between the buildings, easy to see from the arrival point.
-	w.lettering("PICKMAN STREET",Vector3(0,3.3,23),30).rotation.y=PI
 	w.target("route_pickman","Return uphill to Pickman Street",Vector3(0,0,23))
 	w.routes["route_pickman"]=["town",Vector3(-26,0.1,7),PI/2]
 	# Low island silhouette; mud covers the base of the abandoned works.

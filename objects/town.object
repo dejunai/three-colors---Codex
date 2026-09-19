@@ -3,18 +3,18 @@ LOCATION: town
 OBJECT: gazette
   GATE: evidence(gazette_correction_printed)
   LABEL: "Read the morning paper"
-  THE GAZETTE: "TRAGEDY AT THE OPHION CLUB\n\nSix names. Six professions.\nA paragraph about service to the community."
+  THE GAZETTE: "TRAGEDY AT THE OPHION CLUB\n\nFive names. Five professions.\nA paragraph about service to the community."
   WALTER CORWIN: "The birches do not appear in the account.\nNeither does a source for the word accident."
   THE CORRECTION SLIP: "A later printed slip records the police count of eight and names Naomi with its identification sources. The correction supplements the morning edition; it does not replace the copies already sold."
-  NOTEBOOK: gazette_slip_note | "The paper names six club members and describes an apparent accident. It names neither the woman nor the boy. Its report supplies no independent explanation of the wounds."
+  NOTEBOOK: gazette_slip_note | "The paper names five club members and describes an apparent accident. It names neither the woman nor the boy. Its report supplies no independent explanation of the wounds."
   EVIDENCE: gazette
 
 OBJECT: gazette
   GATE: always
   LABEL: "Read the morning paper"
-  THE GAZETTE: "TRAGEDY AT THE OPHION CLUB\n\nSix names. Six professions.\nA paragraph about service to the community."
+  THE GAZETTE: "TRAGEDY AT THE OPHION CLUB\n\nFive names. Five professions.\nA paragraph about service to the community."
   WALTER CORWIN: "The birches do not appear in the account.\nNeither does a source for the word accident."
-  NOTEBOOK: gazette_note | "The paper names six club members and describes an apparent accident. It names neither the woman nor the boy. Its report supplies no independent explanation of the wounds."
+  NOTEBOOK: gazette_note | "The paper names five club members and describes an apparent accident. It names neither the woman nor the boy. Its report supplies no independent explanation of the wounds."
   EVIDENCE: gazette
 
 OBJECT: lodging
