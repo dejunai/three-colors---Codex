@@ -27,7 +27,9 @@ func run() -> void:
 	g.state = g.CaseState.new()
 	g.state.started = true
 	g.state.day = 3
-	g.state.steward_visits = 3
+	# Arrive exactly as a real Day 3 save does: two completed visits. The third
+	# visit must be earned by finishing steward_open below.
+	g.state.steward_visits = 2
 	g.state.intake_done = true
 	g.state.estate_complete = true
 	g.state.visited.append("almy")
@@ -36,13 +38,31 @@ func run() -> void:
 	g.state.flask = 3
 	g.playthrough_log.begin(g.state, g.scripted_dialogue.FILES.keys())
 
-	# --- The pantry door is offered only once the steward has named it.
+	# --- The pantry door is offered only once the player earns the lead through
+	# the steward's live Day 3 dialogue. Do not inject pantry_lead here: this is the
+	# handoff most likely to strand a real playthrough while isolated tests pass.
 	g._travel("lounge", Vector3(0, 0.1, 6), 0, false)
 	await _settle(g)
 	assert(not g.estate.points.has("pantry_door"), "The pantry door must not be offered before the steward names it")
-	assert(g._objective().contains("Ask what the members used to talk about"), "Day 3 with no pantry lead must point at the steward")
-	g.state.discover("pantry_lead")
-	g._close()
+	assert(g._objective().contains("leave your badge behind"), "Day 3 before the third visit must point back to the steward")
+	g._interact("barman")
+	_drain(g)
+	assert(g.state.steward_visits == 3 and g.page == "witness" and _button(g, "Ask what the members used to talk about") != null, "Finishing the third steward visit must open the inquiry menu")
+	assert(g._objective().contains("Ask what the members used to talk about"), "The objective must advance with the third steward visit")
+	for inquiry in [
+		["Ask what the members used to talk about", "club_talk"],
+		["Ask what Kessler used to say", "club_devotion"],
+		["Ask about the old pantry door", "pantry_lead"]
+	]:
+		var option = _button(g, inquiry[0])
+		assert(option != null, "The steward route must expose: %s" % inquiry[0])
+		option.pressed.emit()
+		assert(g.page == "dialogue")
+		_drain(g)
+		assert(g.state.evidence.has(inquiry[1]), "The completed steward topic must record %s" % inquiry[1])
+	assert(g.page == "witness" and _button(g, "Leave the conversation") != null)
+	_button(g, "Leave the conversation").pressed.emit()
+	assert(g.page == "play")
 	assert(g.estate.points.has("pantry_door"), "The door must be offered as soon as the lead is recorded, without leaving the lounge")
 	assert(g._objective().contains("old pantry door"))
 	g.player.position = Vector3(-6.4, 0.1, -3.0)
@@ -111,10 +131,10 @@ func run() -> void:
 	assert(g.presentation.color_return > 0.0, "Color must return even at zero distortion and reduced flicker")
 	assert(g.estate.board_threads[0].material_override != null and g.estate.whiskey.material_override != null)
 	frames = 0
-	while g.page != "dialogue" and frames < 900:
+	while g.page != "case" and frames < 900:
 		await process_frame
 		frames += 1
-	assert(g.page == "dialogue", "The aftermath cards must follow the silence")
+	assert(g.page == "case" and _button(g, "Skip") != null, "The glass must cut directly to the out-of-fiction tester questions")
 	assert(g.presentation.frame_edge == 0.0, "The frame must finish fully wide")
 	assert(g.state.evidence == evidence_before, "The beat must not add or remove evidence (Law 4)")
 	assert(g.breaker.build_glass_stream().data.size() > 44100, "The glass must have a real sound")
@@ -124,9 +144,7 @@ func run() -> void:
 	assert(resumed.restore(g.state.pack().duplicate(true)))
 	assert(resumed.finished and resumed.dialogue_state.flag("glass_broken") and resumed.dialogue_state.flag("tunnel_retreated"))
 
-	# --- Aftermath, the two optional questions, the ending.
-	_drain(g)
-	assert(_button(g, "Skip") != null, "The tester questions follow the glass")
+	# --- The two optional out-of-fiction questions, then the ending.
 	_button(g, "Skip").pressed.emit()
 	_button(g, "Skip").pressed.emit()
 	assert(g.page == "ending" and g.state.finished)

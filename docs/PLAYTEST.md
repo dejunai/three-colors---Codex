@@ -37,4 +37,4 @@ Afterward, inspect anonymous telemetry only as supporting evidence. A session ca
 - Open the Tab menu and check the pocket watch at multiple phases. F3 is a development-only brisk-speed toggle and must be off for pacing judgments.
 - Test enlarged text, zero distortion, reduced flicker and muted instrument voices. Captions and factual access must survive every presentation setting.
 
-Use `python tests/run_all_qa.py` for the maintained 12-suite regression set. Run focused suites such as `break_flow.gd`, `dialogue_catalog_flow.gd`, `pocket_watch_flow.gd`, `playthrough_log_flow.gd`, population checks and presentation checks when those areas change. Automated success never substitutes for the cold-play questions above.
+Use `python tests/run_all_qa.py` for the maintained 13-suite regression set, including the complete steward-to-glass ending route. Run focused suites such as `dialogue_catalog_flow.gd`, `pocket_watch_flow.gd`, `playthrough_log_flow.gd`, population checks and presentation checks when those areas change. Automated success never substitutes for the cold-play questions above.
