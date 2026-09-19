@@ -1,5 +1,7 @@
 # Questions travel — historian and teacher
 
+> **Historical verification snapshot.** The NPC/topic totals and montage references below describe this pass. Current catalog authority is `tests/dialogue_catalog_flow.gd` (71 NPCs, 449 nonempty topics on 2026-09-19), and Day 2 is enacted.
+
 10 September 2026. Implemented by Codex with Dejunai's explicit authorization to revise dialogue and connect witnesses. Builds on Dejunai's authored residents and the original Claude dialogue language. This supersedes the earlier statement that all authored dialogue was untouched: this pass intentionally edits the files listed in its diff.
 
 ## Playable thread

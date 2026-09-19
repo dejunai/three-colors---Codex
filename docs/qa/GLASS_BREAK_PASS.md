@@ -1,6 +1,8 @@
 # Glass break pass — the slice now ends at the glass
 
-Date: 2026-09-19. Branch: dev/contiguous-town-phase-2. Not committed.
+> **Current verification addendum (2026-09-19).** The two failures recorded below have since been repaired: `test_placement_audit.gd` passes with 62 living NPCs and zero coordinate collisions across all four phases, and `dialogue_catalog_flow.gd` passes with 71 NPCs and 449 nonempty topics. `speakeasy_flow.gd` also passes its bar-eavesdropping route. The original pass result remains below as provenance.
+
+Date: 2026-09-19. Originally built on branch `dev/contiguous-town-phase-2`; subsequently merged, exported, and published.
 
 ## What changed
 

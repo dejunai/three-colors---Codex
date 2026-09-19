@@ -1,5 +1,7 @@
 # Steward sleep blocker — 2026-09-11
 
+> **Historical regression note.** “Sleep entry into the montage” below describes the test at the time. The live path advances to enacted Day 2; restored steward revisits may first play authored weighted repeat chatter and then reopen the witness menu. Current coverage is in `tests/steward_sleep_flow.gd` and `tests/staging_flow.gd`.
+
 Reported by Dejunai after completing the steward conversation: sleep still directed Walter to ask about staff records.
 
 Root cause: chapter_one_dialogue.gd credited only the steward_first tag. With Almy's service_work evidence, the authored default branch is steward_first_lead, which completed and recorded testimony without incrementing steward_visits. The sleep and objective gates therefore continued to treat the steward as unvisited.

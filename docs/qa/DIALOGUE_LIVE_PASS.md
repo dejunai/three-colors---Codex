@@ -1,12 +1,14 @@
 # Live Chapter 1 dialogue — integration and provenance
 
+> **Historical verification snapshot.** The corpus and montage statements below are preserved as evidence of this pass. Current source has 71 concrete NPC files plus one template and 449 parser-reachable nonempty topics; the montage is archived/unwired and Day 2 is enacted. Use `docs/DIALOGUE_AUTHORING.md` and `tests/dialogue_catalog_flow.gd` for the live contract.
+
 9 September 2026. Codex completed the live integration requested by Dejunai,
 rebasing the tested adapter onto commit `1f1055f` after the usage-limit interruption.
 The original scripting system was developed with Claude Sonnet 5. The current
 dialogue expansion and numeric TIME convention are Dejunai's subsequent work.
 All 30 current `.dialogue` files are preserved byte-for-byte in this pass.
 
-**Current-state addendum — September 12, 2026:** This document preserves the original integration pass below. The live catalog has since grown to 41 concrete NPC definitions and 331 nonempty topics. The same interpreter is now the planned foundation for all three chapters. It supports validated `VOICE:` cues, weighted repeat defaults, free unpriced greetings, and persistent branch-local `OUTCOME` values whose completed decisions replay only their committed branch. The current behavior and authoring contract are maintained in `docs/DIALOGUE_AUTHORING.md`; the historical counts and three-minute omitted-default rule below describe the September 9 baseline only.
+**Current-state addendum — September 19, 2026:** This document preserves the original integration pass below. The live catalog has grown to 71 concrete NPC definitions plus one template and 449 nonempty parser-reachable topics. The same interpreter is the planned foundation for all three chapters. It supports validated `VOICE:` cues, weighted repeat defaults, free unpriced greetings, and persistent branch-local `OUTCOME` values whose completed decisions replay only their committed branch. The current behavior and authoring contract are maintained in `docs/DIALOGUE_AUTHORING.md`; the historical counts and three-minute omitted-default rule below describe the September 9 baseline only.
 
 ## Connected behavior
 

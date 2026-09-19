@@ -1,5 +1,7 @@
 # Pending TDD notes — small items, held for a future revision
 
+> **Historical holding pen; no longer a current issue list.** Several “still open” entries below were fixed after they were written. As of 2026-09-19: `test_placement_audit.gd` passes (62 living NPCs, zero phase collisions), `staging_flow.gd` uses authored gatehouse-boy/repeat behavior and passes through the integrated suite, `speakeasy_flow.gd` passes, the live catalog is 71 NPCs/449 nonempty topics, the pocket watch is built, and telemetry dual-writes to D1 and R2. Use `docs/DOC_SYNC_INCONSISTENCIES.md` for current Bible/TDD drift and retain the remainder of this file only as provenance.
+
 A running holding pen for small todos and observations that don't warrant a TDD version bump on their own. Add freely; fold into the TDD (and clear from here) only when there's a real batch of substance to write up — not one item at a time.
 
 ## Open

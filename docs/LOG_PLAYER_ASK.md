@@ -1,13 +1,26 @@
 # THREE COLORS OF MADNESS — Anonymous playthrough telemetry — build brief for Codex
 
 ## CONTEXT
-This is a Godot 4.7 project (GL Compatibility renderer), Web export (HTML5) as the tester-distribution build — no installer, by design, which is also exactly why this is needed: there is currently no way to see what an external tester actually did during a session. The TDD (`docs/design/7) Three Colors of Madness - TDD v21.md`, Part Four, "Playthrough telemetry") has the full design discussion and reasoning behind every choice below; where this brief is thinner than that section, the TDD is the fuller record, not a contradiction.
+This is a Godot 4.7 project (GL Compatibility renderer), with Web export as the tester-distribution build. The current TDD is `docs/design/07) Three Colors of Madness — TDD v43.md`; this build brief preserves the original telemetry request while the current-implementation section below records what actually shipped.
 
 **Hard constraint, non-negotiable:** no personal data of any kind. No player name, no account, no device fingerprint, no browser fingerprinting, no IP address collected *in the log payload*, no analytics SDK, no third-party tracking script. The only identifier is a random per-playthrough session id (a v4 UUID or equivalent, generated client-side at New Game). If any implementation choice below would require collecting more than that, stop and flag it rather than proceeding.
 
+## CURRENT IMPLEMENTATION — 2026-09-19
+
+This file began as a build brief. The implementation now differs from its historical task text in these authoritative ways:
+
+- The deployed Worker **dual-writes**: each validated event is inserted into D1 (`three-colors-db`) and each accepted request batch is archived to R2 (`three-colors-logs`). D1 is the queryable store; R2 is the raw verification archive. Deterministic event hashes make D1 retries idempotent.
+- The live allowlist is `session_start`, `first_objective`, `district_transition`, `phase_change`, `conversation`, `day3_bed_reached`, `debrief`, and `session_end`. A `conversation` is logged only after a complete authored topic segment and carries `npc_id`, `topic_id`, `coat_state`, `world`, `day`, and `phase`.
+- The pocket watch is built in the Tab/personal-effects menu, but `watch_checked` is **not** implemented in `playthrough_log.gd` or accepted by the Worker.
+- Durations are emitted as rounded integer seconds/minutes. The Worker rejects negative or non-numeric values.
+- The debrief now follows the glass-shattering ending beat. `day3_bed_reached` retains its historical event name but fires when that final break begins.
+- The endpoint remains `https://three-colors-worker.dejunai.workers.dev`; its source of truth is `cloudflare/three-colors-worker/src/index.js`, and the database schema is `cloudflare/three-colors-worker/schema.sql` plus its checked-in upgrades.
+
+Everything below preserves the original request and its evolution. Where it conflicts with this section, this section and the live source win.
+
 ## STATUS — this brief is now a historical record, not an open ask
-Everything below shipped. Two things landed differently than originally specified, both accepted by the author and recorded in the TDD (Part Six, item 15):
-- **Hosting is Cloudflare Worker + R2, not Worker + D1** (TASK 3, ACCEPTANCE below). R2 was what actually got deployed at `https://three-colors-worker.dejunai.workers.dev`; it satisfies the same privacy posture (no request metadata persisted, allowlisted fields only) but is not SQL-queryable — aggregate metrics need a small offline script reading the bucket's JSON objects, not a live `SELECT`. Left as-is; a D1 migration is optional future work, not scheduled.
+Everything below shipped and was subsequently extended. Two things landed differently than the first draft:
+- **Hosting is Cloudflare Worker + D1 + R2.** R2 was deployed first; D1 was added later as the queryable event store while R2 remained the raw batch archive.
 - **The two subjective questions, originally OUT OF SCOPE for this task (see below), are now built** as a `debrief` event — see TASK 4, added after this brief's original scope was delivered. They are not free text; they're single-tap choices, matching the rest of this codebase's UI, which has never used a text-entry widget.
 
 ## GOAL
@@ -27,7 +40,7 @@ Events to log, mapped to the author's actual questions (see TDD Part Four for th
 2. **`first_objective`** — fired once, the first time `state.discover()` or `state.record()` is called in a session (both already exist as effect hooks — see `chapter_one.gd`'s `_interact()` callback and `_estate_observation()`). If "first meaningful objective" should mean something more specific than "first fact recorded," flag it back to the author rather than guessing — this definition is a reasonable default, not a TDD-mandated one.
 3. **`district_transition`** — fired on every `_travel()` call that changes `state.world`. Fields: `from_world`, `to_world`, `real_seconds_elapsed` (wall-clock since the previous transition), `game_minutes_elapsed` (`state.clock_minutes` delta since the previous transition).
 4. **`phase_change`** — fired whenever `DayClock.phase(state.clock_minutes)` changes value. Fields: `day`, `new_phase`, `npcs_spoken_to_this_phase` (count of distinct entries added to `state.visited` since the previous phase change — reset the counter on each phase change, don't reset `state.visited` itself).
-5. **`watch_checked`** — fired when the player uses the Tab-menu pocket watch (TDD Part Six, Stage 5 — not built yet as of this writing). Fields: `day`, `phase`, `game_minutes`. **This event is a no-op until the pocket watch exists; add the log call when that feature is built, not before.**
+5. **`watch_checked`** — proposed for the Tab-menu pocket watch. The watch now exists, but this event remains unimplemented and is not in the Worker allowlist.
 6. **`day3_bed_reached`** — fired when `sleep()` (or wherever Day 3's "turn in for the night" resolves — see `target("sleep", ...)` in `town.gd`'s `_corwin_room()`) succeeds on Day 3 specifically. Fields: `real_seconds_since_day3_start` (wall-clock from the `phase_change` event that first set `day == 3`).
 7. **`session_end`** — fired on quit/tab-close if catchable (`NOTIFICATION_WM_CLOSE_REQUEST` or equivalent), and also at any existing "the end" screen. Fields: `total_real_seconds`, `final_day`, `ended_via` (`"closed"` vs `"completed"` vs whatever states are distinguishable).
 
@@ -38,7 +51,7 @@ Events to log, mapped to the author's actual questions (see TDD Part Four for th
 ## TASK 3 — Upload
 - Transport is decided: automatic upload, not a manual "download and send" flow.
 - Fire an `HTTPRequest` POST (JSON body) at each event above, or batched every few events / on each `district_transition` — whichever is simpler to implement reliably; either is fine as long as a closed tab doesn't lose the whole session's data. If a request fails (offline, endpoint unreachable), don't block or retry aggressively — drop it or retry once on the next event, but never stall gameplay on network state.
-- **Endpoint hosting, as originally decided here: Cloudflare Worker + D1**, for a specific reason beyond "no server to patch": D1 is a real SQL database (SQLite-based), and every metric this feature exists to answer is a plain `SELECT AVG(...)`/`COUNT(...)` query once events land in a table. **As actually deployed: Cloudflare Worker + R2** (`cloudflare/three-colors-worker/`, bucket `three-colors-logs`) — see STATUS above. Each accepted batch is written as one JSON object per request (`events/YYYY-MM-DD/<uuid>.json`); querying means reading those objects with a small script, not `SELECT`. Accepted as-is; not being sent back for a D1 rework.
+- **Endpoint hosting: Cloudflare Worker + D1 + R2.** D1 stores allowlisted event rows for SQL aggregation; R2 stores each accepted batch as `events/YYYY-MM-DD/<uuid>.json` for raw verification. Both writes must succeed before the Worker returns HTTP 204.
   - Workers request logging is not persisted by default (unlike a conventional web server's access log), which narrows the IP-at-the-infrastructure-level exposure named in the constraint above without extra configuration — no optional logging/analytics add-on is enabled, and the deployed `src/index.js` never copies request headers, IP, or user-agent into R2.
 - Whichever is chosen, confirm CORS is configured correctly for a Web-exported Godot build calling it from an arbitrary hosting origin (itch.io, a personal domain, wherever the Web build ends up served from) before treating this as done.
 - Store the endpoint URL as an easily swappable value (an exported variable or a config constant), not hardcoded in multiple places — the author may want to point this at a different account later without a code change.
@@ -63,10 +76,10 @@ Per this project's existing standard, don't just self-report — check source an
 - Confirm closing the tab mid-session does not lose previously-flushed events (only whatever hadn't yet been sent should be lost).
 - Confirm this adds no player-visible UI, no toast, no interruption — it should be entirely invisible during play.
 - Confirm the Worker/R2 endpoint and its CORS configuration actually work from a real Web export, not just localhost.
-- Querying the logged data means reading the JSON objects out of the `three-colors-logs` R2 bucket (Cloudflare dashboard, or `wrangler r2 object get`) — there is no D1 console for this deployment. An offline aggregation script is future work, not required to call this done.
+- Query aggregate data through D1 (`wrangler d1 execute three-colors-db --remote ...`) and use R2 objects for raw-batch verification.
 - Confirm the `debrief` panel appears exactly once per completed playthrough, offers "Skip" on both questions, and never blocks reaching the town-complete screen even if both are skipped.
 
 ## OUT OF SCOPE (do not touch)
 - Any live "you just missed someone" detection or messaging — this is answered by offline analysis of `district_transition` events against `dialogue_catalog.gd`'s existing `slot()`, not new gameplay logic.
-- The Tab-menu pocket watch itself (TDD Part Six, Stage 5) — build `watch_checked`'s log call when that feature lands, don't build the watch as part of this task.
+- The Tab-menu pocket watch itself has since shipped. Only its proposed `watch_checked` telemetry event remains outside the implemented event schema.
 - Anything resembling analytics beyond the fields listed above (no session replay, no heatmaps, no third-party analytics SDK of any kind).
