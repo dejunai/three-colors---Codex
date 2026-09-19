@@ -4,7 +4,7 @@ Native third-person 3D opening prototype aligned with the Design Bible and curre
 
 ## Current staging pass
 
-The steward is inside the smoking lounge, reached through the estate's service entrance after speaking to Mrs. Almy. Speak to him once, return home and sleep for the provisional second-day montage, then return on day three in the plain wool coat. Sleep is temporarily blocked until the first conversation (and the existing intake/identification beats) are complete. Repeated entries do not advance a visit. The groundskeeper appears when leaving the lounge. On estate returns, the bodies, Odell and the coroner's assistant are gone and the gardener is beside the approach drive, below the garden hedge; his plain-coat testimony remains optional.
+The steward is inside the smoking lounge, reached through the estate's service entrance after speaking to Mrs. Almy. Speak to him once, return home and sleep to open day two, which now plays live (no montage — the old intertitle sequence is archived code, retained only for legacy-save resume and reference captures), then return on day three in the plain wool coat. Sleep is temporarily blocked until the first conversation (and the existing intake/identification beats) are complete. Repeated entries do not advance a visit. The groundskeeper appears when leaving the lounge. On estate returns, the bodies, Odell and the coroner's assistant are gone and the gardener is beside the approach drive, below the garden hedge; his plain-coat testimony remains optional.
 
 “Read the notebook” in personal effects or the case file opens the new read-only reference. Linking remains at the physical board. The desk's end-of-day action now follows the same staging milestones as the bed. The existing service-passage continuation follows the third encounter and return home.
 
@@ -104,9 +104,9 @@ Live renderer captures use `-- --capture=` followed by a mode name: `world`, `ti
 - `main.gd`: shared player movement and camera rig.
 - `scripts/chapters/chapter_one.gd`: Chapter One progression and interaction orchestration.
 - `scripts/chapters/chapter_one_archive.gd`: chapter-specific record and inventory panels.
-- `scripts/chapters/chapter_one_staging.gd`: day/visit progression, sleep gate, and montage intertitles.
+- `scripts/chapters/chapter_one_staging.gd`: day/visit progression and sleep gate; also retains the legacy montage intertitle code for old-save resume and reference captures.
+- `scripts/chapters/montage_still.gd`: the legacy procedural storyboard intertitles (archived, not called by live progression).
 - `scripts/chapters/chapter_one_notebook.gd`: read-only detached notebook.
-- `scripts/chapters/montage_still.gd`: procedural storyboard intertitles.
 - `scripts/chapters/chapter_one_dialogue.gd`: connects the dialogue grammar to live NPC menus, branches, and saves.
 - `scripts/chapters/dialogue_catalog.gd`: scheduled resident registry and placement.
 - `scripts/chapters/waterfront_district.gd`: waterfront hub geometry and placement.
