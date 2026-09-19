@@ -7,7 +7,7 @@
 # housemaid's, and her statement is filed late in his own sequence of witnesses.
 NPC: sarah_munn
 LOCATION: waterfront
-SCHEDULE: morning=waterfront_chandlery, midday=waterfront_chandlery, evening=waterfront_chandlery, night=closed
+SCHEDULE: morning=chandlery_upstairs, midday=chandlery_upstairs, evening=chandlery_upstairs, night=closed
 
 TOPIC: default
   GATE: NOT topic_done(sarah_munn, default) AND coat = plain
@@ -65,7 +65,7 @@ TOPIC: sarah_the_document
   GATE: evidence(naomi) AND NOT topic_done(sarah_munn, sarah_the_document)
   TAG: sarah_document
   LABEL: "Ask why she left the position three weeks ago"
-  TIME: 8
+  TIME: 6
   WALTER CORWIN: "You worked the estate kitchen alongside the woman who died. Why did you leave, three weeks before it happened?"
   VOICE: violin_cautious_long_v1
   SARAH MUNN: "Because she asked me to hold something for her, and I was afraid to be caught holding it."
@@ -83,7 +83,7 @@ TOPIC: sarah_afraid_of_the_wrong_thing
   GATE: evidence(sarah_wage_claim_lead) AND NOT topic_done(sarah_munn, sarah_afraid_of_the_wrong_thing)
   TAG: sarah_afraid
   LABEL: "Tell her it isn't her fault"
-  TIME: 6
+  TIME: 4
   WALTER CORWIN: "You didn't kill her."
   VOICE: violin_pleading_medium_v2
   SARAH MUNN: "I know that.\n\nI'm telling you I was afraid of the wrong thing."
@@ -96,7 +96,7 @@ TOPIC: sarah_press_or_go
   GATE: evidence(sarah_wage_claim_lead) AND NOT topic_done(sarah_munn, sarah_press_or_go)
   TAG: sarah_sequence
   LABEL: "Decide how to leave things with her"
-  TIME: 5
+  TIME: 3
   FORK:
     CHOICE: "Stay and ask about the dead woman's habits, her boy, anyone she named."
       VOICE: violin_weary_medium_v2

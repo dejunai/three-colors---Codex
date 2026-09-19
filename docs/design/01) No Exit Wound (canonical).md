@@ -250,9 +250,9 @@ Walter stumbled backward as the room acquired width it had never once possessed 
 
 Color came in unevenly, which was somehow worse than if it had arrived all at once: a red thread stretched taut between two cards, the amber of whiskey long dried inside an empty glass, and then, unbearably, the wet red of the rose garden itself, fully present in memory for the first time and staying that way.
 
-Sound came in beneath the color, and the sound was her cough, no longer occasional, keeping time now with something patient and enormous, and then, at last, her voice — not emerging from any one point in the room but occupying it the way temperature occupies a room, everywhere at once and nowhere in particular.
-
 Somewhere behind him the glass he had not poured himself — the one still holding the last amber inch of whiskey he had never finished — cracked once, cleanly, and came apart across the desk. It was, he understood with a clarity that carried nothing merciful in it, the first sound in weeks that had reached him whole rather than overheard, unfiltered, arriving to him directly rather than through whatever had been standing between him and the world since the night in the birches. He had time to wonder, distantly and without alarm, whether sound had always worked this way and he had simply never before stood close enough to hear it properly, before the thought went under everything that came next.
+
+Sound came in behind the glass's own report, and the sound was her cough, no longer occasional, keeping time now with something patient and enormous, and then, at last, her voice — not emerging from any one point in the room but occupying it the way temperature occupies a room, everywhere at once and nowhere in particular.
 
 You always did need everything put in front of you, it said, in exactly her old measured tenderness, the tenderness she'd always spent on her cruelest sentences. You were never brave enough to choose.
 

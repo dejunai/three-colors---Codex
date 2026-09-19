@@ -37,6 +37,7 @@ const SLOTS = {
 	"quay":["waterfront",Vector3(-23,0,2)], "quay_repair":["waterfront",Vector3(20,0,-0.5)],
 	"quay_office":["waterfront",Vector3(-7,0,10)],
 	"waterfront_chandlery":["waterfront",Vector3(-22,0,10)],
+	"chandlery_upstairs":["waterfront",Vector3(-20,0,12)],
 	"waterfront_net_loft":["waterfront",Vector3(8,0,10)],
 	"waterfront_fish_stores":["waterfront",Vector3(23,0,10)],
 	"waterfront_moorings":["waterfront",Vector3(3,0,-7)],
