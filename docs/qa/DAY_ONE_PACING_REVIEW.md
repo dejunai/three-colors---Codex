@@ -1,5 +1,7 @@
 # Day One: earn the next question
 
+> **Historical design review.** Recommendations that preserve the Day-2 montage are superseded: Day 2 is enacted. Treat the observations as playtest provenance, then verify every proposed fix against the current dialogue corpus and `docs/PLAYTEST.md` before scheduling work.
+
 9 September 2026. Codex review requested by Dejunai following the live dialogue integration and arrival polish. **Assessment and proposed changes only; no gameplay or authored dialogue changed in this pass.**
 
 **Update, same day (GitHub Copilot):** All four findings implemented and regression-tested

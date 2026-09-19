@@ -1,5 +1,7 @@
 # Town expansion and body timeline — 8 September 2026
 
+> **Historical verification snapshot.** The separate neighborhood-hub and montage wording below predates the contiguous exterior and enacted Day 2. Interiors still load separately, but Pickman Street, business, upper, lower and waterfront exteriors are now one walkable town. Current geometry is documented in `CONTIGUOUS_TOWN_PHASE_ONE.md` and `CONTIGUOUS_TOWN_PHASE_TWO.md`.
+
 Implemented in the game project, based on 98ab692. Changes remain uncommitted. The local Web release has been refreshed; nothing was pushed or published by this task.
 
 ## Body timeline

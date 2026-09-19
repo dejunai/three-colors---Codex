@@ -1,5 +1,7 @@
 # Three Colors of Madness — session handoff
 
+> **Archived handoff.** This records the repository at the named date. Later work archived the montage, enacted Days 2 and 3, added object and portal grammars, made the town exterior contiguous, added telemetry/pocket watch, and extended the slice through the glass break. Do not use its “current” statements as present-tense implementation guidance.
+
 Prepared 9 September 2026 after completing the Chapter One dialogue integration.
 
 ## Start here
@@ -7,7 +9,7 @@ Prepared 9 September 2026 after completing the Chapter One dialogue integration.
 Actual game repository: `C:\Users\Dejunai\projects\three colors — Codex`.
 The current workspace at `D:\Documents\ChatGPT\Three Colors` contains staging and test helpers, not the authoritative game checkout.
 
-Read `docs/qa/DIALOGUE_LIVE_PASS.md` (integration history + Sept 12 current-state addendum) and `docs/DIALOGUE_AUTHORING.md` (canonical syntax). For current technical scope and counts, use `docs/design/7) Three Colors of Madness - TDD v21.md` and the Sept 12 addenda in `DIALOGUE_LANG_PASS.md` / `ARCHITECTURE.md` (35 concrete NPCs, 217 nonempty topics, 455 voiced lines). There is no `AGENTS.md` in this repository. The design bible wins on story conflicts.
+For the state captured by this handoff, read `docs/qa/DIALOGUE_LIVE_PASS.md`. For the present build, use `docs/DIALOGUE_AUTHORING.md`, `docs/ARCHITECTURE.md`, and `tests/dialogue_catalog_flow.gd`; the old v21/count sentence formerly here is intentionally retired. There is no `AGENTS.md` in this repository. The design bible wins on story conflicts.
 
 ## Completed, not pending
 

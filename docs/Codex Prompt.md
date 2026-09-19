@@ -1,5 +1,7 @@
 # THREE COLORS OF MADNESS — Chapter One ("No Exit Wound") Restaging + day-cycle pass — build brief for Codex
 
+> **Archived build brief.** This records the September 2026 staging request, not the current implementation. The montage is archived and unwired; Days 2 and 3 are enacted, and the slice continues through the service passage to the glass-shattering break. Use `README.md`, `docs/ARCHITECTURE.md`, and the authoring references for current behavior.
+
 ## CONTEXT
 This is a Godot 4.7 project (GL Compatibility renderer). The Design Bible and TDD are authoritative — where this brief conflicts with either, stop and flag it rather than guessing. Design Law 4 governs everything below: "the presentation can become unreliable; the underlying game state cannot become unfair." Players may doubt the narrator; they may never doubt the controls.
 

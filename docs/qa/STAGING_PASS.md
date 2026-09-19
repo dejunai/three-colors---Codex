@@ -1,5 +1,7 @@
 # Chapter One restaging — implementation and QA
 
+> **Historical verification snapshot (2026-09-08).** Its montage flow and schema-5 statements describe that pass, not the live build. The montage is now archived/unwired, Day 2 is enacted, `CaseState.VERSION` is 11, the desk notebook is reflective only, the bed advances days, and the slice ends after the service-passage/glass break. Current regression behavior is in `tests/staging_flow.gd`; see `MONTAGE_ARCHIVE_PASS.md` and `GLASS_BREAK_PASS.md`.
+
 September 8, 2026. Implemented in the native Godot project. Design Bible v15 wins over the TDD; the TDD itself has not been edited. Existing unrelated working-tree changes were preserved. This pass does not rebuild the Web export.
 
 ## Play the sequence

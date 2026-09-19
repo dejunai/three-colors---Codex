@@ -1,5 +1,7 @@
 # Shared clock and daylight — 9 September 2026
 
+> **Historical verification snapshot.** The montage references below predate enacted Day 2. Current dialogue timing uses explicit numeric `TIME:` when authored, otherwise zero minutes for default greetings and 3 minutes for substantive topics; portal timing is separately authored/defaulted. The live pocket watch is covered by `tests/pocket_watch_flow.gd`.
+
 Implemented the agreed clock/daylight pass. NPC availability, door access, the speakeasy, and schedules remain unchanged. The Day 2 montage remains until there is sufficient enacted investigation content.
 
 ## Rules

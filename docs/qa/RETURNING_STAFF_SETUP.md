@@ -1,5 +1,7 @@
 # Returning precinct and morgue NPCs
 
+> **Historical setup note.** Day 2 is now enacted rather than represented by a montage. The scheduled `odell_precinct` and `coroners_assistant_morgue` actors are live under the gates described below; use the dialogue catalog and current `.dialogue` files for exact availability.
+
 Prepared by Codex from Claude's npc_precinct_morgue_skeletons.json, supplied by Dejunai. The repaired JSON in `docs/` remains a reference, not a live runtime registry. Authored live files now exist at `dialogue/odell_precinct.dialogue` and `dialogue/coroners_assistant_morgue.dialogue` (catalog + TDD treat returning staff as implemented). Prefer the `.dialogue` SCHEDULE/GATE lines over this note when they disagree.
 
 ## File headers to use

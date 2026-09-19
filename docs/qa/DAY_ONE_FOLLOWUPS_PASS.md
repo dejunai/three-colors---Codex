@@ -1,5 +1,7 @@
 # Day One follow-ups — a correction with a source
 
+> **Historical verification snapshot.** References below to keeping the montage or unchanged montage gates predate enacted Day 2. The dialogue/evidence relationships remain useful provenance; current progression lives in `chapter_one_staging.gd` and current content gates in the `.dialogue` files.
+
 10 September 2026. Codex development pass authorized by Dejunai while three cold testers use the published build. Work is isolated on `dev/day-one-followups`, based on `fc7336a`. **Do not export Web, merge to main, or push this pass during that playtest without a new release instruction.**
 
 ## Lead audit and selected work

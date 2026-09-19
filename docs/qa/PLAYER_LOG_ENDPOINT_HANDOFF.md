@@ -2,15 +2,15 @@
 
 The game-side logger is enabled at `https://three-colors-worker.dejunai.workers.dev` through the single `three_colors/telemetry_endpoint` setting in `project.godot`.
 
-The selected receiver is the `three-colors-worker` Cloudflare Worker backed by the `three-colors-logs` R2 bucket, bound to the Worker as `BUCKET_ONE`. Its source and Wrangler configuration live in `cloudflare/three-colors-worker/`.
+The selected receiver is the `three-colors-worker` Cloudflare Worker. It dual-writes validated individual events to the `three-colors-db` D1 database (binding `DB`) and raw request batches to the `three-colors-logs` R2 bucket (binding `BUCKET_ONE`). Its source, schema, upgrade SQL and Wrangler configuration live in `cloudflare/three-colors-worker/`.
 
-Deployment verified on 2026-09-13 as Cloudflare Worker version `87e1bd4e-9646-468a-b3be-1397534feb4b`. Live GitHub Pages and itch.io preflights, a synthetic `session_start`, and the later `debrief` event all returned HTTP 204. Because the Worker awaits `BUCKET_ONE.put()` before returning 204, each successful POST also verifies the R2 write path.
+The original R2 deployment was verified on 2026-09-13 as Cloudflare Worker version `87e1bd4e-9646-468a-b3be-1397534feb4b`. D1 dual-write was added afterward; do not treat that original version id as the current deployment id. Live GitHub Pages and itch.io preflights and accepted telemetry returned HTTP 204. The current Worker awaits both `DB.batch()` and `BUCKET_ONE.put()` before returning 204.
 
 The Worker must accept `POST` with a JSON body shaped as `{ "events": [event, ...] }`. Every event has only `session_id`, `event`, and a UTC client timestamp plus the event fields defined in `docs/LOG_PLAYER_ASK.md`. The receiver should reject unknown keys, avoid copying request headers or IP addresses into storage, and return a 2xx response only after storage succeeds.
 
 CORS must allow `POST` and `Content-Type` from the GitHub Pages and itch.io origins used for testing. The implementation should answer browser preflight `OPTIONS` requests. Test both deployed origins before enabling the endpoint in a published build.
 
-The author can inspect or download stored JSON batches through the Cloudflare R2 dashboard. The Worker deliberately has no public read route.
+The author can query aggregate events in D1 and inspect or download raw JSON batches through R2. The Worker deliberately has no public read route.
 
 Game-side behavior:
 
