@@ -38,7 +38,7 @@ TOPIC: day_two_table
   GATE: day >= 2 AND NOT topic_done(coroners_assistant_morgue, day_two_table)
   TAG: assistant_day_two
   LABEL: "Return to the morgue"
-  TIME: 5
+  TIME: 7
   [Six of the eight tables now have county tags on their cards. Two do not.]
   VOICE: violin_bureaucratic_medium_v2
   THE CORONER'S ASSISTANT: "The captain's office sent a memorandum this morning.\nI'm to finalize the six identified decedents and hold the remaining two for registrar disposition."
@@ -58,7 +58,7 @@ TOPIC: day_three_table
   GATE: day >= 3 AND evidence(no_water_lungs) AND NOT topic_done(coroners_assistant_morgue, day_three_table)
   TAG: assistant_day_three
   LABEL: "Ask what the registrar's disposition found"
-  TIME: 4
+  TIME: 6
   [The two untagged tables are empty. The sheets are folded on the chairs beside them.]
   WALTER CORWIN: "The two from beyond the birches."
   VOICE: violin_neutral_short_v2

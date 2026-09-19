@@ -61,6 +61,7 @@ static func build_pickman_edge(g: Node) -> void:
 	ramp_shape.size = Vector3(7.2, 0.42, run)
 	ramp_collision.shape = ramp_shape
 	ramp_body.add_child(ramp_collision)
+	_build_bridge_activator(g, root, "BusinessApproach", ramp.position, ramp.rotation, Vector3(7.2, 3.5, 3.0))
 	# Keep the walking face uninterrupted. Earlier horizontal course strips were
 	# positioned above the tilted plane and read as floating step barriers.
 
@@ -129,6 +130,7 @@ static func build_upper_approach(g: Node) -> void:
 	shape.size = Vector3(6.0, 0.42, slope_length)
 	collision.shape = shape
 	body.add_child(collision)
+	_build_bridge_activator(g, root, "UpperQuarterApproach", ramp.position, ramp.rotation, Vector3(6.0, 3.5, 3.0))
 	# Rotated retaining walls follow the ramp's incline rather than projecting horizontally.
 	for side in [-1.0, 1.0]:
 		var wall_pos = Vector3(-24 + side * 3.45, center.y + 0.6, center.z)
@@ -187,6 +189,7 @@ static func _build_incline(g: Node, root: Node3D, title: String, x: float, z0: f
 	shape.size = Vector3(width, 0.42, slope_length)
 	collision.shape = shape
 	body.add_child(collision)
+	_build_bridge_activator(g, root, title, ramp.position, ramp.rotation, Vector3(width, 3.5, 3.0))
 	for side in [-1.0, 1.0]:
 		var rail_pos = Vector3(x + side * (width * 0.5 + 0.22), center.y + 0.6, center.z)
 		var rail = g.box(root, rail_pos, Vector3(0.45, 1.4, slope_length), "505b52")
@@ -200,6 +203,27 @@ static func _build_incline(g: Node, root: Node3D, title: String, x: float, z0: f
 		rail_shape.size = Vector3(0.45, 1.4, slope_length)
 		rail_col.shape = rail_shape
 		rail_body.add_child(rail_col)
+
+static func _build_bridge_activator(g: Node, root: Node3D, bridge_id: String, center: Vector3, rot: Vector3, size: Vector3) -> void:
+	var trigger = Area3D.new()
+	trigger.name = bridge_id + "Activator"
+	trigger.position = center
+	trigger.rotation = rot
+	trigger.collision_layer = 0
+	trigger.collision_mask = 2
+	trigger.monitorable = false
+	root.add_child(trigger)
+	var col = CollisionShape3D.new()
+	var shape = BoxShape3D.new()
+	shape.size = size
+	col.shape = shape
+	col.position.y = 1.5
+	trigger.add_child(col)
+	trigger.body_entered.connect(func(body: Node3D):
+		var chapter = g if g.has_method("on_bridge_crossed") else g.get_parent()
+		if chapter != null and chapter.has_method("on_bridge_crossed"):
+			chapter.on_bridge_crossed(bridge_id)
+	)
 
 static func business_return(interior_id: String) -> Variant:
 	var specs: Array = Places.BUILDINGS.business

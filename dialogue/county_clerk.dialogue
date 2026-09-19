@@ -74,7 +74,7 @@ TOPIC: wage_claim_inquiry
   GATE: evidence(lay_lead) AND evidence(new_bedford_letters) AND evidence(postal_bureaucracy_refusal)
   TAG: clerk_wage_claim
   LABEL: "Attempt to file Naomi Freeman's wage claim"
-  TIME: 10
+  TIME: 12
   WALTER CORWIN: "I want to record an unpaid whaler's lay. Naomi Freeman, on behalf of an ancestor aboard the Ophion."
   VOICE: trombone_neutral_medium_v2
   MR. PENCE: "You'd need a living claimant. A next of kin with legal standing."
@@ -111,7 +111,7 @@ TOPIC: ophion_settlement
   GATE: evidence(behan_name) OR evidence(ophion_myth_classical)
   TAG: clerk_ophion_records
   LABEL: "Request the 1820s Ophion insurance and probate filings"
-  TIME: 5
+  TIME: 7
   VOICE: trombone_neutral_medium_v1
   MR. PENCE: "Volume 14, Maritime Disbursements and Marine Underwriting, 1823–1828."
   [He pulls a heavy sheepskin-bound folio with flaking spine.]
@@ -132,7 +132,7 @@ TOPIC: sixth_member_deed
   #evidence(sixth_member) AND NOT topic_done(county_clerk, sixth_member_deed)
   TAG: clerk_sixth_man
   LABEL: "Check deeds and tax rolls for the Ophion Club property"
-  TIME: 5
+  TIME: 7
   VOICE: trombone_neutral_medium_v1
   MR. PENCE: "The estate deed is held in trust. Six shares of tenancy in common."
   WALTER CORWIN: "Name the shareholders."
@@ -152,7 +152,7 @@ TOPIC: crew_omission
   GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(county_clerk, crew_omission)
   TAG: county_clerk_crew_omission
   LABEL: "Ask why no county record names the drowned crew"
-  TIME: 3
+  TIME: 5
   WALTER CORWIN: "The county keeps records of everything else. Why is there no record of the crew who drowned in 1823?"
   VOICE: trombone_bureaucratic_medium_v1
   MR. PENCE: "Crew names belong in a shipping list, Officer. This is a county office."

@@ -40,7 +40,7 @@ TOPIC: day_two_check
   GATE: day >= 2 AND day <= 2 AND NOT topic_done(odell_precinct, day_two_check)
   TAG: odell_day_two
   LABEL: "Report progress to the captain"
-  TIME: 4
+  TIME: 6
   VOICE: trombone_neutral_short_v1
   CAPTAIN ODELL: "You've been busy."
   WALTER CORWIN: "There's more to the estate than the preliminary report reflects."
@@ -59,7 +59,7 @@ TOPIC: day_two_pressure
   GATE: day >= 2 AND (evidence(insurance_fraud_record) OR evidence(bulk_opium_spirits)) AND NOT topic_done(odell_precinct, day_two_pressure)
   TAG: odell_day_two_pressure
   LABEL: "Raise the insurance records with Odell"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "The 1823 insurance settlement. Eighty-four thousand dollars to the same families who own the estate."
   [Odell sets down the pen. The scratch of it stopping is louder than it should be.]
   VOICE: trombone_questioning_short_v1
@@ -76,7 +76,7 @@ TOPIC: day_three_final
   GATE: day >= 3 AND NOT topic_done(odell_precinct, day_three_final)
   TAG: odell_day_three
   LABEL: "Face Odell on Day 3"
-  TIME: 6
+  TIME: 8
   [The precinct is quieter than it should be for mid-morning.]
   VOICE: trombone_neutral_short_v2
   CAPTAIN ODELL: "Sit down, Walter."

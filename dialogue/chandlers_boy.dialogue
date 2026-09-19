@@ -5,7 +5,7 @@ SCHEDULE: morning=waterfront_chandlery, midday=waterfront_chandlery, evening=clo
 TOPIC: default
   GATE: NOT topic_done(chandlers_boy, default)
   TAG: chandlers_boy_default
-  TIME: 2
+  TIME: 4
   VOICE: violin_neutral_medium_v2
   CHANDLER'S BOY: "We've got sperm oil, colza, and tallow.\nMr. Hitch says the colza's best for reading lamps but everyone buys the tallow anyway."
 
@@ -45,7 +45,7 @@ TOPIC: lamp_question
   GATE: visit_count(chandlers_boy) >= 2 AND NOT topic_done(chandlers_boy, lamp_question)
   TAG: chandlers_boy_lamp_question
   LABEL: "Ask about the chandlery's customers"
-  TIME: 3
+  TIME: 5
   WALTER CORWIN: "Who keeps the largest order standing?"
   VOICE: violin_weary_long_v1
   CHANDLER'S BOY: "The estate takes six crates of sperm oil a month.\nMr. Hitch says it's for the reading room but I've seen the invoices.\nThat's enough for every room in the house to burn all night."
@@ -59,7 +59,7 @@ TOPIC: island_delivery
   GATE: coat = plain AND evidence(naomi_quay_inquiry) AND NOT topic_done(chandlers_boy, island_delivery)
   TAG: chandlers_boy_island_delivery
   LABEL: "Ask if oil was ever delivered to the island station"
-  TIME: 6
+  TIME: 8
   WALTER CORWIN: "Has anyone ever ordered a delivery out to the old whaling station? On the island."
   [A long pause. He straightens the lamp wicks on the counter without looking up.]
   VOICE: violin_cautious_long_v1
@@ -82,7 +82,7 @@ TOPIC: the_woman_with_the_notebook
   GATE: evidence(naomi) AND NOT evidence(naomi_quay_inquiry)
   TAG: chandlers_boy_woman_notebook
   LABEL: "Ask if he saw a woman asking about the tides"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "A woman asking questions about tidal drift, the mud calendar. Did you see her near the chandlery?"
   VOICE: violin_neutral_medium_v1
   CHANDLER'S BOY: "She stopped at our door first, before she went down to the dockers."
@@ -96,7 +96,7 @@ TOPIC: cash_buyer_details
   GATE: evidence(chandlery_island_delivery) AND NOT topic_done(chandlers_boy, cash_buyer_details)
   TAG: chandlers_boy_buyer
   LABEL: "Ask what else he noticed about the cash buyer"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "The tall man in the good coat. Did you smell anything on him?"
   VOICE: violin_neutral_medium_v2
   CHANDLER'S BOY: "Cedar shavings. Very sharp, like a chest that's been locked up in an attic for fifty years.\nAnd camphor."

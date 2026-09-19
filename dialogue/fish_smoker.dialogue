@@ -53,7 +53,7 @@ TOPIC: gray_salt_cakes
   GATE: always
   TAG: smoker_salt
   LABEL: "Ask where the coarse gray harbor salt is cured"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Cakes of gray salt were found near the estate cellars. Is that harbor curing salt?"
   [Martha wipes brine from her forearms with a scrap of sailcloth.]
   VOICE: violin_cautious_medium_v2

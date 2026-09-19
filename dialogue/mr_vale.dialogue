@@ -63,7 +63,7 @@ TOPIC: work
   GATE: always
   TAG: bookkeeper_work
   LABEL: "Ask what records the office keeps"
-  TIME: 3
+  TIME: 5
   WALTER CORWIN: "What passes through these books?"
   VOICE: trombone_neutral_medium_v2
   MR. VALE: "Freight. Wages. Berthing fees. Repairs when the repair was admitted.\nDebts when the debtor had a name worth writing."
@@ -75,7 +75,7 @@ TOPIC: unfamiliar_woman
   GATE: evidence(naomi)
   TAG: bookkeeper_naomi
   LABEL: "Ask whether Naomi came to the office"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "Naomi Freeman. Did she bring that name here?"
   VOICE: trombone_bureaucratic_medium_v1
   MR. VALE: "A woman brought it.\nWhether the office kept it is a different question."
@@ -89,7 +89,7 @@ TOPIC: old_lay
   GATE: evidence(lay_lead) AND evidence(quay_inquiry)
   TAG: bookkeeper_lay
   LABEL: "Ask how an old whaler's lay would be recorded"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "If a whaler's lay went unpaid, where would the debt appear?"
   VOICE: trombone_bureaucratic_medium_v1
   MR. VALE: "In the owner's book first. In the harbor copy if anyone expected an argument.\nIn neither, if everyone who could argue was already at sea."
@@ -103,7 +103,7 @@ TOPIC: estate_freight
   GATE: evidence(service_work)
   TAG: bookkeeper_estate
   LABEL: "Ask about deliveries to the estate"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "Did the estate receive anything unusual before the deaths?"
   VOICE: trombone_neutral_medium_v1
   MR. VALE: "Unusual things arrive under ordinary descriptions.\nThat is one purpose of an ordinary description."
@@ -117,7 +117,7 @@ TOPIC: missing_cart
   GATE: evidence(estate_freight)
   TAG: bookkeeper_missing_cart
   LABEL: "Press him about the third cart"
-  TIME: 7
+  TIME: 9
   FORK:
     CHOICE: "Put the discrepancy in writing."
       VOICE: trombone_neutral_short_v1

@@ -71,7 +71,7 @@ TOPIC: default
 TOPIC: default
   GATE: day < 3 AND evidence(service_work) AND NOT topic_done(steward, steward_first_lead)
   TAG: steward_first_lead
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "Mrs. Almy says a woman came around asking about work here. Cleaning, laundry, anything she could carry home."
   VOICE: trombone_neutral_medium_v2
   THE STEWARD: "I heard the same, secondhand. Never caught a name.\n\nColored woman, I was told. That's the whole of what reached me."
@@ -110,7 +110,7 @@ TOPIC: default
 TOPIC: default
   GATE: day >= 2 AND day < 3 AND (topic_done(steward, steward_first) OR topic_done(steward, steward_first_lead))
   TAG: steward_second
-  TIME: 3
+  TIME: 5
   [The steward keeps one hand on the staff day book but does not open it.]
   WALTER CORWIN: "You told me to come back another day."
   VOICE: trombone_cautious_medium_v1
@@ -123,7 +123,7 @@ TOPIC: day_book
   GATE: steward_ready AND evidence(service_work) AND NOT topic_done(steward, day_book)
   TAG: steward_day_book
   LABEL: "Ask for the staff day book he mentioned"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "You said the staff had a separate book. Mrs. Almy remembers Naomi asking for work here."
   [The steward takes a narrow ruled book from beneath the sideboard.]
   THE DAY BOOK: "N. FREEMAN — DAY WORK — KITCHEN WING."
@@ -146,7 +146,7 @@ TOPIC: club_talk
   GATE: steward_ready
   TAG: club_talk
   LABEL: "Ask what the members used to talk about"
-  TIME: 4
+  TIME: 6
   THE SMOKING LOUNGE: "The steward sets a glass on the sideboard. Walter asks about the conversations he used to overhear while serving the members."
   VOICE: trombone_neutral_medium_v1
   THE STEWARD: "They stopped speaking of power, toward the end.\n\nStarted speaking, tenderly, of her."
@@ -161,7 +161,7 @@ TOPIC: club_devotion
   GATE: steward_ready AND evidence(club_talk)
   TAG: club_devotion
   LABEL: "Ask what Kessler used to say"
-  TIME: 4
+  TIME: 6
   VOICE: trombone_haunting_medium_v2
   THE STEWARD: "Kessler said it more than once. She'll have us home.\n\nSaid she's no different from any mother."
   NOTEBOOK: "A butcher, a judge, a doctor, a district attorney, a man of property, all of them speaking the same sentence about the same absent woman.\n\nNone of them ever named her."
@@ -171,7 +171,7 @@ TOPIC: pantry_lead
   GATE: steward_ready AND evidence(club_devotion)
   TAG: pantry_lead
   LABEL: "Ask about the old pantry door"
-  TIME: 5
+  TIME: 7
   VOICE: trombone_neutral_long_v1
   THE STEWARD: "There's gin left from before the war. Behind the old pantry door.\n\nThey boarded it up during a renovation and never finished unboarding it. Nobody goes back there. Nobody's gone back there in years."
   WALTER CORWIN: "Will you show me?"

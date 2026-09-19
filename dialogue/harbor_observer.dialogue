@@ -82,7 +82,7 @@ TOPIC: estate_grounds_crew
   GATE: always
   TAG: observer_estate_crew
   LABEL: "Ask about the laborers who work the Ophion grounds"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "The men who tend the hedges near the kitchen wing at the estate.\nThey come from down here."
   VOICE: trombone_neutral_short_v2
   MASON: "Harbor people work where there's coin."
@@ -100,7 +100,7 @@ TOPIC: drowned_island
   GATE: evidence(observer_stone_discipline)
   TAG: observer_island
   LABEL: "Ask about the drowned island off the point"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Nobody takes dories out to the old whaling ruins anymore."
   VOICE: trombone_dismissive_short_v1
   MASON: "Nothing out there to catch."
@@ -117,12 +117,13 @@ TOPIC: the_ring
   GATE: coat = plain AND NOT topic_done(harbor_observer, the_ring)
   TAG: observer_ring
   LABEL: "Ask about the copper ring on his hand"
-  WALTER CORWIN: "That band on your finger. It's not brass."
-  [The mason turns his hand slightly; the ring catches a reddish-brown gleam that seems to resist the grey fog.]
+  WALTER CORWIN: "That copper band on your hand. The observers on the water have worn those colored links since long before I was born."
+  [The mason turns his hand slightly, the reddish-brown metal familiar against the grey stone, worn smooth by decades of granite work.]
   VOICE: trombone_neutral_medium_v1
-  MASON: "It's an anchor link beaten flat. Worn since my father's time."
-  WALTER CORWIN: "Why wear it?"
+  MASON: "An anchor link beaten flat. Worn since my father's time, and his father before him."
+  WALTER CORWIN: "The old people along the slipway say the observers wear them for a purpose."
   VOICE: trombone_bureaucratic_long_v2
   MASON: "To remind the eye what belongs to the daylight.\n\nYou ask a great many questions, Officer.\nYou should ask yourself sometime whether you're trying to solve this town or just trying to become the next thing it forgets."
-  NOTEBOOK: observer_ring_1 | "The harbor laborers wear beaten anchor links to 'remind the eye what belongs to daylight.' Warned Walter against asking too far."
+  NOTEBOOK: observer_ring_1 | "The harbor observers have worn colored anchor links for generations to 'remind the eye what belongs to daylight.' Warned Walter against asking too far."
   EVIDENCE: observer_color_tell
+

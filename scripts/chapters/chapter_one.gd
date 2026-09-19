@@ -71,6 +71,8 @@ const DayClock=preload("res://scripts/shared/day_clock.gd")
 var daylight:Node3D
 var last_clock_phase=""
 var last_region = ""
+var _last_bridge_id: String = ""
+var _last_bridge_time: float = -9999.0
 var return_page = "title"
 var town_exterior_world: String = "town"
 var settings_schema=preload("res://scripts/shared/accessibility_settings.gd").new()
@@ -731,6 +733,23 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	_update_camera(1)
 	_close()
 	if save: _save_game()
+
+func on_bridge_crossed(bridge_id: String) -> void:
+	if page != "play": return
+	var now = Time.get_ticks_msec() / 1000.0
+	if _last_bridge_id == bridge_id and (now - _last_bridge_time) < 3.0:
+		return
+	_last_bridge_id = bridge_id
+	_last_bridge_time = now
+	DayClock.advance(state, 30.0)
+	playthrough_log.observe(state, scripted_dialogue.FILES.keys())
+	if is_instance_valid(daylight):
+		daylight.update_clock(state.clock_minutes, player.position)
+	var phase = DayClock.phase(state.clock_minutes)
+	if phase != last_clock_phase:
+		scripted_dialogue.populate(self)
+		last_clock_phase = phase
+		last_region = ""
 
 func _region_name() -> String:
 	if preload("res://scripts/chapters/town_places.gd").valid(state.world): return preload("res://scripts/chapters/town_places.gd").title(state.world).to_upper()

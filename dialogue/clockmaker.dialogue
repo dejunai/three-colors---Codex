@@ -86,7 +86,7 @@ TOPIC: the_stopped_watch
   GATE: evidence(watch)
   TAG: clockmaker_watch
   LABEL: "Show him the pocket watch stopped at seventeen past three"
-  TIME: 8
+  TIME: 10
   WALTER CORWIN: "A gold pocket watch. Found on a body in the rose garden.\nHands stopped at precisely 3:17."
   [Mr. Vane takes the watch with jeweler's tissue, turns it under the magnifier, and taps the balance cock.]
   VOICE: trombone_neutral_medium_v2
@@ -113,7 +113,7 @@ TOPIC: tryworks_instruments
   GATE: evidence(sanitized_textbook) OR evidence(ophion_myth_classical) OR evidence(behan_name)
   TAG: clockmaker_maritime
   LABEL: "Ask about old navigational instruments from the fleet"
-  TIME: 6
+  TIME: 8
   WALTER CORWIN: "Do you ever see brass work from the 1823 whaling fleet?"
   VOICE: trombone_neutral_medium_v2
   MR. VANE: "The Ophion carried sextants by Troughton of London. Very fine brass, hand-divided silver arcs."

@@ -53,7 +53,7 @@ TOPIC: night_freight
   GATE: always
   TAG: drayman_freight
   LABEL: "Ask about heavy carts moving after midnight"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Someone hauled heavy cargo toward the Ophion ridge three nights ago. Well past midnight."
   [The drayman pauses with a leather trace in his fist, his jaw tightening.]
   VOICE: trombone_cautious_long_v1
@@ -70,7 +70,7 @@ TOPIC: the_kitchen_stone
   GATE: evidence(service_work) AND NOT evidence(estate_freight)
   TAG: drayman_kitchen_stone
   LABEL: "Ask if he hauled stone to the estate kitchen wing"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Someone billed two carts of kitchen stone to the estate. Was that your team?"
   VOICE: trombone_cautious_medium_v1
   THE DRAYMAN: "Wasn't my axles, Walter, and that's the part that sticks with me."

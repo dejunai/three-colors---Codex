@@ -14,7 +14,7 @@ TOPIC: default
 TOPIC: default
   GATE: always
   TAG: assistant
-  TIME: 5
+  TIME: 7
   VOICE: violin_weary_long_v1
   THE CORONER'S ASSISTANT: "I've counted them twice. Eight.\n\nThe captain wants the identified men prepared first."
   WALTER CORWIN: "Any sign of an explosion?"

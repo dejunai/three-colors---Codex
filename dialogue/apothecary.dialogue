@@ -84,7 +84,7 @@ TOPIC: fenn_laudanum
   GATE: evidence(naomi)
   TAG: apothecary_fenn
   LABEL: "Inquire about prescriptions filled for Dr. Aldous Fenn"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Dr. Fenn was a physician, but did he purchase pharmaceuticals here?"
   VOICE: trombone_bureaucratic_medium_v1
   MR. CRANE: "A physician can prescribe, Officer. He cannot compound bulk spirits on his own parlor rug."
@@ -106,7 +106,7 @@ TOPIC: the_camphor_stranger
   GATE: evidence(naomi) AND NOT evidence(chandlery_island_delivery)
   TAG: apothecary_camphor_stranger
   LABEL: "Ask if a stranger bought camphor or tapers recently"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "A tall man in a good coat. Cash only. Did he ever come through your shop?"
   VOICE: trombone_neutral_medium_v1
   MR. CRANE: "Eight weeks back, near enough. I remember the coin more than the man — gold eagles, pre-war mint."
@@ -120,7 +120,7 @@ TOPIC: the_stranger_remedies
   GATE: evidence(naomi) AND NOT topic_done(apothecary, the_stranger_remedies)
   TAG: apothecary_naomi
   LABEL: "Ask if Naomi Freeman sought medicine for her son"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Did the colored woman come to your counter?"
   VOICE: trombone_neutral_medium_v1
   MR. CRANE: "She did. The boy had angry red salt-hives along his shins from the weed on the low rocks."

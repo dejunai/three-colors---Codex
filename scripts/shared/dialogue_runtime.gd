@@ -337,7 +337,7 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 # DayClock.advance(), giving each topic its own cost instead of a blanket
 # per-interaction charge. Explicit numeric TIME always wins, including zero.
 # Without it, default greetings are free and substantive topics use the fallback.
-const DEFAULT_MINUTES = 3.0
+const DEFAULT_MINUTES = 5.0
 static func commit_through(result: Dictionary, state, dstate, count: int) -> bool:
 	if result.session.is_empty() or result.resumed or result.finished: return false
 	if count < result.acknowledged or count > result.cards.size(): return false

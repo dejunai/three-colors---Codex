@@ -36,7 +36,7 @@ func run() -> void:
 	var buttons = g.content.find_children("*","Button",true,false)
 	assert(buttons.size() == 2)
 	buttons[1].pressed.emit()
-	assert(g.state.clock_minutes == 368 and g.state.statements.size() == 1)
+	assert(g.state.clock_minutes == 370 and g.state.statements.size() == 1)
 	assert(g.state.statements[0].begins_with("Walter wrote EIGHT"))
 	assert(g.state.dialogue_state.topic_done("odell","default"))
 	g._save_game()

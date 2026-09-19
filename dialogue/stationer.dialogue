@@ -63,7 +63,7 @@ TOPIC: the_corkboard_twine
   GATE: always
   TAG: stationer_twine
   LABEL: "Ask about heavy wrapping twine and map pins"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "I need another spool of the tarred hemp twine. And brass-headed pins."
   VOICE: trombone_weary_medium_v2
   MR. FINCH: "Working late in your room above the cobbler again, are you?"
@@ -79,7 +79,7 @@ TOPIC: fenn_orders
   GATE: evidence(knife)
   TAG: stationer_parchment
   LABEL: "Ask about Dr. Fenn's stationery orders"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "Dr. Aldous Fenn bought his calfskin notebooks here."
   VOICE: trombone_neutral_long_v1
   MR. FINCH: "Heavy imported vellum. Octavo size, marbled endpapers.\nHe insisted on iron-gall ink. Said modern aniline dyes fade inside thirty years, and he intended his observations to outlast the century."
@@ -95,7 +95,7 @@ TOPIC: fenn_conduit_tracing
   GATE: evidence(cellar_candles) AND NOT evidence(estate_conduit_map)
   TAG: stationer_conduit_tracing
   LABEL: "Ask if Dr. Fenn copied architectural or drainage surveys"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "When Dr. Fenn bought drafting materials, did he say what he was copying?"
   VOICE: trombone_bureaucratic_long_v1
   MR. FINCH: "He brought in a rolled plate from the historical collection — an 1822 survey of the kitchen bluff.\nWanted tracing vellum cut to match the subterranean drainage conduits running beneath the estate.\nSaid municipal works had forgotten where the old stone drains exited to the salt water."
@@ -106,7 +106,7 @@ TOPIC: naomi_supplies
   GATE: evidence(naomi) AND NOT topic_done(stationer, naomi_supplies)
   TAG: stationer_naomi
   LABEL: "Ask if Naomi Freeman purchased writing materials"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Did Naomi Freeman come into the shop before she died?"
   VOICE: trombone_questioning_medium_v2
   MR. FINCH: "The colored woman staying at Mrs. Almy's? She came in on a Thursday."
@@ -125,7 +125,7 @@ TOPIC: halleck_arithmetic
   GATE: evidence(eight) AND NOT evidence(press_suppression)
   TAG: stationer_halleck_arithmetic
   LABEL: "Ask if Finch has heard how the Gazette explains the six count"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "Eight people died in that garden. The Gazette prints six."
   VOICE: trombone_neutral_medium_v2
   MR. FINCH: "Halleck settles his ink account here every first of the month. He said something of the sort to me directly."
@@ -140,7 +140,7 @@ TOPIC: crew_omission
   GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(stationer, crew_omission)
   TAG: stationer_crew_omission
   LABEL: "Ask why the school reader never names the crew"
-  TIME: 3
+  TIME: 5
   WALTER CORWIN: "Eight men drowned in 1823. The school reader doesn't spare them so much as their names."
   VOICE: trombone_neutral_medium_v2
   MR. FINCH: "I sell the school reader as it comes from the printer."

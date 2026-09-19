@@ -16,14 +16,14 @@ func _run() -> void:
 	assert(D.facts.is_empty(), "later notebook effect must wait for its dialogue")
 	assert(S.clock_minutes == 360.0, "the clock must not move before a topic actually finishes")
 	assert(R.commit_through(first, S, D, first.cards.size()))
-	assert(S.clock_minutes == 363.0, "gardener's TIME: 3 must charge on first completion")
+	assert(S.clock_minutes == 365.0, "gardener's TIME: 5 must charge on first completion")
 	assert(not R.commit_through(first, S, D, first.cards.size()), "completion event must fire once")
-	assert(S.clock_minutes == 363.0, "a repeated completion event must not charge time twice")
+	assert(S.clock_minutes == 365.0, "a repeated completion event must not charge time twice")
 	S.estate_complete = true
 	S.coat = "Plain wool coat"
 	var later = R.enter(gardener, ctx, D)
 	R.commit_through(later, S, D, later.cards.size())
-	assert(S.clock_minutes == 366.0, "gardener_plain shares the 'default' topic id but is a distinct TAG, so it must still charge its own TIME: 3")
+	assert(S.clock_minutes == 370.0, "gardener_plain shares the 'default' topic id but is a distinct TAG, so it must still charge its own TIME: 5")
 	assert(D.facts.has("gardener.eight_sheets") and D.facts.has("gardener.service_door"), "both gardener clues must survive")
 	var restored = load("res://scripts/shared/dialogue_state.gd").new()
 	assert(restored.restore(D.pack()))
@@ -37,7 +37,7 @@ func _run() -> void:
 	assert(D.visit_count("odell") == 1 and not D.topic_done("odell", "default"))
 	assert(R.resume(odell, 1).is_empty(), "stale fork cannot be answered twice")
 	assert(R.commit_through(branch, S, D, branch.cards.size()))
-	assert(S.clock_minutes == 374.0, "odell's TIME: 8 must charge once the branching topic actually finishes")
+	assert(S.clock_minutes == 380.0, "odell's TIME: 10 must charge once the branching topic actually finishes")
 	assert(D.topic_done("odell", "default"))
 	# Nested forks must return to both parent tails and defer branch notes.
 	var fixture = L.parse('''NPC: nested

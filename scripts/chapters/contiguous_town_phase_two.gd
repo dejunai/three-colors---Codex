@@ -62,6 +62,7 @@ static func build_waterfront_approach(g: Node) -> void:
 	shape.size = Vector3(5.5, 0.42, length)
 	collision.shape = shape
 	body.add_child(collision)
+	_build_bridge_activator(g, root, "WaterfrontDescent", ramp.position, ramp.rotation, Vector3(5.5, 3.5, 3.0))
 	for side in [-1.0, 1.0]:
 		var rail_pos = Vector3(100 + side * 3.2, center.y + 0.6, center.z)
 		var rail = g.box(root, rail_pos, Vector3(0.5, 1.4, length), "46534c")
@@ -119,6 +120,7 @@ static func _build_pickman_descent(g: Node, root: Node3D) -> void:
 	shape.size = Vector3(length, 0.42, 5.5)
 	collision.shape = shape
 	body.add_child(collision)
+	_build_bridge_activator(g, root, "LowerDistrictDescent", ramp.position, ramp.rotation, Vector3(3.0, 3.5, 5.5))
 	for z in [4.7, 11.3]:
 		var wall_pos = Vector3(center.x, center.y + 0.6, z)
 		var wall = g.box(root, wall_pos, Vector3(length, 1.4, 0.5), "4b574e")
@@ -132,6 +134,27 @@ static func _build_pickman_descent(g: Node, root: Node3D) -> void:
 		wshape.size = Vector3(length, 1.4, 0.5)
 		wcol.shape = wshape
 		wbody.add_child(wcol)
+
+static func _build_bridge_activator(g: Node, root: Node3D, bridge_id: String, center: Vector3, rot: Vector3, size: Vector3) -> void:
+	var trigger = Area3D.new()
+	trigger.name = bridge_id + "Activator"
+	trigger.position = center
+	trigger.rotation = rot
+	trigger.collision_layer = 0
+	trigger.collision_mask = 2
+	trigger.monitorable = false
+	root.add_child(trigger)
+	var col = CollisionShape3D.new()
+	var shape = BoxShape3D.new()
+	shape.size = size
+	col.shape = shape
+	col.position.y = 1.5
+	trigger.add_child(col)
+	trigger.body_entered.connect(func(body: Node3D):
+		var chapter = g if g.has_method("on_bridge_crossed") else g.get_parent()
+		if chapter != null and chapter.has_method("on_bridge_crossed"):
+			chapter.on_bridge_crossed(bridge_id)
+	)
 
 static func lower_return(interior_id: String) -> Variant:
 	var specs: Array = Places.BUILDINGS.lower

@@ -26,7 +26,7 @@ TOPIC: the_stranger_woman
   GATE: evidence(naomi)
   TAG: parent_naomi_sighting
   LABEL: "Ask if she saw Naomi Freeman and her boy"
-  TIME: 7
+  TIME: 9
   WALTER CORWIN: "You walk down from the ridge past the boardinghouse every noon.\nDid you see the colored woman and her son?"
   VOICE: violin_neutral_medium_v2
   MRS. TEAGUE: "I saw them sitting on the low wall by the apothecary three mornings running."
@@ -46,7 +46,7 @@ TOPIC: the_estate_talk
   GATE: evidence(naomi)
   TAG: parent_estate_rumor
   LABEL: "Ask what the ridge families are saying about the club deaths"
-  TIME: 7
+  TIME: 9
   FORK:
     CHOICE: "Ask about Judge Wexford."
       VOICE: violin_neutral_long_v2
@@ -73,7 +73,7 @@ TOPIC: the_covering_letter
   GATE: evidence(curriculum_abridgment) OR evidence(sanitized_textbook)
   TAG: parent_covering_letter
   LABEL: "Ask if she recalls the covering letter approving the reader"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "The school committee approved a letter cutting the crew list from the reader."
   VOICE: violin_neutral_medium_v2
   MRS. TEAGUE: "My husband sits on that committee, Officer. He read it aloud at the Tuesday meeting, proud as anything."
@@ -92,7 +92,7 @@ TOPIC: the_reader_lesson
   GATE: always
   TAG: parent_reader_lesson
   LABEL: "Ask what her children recite about the 1823 disaster"
-  TIME: 4
+  TIME: 6
   WALTER CORWIN: "What does the school reader teach about the Ophion?"
   VOICE: violin_neutral_medium_v1
   MRS. TEAGUE: "My youngest recites it every Friday for penmanship practice."
@@ -114,7 +114,7 @@ TOPIC: the_new_bedford_letters
   GATE: evidence(naomi_unapologetic_presence)
   TAG: parent_new_bedford_letters
   LABEL: "Ask what she noticed about the envelope Naomi carried"
-  TIME: 5
+  TIME: 7
   WALTER CORWIN: "You said Naomi Freeman had an envelope tucked in her glove. Did you see where it was from?"
   VOICE: violin_neutral_medium_v2
   MRS. TEAGUE: "I don't make a habit of reading other women's post, Officer. But she wasn't discreet about it, not entirely."
