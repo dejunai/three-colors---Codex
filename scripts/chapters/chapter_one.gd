@@ -189,7 +189,7 @@ func _close() -> void:
 		_case_file()
 		return
 	_stop_instrument_voice()
-	scripted_dialogue.clear()
+	scripted_dialogue.end_session(self)
 	interface.close()
 	_sync_lounge()
 	page="play"

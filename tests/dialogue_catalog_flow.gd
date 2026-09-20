@@ -58,7 +58,7 @@ func run() -> void:
 	g.scripted_dialogue.play_topic(g,"local_historian","ship_origin")
 	var before=g.state.clock_minutes
 	cards(g)
-	assert(g.state.clock_minutes==before+9 and g.state.evidence.has("ophion_myth_classical"))
+	assert((g.state.clock_minutes==before+9 or g.state.pending_dialogue_minutes==9) and g.state.evidence.has("ophion_myth_classical"))
 	g._save_game()
 	g._load_game()
 	assert(g.state.evidence.has("ophion_myth_classical"))

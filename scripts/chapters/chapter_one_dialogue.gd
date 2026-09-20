@@ -17,6 +17,7 @@ var population_story = ""
 var active: Dictionary = {}
 var segment: Dictionary = {}
 var offset = 0
+var session_actor: String = ""
 
 func setup(g: Node) -> void:
 	catalog.scan()
@@ -53,8 +54,22 @@ func clear() -> void:
 	active = {}
 	segment = {}
 
+func end_session(g: Node = null) -> void:
+	clear()
+	session_actor = ""
+	if g != null and is_instance_valid(g) and is_instance_valid(g.state):
+		g.state.defer_dialogue_clock = false
+		var pending = float(g.state.pending_dialogue_minutes) if ("pending_dialogue_minutes" in g.state) else 0.0
+		g.state.pending_dialogue_minutes = 0.0
+		if pending > 0.0:
+			Runtime.DayClock.advance(g.state, pending)
+			if is_instance_valid(g.daylight):
+				g.daylight.update_clock(g.state.clock_minutes, g.player.position)
+		populate(g)
+
 func allowed(g: Node, actor: String) -> bool:
 	if not FILES.has(actor): return false
+	if not session_actor.is_empty() and session_actor == actor: return true
 	if extra_actors.has(actor):
 		var spot = _slot(g,actor)
 		return not spot.is_empty() and spot[0] == g.state.world
@@ -73,6 +88,8 @@ func interact(g: Node, actor: String) -> bool:
 	if not FILES.has(actor): return false
 	if not allowed(g, actor): return true
 	if not active.is_empty(): return true
+	session_actor = actor
+	g.state.defer_dialogue_clock = true
 	var def = definition(actor)
 	# Steward visit_count reflects staged days, not repeated attempts at the bar.
 	if actor == "barman": g.state.dialogue_state.visit_counts[def.npc] = g.state.steward_visits
@@ -101,6 +118,9 @@ func interact(g: Node, actor: String) -> bool:
 
 func show_menu(g: Node, actor: String) -> void:
 	if not allowed(g, actor): g._close(); return
+	if session_actor.is_empty():
+		session_actor = actor
+		g.state.defer_dialogue_clock = true
 	var def = definition(actor)
 	var entries = Runtime.menu(def, Runtime.make_context(g.state, g.state.dialogue_state)).entries
 	if entries.is_empty() and actor != "odell": g._close(); return
@@ -113,6 +133,9 @@ func show_menu(g: Node, actor: String) -> void:
 
 func play_topic(g: Node, actor: String, topic_id: String) -> void:
 	if not allowed(g, actor) or not active.is_empty(): return
+	if session_actor.is_empty():
+		session_actor = actor
+		g.state.defer_dialogue_clock = true
 	var def = definition(actor)
 	var ctx = Runtime.make_context(g.state, g.state.dialogue_state)
 	for index in def.topics.size():
@@ -189,10 +212,8 @@ func _segment_done(g: Node) -> void:
 		g.state.dialogue_state.visit_counts["steward"] = g.state.steward_visits
 	if tag in ["almy_trust", "behan_invitation", "lay_lead", "service_work", "behan_name", "old_woman", "club_talk", "club_devotion", "pantry_lead"]:
 		if not g.state.inquiry_topics.has(tag): g.state.inquiry_topics.append(tag)
-	if is_instance_valid(g.daylight): g.daylight.update_clock(g.state.clock_minutes, g.player.position)
 	clear()
 	_sync(g)
-	populate(g)
 	if (actor in ["almy", "behan", "barman"] or extra_actors.has(actor)) and tag != "almy_ledger": show_menu(g, actor)
 	else: g._close()
 	if tag == "almy_ledger": g._toast("The meal ledger is on the sideboard to your right.",5)
@@ -239,5 +260,7 @@ func restore(g: Node, data: Variant) -> bool:
 	if int(data.consumed) < 0 or int(data.consumed) > result.cards.size(): return false
 	active = data.duplicate(true)
 	segment = result
+	session_actor = String(data.actor)
+	g.state.defer_dialogue_clock = true
 	_display(g)
 	return true

@@ -367,7 +367,10 @@ static func commit_through(result: Dictionary, state, dstate, count: int) -> boo
 		if first_completion and state != null:
 			var raw_minutes = String(result.session.timing)
 			var minutes = float(raw_minutes) if raw_minutes.is_valid_float() else (0.0 if result.session.topic == "default" else DEFAULT_MINUTES)
-			DayClock.advance(state, minutes)
+			if ("defer_dialogue_clock" in state) and bool(state.defer_dialogue_clock):
+				state.pending_dialogue_minutes = float(state.pending_dialogue_minutes) + minutes
+			else:
+				DayClock.advance(state, minutes)
 			if not result.session.tag.is_empty() and not state.timed_conversations.has(time_key): state.timed_conversations.append(time_key)
 		result.finished = true
 		return true

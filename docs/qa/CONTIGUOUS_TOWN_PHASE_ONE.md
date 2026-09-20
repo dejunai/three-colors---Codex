@@ -98,6 +98,23 @@ These figures are a development baseline, not evidence that streaming or LOD is 
 
 Run the baseline again with `res://tests/contiguous_town_profile.gd`.
 
+## Web profile — finally executed (2026-09-20)
+
+The original "Remaining seams" item 1 below asked for a local dev-branch temporary Web export of just the Phase 1 exterior, per `docs/qa/PHASE_ONE_WEB_PROFILE_HANDOFF.md`'s original scope. That never happened; the project has since moved well past Phase 1 (full contiguous town, all four districts, waterfront, 47 scheduled actors) and published to both GitHub Pages and itch.io. Rather than build a now-obsolete phase-1-only temp export, this measured the actual live published build directly — arguably more representative of what a real player experiences than a local dev export would have been.
+
+Measured against `https://dejunai.github.io/three-colors---Codex/` (commit `72f159d`, same commit as itch.io) via the browser's own `performance` API, at the title screen after full asset load (author independently reported ~137 MB from their browser's own tab memory display; this matches within margin of error):
+
+- `index.wasm`: 37.68 MB decoded / 9.77 MB transferred (compressed), ~3.76 s load
+- `index.pck`: 34.98 MB decoded / 32.19 MB transferred (compressed), ~6.59 s load
+- `index.js` + `index.png`: negligible (<0.3 MB combined)
+- Total first-visit download: ~42 MB transferred (browser-cached on repeat visits)
+- JS heap at title screen, post-load: 137.7 MB used / 141.5 MB total / 4,192 MB browser limit — well under any browser memory ceiling
+- All four core assets loaded eagerly at title screen, before "Begin at the estate" is clicked — nothing is deferred to first gameplay
+
+No player-visible stall, memory failure, or unacceptable frame rate was observed or reported at this stage (title screen only; a full in-game walk was not driven this pass — see below). Per the existing decision rule, this alone is not grounds for streaming, HLOD, or distance culling. The ~10 second combined wasm+pck load time is the more actionable number: worth knowing before, not after, the district texture pass (TDD Part Six item 2) adds material data to `index.pck`, since that pass explicitly checkpoints a Web-profile comparison after Pickman Street specifically for this reason.
+
+Not yet done: an in-game walk of the complete loop (Pickman → business → upper → lower → waterfront) measuring peak in-play memory, frame stalls while walking, and a phone-sized viewport check — the original handoff task's steps 3-5. Title-screen memory is a reasonable pre-texture baseline but not a substitute for those.
+
 ## Remaining seams
 
-1. Profile the complete Phase 1 exterior on Web before introducing streamed cells or HLOD.
+1. Profile the complete Phase 1 exterior on Web before introducing streamed cells or HLOD. — Partially done (2026-09-20, see above): load size/time and title-screen memory measured against the live published build. Still open: an in-game walk of the full town for peak memory, frame stalls, and phone-viewport behavior.
