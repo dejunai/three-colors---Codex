@@ -2,45 +2,10 @@ extends RefCounted
 
 # A single visual reference street. Stable entrances and save IDs belong to TownPlaces.
 const Places = preload("res://scripts/chapters/town_places.gd")
-static var materials: Dictionary = {}
-static var textures: Dictionary = {}
+const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
 
 func surface(kind:String,tint:String) -> StandardMaterial3D:
-	var key=kind+tint
-	if materials.has(key): return materials[key]
-	var m=StandardMaterial3D.new()
-	m.albedo_color=Color(tint)
-	m.albedo_texture=texture(kind)
-	m.uv1_triplanar=true
-	m.uv1_scale=Vector3.ONE*(0.8 if kind=="wood" else 0.55)
-	m.roughness=0.95
-	m.cull_mode=BaseMaterial3D.CULL_DISABLED
-	materials[key]=m
-	return m
-
-func texture(kind:String) -> ImageTexture:
-	if textures.has(kind): return textures[kind]
-	var img=Image.create(128,128,false,Image.FORMAT_RGB8)
-	var noise=RandomNumberGenerator.new()
-	noise.seed=192309
-	for y in 128:
-		for x in 128:
-			var v=0.86+noise.randf_range(-0.065,0.065)
-			match kind:
-				"stone":
-					if y%32<2 or (x+(16 if floori(y/32.0)%2 else 0))%32<2: v=0.58
-				"brick":
-					if y%16<2 or (x+(16 if floori(y/16.0)%2 else 0))%32<2: v=0.62
-				"wood":
-					v+=sin(float(x)*0.8+sin(float(y)*0.08))*0.035
-					if x%32<2: v=0.48
-				"slate":
-					if y%24<2 or (x+(12 if floori(y/24.0)%2 else 0))%24<1: v=0.48
-			img.set_pixel(x,y,Color(v,v,v))
-	img.generate_mipmaps()
-	var result=ImageTexture.create_from_image(img)
-	textures[kind]=result
-	return result
+	return DistrictSurfaces.material(kind,tint)
 
 func block(g:Node,p:Vector3,size:Vector3,kind:String,tint:String,solid:bool=false) -> MeshInstance3D:
 	var n=g.box(g,p,size,tint,solid)
@@ -82,8 +47,8 @@ func build(g:Node) -> void:
 		var h:float=heights[i]
 		var spec=Places.BUILDINGS.business[i]
 		var tint="a2aa95" if i in [0,3] else ("7d8c7c" if i%2 else "8e9987")
-		var kind="brick" if i in [0,4] else "plaster"
-		block(g,p+Vector3(0,-0.02,-back*2.9),Vector3(w+1.4,0.13,6.6),"stone","9ba58f")
+		var kind="soot_brick" if i==4 else ("brick" if i==0 else "plaster")
+		block(g,p+Vector3(0,-0.02,-back*2.9),Vector3(w+1.4,0.13,6.6),"cut_stone","9ba58f")
 		block(g,p+Vector3(0,0.38,back*4),Vector3(w+0.15,0.76,7),"stone","788779",true)
 		block(g,p+Vector3(0,h/2+0.25,back*4),Vector3(w,h-0.5,7),kind,tint,true)
 		# Recessed dark door, with substantial jambs and lintel.

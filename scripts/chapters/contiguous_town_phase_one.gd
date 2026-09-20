@@ -7,6 +7,7 @@ extends RefCounted
 const BusinessStreet = preload("res://scripts/chapters/business_street.gd")
 const UpperStreet = preload("res://scripts/chapters/upper_street.gd")
 const Places = preload("res://scripts/chapters/town_places.gd")
+const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
 const BUSINESS_ORIGIN = Vector3(0, 5.5, 67)
 const UPPER_ORIGIN = Vector3(0, 12.5, 134)
 
@@ -48,7 +49,7 @@ static func build_pickman_edge(g: Node) -> void:
 	var run = 30.0
 	# Sink the long leading edge beneath the existing street surface. This avoids
 	# a tiny vertical lip that CharacterBody3D correctly treats as a wall.
-	var ramp = g.box(root, Vector3(8, 2.30, 35), Vector3(7.2, 0.42, run), "717b70")
+	var ramp = DistrictSurfaces.apply(g.box(root, Vector3(8, 2.30, 35), Vector3(7.2, 0.42, run), "717b70"), "cobble", "717b70")
 	ramp.name = "BusinessApproach"
 	ramp.rotation.x = -atan2(rise, run)
 	var ramp_body = StaticBody3D.new()
@@ -70,7 +71,7 @@ static func build_pickman_edge(g: Node) -> void:
 		for section in 4:
 			var z = 27.0 + section * 6.0
 			var y = 0.9 + section * 1.25
-			g.box(root, Vector3(8 + side * 4.2, y, z), Vector3(0.65, 1.8 + section * 0.7, 6.4), "505d53", true)
+			DistrictSurfaces.apply(g.box(root, Vector3(8 + side * 4.2, y, z), Vector3(0.65, 1.8 + section * 0.7, 6.4), "505d53", true), "stone", "505d53")
 
 	# Step 1's compatibility route is removed after build_business folds the
 	# existing street into this exterior.
@@ -95,17 +96,17 @@ static func _build_business_retaining_works(g: Node, root: Node3D) -> void:
 	# The raised business block is earth retained by old masonry, rather than a
 	# street-width slab hanging in the air. Its southern face leaves one gateway
 	# around the Pickman incline and closes the exposed void on either side.
-	g.box(root, Vector3(-14.65, 2.45, 50.0), Vector3(36.7, 4.9, 1.2), "4d5850", true)
-	g.box(root, Vector3(22.65, 2.45, 50.0), Vector3(20.7, 4.9, 1.2), "4d5850", true)
+	DistrictSurfaces.apply(g.box(root, Vector3(-14.65, 2.45, 50.0), Vector3(36.7, 4.9, 1.2), "4d5850", true), "stone", "4d5850")
+	DistrictSurfaces.apply(g.box(root, Vector3(22.65, 2.45, 50.0), Vector3(20.7, 4.9, 1.2), "4d5850", true), "stone", "4d5850")
 	# Deep side walls make the plateau read as terrain fitted between buildings.
 	for x in [-32.4, 32.4]:
-		g.box(root, Vector3(x, 2.35, 77.0), Vector3(1.2, 4.7, 53.0), "465249", true)
+		DistrictSurfaces.apply(g.box(root, Vector3(x, 2.35, 77.0), Vector3(1.2, 4.7, 53.0), "465249", true), "stone", "465249")
 	# Uneven buttresses and a heavy gateway lintel keep the support hand-built.
 	for x in [-30.0, -19.0, -7.0, 15.0, 27.0]:
-		g.box(root, Vector3(x, 2.55, 49.25), Vector3(1.6, 5.1, 2.3), "5c675b", true)
-	g.box(root, Vector3(8.0, 4.55, 49.35), Vector3(8.6, 0.8, 2.0), "626d60", true)
+		DistrictSurfaces.apply(g.box(root, Vector3(x, 2.55, 49.25), Vector3(1.6, 5.1, 2.3), "5c675b", true), "cut_stone", "5c675b")
+	DistrictSurfaces.apply(g.box(root, Vector3(8.0, 4.55, 49.35), Vector3(8.6, 0.8, 2.0), "626d60", true), "cut_stone", "626d60")
 	for x in [4.0, 12.0]:
-		g.box(root, Vector3(x, 2.0, 49.2), Vector3(0.75, 4.0, 2.2), "596459", true)
+		DistrictSurfaces.apply(g.box(root, Vector3(x, 2.0, 49.2), Vector3(0.75, 4.0, 2.2), "596459", true), "cut_stone", "596459")
 
 static func build_upper_approach(g: Node) -> void:
 	var root = g.get_node("ContiguousTownPhaseOne")
@@ -117,7 +118,7 @@ static func build_upper_approach(g: Node) -> void:
 	var slope_length = sqrt(rise * rise + run * run)
 	# Align top of ramp with Upper District pavement (y = 12.45) so there is no collision lip.
 	var center = Vector3(-24, 8.75, 108)
-	var ramp = g.box(root, center, Vector3(6.0, 0.42, slope_length), "747c70")
+	var ramp = DistrictSurfaces.apply(g.box(root, center, Vector3(6.0, 0.42, slope_length), "747c70"), "cut_stone", "747c70")
 	ramp.name = "UpperQuarterApproach"
 	ramp.rotation.x = -atan2(rise, run)
 	var body = StaticBody3D.new()
@@ -134,7 +135,7 @@ static func build_upper_approach(g: Node) -> void:
 	# Rotated retaining walls follow the ramp's incline rather than projecting horizontally.
 	for side in [-1.0, 1.0]:
 		var wall_pos = Vector3(-24 + side * 3.45, center.y + 0.6, center.z)
-		var wall = g.box(root, wall_pos, Vector3(0.6, 1.6, slope_length), "4f5b51")
+		var wall = DistrictSurfaces.apply(g.box(root, wall_pos, Vector3(0.6, 1.6, slope_length), "4f5b51"), "stone", "4f5b51")
 		wall.rotation.x = ramp.rotation.x
 		var wall_body = StaticBody3D.new()
 		wall_body.position = wall_pos
@@ -176,7 +177,7 @@ static func _build_incline(g: Node, root: Node3D, title: String, x: float, z0: f
 	var rise = y1 - y0
 	var slope_length = sqrt(run * run + rise * rise)
 	var center = Vector3(x, (y0 + y1) * 0.5 - 0.25, (z0 + z1) * 0.5)
-	var ramp = g.box(root, center, Vector3(width, 0.42, slope_length), "70796e")
+	var ramp = DistrictSurfaces.apply(g.box(root, center, Vector3(width, 0.42, slope_length), "70796e"), "cobble", "70796e")
 	ramp.name = title
 	ramp.rotation.x = -atan2(rise, run)
 	var body = StaticBody3D.new()
@@ -192,7 +193,7 @@ static func _build_incline(g: Node, root: Node3D, title: String, x: float, z0: f
 	_build_bridge_activator(g, root, title, ramp.position, ramp.rotation, Vector3(width, 3.5, 3.0))
 	for side in [-1.0, 1.0]:
 		var rail_pos = Vector3(x + side * (width * 0.5 + 0.22), center.y + 0.6, center.z)
-		var rail = g.box(root, rail_pos, Vector3(0.45, 1.4, slope_length), "505b52")
+		var rail = DistrictSurfaces.apply(g.box(root, rail_pos, Vector3(0.45, 1.4, slope_length), "505b52"), "stone", "505b52")
 		rail.rotation.x = ramp.rotation.x
 		var rail_body = StaticBody3D.new()
 		rail_body.position = rail_pos

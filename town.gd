@@ -8,6 +8,10 @@ var desk_glass: Node3D
 var whiskey: MeshInstance3D
 var board_threads: Array[MeshInstance3D] = []
 var glass_shattered := false
+const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
+
+func district_box(parent: Node3D, position: Vector3, size: Vector3, tint: String, solid: bool = false, kind: String = "soot_brick") -> MeshInstance3D:
+	return DistrictSurfaces.apply(box(parent, position, size, tint, solid), kind, tint)
 
 func _ready() -> void:
 	rng.seed = 1924
@@ -50,19 +54,19 @@ func _lighting(inside:bool) -> void:
 			cylinder(self,Vector3(x,3.3,-2),0.4,0.2,"b3b29f",0.22)
 
 func _door(x:float, title:String, id:String) -> void:
-	box(self,Vector3(x,1.55,-7.0),Vector3(1.7,3.1,0.12),"242d2a")
-	for dx in [-1,1]: box(self,Vector3(x+dx,1.7,-6.8),Vector3(0.14,3.4,0.25),"b1b09d")
-	box(self,Vector3(x,3.5,-6.7),Vector3(2.3,0.23,0.4),"b4b19e")
+	district_box(self,Vector3(x,1.55,-7.0),Vector3(1.7,3.1,0.12),"242d2a",false,"wood")
+	for dx in [-1,1]: district_box(self,Vector3(x+dx,1.7,-6.8),Vector3(0.14,3.4,0.25),"a0a18e",false,"cut_stone")
+	district_box(self,Vector3(x,3.5,-6.7),Vector3(2.3,0.23,0.4),"a4a28f",false,"cut_stone")
 	sphere(self,Vector3(x+0.57,1.2,-6.82),0.06,"b8b29a")
 	lettering(title,Vector3(x,4.25,-6.6),42)
 	target(id,"Enter "+title.to_lower(),Vector3(x,0,-5.6))
 
 func _street() -> void:
-	box(self,Vector3(0,-0.3,7),Vector3(100,0.5,75),"4b554d",true)
-	box(self,Vector3(0,-0.035,8),Vector3(67,0.06,15),"6c766c")
-	box(self,Vector3(0,0,-3),Vector3(67,0.1,6.5),"939889")
-	box(self,Vector3(0,0,19),Vector3(67,0.1,6),"878e80")
-	for z in [0.4,16]: box(self,Vector3(0,0.065,z),Vector3(66,0.13,0.18),"b2b3a1")
+	district_box(self,Vector3(0,-0.3,7),Vector3(100,0.5,75),"4b554d",true,"stone")
+	district_box(self,Vector3(0,-0.035,8),Vector3(67,0.06,15),"646e66",false,"cobble")
+	district_box(self,Vector3(0,0,-3),Vector3(67,0.1,6.5),"8a9083",false,"cut_stone")
+	district_box(self,Vector3(0,0,19),Vector3(67,0.1,6),"7c8579",false,"cut_stone")
+	for z in [0.4,16]: district_box(self,Vector3(0,0.065,z),Vector3(66,0.13,0.18),"a0a28f",false,"cut_stone")
 	for x in range(-30,32,2): box(self,Vector3(x,0.06,-3),Vector3(0.026,0.015,6),"636f63")
 	for i in 370:
 		box(self,Vector3(rng.randf_range(-32,32),0.01,rng.randf_range(1,15)),Vector3(0.08,0.02,rng.randf_range(0.1,0.32)),"838c7d")
@@ -71,29 +75,30 @@ func _street() -> void:
 		var x:float=spec[0]
 		var width:float=spec[1]
 		var h:float=spec[2]
-		box(self,Vector3(x,h/2,-11),Vector3(width,h,7),spec[3],true)
-		box(self,Vector3(x,h+0.2,-11),Vector3(width+0.5,0.4,7.5),"333f38")
-		for y in [0.4,3.9,h-0.3]: box(self,Vector3(x,y,-7.44),Vector3(width,0.15,0.24),"adb29d")
+		var wall_kind := "soot_brick" if x in [-18,16] else "cracked_plaster"
+		district_box(self,Vector3(x,h/2,-11),Vector3(width,h,7),spec[3],true,wall_kind)
+		district_box(self,Vector3(x,h+0.2,-11),Vector3(width+0.5,0.4,7.5),"333f38",false,"slate")
+		for y in [0.4,3.9,h-0.3]: district_box(self,Vector3(x,y,-7.44),Vector3(width,0.15,0.24),"949984",false,"cut_stone")
 		for dx in [-4.5,0,4.5]:
 			for y in [5.6,8.1]:
 				if y>h-1: continue
-				box(self,Vector3(x+dx,y,-7.42),Vector3(1.4,1.7,0.12),"2b3933")
-				for dy in [-0.92,0,0.92]: box(self,Vector3(x+dx,y+dy,-7.25),Vector3(1.7,0.09,0.17),"b7b7a2")
-				for edge in [-0.78,0.78]: box(self,Vector3(x+dx+edge,y,-7.25),Vector3(0.1,1.9,0.17),"a7ae99")
+				district_box(self,Vector3(x+dx,y,-7.42),Vector3(1.4,1.7,0.12),"2b3933",false,"wood")
+				for dy in [-0.92,0,0.92]: district_box(self,Vector3(x+dx,y+dy,-7.25),Vector3(1.7,0.09,0.17),"a2a38f",false,"wood")
+				for edge in [-0.78,0.78]: district_box(self,Vector3(x+dx+edge,y,-7.25),Vector3(0.1,1.9,0.17),"969b87",false,"wood")
 	_door(-18,"PRECINCT 4","street_precinct")
 	_door(-1,"ALMY'S BOARDINGHOUSE","street_almy")
 	_door(18,"ROOMS ABOVE","street_room")
 	lettering("P I C K M A N   S T R E E T",Vector3(-11,1.4,19),35).rotation.y = PI
 	# Cobbler's display with a bench and modest shop window.
-	box(self,Vector3(23,1.7,-7.2),Vector3(3.8,2.0,0.14),"364a3d")
+	district_box(self,Vector3(23,1.7,-7.2),Vector3(3.8,2.0,0.14),"364a3d",false,"wood")
 	lettering("SHOE REPAIRS",Vector3(23,3,-7.0),32)
 	for x in [21.8,22.6,23.4,24.2]:
 		box(self,Vector3(x,0.8,-6.9),Vector3(0.24,0.22,0.5),"8d977f")
 	# Far-side warehouses frame the street but do not imply explorable doors.
 	# The center warehouse footprint is now the western descent's opening.
 	for x in [-24,25]:
-		box(self,Vector3(x,4.0,28),Vector3(12,8,7),"536156",true)
-		box(self,Vector3(x,8.2,28),Vector3(12.6,0.4,7.5),"303f35")
+		district_box(self,Vector3(x,4.0,28),Vector3(12,8,7),"536156",true,"soot_brick")
+		district_box(self,Vector3(x,8.2,28),Vector3(12.6,0.4,7.5),"303f35",false,"slate")
 	for x in [-25,-10,7,25]: lamp(Vector3(x,0,0))
 	for x in [-20,9]:
 		box(self,Vector3(x,0.55,18.2),Vector3(3,0.15,0.7),"6f7e66",true)
@@ -120,7 +125,7 @@ func _street() -> void:
 	for x in [-28,28]: tree(Vector3(x,0,20))
 	# District portals have been replaced by physical streets. Interior doors
 	# retain their stable route IDs in the shared exterior.
-	box(self,Vector3(-24,1.6,24.3),Vector3(1.7,3.2,0.16),"283c32")
+	district_box(self,Vector3(-24,1.6,24.3),Vector3(1.7,3.2,0.16),"283c32",false,"wood")
 	lettering("POST OFFICE",Vector3(-24,3.7,24.05),32).rotation.y=PI
 	target("route_post","Enter the post office",Vector3(-24,0,22))
 	routes["route_post"]=["post_office",Vector3(0,0.1,6),0.0]
