@@ -97,6 +97,7 @@ var cough_player: AudioStreamPlayer
 var instrument_voice_player: AudioStreamPlayer
 var last_hazard_phase = ""
 var card_kind := "dialogue"
+var return_to_personal_effects := false
 
 func start(player_rig:Node3D) -> void:
 	rig=player_rig
@@ -181,6 +182,10 @@ func _focus_first() -> void:
 	interface._focus_first()
 
 func _close() -> void:
+	if return_to_personal_effects and page in ["case","journal","fact","notebook"]:
+		return_to_personal_effects = false
+		_case_file()
+		return
 	_stop_instrument_voice()
 	scripted_dialogue.clear()
 	interface.close()
@@ -499,7 +504,12 @@ func _objective() -> String:
 	return "Return down the drive to the estate gates, or continue examining the grounds before leaving."
 
 func _case_file() -> void:
+	return_to_personal_effects = false
 	archive._case_file(self)
+
+func _open_from_personal_effects(callback:Callable) -> void:
+	return_to_personal_effects = true
+	callback.call()
 
 func _flask() -> void:
 	archive._flask(self)

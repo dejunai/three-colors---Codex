@@ -10,6 +10,11 @@ func _text(g:Node) -> String:
 func _slot(g:Node,name:String) -> Button:
 	return g.content.find_child(name,true,false) as Button
 
+func _button(g:Node,text:String) -> Button:
+	for button in g.content.find_children("*","Button",true,false):
+		if button.text == text: return button
+	return null
+
 func run() -> void:
 	var scene = load("res://main.tscn").instantiate()
 	root.add_child(scene)
@@ -27,6 +32,8 @@ func run() -> void:
 	assert(doll.coat == "Police coat" and doll.badge_visible and doll.ammo == 4)
 	for name in ["CoatSlot","BadgeSlot","NotebookSlot","RevolverSlot","FlaskSlot","BootsSlot"]:
 		assert(_slot(g,name) != null, "Missing paper-doll slot: %s" % name)
+	var leave = _button(g,"Return to the grounds")
+	assert(leave != null and leave.get_parent().name == "EffectsActions", "The grounds button must sit with the other actions, not below the full panel")
 
 	_slot(g,"CoatSlot").pressed.emit()
 	assert(g.state.coat == "Plain wool coat", "The paper-doll coat control must reuse the live coat state")
@@ -35,9 +42,15 @@ func run() -> void:
 
 	_slot(g,"RevolverSlot").pressed.emit()
 	assert("4 of 6 rounds remain" in _text(g))
-	g._case_file()
+	g._close()
+	assert(g.page == "case" and g.content.find_child("WalterPaperDoll",true,false) != null, "Closing an equipment inspection must return to Personal Effects")
 	_slot(g,"BootsSlot").pressed.emit()
 	assert("resoled twice" in _text(g))
+	g._close()
+	_slot(g,"NotebookSlot").pressed.emit()
+	assert(g.page == "notebook")
+	g._close()
+	assert(g.page == "case" and g.content.find_child("WalterPaperDoll",true,false) != null, "Closing the notebook opened from the doll must return to the doll")
 
 	g.state.coat = "Police coat"
 	g.state.dialogue_state.set_flag("badge_lost",true)
@@ -47,9 +60,18 @@ func run() -> void:
 	assert(doll.badge_lost and not doll.badge_visible and doll.flask_spilled)
 	_slot(g,"BadgeSlot").pressed.emit()
 	assert("Lost below the estate" in _text(g))
-	g._case_file()
+	g._close()
 	_slot(g,"FlaskSlot").pressed.emit()
 	assert("Lost in the dark below" in _text(g))
+	g._close()
+	assert(g.page == "case" and g.content.find_child("WalterPaperDoll",true,false) != null)
 
-	print("PAPER DOLL PASS: state-driven coat, badge/loss, flask/loss, ammunition, boots, notebook and keyboard-focusable equipment slots")
+	# The same screens opened directly retain their ordinary game return.
+	g._close()
+	assert(g.page == "play")
+	g._journal()
+	g._close()
+	assert(g.page == "play", "A directly-opened case file must still close to the game")
+
+	print("PAPER DOLL PASS: compact grounds action; contextual return from equipment, notebook and case UI; direct UI still closes to game; state-driven equipment slots")
 	quit()

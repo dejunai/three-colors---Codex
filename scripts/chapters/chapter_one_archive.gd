@@ -83,7 +83,7 @@ func _case_file(g:Node) -> void:
 	utility_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	g.content.add_child(utility_row)
 	var watch_button = PocketWatchButton.new()
-	watch_button.pressed.connect(g._pocket_watch)
+	watch_button.pressed.connect(func(): g._open_from_personal_effects(g._pocket_watch))
 	utility_row.add_child(watch_button)
 	var row = HBoxContainer.new()
 	row.add_theme_constant_override("separation",28)
@@ -100,6 +100,7 @@ func _case_file(g:Node) -> void:
 	left.add_child(g._label("Carried weight: %.1f / 12 kg\nSlots: %d / 10" % [4.6+(0.4 if g.state.evidence.has("knife") else 0),5+(1 if g.state.evidence.has("knife") else 0)],17,false))
 	left.add_child(g._label("Strength governs carried weight.\nPerception grows through observation.",16,false))
 	var right = VBoxContainer.new()
+	right.name = "EffectsActions"
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	right.add_theme_constant_override("separation",12)
 	row.add_child(right)
@@ -107,9 +108,9 @@ func _case_file(g:Node) -> void:
 	right.add_child(g._label(g._objective(),23))
 	right.add_child(g._label("EQUIPMENT",14,false))
 	right.add_child(g._label("Select an item on Walter's figure to inspect or change it." + ("\nThe sealed knife envelope remains with the case papers." if g.state.evidence.has("knife") else ""),18))
-	g._button("Read the notebook",g._notebook,right)
-	g._button("Open the case file",g._journal,right)
-	g._button("Return to the grounds",g._close)
+	g._button("Read the notebook",func(): g._open_from_personal_effects(g._notebook),right)
+	g._button("Open the case file",func(): g._open_from_personal_effects(g._journal),right)
+	g._button("Return to the grounds",g._close,right)
 	g._focus_first()
 
 func _paper_doll_item(g:Node,item:String) -> void:
@@ -119,11 +120,11 @@ func _paper_doll_item(g:Node,item:String) -> void:
 			g._refresh_outfit()
 			g._save_game()
 			_case_file(g)
-		"flask": _flask(g)
-		"notebook": g._notebook()
-		"badge": _badge(g)
-		"revolver": _revolver(g)
-		"boots": _boots(g)
+		"flask": g._open_from_personal_effects(g._flask)
+		"notebook": g._open_from_personal_effects(g._notebook)
+		"badge": g._open_from_personal_effects(func(): _badge(g))
+		"revolver": g._open_from_personal_effects(func(): _revolver(g))
+		"boots": g._open_from_personal_effects(func(): _boots(g))
 
 func _badge(g:Node) -> void:
 	g._panel("case","The badge","PERSONAL EFFECTS")
