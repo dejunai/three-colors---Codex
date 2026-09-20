@@ -25,6 +25,18 @@ const BOARD = [
 	["THE ROOM","He checks them against everything he has gathered. They are true, whoever wrote them.\n\nThe board is whole enough. Not the courtroom kind of whole. The other kind."]
 ]
 
+func board_cards(g: Node) -> Array:
+	var lead_line: String
+	if g.state.evidence.has("behan_name") or g.state.dialogue_state.topic_done("behan", "behan_name"):
+		lead_line = "Behan's line about inherited money inventing its own reason, beside the ship's name."
+	else:
+		lead_line = "The steward's words about what the gentlemen gathered for in secret, beside Kessler's name."
+	return [
+		["THE BOARD", "The last two cards go up within the same hour. He does not choose the moment, any more than a man chooses the instant a held breath tops out.\n\n" + lead_line + " A cough that answers to nothing living. A passage beneath the sea that no drawing admits."],
+		["IN HIS OWN HAND", "Beneath them, in handwriting he does not remember producing, two lines have appeared.\n\nTHEY DID NOT SUMMON A MOTHER.\nTHEY SUMMONED SOMETHING AND CALLED IT ONE."],
+		["THE ROOM", "He checks them against everything he has gathered. They are true, whoever wrote them.\n\nThe board is whole enough. Not the courtroom kind of whole. The other kind."]
+	]
+
 var glass_player: AudioStreamPlayer
 var running := false
 var quiet_time := 0.0
@@ -54,7 +66,7 @@ func begin(g: Node) -> void:
 	quiet_time = 0.0
 	if glass_player.stream == null: glass_player.stream = build_glass_stream()
 	g.playthrough_log.day3_bed_reached()
-	g._cards(BOARD, func(): _play(g), "examine")
+	g._cards(board_cards(g), func(): _play(g), "examine")
 
 func _scale(g: Node) -> float:
 	return 0.02 if g.test_mode else 1.0

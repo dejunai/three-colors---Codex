@@ -4,6 +4,8 @@ const MORNING = 360.0
 const NOON = 720.0
 const EVENING = 1020.0
 const NIGHT = 1200.0
+const MIDNIGHT = 1440.0
+const MOONRISE = 1080.0
 const CONVERSATION_MINUTES = 30.0
 const CONVERSATION_COSTS = {} # Optional longer budgets keyed by conversation ID.
 const TRAVEL_MINUTES = 30.0
@@ -20,6 +22,7 @@ static func phase(minutes:float) -> String:
 	return "morning"
 
 static func display_time(minutes: float) -> String:
+	if minutes >= MIDNIGHT: return "MIDNIGHT"
 	var whole_minutes = clampi(floori(minutes), 0, 1439)
 	var hour_24 = whole_minutes / 60
 	var minute = whole_minutes % 60
@@ -35,8 +38,11 @@ static func phase_label(minutes: float) -> String:
 		"night": return "Night"
 		_: return "Morning"
 
+static func watch_aperture(minutes: float) -> String:
+	return "moon" if minutes >= MOONRISE else "sun"
+
 static func advance(st,amount:float) -> void:
-	if is_finite(amount) and amount>0: st.clock_minutes=minf(NIGHT,st.clock_minutes+amount)
+	if is_finite(amount) and amount>0: st.clock_minutes=minf(MIDNIGHT,st.clock_minutes+amount)
 
 static func district(world:String) -> String:
 	if world in ["estate","lounge","tunnel"]: return "estate"

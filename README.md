@@ -51,7 +51,7 @@ Double-click `Launch.cmd`, or open `project.godot` in Godot and press F5. The la
 - WASD / arrows: move; mouse: look; Q/R: orbit camera.
 - Mouse wheel: camera distance; Shift: brisk walking.
 - E / F: examine or speak.
-- Tab / I: personal effects and pocket watch; J: case file; Escape: pause.
+- Tab / I: Personal Effects paper doll; select Walter's coat, badge, notebook, revolver, flask or boots directly. The closed watch icon in the upper-right opens the analogue watch; it changes from sun to moon at 6 PM and holds at midnight until Walter sleeps. J opens the case file; Escape pauses.
 - F11: fullscreen. Menus support mouse or Tab, Shift+Tab, Enter/Space.
 
 Development only: F3 toggles Shift between the player brisk pace (4.0) and the temporary developer pace (10.5) for the current process.
@@ -101,7 +101,7 @@ The existing `Build and serve web.cmd` script still runs the local HTTP server o
 
 `python tests/run_all_qa.py` is the maintained aggregate runner. Its current 13-suite set covers the dialogue, object and portal grammars/templates/live content plus opening, town, service-passage loop, usability integration, and the complete steward-to-glass ending path; the latest checked-in run is clean in `qa_run_log.txt`. `tests/dialogue_catalog_flow.gd`, the population/placement checks, pocket-watch, telemetry, camera and presentation checks remain focused suites outside that aggregate and should be run when their areas change. The `.cmd` launchers remain convenient partial checks, not the authoritative complete set.
 
-Live renderer captures use `-- --capture=` followed by a mode name: `world`, `title`, `case`, `dialogue`, `settings`, `effects`, `large_text`, `gate`, `town`, `precinct`, `boardinghouse`, `room`, `board`, `witness`, `tunnel_access`, `tunnel_death`, `tunnel_record`, `return_gardener`, `lounge`, `montage`, `notebook`, `cleared_estate`, `observer`, `link_picker`, `link_positive`, or `link_negative` (see `tests/capture_views.gd` for the authoritative list). These developer arguments are not shown in-game. Reviewed captures are in `docs/qa/`.
+Live renderer captures use `-- --capture=` followed by a mode name: `world`, `title`, `case`, `dialogue`, `settings`, `effects`, `watch`, `large_text`, `gate`, `town`, `precinct`, `boardinghouse`, `room`, `board`, `witness`, `tunnel_access`, `tunnel_death`, `tunnel_record`, `return_gardener`, `lounge`, `montage`, `notebook`, `cleared_estate`, `observer`, `link_picker`, `link_positive`, or `link_negative` (see `tests/capture_views.gd` for the authoritative list). These developer arguments are not shown in-game. Reviewed captures are in `docs/qa/`.
 
 - `main.gd`: shared player movement and camera rig.
 - `scripts/chapters/chapter_one.gd`: Chapter One progression and interaction orchestration.

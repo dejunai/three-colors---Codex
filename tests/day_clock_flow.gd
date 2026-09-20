@@ -57,12 +57,13 @@ func run() -> void:
 		if spec[1]=="morning": assert(g.daylight.sun_disk.position.x>g.player.position.x)
 		if spec[1]=="evening": assert(g.daylight.sun_disk.position.x<g.player.position.x)
 		if spec[1]=="noon": assert(g.daylight.sun_disk.position.y>90 and g.daylight.sun_disk.position.x==g.player.position.x)
+	g.state.clock_minutes=Clock.MIDNIGHT-1.0
 	g.tick_world(600)
 	g._travel("town",Vector3(0,0.1,8))
-	assert(g.state.clock_minutes==1200,"Night holds through wandering and travel")
+	assert(g.state.clock_minutes==Clock.MIDNIGHT,"Midnight holds through wandering and travel")
 	g._save_game()
 	g._load_game()
-	assert(g.state.clock_minutes==1200 and not g.daylight.sun_disk.visible)
+	assert(g.state.clock_minutes==Clock.MIDNIGHT and not g.daylight.sun_disk.visible)
 	var data=g.state.pack()
 	data.version=6
 	data.erase("clock_minutes")
@@ -86,5 +87,5 @@ func run() -> void:
 	g._interact("sleep")
 	assert(g.page=="case" and g.state.day==3 and g.state.clock_minutes==360)
 	g._close()
-	print("CLOCK PASS: 5x walking; paused dialogue/menus; completion-only authored minute cost; no repeat/refusal farming; district-only travel; four sun/lamp states; night hold; save migration; enacted day transitions reset morning")
+	print("CLOCK PASS: 5x walking; paused dialogue/menus; completion-only authored minute cost; no repeat/refusal farming; district-only travel; four sun/lamp states; midnight hold; save migration; enacted day transitions reset morning")
 	quit()

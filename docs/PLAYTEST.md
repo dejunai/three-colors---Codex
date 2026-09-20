@@ -34,7 +34,7 @@ Afterward, inspect anonymous telemetry only as supporting evidence. A session ca
 - Save during dialogue, after a district transition, before the service passage, and after retreat; quit and continue each.
 - Use both police and plain coats at social gates.
 - Test click-to-move as well as WASD, and deliberately close menus while moving the mouse to check camera recapture.
-- Open the Tab menu and check the pocket watch at multiple phases. F3 is a development-only brisk-speed toggle and must be off for pacing judgments.
+- Open the Tab menu and use every paper-doll callout. Confirm the coat changes visually and mechanically, equipment inspections return cleanly, lost badge/flask states read correctly, and the closed-watch icon opens the analogue face. Check the watch before and after 6 PM, then at midnight; the aperture, hands and exact text must agree, and midnight must hold until sleep. F3 is a development-only brisk-speed toggle and must be off for pacing judgments.
 - Test enlarged text, zero distortion, reduced flicker and muted instrument voices. Captions and factual access must survive every presentation setting.
 
 Use `python tests/run_all_qa.py` for the maintained 13-suite regression set, including the complete steward-to-glass ending route. Run focused suites such as `dialogue_catalog_flow.gd`, `pocket_watch_flow.gd`, `playthrough_log_flow.gd`, population checks and presentation checks when those areas change. Automated success never substitutes for the cold-play questions above.

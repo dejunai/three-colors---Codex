@@ -1,5 +1,6 @@
 extends RefCounted
 
+const DayClock = preload("res://scripts/shared/day_clock.gd")
 const VERSION = 11
 var dialogue_state = preload("res://scripts/shared/dialogue_state.gd").new()
 var object_state = preload("res://scripts/shared/object_state.gd").new()
@@ -209,7 +210,7 @@ func restore(d: Dictionary) -> bool:
 	estate_visits_completed = maxi(0,int(d.get("estate_visits_completed",1 if estate_complete else 0)))
 	var clock_value=d.get("clock_minutes",360.0)
 	if not (clock_value is float or clock_value is int) or not is_finite(float(clock_value)): return false
-	clock_minutes=clampf(float(clock_value),360.0,1200.0)
+	clock_minutes=clampf(float(clock_value),360.0,DayClock.MIDNIGHT)
 	timed_conversations.assign(d.get("timed_conversations",[]))
 	if int(d.version)<7: preload("res://scripts/shared/day_clock.gd").migrate(self)
 	var dialogue_payload=d.get("dialogue_state", {})
