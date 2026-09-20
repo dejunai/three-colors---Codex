@@ -476,12 +476,20 @@ static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary) -> bool:
 			return false
 		resolved = fields[ast.name].call()
 	if String(ast.cmp).is_empty(): return bool(resolved)
+	if ast.name == "phase" and str(ast.value).to_lower() == "midday":
+		push_warning("Dialogue gate uses 'phase = midday', but runtime phase is 'noon'. Gate will never match.")
 	var value = ast.value
 	if ast.cmp == "=" or ast.cmp == "!=":
+		if (resolved is int or resolved is float) and (value is int or value is float or (value is String and ((value as String).is_valid_int() or (value as String).is_valid_float()))):
+			var equal = is_equal_approx(float(resolved), float(value))
+			return equal if ast.cmp == "=" else not equal
 		var left = str(resolved).to_lower()
 		var right = str(value).to_lower()
 		if right.is_empty():
 			return left.is_empty() if ast.cmp == "=" else not left.is_empty()
+		if left.is_valid_float() and right.is_valid_float():
+			var equal = is_equal_approx(float(left), float(right))
+			return equal if ast.cmp == "=" else not equal
 		var equal = left == right or left.contains(right) or right.contains(left)
 		return equal if ast.cmp == "=" else not equal
 	var left_num = float(resolved) if (resolved is float or resolved is int) else (float(str(resolved)) if str(resolved).is_valid_float() else 0.0)

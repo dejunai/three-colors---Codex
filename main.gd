@@ -18,6 +18,10 @@ const WALK_ACCEL = 13.0
 const BRISK_ACCEL = 18.0
 const DEVELOPER_BRISK_ACCEL = 39.0
 var developer_brisk = false
+var _model_left_leg: Node3D
+var _model_right_leg: Node3D
+var _model_left_arm: Node3D
+var _model_right_arm: Node3D
 # Guarantees a keydown/keyup pair resolves as movement even if it completes within one physics frame (synthetic/automated input).
 const MOVE_LATCH_MIN = 0.15
 var move_latch_timer = {"walk_forward":0.0,"walk_back":0.0,"walk_left":0.0,"walk_right":0.0}
@@ -39,7 +43,8 @@ var _motion_guard_until = -1000.0
 
 func _ready() -> void:
 	_setup_inputs()
-	chapter=get_node(chapter_path)
+	chapter = get_node_or_null(chapter_path)
+	assert(chapter != null, "Chapter node not found at %s" % chapter_path)
 	chapter.start(self)
 
 func _setup_inputs() -> void:
@@ -49,7 +54,8 @@ func _setup_inputs() -> void:
 		for key in keys[action]:
 			var e = InputEventKey.new()
 			e.physical_keycode = key
-			InputMap.action_add_event(action,e)
+			if not InputMap.action_has_event(action, e):
+				InputMap.action_add_event(action, e)
 
 func build_player(avatar:Node3D,spawn:Vector3) -> void:
 	player = CharacterBody3D.new()
@@ -68,6 +74,10 @@ func build_player(avatar:Node3D,spawn:Vector3) -> void:
 	model = avatar
 	model.reparent(player,false)
 	model.position = Vector3.ZERO
+	_model_left_leg = model.get_node_or_null("LeftLeg")
+	_model_right_leg = model.get_node_or_null("RightLeg")
+	_model_left_arm = model.get_node_or_null("LeftArm")
+	_model_right_arm = model.get_node_or_null("RightArm")
 	player.position = spawn
 	camera = Camera3D.new()
 	camera.name = "ThirdPersonCamera"
@@ -155,10 +165,10 @@ func _physics_process(delta:float) -> void:
 		model.rotation.y = lerp_angle(model.rotation.y,atan2(-movement.x,-movement.z),delta*10)
 		animation_time += delta*speed*3
 	var swing = sin(animation_time)*0.34*movement.length()
-	model.get_node("LeftLeg").rotation.x = swing
-	model.get_node("RightLeg").rotation.x = -swing
-	model.get_node("LeftArm").rotation.x = -swing*0.8
-	model.get_node("RightArm").rotation.x = swing*0.8
+	if _model_left_leg != null: _model_left_leg.rotation.x = swing
+	if _model_right_leg != null: _model_right_leg.rotation.x = -swing
+	if _model_left_arm != null: _model_left_arm.rotation.x = -swing*0.8
+	if _model_right_arm != null: _model_right_arm.rotation.x = swing*0.8
 	var orbit = Input.get_axis("camera_left","camera_right")
 	yaw -= orbit*delta*1.5
 	_update_camera(delta)

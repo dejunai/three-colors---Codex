@@ -22,8 +22,14 @@ static var _voice_ids: Dictionary = {}
 static func clear_cache() -> void:
 	_cache.clear()
 
-static func load_npc(path: String) -> Dictionary:
+static func load_npc(path: String, loading_stack: Array = []) -> Dictionary:
 	if _cache.has(path): return _cache[path]
+	if loading_stack.has(path):
+		var cycle = " -> ".join(loading_stack) + " -> " + path
+		push_error("Cyclic dialogue include detected: %s" % cycle)
+		return {"npc": "", "location": "", "schedule": {}, "includes": [], "topics": [], "errors": [{"line": 1, "message": "Cyclic include: %s" % cycle}]}
+	var next_stack = loading_stack.duplicate()
+	next_stack.append(path)
 	var file = FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		push_error("Missing dialogue file: %s" % path)
@@ -37,7 +43,7 @@ static func load_npc(path: String) -> Dictionary:
 	for topic in parsed.topics: local_ids[topic.id] = true
 	for include_value in parsed.get("includes", []):
 		var include_path = include_value if include_value.begins_with("res://") else "res://dialogue/" + include_value
-		var included = load_npc(include_path)
+		var included = load_npc(include_path, next_stack)
 		for topic in included.topics:
 			# Every repeated block for a non-shadowed id is appended, not just the
 			# first — repeated `TOPIC: default` blocks are a legitimate cascade, so
