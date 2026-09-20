@@ -9,7 +9,9 @@ func run(g:Node) -> void:
 	g.aperture=1.2
 	g.aperture_target=1.2
 	g._update_camera(1)
-	if g.capture_mode != "title": g._close()
+	if g.capture_mode != "title":
+		g.prologue.hide_all()
+		g._close()
 	if g.capture_mode == "observer":
 		g.state.lounge_exited=true
 		g.estate.sync_staging(g.state)
@@ -32,6 +34,10 @@ func run(g:Node) -> void:
 	if g.capture_mode == "dialogue": g._interact("odell")
 	if g.capture_mode == "settings": g._settings()
 	if g.capture_mode == "effects": g._case_file()
+	if g.capture_mode == "watch":
+		g.state.day = 2
+		g.state.clock_minutes = 1110.0
+		g._pocket_watch()
 	if g.capture_mode == "large_text": g.settings.text_scale=1.3; g._settings()
 	if g.capture_mode == "gate":
 		g.player.position=Vector3(0,0.1,36)

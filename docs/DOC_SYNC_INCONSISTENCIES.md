@@ -11,7 +11,7 @@ Audited 2026-09-19 against repository HEAD. This is the separate discrepancy reg
 - `portals/` has five live content files plus one template; ten live portal ids remain migrated.
 - The maintained 12-suite aggregate (`python tests/run_all_qa.py`) is clean in `qa_run_log.txt`.
 - Focused checks run during this audit: dialogue catalog PASS; placement audit PASS (62 living NPCs, zero coordinate collisions across morning/noon/evening/night); speakeasy PASS; instrument voices PASS.
-- The pocket watch is live in Personal Effects. F3 toggles the development Shift pace between 4.0 and 10.5 for the current process.
+- The pocket watch is a live analogue face in Personal Effects, with exact text retained for accessibility, a 6 AM/6 PM sun–moon aperture, and a midnight ceiling. F3 toggles the development Shift pace between 4.0 and 10.5 for the current process.
 - Telemetry accepts eight event types and dual-writes individual events to D1 plus raw request batches to R2. `watch_checked` is not one of those event types.
 
 ## TDD v43: concrete stale claims

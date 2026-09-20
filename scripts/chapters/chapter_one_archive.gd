@@ -2,6 +2,7 @@ extends RefCounted
 
 # Chapter One archive content, rendered through the shared panel manager.
 const DayClock = preload("res://scripts/shared/day_clock.gd")
+const PocketWatchFace = preload("res://scripts/ui/pocket_watch_face.gd")
 
 # Meaningful connections between two pieces of evidence, confirmed only when
 # the player draws them on the board rather than revealed automatically.
@@ -137,9 +138,16 @@ func _flask(g:Node) -> void:
 
 func _pocket_watch(g: Node) -> void:
 	g._panel("case","Walter's pocket watch","PERSONAL EFFECTS  /  DAY %d" % g.state.day)
-	g._paragraph(DayClock.display_time(g.state.clock_minutes),42)
-	g._paragraph(DayClock.phase_label(g.state.clock_minutes).to_upper(),17)
-	g._paragraph("The hands move while Walter walks and while his work carries him across town. They hold while he reads.",19)
+	var face = PocketWatchFace.new()
+	face.configure(g.state.clock_minutes, DayClock.watch_aperture(g.state.clock_minutes))
+	g.content.add_child(face)
+	var exact = g._label(DayClock.display_time(g.state.clock_minutes),28,false)
+	exact.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	g.content.add_child(exact)
+	var phase = g._label("DAY %d  ·  %s" % [g.state.day, DayClock.phase_label(g.state.clock_minutes).to_upper()],16,false)
+	phase.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	g.content.add_child(phase)
+	g._paragraph("The hands move while Walter walks and while his work carries him across town. They hold while he reads. At midnight they hold until he sleeps.",19)
 	g._button("Put it away",g._case_file)
 	g._focus_first()
 

@@ -1,12 +1,12 @@
 # Shared clock and daylight — 9 September 2026
 
-> **Historical verification snapshot.** The montage references below predate enacted Day 2. Current dialogue timing uses explicit numeric `TIME:` when authored, otherwise zero minutes for default greetings and 3 minutes for substantive topics; portal timing is separately authored/defaulted. The live pocket watch is covered by `tests/pocket_watch_flow.gd`.
+> **Current behavior addendum (2026-09-20).** The montage references below predate enacted Day 2. Current dialogue timing uses explicit numeric `TIME:` when authored, otherwise zero minutes for default greetings and 3 minutes for substantive topics; portal timing is separately authored/defaulted. Night begins at 20:00 but time now continues to a midnight ceiling. The live analogue pocket watch is covered by `tests/pocket_watch_flow.gd` and `docs/qa/ANALOGUE_WATCH_PASS.md`.
 
 Implemented the agreed clock/daylight pass. NPC availability, door access, the speakeasy, and schedules remain unchanged. The Day 2 montage remains until there is sufficient enacted investigation content.
 
 ## Rules
 
-- Morning begins at 06:00, noon at 12:00, evening at 17:00, and night at 20:00. Night holds at 20:00; it does not advance the day automatically.
+- Morning begins at 06:00, noon at 12:00, evening at 17:00, and night at 20:00. Time holds at midnight; it does not advance the day automatically.
 - Wandering advances the investigation clock five game minutes per real minute. Dialogue, notebook, and other menus pause wandering time. Existing real movement minutes are retained separately for pacing probes.
 - Completing a substantive conversation costs 30 minutes, once per content ID. Reopening recorded content cannot charge again. Introductory pleasantries, brief refusals, placeholder residents, and reading objects are free. Intake's combined conversation is charged once. An explicit override table supports longer future conversations.
 - Travel between districts costs 30 minutes. Estate/lounge/tunnel form one district; Pickman Street and its interiors form another; each residential or business hub and its interiors form its own district. Entering a shop, lodging, morgue, or room is free. Save/load does not charge travel. Scripted tunnel returns to town do charge the district crossing.
@@ -22,7 +22,7 @@ The location caption includes day and phase. Mouse look can now tilt upward to s
 
 CaseState schema 7 stores clock_minutes and timed_conversations. Versions 1–6 remain supported. Old saves begin at morning because they contain no reliable investigation clock; earned conversation content is migrated to avoid charging established testimony again.
 
-The new tests/day_clock_flow.gd passed: 5x rate; paused dialogue/notebook; completion-only conversation cost; free repeats and refusals; district vs. interior travel; save/load; four sun/lamp states; night hold; legacy migration; invalid clock rejection; montage morning reset.
+The updated `tests/day_clock_flow.gd` passes: 5x rate; paused dialogue/notebook; completion-only conversation cost; free repeats and refusals; district vs. interior travel; save/load; four sun/lamp states; midnight hold; legacy migration; invalid clock rejection; enacted-day morning reset.
 
 Opening, town, staging, usability, and phase-two regression suites passed. Existing staging tests retain their two-ObjectDB-instances shutdown warning. Native morning/noon/evening/night captures were inspected, including the final east/west light direction and corrected captions. Web export completed. A Chrome smoke check reached the opening gameplay with no captured browser console or page errors on the final release; this is not a complete Web playthrough. git diff --check passed.
 
