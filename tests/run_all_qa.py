@@ -47,23 +47,31 @@ tests = [
     (["--headless", "--path", ".", "--script", "res://tests/break_flow.gd"], "break_flow"),
 ]
 
+sys.path.insert(0, os.path.join(repo_root, "tools"))
+try:
+    from kill_headless_godot import kill_headless_godot
+    kill_headless_godot()
+except Exception:
+    pass
+
 print(f"Running {len(tests)} QA suites using: {godot}")
 failed = []
 
 for args, name in tests:
     cmd = [godot] + args
     print(f"\n=== {name} ===")
+    proc = subprocess.Popen(cmd, cwd=repo_root, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     try:
-        res = subprocess.run(cmd, cwd=repo_root, env=env, capture_output=True, text=True, timeout=120)
-        out = res.stdout.strip()
-        err = res.stderr.strip()
+        out, err = proc.communicate(timeout=30)
+        out = out.strip()
+        err = err.strip()
         has_error = (
-            res.returncode != 0
+            proc.returncode != 0
             or "SCRIPT ERROR:" in out or "SCRIPT ERROR:" in err
             or "Assertion failed" in out or "Assertion failed" in err
             or "Parse Error:" in out or "Parse Error:" in err
         )
-        print("EXIT:", res.returncode)
+        print("EXIT:", proc.returncode)
         lines = out.splitlines()
         for l in lines[-4:]:
             print("  ", l)
@@ -73,7 +81,12 @@ for args, name in tests:
                 print("STDERR:\n" + err)
             failed.append(name)
     except subprocess.TimeoutExpired:
-        print("TIMEOUT: Suite exceeded limit")
+        print("TIMEOUT: Suite exceeded limit (30s) - terminating process tree")
+        if sys.platform == "win32":
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], capture_output=True)
+        else:
+            proc.kill()
+        proc.communicate()
         failed.append(f"{name} (timeout)")
 
 if failed:

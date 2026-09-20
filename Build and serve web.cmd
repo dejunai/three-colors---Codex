@@ -2,7 +2,7 @@
 setlocal
 set "GODOT_STANDARD=C:\Portables\GodotStandard\Godot_v4.7.2-stable_win64.exe"
 set "OUT=%~dp0build\web"
-set "PORT=8060"
+set "PORT=5173"
 
 echo %date% %time% 1
 rem Stop any server currently running on the port
@@ -34,6 +34,6 @@ if errorlevel 1 (
 
 echo %date% %time% 4
 :serve
-echo Serving %OUT% at http://localhost:8060 ...
-start "" http://localhost:8060/index.html
-python -m http.server 8060 -d "%OUT%"
+echo Serving %OUT% at http://localhost:5173 ...
+start "" http://localhost:5173/index.html
+python -m http.server 5173 -d "%OUT%"
