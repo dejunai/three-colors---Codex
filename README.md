@@ -51,7 +51,7 @@ Double-click `Launch.cmd`, or open `project.godot` in Godot and press F5. The la
 - WASD / arrows: move; mouse: look; Q/R: orbit camera.
 - Mouse wheel: camera distance; Shift: brisk walking.
 - E / F: examine or speak.
-- Tab / I: Personal Effects paper doll; select Walter's coat, badge, notebook, revolver, flask or boots directly. The closed watch icon in the upper-right opens the analogue watch; it changes from sun to moon at 6 PM and holds at midnight until Walter sleeps. J opens the case file; Escape pauses.
+- Tab / I: Personal Effects paper doll; select Walter's coat, badge, notebook, revolver, flask or boots directly. The closed watch icon in the upper-right opens the analogue watch; it changes from sun to moon at 6 PM and holds at midnight until Walter sleeps. J opens the case file; F1 or Escape pauses. F1 remains available in browser fullscreen, where Escape may leave fullscreen before the game receives it.
 - F11: fullscreen. Menus support mouse or Tab, Shift+Tab, Enter/Space.
 
 Development only: F3 toggles Shift between the player brisk pace (4.0) and the temporary developer pace (10.5) for the current process.

@@ -73,6 +73,8 @@ var last_clock_phase=""
 var last_region = ""
 var _last_bridge_id: String = ""
 var _last_bridge_time: float = -9999.0
+var _bridge_cooldowns: Dictionary = {}
+const BRIDGE_COOLDOWN_SECONDS: float = 60.0
 var return_page = "title"
 var town_exterior_world: String = "town"
 var settings_schema=preload("res://scripts/shared/accessibility_settings.gd").new()
@@ -262,7 +264,7 @@ func _prologue_slide(index:int) -> void:
 		prologue.stop_music()
 		state.started = true
 		_close()
-		_toast("WASD move · Mouse look · E examine · Tab case file · Esc pause",10)
+		_toast("WASD move · Mouse look · E examine · Tab case file · F1 / Esc pause",10)
 		_save_game()
 		return
 	var card = Story.INTROS[index]
@@ -556,7 +558,7 @@ func _pause() -> void:
 
 func _settings() -> void:
 	_panel("settings","Accessibility & controls","AVAILABLE BEFORE PLAY",true)
-	_paragraph("WASD / arrows: move · Mouse: look · Q / R: orbit camera\nWheel: camera distance · Shift: walk briskly · E / F: interact\nTab / I: personal effects · J: case file · Esc: pause · F11: fullscreen\nMenus: Tab to focus · Enter / Space to select · Mouse also supported",18)
+	_paragraph("WASD / arrows: move · Mouse: look · Q / R: orbit camera\nWheel: camera distance · Shift: walk briskly · E / F: interact\nTab / I: personal effects · J: case file · F1 / Esc: pause · F11: fullscreen\nMenus: Tab to focus · Enter / Space to select · Mouse also supported",18)
 	_paragraph("Clue text and intertitles remain outside all film effects.\nThe service passage uses a provisional cough cue with a protected caption. No spoken dialogue is omitted.",18)
 	for item in [["distortion","Distortion intensity",0.0,1.0,0.05],["grain","Film grain",0.0,0.06,0.005],["contrast","Scene contrast",0.8,1.4,0.05],["text_scale","Text size",0.9,1.3,0.1],["sensitivity","Mouse sensitivity",0.001,0.006,0.0005],["instrument_voice_volume","Instrument voices",0.0,1.0,0.05]]:
 		var key:String = item[0]
@@ -747,8 +749,9 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 func on_bridge_crossed(bridge_id: String) -> void:
 	if page != "play": return
 	var now = Time.get_ticks_msec() / 1000.0
-	if _last_bridge_id == bridge_id and (now - _last_bridge_time) < 3.0:
+	if now - float(_bridge_cooldowns.get(bridge_id, -9999.0)) < BRIDGE_COOLDOWN_SECONDS:
 		return
+	_bridge_cooldowns[bridge_id] = now
 	_last_bridge_id = bridge_id
 	_last_bridge_time = now
 	DayClock.advance(state, 30.0)

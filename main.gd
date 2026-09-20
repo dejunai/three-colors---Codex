@@ -48,7 +48,7 @@ func _ready() -> void:
 	chapter.start(self)
 
 func _setup_inputs() -> void:
-	var keys = {"walk_forward":[KEY_W,KEY_UP],"walk_back":[KEY_S,KEY_DOWN],"walk_left":[KEY_A,KEY_LEFT],"walk_right":[KEY_D,KEY_RIGHT],"use":[KEY_E,KEY_F],"case":[KEY_TAB,KEY_I],"journal":[KEY_J],"pause_game":[KEY_ESCAPE],"brisk":[KEY_SHIFT],"camera_left":[KEY_Q],"camera_right":[KEY_R]}
+	var keys = {"walk_forward":[KEY_W,KEY_UP],"walk_back":[KEY_S,KEY_DOWN],"walk_left":[KEY_A,KEY_LEFT],"walk_right":[KEY_D,KEY_RIGHT],"use":[KEY_E,KEY_F],"case":[KEY_TAB,KEY_I],"journal":[KEY_J],"pause_game":[KEY_ESCAPE,KEY_F1],"brisk":[KEY_SHIFT],"camera_left":[KEY_Q],"camera_right":[KEY_R]}
 	for action in keys:
 		if not InputMap.has_action(action): InputMap.add_action(action)
 		for key in keys[action]:
