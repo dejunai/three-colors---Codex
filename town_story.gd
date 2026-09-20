@@ -101,5 +101,6 @@ const SCENES = {
 		["THE OUTGOING TRAY", "A second envelope. A later date.\n\nWalter sends what he knows now.\nWhatever was sent earlier remains what he knew then."]],
 	"close_day": [
 		["PICKMAN STREET · EVENING", "Walter has brought a name home.\nThe case is larger for having become more exact."],
+		["TURNING IN", "He lies down in the dark room above the cobbler's shop, listening to the harbor tide through the floorboards.\n\nHe isn't likely to get much sleep tonight, if any."],
 		["THE NEXT INQUIRY", "The estate's records. The club's staff.\nThe men the town had already decided to trust.\n\nTomorrow, he will ask again."]]
 }

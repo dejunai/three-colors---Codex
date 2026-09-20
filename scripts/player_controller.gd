@@ -1,3 +1,5 @@
+# NOTE: Legacy prototype script. The active game orchestration uses main.gd and
+# scripts/chapters/chapter_one.gd. Retained for historical reference.
 extends CharacterBody3D
 class_name PlayerController
 

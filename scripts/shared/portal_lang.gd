@@ -473,9 +473,16 @@ static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary) -> bool:
 	var result
 	if bool(ast.call):
 		var fn = ctx.get("functions", {}).get(name)
-		result = fn.call(ast.args) if fn is Callable and fn.is_valid() else false
+		if not (fn is Callable and fn.is_valid()):
+			push_error("Unknown portal gate function '%s'" % name)
+			return false
+		result = fn.call(ast.args)
 	else:
-		var field = ctx.get("fields", {}).get(name)
+		var fields = ctx.get("fields", {})
+		if not fields.has(name):
+			push_error("Unknown portal gate field '%s'" % name)
+			return false
+		var field = fields.get(name)
 		result = field.call() if field is Callable and field.is_valid() else false
 	if String(ast.cmp).is_empty(): return bool(result)
 	var expected = str(ast.value) if ast.value != null else ""
@@ -483,9 +490,13 @@ static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary) -> bool:
 	match String(ast.cmp):
 		"=":
 			if expected.is_empty() and res_str.is_empty(): return true
+			if (result is int or result is float or res_str.is_valid_float()) and expected.is_valid_float():
+				return is_equal_approx(float(result), float(expected))
 			return res_str.to_lower().contains(expected.to_lower()) or expected.to_lower().contains(res_str.to_lower())
 		"!=":
 			if expected.is_empty(): return not res_str.is_empty()
+			if (result is int or result is float or res_str.is_valid_float()) and expected.is_valid_float():
+				return not is_equal_approx(float(result), float(expected))
 			return not (res_str.to_lower().contains(expected.to_lower()) or expected.to_lower().contains(res_str.to_lower()))
 		"<": return float(res_str) < float(expected) if expected.is_valid_float() else false
 		"<=": return float(res_str) <= float(expected) if expected.is_valid_float() else false

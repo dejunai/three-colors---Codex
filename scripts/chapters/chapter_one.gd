@@ -927,7 +927,7 @@ func _refresh_outfit() -> void:
 	if state.world == "estate":
 		estate.sync_staging(state)
 		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
-	model.get_node("Coat").material_override=estate.mat("5f6559" if state.coat=="Plain wool coat" else "424b43")
+	if model.has_node("Coat"): model.get_node("Coat").material_override=estate.mat("5f6559" if state.coat=="Plain wool coat" else "424b43")
 	if model.has_node("Badge"): model.get_node("Badge").visible=state.coat=="Police coat" and not state.dialogue_state.flag("badge_lost")
 
 func _source_for(id:String) -> String:

@@ -428,26 +428,38 @@ static func _comparison(state: Dictionary) -> Dictionary:
 		value = v.value if v != null else null
 	return {"op": "cmp", "name": name, "call": is_call, "args": args, "cmp": cmp, "value": value}
 
-static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary):
+static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary) -> bool:
 	var name = String(ast.name)
 	var result
 	if bool(ast.call):
 		var fn = ctx.get("functions", {}).get(name)
-		result = fn.call(ast.args) if fn is Callable and fn.is_valid() else false
+		if not (fn is Callable and fn.is_valid()):
+			push_error("Unknown object gate function '%s'" % name)
+			return false
+		result = fn.call(ast.args)
 	else:
-		var field = ctx.get("fields", {}).get(name)
+		var fields = ctx.get("fields", {})
+		if not fields.has(name):
+			push_error("Unknown object gate field '%s'" % name)
+			return false
+		var field = fields.get(name)
 		result = field.call() if field is Callable and field.is_valid() else false
 	if String(ast.cmp).is_empty(): return bool(result)
-	var expected = String(ast.value)
+	var expected = str(ast.value) if ast.value != null else ""
+	var res_str = str(result) if result != null else ""
 	match String(ast.cmp):
 		"=":
-			if expected.is_empty(): return String(result).is_empty()
-			return String(result).to_lower().contains(expected.to_lower()) or expected.to_lower().contains(String(result).to_lower())
+			if expected.is_empty() and res_str.is_empty(): return true
+			if (result is int or result is float or res_str.is_valid_float()) and expected.is_valid_float():
+				return is_equal_approx(float(result), float(expected))
+			return res_str.to_lower().contains(expected.to_lower()) or expected.to_lower().contains(res_str.to_lower())
 		"!=":
-			if expected.is_empty(): return not String(result).is_empty()
-			return not (String(result).to_lower().contains(expected.to_lower()) or expected.to_lower().contains(String(result).to_lower()))
-		"<": return float(result) < float(expected) if expected.is_valid_float() else false
-		"<=": return float(result) <= float(expected) if expected.is_valid_float() else false
-		">": return float(result) > float(expected) if expected.is_valid_float() else false
-		">=": return float(result) >= float(expected) if expected.is_valid_float() else false
+			if expected.is_empty(): return not res_str.is_empty()
+			if (result is int or result is float or res_str.is_valid_float()) and expected.is_valid_float():
+				return not is_equal_approx(float(result), float(expected))
+			return not (res_str.to_lower().contains(expected.to_lower()) or expected.to_lower().contains(res_str.to_lower()))
+		"<": return float(res_str) < float(expected) if expected.is_valid_float() else false
+		"<=": return float(res_str) <= float(expected) if expected.is_valid_float() else false
+		">": return float(res_str) > float(expected) if expected.is_valid_float() else false
+		">=": return float(res_str) >= float(expected) if expected.is_valid_float() else false
 		_: return false

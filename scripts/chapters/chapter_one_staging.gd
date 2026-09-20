@@ -54,8 +54,12 @@ func sleep(g:Node) -> void:
 		g.state.clock_minutes = 360.0
 		g.state.montage_index = -1
 		g._save_game()
-		g._close()
-		g._toast("The second day. The investigation continues.",6)
+		g._panel("case","Turn in for the night.","CORWIN'S ROOM")
+		g._paragraph("Walter lies down in the dark room above the cobbler's shop, listening to the harbor wind rattle the sash. With eight deaths in his notebook and an unacknowledged woman turning in his head, he isn't likely to get much sleep tonight, if any at all.",22)
+		g._button("Get up",func():
+			g._close()
+			g._toast("The second day. The investigation continues.",6))
+		g._focus_first()
 	elif g.state.day == 2 and g.state.steward_visits < 2:
 		g._panel("case","The steward has not answered me yet today.","CORWIN'S ROOM")
 		g._paragraph("Return to the smoking lounge through the service entrance.")
@@ -66,8 +70,12 @@ func sleep(g:Node) -> void:
 		g.state.clock_minutes = 360.0
 		g.state.montage_index = -1
 		g._save_game()
-		g._close()
-		g._toast("The third day. The steward is expecting you.",6)
+		g._panel("case","Turn in for the night.","CORWIN'S ROOM")
+		g._paragraph("Walter lies back on the narrow mattress and stares at the ceiling plaster until his eyes ache. With tomorrow's appointment at the estate waiting, he isn't likely to get much sleep tonight, if any.",22)
+		g._button("Get up",func():
+			g._close()
+			g._toast("The third day. The steward is expecting you.",6))
+		g._focus_first()
 	elif g.state.steward_visits < 3:
 		g._panel("case","The steward is expecting me.","CORWIN'S ROOM")
 		g._paragraph("Come back tomorrow, and don't bring your badge.")
