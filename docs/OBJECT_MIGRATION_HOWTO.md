@@ -16,9 +16,11 @@ now actually presents choices live (§2); an unresolved-but-clickable hotspot fa
 instead of silently doing nothing (§2, `docs/OBJECT_AUTHORING.md`'s "Fail-loud" section);
 `LABEL:` now really drives the hover text, for all three locations (§2/§4); `INCLUDE`d
 files no longer drop repeated cascade variants; `LOCATION`/`OBJECT`/`TAG`/`EVIDENCE`/
-`NOTEBOOK` ids and `TIME` are now validated at parse time. Still open: visibility is
-one-way only (§4), and unknown GATE fields/functions still parse instead of erroring
-(see `docs/OBJECT_AUTHORING.md`'s "Validation and provenance" for the current list).
+`NOTEBOOK` ids and `TIME` are now validated at parse time. Since fixed: unknown GATE
+fields/functions now fail loud (`object_lang.gd::_evaluate_cmp()` `push_error()`s and
+returns false for both, matching `portal_lang.gd`) rather than silently parsing. Still
+open: visibility is one-way only (§4) — see `docs/OBJECT_AUTHORING.md`'s "Validation and
+provenance" for the current list.
 
 Do this **one hotspot at a time**, run the tests after each one, and commit. Do not try
 to migrate a whole location in one pass — the generic fallback in `chapter_one.gd`

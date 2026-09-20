@@ -264,7 +264,7 @@ func _prologue_slide(index:int) -> void:
 		prologue.stop_music()
 		state.started = true
 		_close()
-		_toast("WASD move · Mouse look · E examine · Tab case file · F1 / Esc pause",10)
+		_toast("WASD move · Mouse look · E examine · Tab personal effects · F1 / Esc pause",10)
 		_save_game()
 		return
 	var card = Story.INTROS[index]

@@ -1,6 +1,6 @@
 # Bible and TDD inconsistencies with the live codebase
 
-Audited 2026-09-19 against repository HEAD. This is the separate discrepancy register requested during the documentation sync. The Design Bible and TDD were read but intentionally not edited. The Bible remains the narrative/design authority; the TDD is expected to describe the implementation and should be revised where its concrete claims have gone stale.
+Audited 2026-09-19, re-checked 2026-09-20 against repository HEAD. This is the separate discrepancy register requested during the documentation sync. The Design Bible and TDD were read but intentionally not edited. The Bible remains the narrative/design authority; the TDD is expected to describe the implementation and should be revised where its concrete claims have gone stale.
 
 ## Verified live baseline
 
@@ -14,15 +14,22 @@ Audited 2026-09-19 against repository HEAD. This is the separate discrepancy reg
 - Personal Effects now uses a state-driven paper doll for coat, badge, notebook, revolver, flask and boots. Its compact closed-watch icon opens the live analogue face, with exact text retained for accessibility, a 6 AM/6 PM sun–moon aperture, and a midnight ceiling. F3 toggles the development Shift pace between 4.0 and 10.5 for the current process.
 - Telemetry accepts eight event types and dual-writes individual events to D1 plus raw request batches to R2. `watch_checked` is not one of those event types.
 
-## TDD v43: concrete stale claims
+## TDD v43 items: superseded by TDD v44 (this document is now stale on this point — corrected here 2026-09-20)
 
-1. **Dialogue totals are stale.** Part Two says 70 NPCs/438 topics twice. Live parser-authoritative totals are 71 NPCs/449 nonempty topics. The TDD should avoid substituting the 465 raw header count.
-2. **Instrument-line count is stale.** Part Two says 705 voiced NPC lines. The current focused audit reports 723.
-3. **Pocket-watch telemetry is credited but does not exist.** Part Four says the captured metrics include whether the player checks the Tab-menu pocket watch. The watch UI exists, but neither `playthrough_log.gd` nor the Worker's `EVENT_FIELDS` contains `watch_checked`.
-4. **Placement-audit failure is resolved.** Part Five still calls `tests/test_placement_audit.gd`'s truncated `pri` parse error open. The identifier is repaired; the suite now passes with 62 living NPCs and zero coordinate collisions across all phases.
-5. **Staging assertion failure is resolved.** Part Five still calls `tests/staging_flow.gd`'s gatehouse-boy assertion open. The test now checks authored weighted return dialogue, restored steward repeat chatter, the live sleep/debrief path, and passes through its integrated runner.
-6. **Speakeasy failure is resolved.** Part Five still calls line 60's eavesdropping assertion open. `tests/speakeasy_flow.gd` now passes daytime lockout, coat rejection, evening/plain entry, five-card eavesdropping, evidence recording and return.
-7. **Night scheduling wording is too absolute.** Part Three says catalog residents are empty at night regardless of authored schedule. `dialogue_catalog.gd` explicitly permits the four `NIGHT_ACTIVE` actors (`speakeasy_bartender`, both night owls and `lamplighter`) and then applies their authored schedule. Ordinary residents do close at night.
+The six items below were logged against **TDD v43** on 2026-09-19. The TDD was subsequently bumped to **v44**, which already carries the correct dialogue/instrument counts and marks items 4–6 RESOLVED and item 7's night-scheduling wording precisely. Only item 3 (pocket-watch telemetry) remains a genuine open gap in v44. Retained below for provenance; do not treat items 1, 2, 4, 5, 6, 7 as current TDD problems.
+
+1. ~~Dialogue totals are stale.~~ Fixed in v44: "71 NPCs and 449 nonempty authored `TOPIC:` blocks... confirmed live 2026-09-20."
+2. ~~Instrument-line count is stale.~~ Fixed in v44: "723 NPC lines."
+3. **Pocket-watch telemetry is credited but does not exist. Still open in v44.** Part Four still lists `watch_checked` among captured metrics. The watch UI exists, but neither `playthrough_log.gd` nor the Worker's `EVENT_FIELDS` contains `watch_checked` — confirmed unchanged this pass. `docs/ARCHITECTURE.md` and `docs/LOG_PLAYER_ASK.md` both already document this gap correctly.
+4. ~~Placement-audit failure.~~ v44 marks this RESOLVED with the same evidence (62 NPCs, zero collisions).
+5. ~~Staging assertion failure.~~ v44 marks this RESOLVED via the integrated `--qa-staging` runner.
+6. ~~Speakeasy failure.~~ v44 marks this RESOLVED, confirmed live 2026-09-20.
+7. ~~Night scheduling wording too absolute.~~ v44's Part Three already names the `NIGHT_ACTIVE` exception list precisely (`speakeasy_bartender`, both night owls, `lamplighter`) rather than stating an absolute rule.
+
+## Working-tree note: an uncommitted TDD v44 edit exists, not made by this session
+
+As of 2026-09-20, `git status` shows one uncommitted modification to `docs/design/07) Three Colors of Madness — TDD v44.md` on top of the last commit (`72f159d`, "second attempt"). It updates one paragraph's status from "implemented but not yet committed" to "confirmed committed (`72f159d`) and independently re-verified live... full `python tests/run_all_qa.py` pass (all 13 suites) is clean." This reads like an in-progress TDD self-maintenance edit from a concurrent session, consistent with this project's documented multi-agent workflow. Per the working-tree discipline this repo already follows: this change was left untouched and is not evaluated further here — it is not this pass's edit to make or unmake.
+
 
 ## Design Bible v17: implementation gaps, not proposed Bible edits
 
@@ -42,6 +49,14 @@ These are differences between the complete intended work and the present vertica
 - `docs/PLAYTEST.md`: replaced the obsolete opening-only checklist with a current three-day/service-passage/glass-break cold-play protocol.
 - `docs/LOG_PLAYER_ASK.md` and `docs/qa/PLAYER_LOG_ENDPOINT_HANDOFF.md`: corrected R2-only history to current D1+R2 dual-write, conversation events, duration normalization, ending hook and pocket-watch telemetry gap.
 - Historical montage-era briefs and QA records were not rewritten as if they had always described the present build. They now carry a prominent current-status annotation and retain their original evidence beneath it.
+
+## 2026-09-20 pass: additional fixes
+
+- `README.md`: the portal-system paragraph incorrectly said an omitted `TIME:` "preserves the travel system's automatic charge" (a leftover from an earlier code path). Direct read of `portal_lang.gd` (default `timing = "3"`) and `chapter_one_portals.gd::_perform_go()` (the `is_valid_float()` branch is always taken) confirms an omitted `TIME:` always defaults to 3 minutes, charged once per portal identity on first completion — corrected to match `docs/ARCHITECTURE.md` and `docs/PORTAL_AUTHORING.md`, which already had this right.
+- `docs/DIALOGUE_AUTHORING.md`: still said a substantive topic with no authored `TIME:` falls back to 3 minutes. `dialogue_runtime.gd`'s `DEFAULT_MINUTES` moved to `5.0` on 2026-09-20 (see `docs/qa/PACING_AND_CONSISTENCY_AUDIT_2026-09-20.md` and the TDD v44 pacing-tuning paragraph); corrected.
+- `docs/qa/TDD_PENDING_NOTES.md`: one deep "Still open, carried forward (unchanged by v42)" bullet still literally named `town_expansion_flow.gd`/`staging_flow.gd`/`test_placement_audit.gd`/`speakeasy_flow.gd` as unresolved, even though the same file's own top banner and TDD v44 both mark them resolved. This exact staleness was flagged by `docs/qa/PACING_AND_CONSISTENCY_AUDIT_2026-09-20.md` as something the 2026-09-19 sync pass didn't catch (it only diffed Bible/TDD against source, not this holding-pen file). Struck through in place with a resolved annotation rather than deleted, preserving provenance.
+- `docs/ARCHITECTURE.md`: added a new dated section, "Day-clock pacing tuning and bridge cooldown (September 20, 2026)," documenting the `DEFAULT_MINUTES` 3→5 change, the corpus-wide +2 minute `TIME:` adjustment, and the new `BRIDGE_COOLDOWN_SECONDS = 60.0` per-bridge cooldown in `chapter_one.gd::on_bridge_crossed()` — none of which any current-facing doc described before this pass.
+- `docs/qa/PACING_AND_CONSISTENCY_AUDIT_2026-09-20.md` (not written by this session) is a thorough, source-verified answer to "why does the slice now run 45–60 minutes instead of the ~30 originally scoped" — its conclusion (retired opening-only target, not a regression) and its one flagged doc staleness were both independently confirmed and acted on above.
 
 ## Historical snapshots retained intentionally
 

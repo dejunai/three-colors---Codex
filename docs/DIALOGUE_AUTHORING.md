@@ -121,7 +121,7 @@ TOPIC: odell_decision
       ODELL: "Good. Write what I told you."
 ```
 
-TIME is charged once per NPC and TAG (or TOPIC if TAG is omitted). Existing legacy timed-conversation tags are also consulted, so use globally unique TAGs. An explicitly authored numeric `TIME` always wins, including `TIME: 0`. When `TIME` is omitted or nonnumeric, a `default` greeting costs **0 minutes** and every substantive topic falls back to **3 minutes**; words such as `short` do not define a duration. Replaying a completed topic does not repeatedly advance time. Give new default scenes distinct TAGs if each should have its own time charge.
+TIME is charged once per NPC and TAG (or TOPIC if TAG is omitted). Existing legacy timed-conversation tags are also consulted, so use globally unique TAGs. An explicitly authored numeric `TIME` always wins, including `TIME: 0`. When `TIME` is omitted or nonnumeric, a `default` greeting costs **0 minutes** and every substantive topic falls back to `dialogue_runtime.gd`'s `DEFAULT_MINUTES` (raised from 3 to **5 minutes** on 2026-09-20, alongside a corpus-wide +2 minute adjustment to authored `TIME:` values — re-check the constant directly rather than trusting this number indefinitely); words such as `short` do not define a duration. Replaying a completed topic does not repeatedly advance time. Give new default scenes distinct TAGs if each should have its own time charge.
 
 Keep NPC, topic, TAG, note, and evidence identities stable through prose edits: saves and other files depend on them. A later changed account should get its own note ID because existing notes are not overwritten. Saved mid-conversation playback may return control safely if the underlying content changes rather than resuming an obsolete sequence.
 
