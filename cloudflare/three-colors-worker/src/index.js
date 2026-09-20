@@ -19,8 +19,9 @@ const INSERT_EVENT = `INSERT OR IGNORE INTO game_events (
   day, new_phase, npcs_spoken_to_this_phase,
   real_seconds_since_day3_start, town_feel, time_natural,
   total_real_seconds, final_day, ended_via,
-  npc_id, topic_id, coat_state, world, phase
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  npc_id, topic_id, coat_state, world, phase,
+  page_origin, received_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 function corsHeaders(request) {
   const origin = request.headers.get("Origin") || "";
@@ -83,7 +84,7 @@ async function eventKey(event) {
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-async function d1Statements(env, events) {
+async function d1Statements(env, events, origin, receivedAt) {
   return Promise.all(events.map(async (event) => env.DB.prepare(INSERT_EVENT).bind(
     await eventKey(event), event.session_id, event.event, event.timestamp,
     event.from_world ?? null, event.to_world ?? null,
@@ -94,6 +95,7 @@ async function d1Statements(env, events) {
     event.total_real_seconds ?? null, event.final_day ?? null, event.ended_via ?? null,
     event.npc_id ?? null, event.topic_id ?? null, event.coat_state ?? null,
     event.world ?? null, event.phase ?? null,
+    origin, receivedAt,
   )));
 }
 
@@ -129,7 +131,8 @@ export default {
     const now = new Date();
     const date = now.toISOString().slice(0, 10);
     const key = `events/${date}/${crypto.randomUUID()}.json`;
-    const statements = await d1Statements(env, events);
+    const requestOrigin = request.headers.get("Origin") || null;
+    const statements = await d1Statements(env, events, requestOrigin, now.toISOString());
     await Promise.all([
       env.DB.batch(statements),
       env.BUCKET_ONE.put(key, JSON.stringify({ events }), {
