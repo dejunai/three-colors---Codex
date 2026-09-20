@@ -9,11 +9,6 @@ func _text(g: Node) -> String:
 	for label in g.content.find_children("*", "Label", true, false): result += label.text + "\n"
 	return result
 
-func _has_button(g: Node, caption: String) -> bool:
-	for button in g.content.find_children("*", "Button", true, false):
-		if button.text == caption: return true
-	return false
-
 func run() -> void:
 	assert(Clock.display_time(360.0) == "6:00 AM")
 	assert(Clock.display_time(719.99) == "11:59 AM")
@@ -36,8 +31,8 @@ func run() -> void:
 	g.state.day = 2
 	g.state.clock_minutes = 1027.5
 	g._case_file()
-	assert(_has_button(g, "Check the pocket watch"), "Pocket watch missing from Tab menu")
-	assert("pocket watch" in _text(g).to_lower(), "Pocket watch missing from carried items")
+	var watch_button = g.content.find_child("PocketWatchButton", true, false)
+	assert(watch_button != null and watch_button.tooltip_text == "Check the pocket watch", "Closed pocket-watch control missing from Tab menu")
 	var before = g.state.clock_minutes
 	g._pocket_watch()
 	var watch_text = _text(g)

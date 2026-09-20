@@ -4,7 +4,7 @@ Implemented on `feature/analogue-pocket-watch` as the first focused UI refinemen
 
 ## Player-facing behavior
 
-- Tab / I -> Personal Effects -> Check the pocket watch now opens a code-drawn brass analogue watch with Roman numerals and hour/minute hands driven by `clock_minutes`.
+- Tab / I opens Personal Effects; the small closed-watch icon at its upper right opens a code-drawn brass analogue watch with Roman numerals and hour/minute hands driven by `clock_minutes`.
 - A small aperture in the face shows a sun from 06:00 through 17:59 and clicks to a moon at 18:00. It remains moonlit through midnight.
 - The exact twelve-hour readout and day/phase label remain beneath the face for accessibility and development diagnostics. At the ceiling the text reads `MIDNIGHT`.
 - Night lighting and schedules still begin at 20:00. Time continues during valid wandering, conversations and travel until 24:00, then every advancement path clamps there until Walter sleeps. Sleep resets an enacted next day to 06:00 through the existing staging code.

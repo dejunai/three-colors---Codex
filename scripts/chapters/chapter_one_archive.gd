@@ -3,6 +3,8 @@ extends RefCounted
 # Chapter One archive content, rendered through the shared panel manager.
 const DayClock = preload("res://scripts/shared/day_clock.gd")
 const PocketWatchFace = preload("res://scripts/ui/pocket_watch_face.gd")
+const PocketWatchButton = preload("res://scripts/ui/pocket_watch_button.gd")
+const PaperDoll = preload("res://scripts/ui/paper_doll.gd")
 
 # Meaningful connections between two pieces of evidence, confirmed only when
 # the player draws them on the board rather than revealed automatically.
@@ -76,6 +78,13 @@ static func _try_link(g:Node,a:String,b:String) -> Dictionary:
 
 func _case_file(g:Node) -> void:
 	g._panel("case","Walter Corwin","PERSONAL EFFECTS  /  PRECINCT 4",true)
+	var utility_row = HBoxContainer.new()
+	utility_row.alignment = BoxContainer.ALIGNMENT_END
+	utility_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	g.content.add_child(utility_row)
+	var watch_button = PocketWatchButton.new()
+	watch_button.pressed.connect(g._pocket_watch)
+	utility_row.add_child(watch_button)
 	var row = HBoxContainer.new()
 	row.add_theme_constant_override("separation",28)
 	g.content.add_child(row)
@@ -83,16 +92,10 @@ func _case_file(g:Node) -> void:
 	left.custom_minimum_size.x = 280
 	row.add_child(left)
 	left.add_child(g._label("ON HIS PERSON",14,false))
-	# A spare paperdoll, rendered in the same ink vocabulary as the file.
-	var doll = Control.new()
-	doll.custom_minimum_size = Vector2(250,190)
+	var doll = PaperDoll.new()
+	doll.configure(g.state)
+	doll.item_pressed.connect(func(item:String): _paper_doll_item(g,item))
 	left.add_child(doll)
-	for rect in [Rect2(105,5,32,32),Rect2(88,40,65,83),Rect2(65,43,18,76),Rect2(158,43,18,76),Rect2(93,123,22,62),Rect2(127,123,22,62)]:
-		var shape = ColorRect.new()
-		shape.position = rect.position
-		shape.size = rect.size
-		shape.color = Color("707a67")
-		doll.add_child(shape)
 	left.add_child(g._label("STRENGTH    2\nPERCEPTION    %d" % g.state.perception(),21,false))
 	left.add_child(g._label("Carried weight: %.1f / 12 kg\nSlots: %d / 10" % [4.6+(0.4 if g.state.evidence.has("knife") else 0),5+(1 if g.state.evidence.has("knife") else 0)],17,false))
 	left.add_child(g._label("Strength governs carried weight.\nPerception grows through observation.",16,false))
@@ -102,19 +105,48 @@ func _case_file(g:Node) -> void:
 	row.add_child(right)
 	right.add_child(g._label("CURRENT INQUIRY",14,false))
 	right.add_child(g._label(g._objective(),23))
-	right.add_child(g._label("EQUIPPED",14,false))
-	var equipped_text = g.state.coat+" · worn leather boots\nNotebook · pencil · pocket watch\nService revolver (%d/6 rounds)\n" % g.state.ammo + ("Flask (lost on descent)" if g.state.flask_spilled else "Flask") + (" · sealed knife envelope" if g.state.evidence.has("knife") else "")
-	right.add_child(g._label(equipped_text,21))
-	g._button("Check the pocket watch",g._pocket_watch,right)
-	g._button("Inspect the flask",g._flask,right)
-	g._button("Change to "+("plain wool coat" if g.state.coat == "Police coat" else "police coat"),func():
-		g.state.coat = "Plain wool coat" if g.state.coat == "Police coat" else "Police coat"
-		g._refresh_outfit()
-		g._save_game()
-		g._case_file(),right)
+	right.add_child(g._label("EQUIPMENT",14,false))
+	right.add_child(g._label("Select an item on Walter's figure to inspect or change it." + ("\nThe sealed knife envelope remains with the case papers." if g.state.evidence.has("knife") else ""),18))
 	g._button("Read the notebook",g._notebook,right)
 	g._button("Open the case file",g._journal,right)
 	g._button("Return to the grounds",g._close)
+	g._focus_first()
+
+func _paper_doll_item(g:Node,item:String) -> void:
+	match item:
+		"coat":
+			g.state.coat = "Plain wool coat" if g.state.coat == "Police coat" else "Police coat"
+			g._refresh_outfit()
+			g._save_game()
+			_case_file(g)
+		"flask": _flask(g)
+		"notebook": g._notebook()
+		"badge": _badge(g)
+		"revolver": _revolver(g)
+		"boots": _boots(g)
+
+func _badge(g:Node) -> void:
+	g._panel("case","The badge","PERSONAL EFFECTS")
+	if g.state.dialogue_state.flag("badge_lost"):
+		g._paragraph("Lost below the estate, with the whistle. The empty place on Walter's coat is easier to see than the badge ever was.",23)
+	elif g.state.coat == "Police coat":
+		g._paragraph("Widow's Bight Police · Precinct 4. Pinned where a room can see it before Walter speaks.",23)
+	else:
+		g._paragraph("Left with the police coat. The plain wool changes which part of Walter enters a room first.",23)
+	g._button("Return to personal effects",g._case_file)
+	g._focus_first()
+
+func _revolver(g:Node) -> void:
+	g._panel("case","The service revolver","PERSONAL EFFECTS")
+	g._paragraph("%d of 6 rounds remain." % g.state.ammo,28)
+	g._paragraph("Precinct issue. Oiled, counted, and returned to the holster. It is a tool Walter understands, which does not make it an answer to every problem.",22)
+	g._button("Return it to the holster",g._case_file)
+	g._focus_first()
+
+func _boots(g:Node) -> void:
+	g._panel("case","The boots","PERSONAL EFFECTS")
+	g._paragraph("Worn black leather, resoled twice. Estate soil has worked into the welt despite Walter's attention to them.",23)
+	g._button("Return to personal effects",g._case_file)
 	g._focus_first()
 
 func _flask(g:Node) -> void:
