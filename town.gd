@@ -8,7 +8,9 @@ var desk_glass: Node3D
 var whiskey: MeshInstance3D
 var board_threads: Array[MeshInstance3D] = []
 var glass_shattered := false
+var behan_actor: Node3D
 const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
+const FatherBehanModel = preload("res://scripts/shared/father_behan_model.gd")
 
 func district_box(parent: Node3D, position: Vector3, size: Vector3, tint: String, solid: bool = false, kind: String = "soot_brick") -> MeshInstance3D:
 	return DistrictSurfaces.apply(box(parent, position, size, tint, solid), kind, tint)
@@ -111,7 +113,10 @@ func _street() -> void:
 	# A rectory marker behind which Father Behan will speak plainly, if asked.
 	box(self,Vector3(-8.6,0.55,-1.6),Vector3(0.06,1.1,0.06),"3a443a")
 	box(self,Vector3(-8.6,0.85,-1.6),Vector3(0.5,0.06,0.06),"3a443a")
-	person(Vector3(-8,0,-1),"242423",false).rotation.y=1.8
+	behan_actor = FatherBehanModel.create()
+	behan_actor.position = Vector3(-8,0,-1)
+	behan_actor.rotation.y = 1.8
+	add_child(behan_actor)
 	target("behan","Speak with Father Behan",Vector3(-8,0,-1))
 	# Kessler's shop, shuttered since his death, and a woman who won't give her name.
 	box(self,Vector3(-20,1.1,12),Vector3(3.2,2.2,0.3),"333a2f",true)
