@@ -50,8 +50,9 @@ const SCENES = {
 		["BENEATH THE HEDGE", "A knife with a butcher's grip. Walter has seen its like in Kessler's shop.\n\nThe blade is too clean for the earth around it."],
 		["EVIDENCE ENVELOPE", "He wraps the handle before lifting it.\n\nLocation recorded. Blade preserved for examination.\nAn object can be useful before it has agreed to explain itself."]],
 	"watch": [
-		["THE SIXTH MAN", "No calling card. No monogram. No wallet.\n\nA watch, stopped at 03:17. Its maker's plate has been filed smooth."],
-		["WALTER'S NOTEBOOK", "Unknown male, approximately fifty to sixty.\nClub dress. Identity unrecovered.\n\nAsk the steward. Then the tailor. A blank is still something to investigate."]],
+		["THE SIXTH BODY", "Walter kneels beside the sixth body in the grass. Tailored wool, fifty to sixty years of age.\n\nHe goes through the pockets with the same flat method used on the other five: no calling card, no monogrammed cuff, no wallet, nothing sewn into the lining."],
+		["THE STOPPED WATCH", "From the inside coat pocket: a gold watch, stopped at 03:17. Its maker's plate has been filed smooth.\n\nWalter winds the stem once; it does not catch. He slips the watch into his pocket to have the movement examined in town."],
+		["WALTER'S NOTEBOOK", "Unknown male, approximately fifty to sixty.\nClub dress. Identity unrecovered. Watch retained as evidence.\n\nAsk the steward. Then the tailor. A blank is still something to investigate."]],
 	"gas": [
 		["THE TERRACE WINDOWS", "The panes facing the garden are intact.\nWalter runs a finger along the sill. Dust, damp, no soot."],
 		["WALTER'S NOTEBOOK", "No blast damage visible.\nNo burns on the nearest bodies.\n\nIf this was a gas accident, the scene has kept remarkably little of it."]],

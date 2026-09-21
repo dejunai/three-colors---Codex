@@ -12,8 +12,9 @@ OBJECT: wounds
 OBJECT: watch
   GATE: NOT rose_bodies_removed
   LABEL: "Examine the sixth man's effects"
-  THE SIXTH MAN: "No calling card. No monogram. No wallet.\n\nA watch, stopped at 03:17. Its maker's plate has been filed smooth."
-  WALTER'S NOTEBOOK: "Unknown male, approximately fifty to sixty.\nClub dress. Identity unrecovered.\n\nAsk the steward. Then the tailor. A blank is still something to investigate."
+  THE SIXTH BODY: "Walter kneels beside the sixth body in the grass. Tailored wool, fifty to sixty years of age.\n\nHe goes through the pockets with the same flat method used on the other five: no calling card, no monogrammed cuff, no wallet, nothing sewn into the lining."
+  THE STOPPED WATCH: "From the inside coat pocket: a gold watch, stopped at 03:17. Its maker's plate has been filed smooth.\n\nWalter winds the stem once; it does not catch. He slips the watch into his pocket to have the movement examined in town."
+  WALTER'S NOTEBOOK: "Unknown male, approximately fifty to sixty.\nClub dress. Identity unrecovered. Watch retained as evidence.\n\nAsk the steward. Then the tailor. A blank is still something to investigate."
   NOTEBOOK: watch_note | "The unidentified man's watch is stopped at seventeen minutes past three. The maker's plate has been filed smooth. This alone does not establish the time of death."
   EVIDENCE: watch
 
