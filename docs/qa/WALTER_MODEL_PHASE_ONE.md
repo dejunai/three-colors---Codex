@@ -72,3 +72,9 @@ The initial procedural avatar described above has since been replaced by the tex
 - `Surprise`: Walter moves from idle through a startled reaction and touches his ear. The final glass break triggers this action at the crack and restores `Idle` when the ending beat releases.
 
 The model audit also confirmed that Walter's short-arm appearance is structural rather than a camera illusion. On the 1.70 m source rig, each upper-arm bone is about 0.15 m and each forearm about 0.22 m; the shoulder joint is only about 0.03 m below the neck base. The upper arm is the larger proportional error. This remains a source-model/weighting correction for a separate visual pass: the runtime must not scale animated bones as a cosmetic workaround because that would distort the custom actions and every inherited Mixamo clip.
+
+### Long-arm remesh replacement — 2026-09-21
+
+`Meshy_Walter-Animations.glb` replaces the short-arm source above. The corrected remesh is 16,509 triangles per outfit and retains `Idle`, `Walk`, `Brisk`, `Interact`, `Pickup_Ground`, `Surprise`, and `Examine` through the same runtime contract. The source's `Walking`, `Running`, `Listening_Gesture`, and `Collect_Object` actions now supply the corresponding generic aliases.
+
+The rebuilt UV layout is incompatible with the previous Walter atlases. The integration pipeline therefore extracts the remesh's native police texture and derives the plain-coat variant from that atlas rather than applying mismatched legacy UVs. Both atlases are capped at 2K and stored as high-quality JPEGs; the resulting game GLB is approximately 4.37 MB. The original remesh source is retained under `archive/` for reproducibility.

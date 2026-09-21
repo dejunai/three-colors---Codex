@@ -101,6 +101,10 @@ Anything visible to the player must show deliberate composition even when it is 
 
 Distance reduces geometric and texture detail; it does not reduce intention.
 
+## High-fidelity sources and game remeshes
+
+Meshy originals may be generated above the Chapter One runtime budget. Those originals are source/reference assets, not direct game imports. Each accepted character or environment prop receives a deliberate low-fidelity remesh and texture-size pass before integration. The remesh is judged on silhouette, deformation, UV integrity, and recognizable detail in the actual game camera; source fidelity does not override Web memory, download, or frame-time limits. Walter's corrected long-arm model establishes the current character baseline at roughly 16.5K triangles with 2K outfit atlases.
+
 ## Phase boundary and acceptance
 
 Phase 1 is complete when:

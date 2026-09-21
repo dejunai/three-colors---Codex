@@ -8,10 +8,10 @@ Features:
 - High quality PBR textures: Police uniform (navy, gold buttons, badge 317) & Plain civilian coat.
 - Full Mixamo motion capture animations already rigged to the mesh:
   - Idle: Idle_11 (47f)
-  - Walk: Quick_Walk (74f, masculine stride with squared hips, replacing catwalk 'Walking')
+  - Walk: Walking (26f)
   - Brisk: Running (17f, athletic sprint for Shift pace)
-  - Interact: Call_Gesture (frames 1..48)
-  - Pickup_Ground: Male_Bend_Over_Pick_Up (frames 1..80, reach apex at 46%)
+  - Interact: Listening_Gesture
+  - Pickup_Ground: Collect_Object
   - Surprise: custom idle-to-shock-to-ear action
   - Examine: custom waist bend with hands working at desk height
 - Ground aligned so soles rest at Z=0.0.
@@ -21,6 +21,7 @@ Features:
 from __future__ import annotations
 
 import math
+import colorsys
 from pathlib import Path
 
 import bpy
@@ -32,9 +33,11 @@ ROOT = Path(__file__).resolve().parents[2]
 MODEL_DIR = ROOT / "assets" / "models"
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
 GLB_PATH = MODEL_DIR / "walter_phase1.glb"
-SRC_GLB = ROOT / "archive" / "Meshy_Gothic-Walter-Animations.glb"
+SRC_GLB = ROOT / "archive" / "Meshy_Walter-Animations.glb"
 if not SRC_GLB.exists():
-    SRC_GLB = ROOT / "Meshy_Gothic-Walter-Animations.glb"
+    SRC_GLB = ROOT / "Meshy_Walter-Animations.glb"
+if not SRC_GLB.exists():
+    SRC_GLB = ROOT / "archive" / "Meshy_Gothic-Walter-Animations.glb"
 
 POLICE_TEX_PATH = MODEL_DIR / "walter_police_anim_tex.jpg"
 PLAIN_TEX_PATH = MODEL_DIR / "walter_plain_anim_tex.jpg"
@@ -67,6 +70,51 @@ def get_textured_material(name: str, image_path: Path) -> bpy.types.Material:
     return mat
 
 
+def save_native_outfit_textures(mesh_obj: bpy.types.Object) -> tuple[Path, Path]:
+    """Persist the remesh's own UV atlas and a restrained plain-coat recolor."""
+    material = mesh_obj.data.materials[0] if mesh_obj.data.materials else None
+    image = None
+    if material and material.use_nodes:
+        image = next((n.image for n in material.node_tree.nodes if n.type == "TEX_IMAGE" and n.image), None)
+    if image is None:
+        raise RuntimeError("Fresh Walter remesh has no embedded base-color texture")
+
+    # Walter is normally viewed at mid distance through the Chapter One film
+    # treatment. A 4K character atlas spends Web memory without visible return;
+    # keep the authored aspect ratio and cap the longest edge at 2K.
+    source_width, source_height = image.size
+    if max(source_width, source_height) > 2048:
+        ratio = 2048.0 / float(max(source_width, source_height))
+        image.scale(max(1, round(source_width * ratio)), max(1, round(source_height * ratio)))
+
+    police_path = MODEL_DIR / "walter_police_remesh.jpg"
+    plain_path = MODEL_DIR / "walter_plain_remesh.jpg"
+    image.filepath_raw = str(police_path)
+    image.file_format = "JPEG"
+    image.save()
+
+    width, height = image.size
+    source = list(image.pixels[:])
+    recolored = source.copy()
+    for index in range(0, len(source), 4):
+        red, green, blue, alpha = source[index:index + 4]
+        hue, saturation, value = colorsys.rgb_to_hsv(red, green, blue)
+        # Recolor the dark blue/neutral uniform cloth while retaining skin,
+        # brass, leather, shirt and facial detail from the native atlas.
+        blue_or_neutral_cloth = value < 0.42 and (blue >= red * 0.82 or saturation < 0.18)
+        if blue_or_neutral_cloth:
+            new_red = min(1.0, value * 1.12 + 0.035)
+            new_green = min(1.0, value * 0.92 + 0.025)
+            new_blue = min(1.0, value * 0.68 + 0.018)
+            recolored[index:index + 4] = [new_red, new_green, new_blue, alpha]
+    plain_image = bpy.data.images.new("WalterPlainRemesh", width=width, height=height, alpha=False)
+    plain_image.pixels[:] = recolored
+    plain_image.filepath_raw = str(plain_path)
+    plain_image.file_format = "JPEG"
+    plain_image.save()
+    return police_path, plain_path
+
+
 def main() -> None:
     reset()
     bpy.context.scene.render.fps = 30
@@ -84,6 +132,9 @@ def main() -> None:
                 armature = o
                 break
 
+    for pose_bone in armature.pose.bones:
+        pose_bone.custom_shape = None
+
     mesh_obj = bpy.data.objects.get("Mesh0")
     if not mesh_obj:
         for o in bpy.data.objects:
@@ -96,9 +147,11 @@ def main() -> None:
     print(f"Original lowest Z: {lowest_z:.3f}")
     armature.location.z -= lowest_z
 
-    # Prepare materials
-    police_mat = get_textured_material("WalterPoliceMat", POLICE_TEX_PATH)
-    plain_mat = get_textured_material("WalterPlainMat", PLAIN_TEX_PATH)
+    # Prepare materials from this remesh's UV atlas. The previous Walter's
+    # external atlases are not UV-compatible with the rebuilt long-arm mesh.
+    police_texture, plain_texture = save_native_outfit_textures(mesh_obj)
+    police_mat = get_textured_material("WalterPoliceMat", police_texture)
+    plain_mat = get_textured_material("WalterPlainMat", plain_texture)
 
     # Setup PoliceMesh and PlainMesh
     mesh_obj.name = "PoliceMesh"
@@ -106,20 +159,19 @@ def main() -> None:
     mesh_obj.data.materials.clear()
     mesh_obj.data.materials.append(police_mat)
 
-    plain_data = mesh_obj.data.copy()
-    plain_data.name = "PlainMesh"
-    plain_obj = bpy.data.objects.new("PlainMesh", plain_data)
-    plain_obj.matrix_world = mesh_obj.matrix_world.copy()
+    # Duplicate the skinned object, not only its Mesh datablock. Vertex groups
+    # live on the Object; recreating only the data silently strips every skin
+    # weight and lets the armature parent distort the plain-coat copy.
+    plain_obj = mesh_obj.copy()
+    plain_obj.data = mesh_obj.data.copy()
+    plain_obj.name = "PlainMesh"
+    plain_obj.data.name = "PlainMesh"
     bpy.context.collection.objects.link(plain_obj)
     plain_obj.data.materials.clear()
     plain_obj.data.materials.append(plain_mat)
-
-    # Bind PlainMesh to armature with same vertex groups / modifier
-    plain_obj.parent = armature
-    for mod in mesh_obj.modifiers:
-        if mod.type == "ARMATURE":
-            new_mod = plain_obj.modifiers.new(name=mod.name, type="ARMATURE")
-            new_mod.object = armature
+    plain_obj.parent = mesh_obj.parent
+    plain_obj.matrix_parent_inverse = mesh_obj.matrix_parent_inverse.copy()
+    plain_obj.matrix_world = mesh_obj.matrix_world.copy()
 
     # Rename armature to WalterSkeleton for Godot contract
     armature.name = "WalterSkeleton"
@@ -147,13 +199,13 @@ def main() -> None:
         idle_act.frame_end = 47
         idle_act.use_fake_user = True
 
-    # 2. Walk: use Quick_Walk (frames 1..74) for masculine detective stride
-    quick_walk_act = bpy.data.actions.get("Quick_Walk")
-    if quick_walk_act:
-        walk_act = quick_walk_act.copy()
+    # 2. Walk: the rebuilt long-arm source supplies one grounded walking cycle.
+    walking_act = bpy.data.actions.get("Walking")
+    if walking_act:
+        walk_act = walking_act.copy()
         walk_act.name = "Walk"
-        walk_act.frame_start = 1
-        walk_act.frame_end = 74
+        walk_act.frame_start = walking_act.frame_start
+        walk_act.frame_end = walking_act.frame_end
         walk_act.use_fake_user = True
 
     # 3. Brisk: use Running (frames 1..17) for shift/sprint pace
@@ -165,22 +217,22 @@ def main() -> None:
         brisk_act.frame_end = 17
         brisk_act.use_fake_user = True
 
-    # 4. Interact: use Call_Gesture frames 1..48 -> Interact
-    call_act = bpy.data.actions.get("Call_Gesture")
-    if call_act:
-        interact_act = call_act.copy()
+    # 4. Interact: retain the rebuilt source's restrained listening gesture.
+    listening_act = bpy.data.actions.get("Listening_Gesture")
+    if listening_act:
+        interact_act = listening_act.copy()
         interact_act.name = "Interact"
-        interact_act.frame_start = 1
-        interact_act.frame_end = 48
+        interact_act.frame_start = listening_act.frame_start
+        interact_act.frame_end = listening_act.frame_end
         interact_act.use_fake_user = True
 
-    # 5. Pickup_Ground: Male_Bend_Over_Pick_Up frames 1..80 (apex at frame 37: 37/80 = 46.25%)
-    pickup_raw = bpy.data.actions.get("Male_Bend_Over_Pick_Up")
+    # 5. Pickup_Ground: the rebuilt source's shorter collection action.
+    pickup_raw = bpy.data.actions.get("Collect_Object")
     if pickup_raw:
         pickup_act = pickup_raw.copy()
         pickup_act.name = "Pickup_Ground"
-        pickup_act.frame_start = 1
-        pickup_act.frame_end = 80
+        pickup_act.frame_start = pickup_raw.frame_start
+        pickup_act.frame_end = pickup_raw.frame_end
         pickup_act.use_fake_user = True
 
     # 6. Semantic aliases for the two custom Meshy actions.
