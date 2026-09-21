@@ -8,8 +8,8 @@ Features:
 - High quality PBR textures: Police uniform (navy, gold buttons, badge 317) & Plain civilian coat.
 - Full Mixamo motion capture animations already rigged to the mesh:
   - Idle: Idle_11 (47f)
-  - Walk: Walking (26f)
-  - Brisk: Quick_Walk (74f)
+  - Walk: Quick_Walk (74f, masculine stride with squared hips, replacing catwalk 'Walking')
+  - Brisk: Running (17f, athletic sprint for Shift pace)
   - Interact: Call_Gesture (frames 1..48)
   - Pickup_Ground: Male_Bend_Over_Pick_Up (frames 1..80, reach apex at 46%)
 - Ground aligned so soles rest at Z=0.0.
@@ -145,20 +145,22 @@ def main() -> None:
         idle_act.frame_end = 47
         idle_act.use_fake_user = True
 
-    # 2. Walk: rename Walking -> Walk
-    walk_act = bpy.data.actions.get("Walking")
-    if walk_act:
+    # 2. Walk: use Quick_Walk (frames 1..74) for masculine detective stride
+    quick_walk_act = bpy.data.actions.get("Quick_Walk")
+    if quick_walk_act:
+        walk_act = quick_walk_act.copy()
         walk_act.name = "Walk"
         walk_act.frame_start = 1
-        walk_act.frame_end = 26
+        walk_act.frame_end = 74
         walk_act.use_fake_user = True
 
-    # 3. Brisk: rename Quick_Walk -> Brisk
-    brisk_act = bpy.data.actions.get("Quick_Walk")
-    if brisk_act:
+    # 3. Brisk: use Running (frames 1..17) for shift/sprint pace
+    running_act = bpy.data.actions.get("Running")
+    if running_act:
+        brisk_act = running_act.copy()
         brisk_act.name = "Brisk"
         brisk_act.frame_start = 1
-        brisk_act.frame_end = 74
+        brisk_act.frame_end = 17
         brisk_act.use_fake_user = True
 
     # 4. Interact: use Call_Gesture frames 1..48 -> Interact
