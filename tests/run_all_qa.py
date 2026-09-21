@@ -56,6 +56,7 @@ tests = [
     (["--headless", "--path", ".", "--script", "res://tests/cast_model_flow.gd"], "cast_model_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/victim_model_flow.gd"], "victim_model_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/covered_body_model_flow.gd"], "covered_body_model_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/exterior_prop_assets_flow.gd"], "exterior_prop_assets_flow"),
 ]
 
 sys.path.insert(0, os.path.join(repo_root, "tools"))
