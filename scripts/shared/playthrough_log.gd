@@ -2,6 +2,9 @@ extends Node
 
 const DayClock = preload("res://scripts/shared/day_clock.gd")
 const SESSION_PATH = "user://anonymous_playthrough_session.json"
+const REQUEST_TIMEOUT_SEC := 5.0
+const REQUEST_TIMEOUT_MS := 5000
+const MAX_BUFFER_SIZE := 300
 
 # Empty by design until the collection endpoint and its CORS policy are approved.
 # A deployment can set three_colors/telemetry_endpoint without changing this script.
@@ -12,6 +15,7 @@ var buffer: Array[Dictionary] = []
 var request: HTTPRequest
 var request_busy := false
 var in_flight_count := 0
+var request_sent_ms := 0
 var session_started_ms := 0
 var previous_transition_ms := 0
 var previous_transition_game_minutes := 0.0
@@ -25,7 +29,12 @@ var debrief_sent := false
 var ended := false
 
 func _ready() -> void:
+	_ensure_request()
+
+func _ensure_request() -> void:
+	if is_instance_valid(request): return
 	request = HTTPRequest.new()
+	request.timeout = REQUEST_TIMEOUT_SEC
 	add_child(request)
 	request.request_completed.connect(_request_completed)
 
@@ -52,8 +61,11 @@ func resume(state, npc_ids:Array = []) -> void:
 func reset_runtime(clear_id:bool = true) -> void:
 	if clear_id: session_id = ""
 	buffer.clear()
+	if request_busy and is_instance_valid(request):
+		request.cancel_request()
 	request_busy = false
 	in_flight_count = 0
+	request_sent_ms = 0
 	session_started_ms = Time.get_ticks_msec()
 	previous_transition_ms = session_started_ms
 	previous_transition_game_minutes = 0.0
@@ -153,16 +165,33 @@ func _log(event_name:String, fields:Dictionary = {}) -> void:
 	}
 	for key in fields: event[key] = fields[key]
 	buffer.append(event)
+	while buffer.size() > MAX_BUFFER_SIZE:
+		buffer.pop_front()
 	_flush()
 
 func _flush() -> void:
-	if endpoint_url.is_empty() or request_busy or buffer.is_empty() or not is_instance_valid(request): return
+	if endpoint_url.is_empty() or buffer.is_empty(): return
+	_ensure_request()
+	if not is_instance_valid(request): return
+
+	if request_busy:
+		if Time.get_ticks_msec() - request_sent_ms > REQUEST_TIMEOUT_MS:
+			# Stale request recovery: prior request hung without completing.
+			request.cancel_request()
+			request_busy = false
+			in_flight_count = 0
+			request_sent_ms = 0
+		else:
+			return
+
 	in_flight_count = buffer.size()
 	request_busy = true
+	request_sent_ms = Time.get_ticks_msec()
 	var error := request.request(endpoint_url, ["Content-Type: application/json"], HTTPClient.METHOD_POST, JSON.stringify({"events": buffer.slice(0, in_flight_count)}))
 	if error != OK:
 		request_busy = false
 		in_flight_count = 0
+		request_sent_ms = 0
 
 func _request_completed(_result:int, response_code:int, _headers:PackedStringArray, _body:PackedByteArray) -> void:
 	var succeeded := response_code >= 200 and response_code < 300
@@ -171,6 +200,7 @@ func _request_completed(_result:int, response_code:int, _headers:PackedStringArr
 			if not buffer.is_empty(): buffer.pop_front()
 	request_busy = false
 	in_flight_count = 0
+	request_sent_ms = 0
 	# A failure remains buffered until the next event. Never retry in a gameplay loop.
 	if succeeded: _flush()
 

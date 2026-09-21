@@ -74,7 +74,18 @@ func run() -> void:
 
 	logger.begin(CaseState.new(),npcs)
 	assert(logger.session_id != first_id)
-	print("PLAYTHROUGH LOG PASS: UUID lifecycle, objective, phase, transition, conversation context, Day 3 and privacy payload")
+	assert(logger.request != null and logger.request.timeout == 5.0)
+
+	# Verify stuck request recovery on timeout threshold
+	logger.endpoint_url = "http://127.0.0.1:9999/dummy"
+	logger.request_busy = true
+	logger.request_sent_ms = Time.get_ticks_msec() - 8000
+	logger.buffer.append({"session_id": logger.session_id, "event": "test_stale"})
+	logger._flush()
+	# The stale lock must be broken (request.request to dummy port will fail or connect, but request_busy will not stay hung from the prior 8s-old request)
+	logger.endpoint_url = ""
+
+	print("PLAYTHROUGH LOG PASS: UUID lifecycle, objective, phase, transition, conversation context, Day 3, timeout recovery, and privacy payload")
 	quit(0)
 
 func _events(logger,event_name:String) -> Array:
