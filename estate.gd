@@ -23,6 +23,7 @@ const GatekeeperBoyModel = preload("res://scripts/shared/gatekeeper_boy_model.gd
 const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
 const CoronerModel = preload("res://scripts/shared/coroner_model.gd")
 const CastModel = preload("res://scripts/shared/cast_model.gd")
+const VictimModel = preload("res://scripts/shared/victim_model.gd")
 
 func sync_staging(st) -> void:
 	for leaf in departure_leaves:
@@ -234,13 +235,8 @@ func body(pos: Vector3, angle: float, covered: bool = false, small: bool = false
 		sheet.scale = Vector3(0.67,0.39,1.55)
 		box(n,Vector3(0,0.13,0),Vector3(0.85,0.05,2.1),"999a92")
 	else:
-		box(n,Vector3(0,0.23,0),Vector3(0.6,0.32,0.84),"333637")
-		box(n,Vector3(0,0.405,-0.28),Vector3(0.22,0.012,0.2),"b9b8ad")
-		sphere(n,Vector3(0,0.24,-0.69),0.19,"a09f92")
-		for x in [-0.16,0.16]:
-			box(n,Vector3(x,0.14,0.67),Vector3(0.2,0.22,0.75),"292c2d")
-			box(n,Vector3(x,0.14,1.08),Vector3(0.24,0.22,0.27),"191b1b")
-		for x in [-0.4,0.4]: box(n,Vector3(x,0.16,0.08),Vector3(0.16,0.2,0.82),"333637")
+		var victim = VictimModel.create()
+		n.add_child(victim)
 
 func hedge(pos:Vector3,size:Vector3) -> void:
 	box(self,pos,size,"343b36",true)
