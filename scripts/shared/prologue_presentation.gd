@@ -15,7 +15,7 @@ const FONT_BODY = preload("res://assets/fonts/EBGaramond-Regular.ttf")
 const FONT_BODY_MEDIUM = preload("res://assets/fonts/EBGaramond-Medium.ttf")
 const FONT_BODY_ITALIC = preload("res://assets/fonts/EBGaramond-Italic.ttf")
 const FONT_KICKER = preload("res://assets/fonts/SpecialElite-Regular.ttf")
-const MUSIC = preload("res://assets/audio/civic-reel.wav")
+const MUSIC = preload("res://assets/audio/civic-reel.mp3")
 
 const INK = Color("0a0908")
 const PAPER = Color("e8dcc8")
