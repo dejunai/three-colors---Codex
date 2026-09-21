@@ -29,3 +29,7 @@ Geometry, collision shapes, route ids, and interaction positions were not change
 - `git diff --check`: clean.
 
 The broader `--qa-town` suite currently stops at `tests/town_flow.gd:159` (`Departure survives loading`) after the old-woman interaction. That state/save assertion is outside the surface and geometry paths changed in this pass; it remains a separate investigation rather than being hidden by this visual branch.
+
+## Next visual phase
+
+The branch continues as the home of **Modeling Pass — Phase 1**: rendered Walter, a mandatory glass-break integration checkpoint, and a bounded waterfront environment slice. The approved scope and decision provenance are recorded in `docs/qa/MODELING_PASS_PHASE_ONE.md`.
