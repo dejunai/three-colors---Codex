@@ -70,7 +70,7 @@ def join_and_ground(slug: str) -> bpy.types.Object:
 
 
 def build(slug: str, filename: str) -> None:
-    source = ROOT / filename
+    source = ROOT / "archive" / filename
     if not source.exists():
         raise FileNotFoundError(source)
     reset()

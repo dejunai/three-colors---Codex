@@ -5,7 +5,7 @@ Scope: five root-level Meshy remeshes supplied for the Phase One waterfront
 
 ## Verdict
 
-All five assets are suitable for the waterfront pass. Their silhouettes, construction, weathering, and restrained color belong to the same working-quay vocabulary. The source exports remain untouched at the project root. Game-ready copies live in `assets/models/waterfront/` and are produced by `tools/modeling/optimize_quay_props.py`.
+All five assets are suitable for the waterfront pass. Their silhouettes, construction, weathering, and restrained color belong to the same working-quay vocabulary. The untouched source exports are retained at the root of `archive/`. Game-ready copies live in `assets/models/waterfront/` and are produced by `tools/modeling/optimize_quay_props.py`.
 
 | Asset | Triangles | Original GLB | Optimized GLB | Intended use |
 |---|---:|---:|---:|---|
