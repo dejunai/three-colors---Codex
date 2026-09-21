@@ -24,6 +24,7 @@ const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
 const CoronerModel = preload("res://scripts/shared/coroner_model.gd")
 const CastModel = preload("res://scripts/shared/cast_model.gd")
 const VictimModel = preload("res://scripts/shared/victim_model.gd")
+const CoveredBodyModel = preload("res://scripts/shared/covered_body_model.gd")
 
 func sync_staging(st) -> void:
 	for leaf in departure_leaves:
@@ -229,12 +230,11 @@ func body(pos: Vector3, angle: float, covered: bool = false, small: bool = false
 	scene_bodies.append(n)
 	if group == "birch": birch_bodies.append(n)
 	elif group == "rose": rose_bodies.append(n)
-	if small: n.scale = Vector3.ONE*0.68
 	if covered:
-		var sheet = sphere(n,Vector3(0,0.24,0),0.62,"9e9e96")
-		sheet.scale = Vector3(0.67,0.39,1.55)
-		box(n,Vector3(0,0.13,0),Vector3(0.85,0.05,2.1),"999a92")
+		var covered_model = CoveredBodyModel.create(small)
+		n.add_child(covered_model)
 	else:
+		if small: n.scale = Vector3.ONE*0.68
 		var victim = VictimModel.create()
 		n.add_child(victim)
 
