@@ -7,6 +7,7 @@ const DialogueState = preload("res://scripts/shared/dialogue_state.gd")
 const ContiguousTown = preload("res://scripts/chapters/contiguous_town_phase_one.gd")
 const ContiguousTownTwo = preload("res://scripts/chapters/contiguous_town_phase_two.gd")
 const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
+const CoronerModel = preload("res://scripts/shared/coroner_model.gd")
 var FILES = {"boy":"gatehouse_boy", "assistant":"coroners_assistant", "crew":"groundskeeper", "gardener":"gardener", "odell":"odell", "almy":"mrs_almy", "behan":"father_behan", "barman":"steward", "old_woman":"old_woman"}
 var TITLES = {"boy":"The gatehouse boys", "assistant":"The coroner's assistant", "crew":"The groundskeeper", "gardener":"The gardener", "odell":"Captain Odell", "almy":"Mrs. Almy", "behan":"Father Behan", "barman":"The club's steward", "old_woman":"The woman outside Kessler's shop"}
 var catalog = preload("res://scripts/chapters/dialogue_catalog.gd").new()
@@ -49,6 +50,11 @@ func populate(g: Node) -> void:
 			figure.position = spot[1]
 			figure.rotation.y = PI
 			g.estate.add_child(figure)
+		elif actor == "coroners_assistant_morgue":
+			figure = CoronerModel.create()
+			figure.position = spot[1]
+			figure.rotation.y = PI
+			g.estate.add_child(figure)
 		else:
 			figure = g.estate.person(spot[1], "55624f", true, "b8743a" if actor=="harbor_observer" else "")
 		figures[actor] = figure
@@ -78,9 +84,18 @@ func _set_odell_conversing(g: Node, actor: String, conversing: bool) -> void:
 		model = figures[actor] as Node3D
 	if is_instance_valid(model): CaptainOdellModel.set_conversing(model, conversing)
 
+func _set_assistant_conversing(g: Node, actor: String, conversing: bool) -> void:
+	var model: Node3D
+	if actor == "assistant" and g != null and is_instance_valid(g) and is_instance_valid(g.estate):
+		model = g.estate.get("assistant_actor") as Node3D
+	elif actor == "coroners_assistant_morgue" and figures.has(actor):
+		model = figures[actor] as Node3D
+	if is_instance_valid(model): CoronerModel.set_conversing(model, conversing)
+
 func end_session(g: Node = null) -> void:
 	_set_behan_listening(g, false)
 	_set_boy_listening(g, false)
+	if session_actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, session_actor, false)
 	if session_actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, session_actor, false)
 	clear()
 	session_actor = ""
@@ -119,6 +134,7 @@ func interact(g: Node, actor: String) -> bool:
 	g.state.defer_dialogue_clock = true
 	if actor == "behan": _set_behan_listening(g, true)
 	if actor == "boy": _set_boy_listening(g, true)
+	if actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, actor, true)
 	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
 	# Steward visit_count reflects staged days, not repeated attempts at the bar.
@@ -153,6 +169,7 @@ func show_menu(g: Node, actor: String) -> void:
 		g.state.defer_dialogue_clock = true
 	if actor == "behan": _set_behan_listening(g, true)
 	if actor == "boy": _set_boy_listening(g, true)
+	if actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, actor, true)
 	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
 	var entries = Runtime.menu(def, Runtime.make_context(g.state, g.state.dialogue_state)).entries
@@ -169,6 +186,7 @@ func play_topic(g: Node, actor: String, topic_id: String) -> void:
 	if session_actor.is_empty():
 		session_actor = actor
 		g.state.defer_dialogue_clock = true
+	if actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, actor, true)
 	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
 	var ctx = Runtime.make_context(g.state, g.state.dialogue_state)

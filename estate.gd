@@ -18,8 +18,10 @@ var opening_staff: Dictionary = {}
 var departure_leaves: Array[Node3D] = []
 var boy_actor: Node3D
 var odell_actor: Node3D
+var assistant_actor: Node3D
 const GatekeeperBoyModel = preload("res://scripts/shared/gatekeeper_boy_model.gd")
 const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
+const CoronerModel = preload("res://scripts/shared/coroner_model.gd")
 
 func sync_staging(st) -> void:
 	for leaf in departure_leaves:
@@ -461,8 +463,11 @@ func _ready() -> void:
 	odell_actor.rotation.y = PI
 	add_child(odell_actor)
 	opening_staff["odell"] = odell_actor
-	opening_staff["assistant"] = person(Vector3(12.5,0,-3.8),"aaa99a",false)
-	opening_staff["assistant"].rotation.y = -1.2
+	assistant_actor = CoronerModel.create()
+	assistant_actor.position = Vector3(12.5, 0, -3.8)
+	assistant_actor.rotation.y = -1.2
+	add_child(assistant_actor)
+	opening_staff["assistant"] = assistant_actor
 	gardener_actor = person(Vector3(-12,0,1),"4e5a4b")
 	gardener_actor.rotation.y = 0.7
 	opening_knife = box(self,Vector3(-7,0.08,-1),Vector3(0.08,0.1,0.72),"b8b8a6")

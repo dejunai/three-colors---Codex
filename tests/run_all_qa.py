@@ -48,6 +48,8 @@ tests = [
     (["--headless", "--path", ".", "--script", "res://tests/behan_model_flow.gd"], "behan_model_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/boy_model_flow.gd"], "boy_model_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/odell_model_flow.gd"], "odell_model_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/coroner_model_flow.gd"], "coroner_model_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/coroner_model_integration_flow.gd"], "coroner_model_integration_flow"),
     (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/walter_pickup_flow.gd"], "walter_pickup_flow"),
 ]
 
