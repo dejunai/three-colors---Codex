@@ -20,6 +20,6 @@ func run() -> void:
 	CaptainOdellModel.set_conversing(model, false)
 	assert(player.current_animation == animations["Idle"], "Odell must return to Idle after dialogue")
 	var rendered: Node3D = model.get_node_or_null("RenderedOdell")
-	assert(rendered != null and is_equal_approx(rendered.scale.y, 1.18), "Captain Odell scale must remain 1.18")
-	print("ODELL MODEL PASS: instantiates at 1.18 scale and toggles Idle/Confer dialogue animation")
+	assert(rendered != null and is_equal_approx(rendered.scale.y, 1.30), "Captain Odell scale must remain 1.30")
+	print("ODELL MODEL PASS: instantiates at 1.30 scale and toggles Idle/Confer dialogue animation")
 	quit(0)

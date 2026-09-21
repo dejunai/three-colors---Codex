@@ -1,9 +1,9 @@
 extends RefCounted
 
 const MODEL_SCENE: PackedScene = preload("res://assets/models/gatekeeper_boy.glb")
-# Authored rest height is 1.70m; scaled to 0.95x so the boy stands at ~1.62m with peaked cap
-# (eye level ~1.39m), distinctly shorter than Walter and the adult NPCs without looking miniature.
-const SCALE_FACTOR: float = 0.95
+# Authored rest height is 1.70m; scaled to 1.05x so the boy stands at ~1.78m with peaked cap
+# (eye level ~1.53m), keeping him youth-proportioned without over-scaling him down.
+const SCALE_FACTOR: float = 1.05
 
 static func create() -> Node3D:
 	var wrapper := Node3D.new()

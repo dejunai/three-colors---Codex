@@ -1,9 +1,9 @@
 extends RefCounted
 
 const MODEL_SCENE: PackedScene = preload("res://assets/models/captain_odell.glb")
-# The source stands about 1.80m in its idle pose. This keeps Odell imposing but
-# visibly below Walter's deliberately heightened 1.33-scale silhouette.
-const SCALE_FACTOR: float = 1.18
+# The source stands about 1.80m in its idle pose. At 1.30 scale (~2.34m),
+# Odell is commanding and imposing, visibly standing above Walter (1.30 scale on 1.70m frame ~2.21m).
+const SCALE_FACTOR: float = 1.30
 
 static func create() -> Node3D:
 	var wrapper := Node3D.new()

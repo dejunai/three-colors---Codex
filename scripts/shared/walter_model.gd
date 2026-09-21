@@ -15,9 +15,9 @@ static func create() -> Node3D:
 	rendered.name = "RenderedWalter"
 	# Blender's authored face points +Z; the existing controller's forward is -Z.
 	rendered.rotation.y = PI
-	# The imported rest mesh is 1.70m tall; 1.33 puts Walter at about 2.26m
-	# including his cap, retaining his stature without the 1.38 pass's excess.
-	rendered.scale = Vector3.ONE * 1.33
+	# The imported rest mesh is 1.70m tall; 1.30 puts Walter at about 2.21m
+	# including his cap, retaining his stature without excess height.
+	rendered.scale = Vector3.ONE * 1.30
 	wrapper.add_child(rendered)
 	return wrapper
 

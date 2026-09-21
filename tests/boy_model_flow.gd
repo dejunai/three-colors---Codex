@@ -23,7 +23,7 @@ func run() -> void:
 	
 	# Verify the accepted child scale without allowing a future adult-size regression.
 	var rendered: Node3D = model.get_node_or_null("RenderedBoy")
-	assert(rendered != null and is_equal_approx(rendered.scale.y, 0.95), "Gatekeeper Boy scale must remain 0.95")
+	assert(rendered != null and is_equal_approx(rendered.scale.y, 1.05), "Gatekeeper Boy scale must remain 1.05")
 	
-	print("BOY MODEL PASS: instantiates at 0.95 scale, exposes Idle/Idle_Alt/Listen, and toggles listening state")
+	print("BOY MODEL PASS: instantiates at 1.05 scale, exposes Idle/Idle_Alt/Listen, and toggles listening state")
 	quit(0)
