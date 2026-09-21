@@ -1,6 +1,6 @@
 extends RefCounted
 
-# Static 3D model for draped/covered deceased figures (Naomi Whitehouse, her young son, and morgue slabs).
+# Static 3D model for draped/covered deceased figures (Naomi Freeman, her young son, and morgue slabs).
 # Model represents a deceased figure fully draped in a morgue sheet.
 
 const SCENE: PackedScene = preload("res://assets/models/covered_body.glb")

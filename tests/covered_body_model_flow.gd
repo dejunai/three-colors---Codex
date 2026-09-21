@@ -3,7 +3,7 @@ extends SceneTree
 const CoveredBodyModel = preload("res://scripts/shared/covered_body_model.gd")
 
 func _initialize() -> void:
-	# 1. Adult model (Naomi Whitehouse)
+	# 1. Adult model (Naomi Freeman)
 	var naomi = CoveredBodyModel.create(false)
 	assert(naomi != null, "CoveredBodyModel.create() must return a valid Node3D")
 	assert(naomi.name == "CoveredBody")
