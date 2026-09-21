@@ -89,6 +89,8 @@ First bounded composition:
 
 Buildings should use a reusable kit of walls, corners, windows, doors, roofs, foundations, and waterfront props. Existing gameplay geometry supplies placement and collision truth until each replacement is verified; simple purpose-built collision proxies should preserve that behavior.
 
+The Chapter One island is provisional atmospheric staging, not the authoritative island design and not architectural or narrative foreshadowing. Chapter Two will establish the final island; once that environment exists, Chapter One's inaccessible distant version will be rebuilt from it at the appropriate reduced detail, silhouette, and viewing distance.
+
 ## Distance is authored
 
 Anything visible to the player must show deliberate composition even when it is unreachable or uses a low-detail model.
