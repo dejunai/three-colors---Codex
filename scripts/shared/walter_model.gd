@@ -15,8 +15,8 @@ static func create() -> Node3D:
 	rendered.name = "RenderedWalter"
 	# Blender's authored face points +Z; the existing controller's forward is -Z.
 	rendered.rotation.y = PI
-	# Scale Walter to match the game's NPC height (~2.12m with hat / 1.80m eye level)
-	rendered.scale = Vector3.ONE * 1.25
+	# Scale Walter to match the game's NPC height (~2.22m with cap in idle / ~1.92m eye level)
+	rendered.scale = Vector3.ONE * 1.38
 	wrapper.add_child(rendered)
 	return wrapper
 

@@ -65,38 +65,6 @@ def get_textured_material(name: str, image_path: Path) -> bpy.types.Material:
     return mat
 
 
-def create_badge(police_mat: bpy.types.Material, armature: bpy.types.Object) -> bpy.types.Object:
-    """Create five-pointed star police badge mesh on chest."""
-    bm = bmesh.new()
-    r_out, r_in = 0.038, 0.016
-    pts = []
-    for i in range(10):
-        angle = math.radians(i * 36 - 90)
-        r = r_out if i % 2 == 0 else r_in
-        pts.append((r * math.cos(angle), 0, r * math.sin(angle)))
-
-    center = bm.verts.new((0, -0.006, 0))
-    outer_verts = [bm.verts.new((p[0], -0.002, p[2])) for p in pts]
-    for i in range(10):
-        bm.faces.new([center, outer_verts[i], outer_verts[(i + 1) % 10]])
-
-    me = bpy.data.meshes.new("BadgeMesh")
-    bm.to_mesh(me)
-    bm.free()
-
-    badge_obj = bpy.data.objects.new("BadgeMesh", me)
-    bpy.context.collection.objects.link(badge_obj)
-    badge_obj.location = (-0.088, -0.158, 1.42)
-    badge_obj.rotation_euler = (math.radians(-6), math.radians(4), math.radians(-3))
-    badge_obj.data.materials.append(police_mat)
-
-    # Parent badge to Spine2 / Chest bone
-    badge_obj.parent = armature
-    badge_obj.parent_type = "BONE"
-    badge_obj.parent_bone = "mixamorig:Spine2"
-    return badge_obj
-
-
 def main() -> None:
     reset()
     bpy.context.scene.render.fps = 30
@@ -154,9 +122,6 @@ def main() -> None:
     # Rename armature to WalterSkeleton for Godot contract
     armature.name = "WalterSkeleton"
     armature.data.name = "WalterSkeleton"
-
-    # Create badge
-    badge_obj = create_badge(police_mat, armature)
 
     # Build root WalterPhase1 and required empty marker nodes
     root = bpy.data.objects.new("WalterPhase1", None)
