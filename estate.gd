@@ -16,6 +16,8 @@ var opening_report: Node3D
 var birch_belongings: Node3D
 var opening_staff: Dictionary = {}
 var departure_leaves: Array[Node3D] = []
+var boy_actor: Node3D
+const GatekeeperBoyModel = preload("res://scripts/shared/gatekeeper_boy_model.gd")
 
 func sync_staging(st) -> void:
 	for leaf in departure_leaves:
@@ -446,7 +448,10 @@ func _ready() -> void:
 	for x in [6,8]: box(self,Vector3(x,0.45,-14),Vector3(0.13,0.9,0.8),"3b443b")
 	opening_report = box(self,Vector3(6.6,1.06,-13.8),Vector3(0.52,0.035,0.7),"cccbba")
 	box(self,Vector3(7.4,1.06,-13.8),Vector3(0.48,0.035,0.6),"babaa8")
-	person(Vector3(-2,0,31),"555c52").rotation.y = -0.3
+	boy_actor = GatekeeperBoyModel.create()
+	boy_actor.position = Vector3(-2,0,31)
+	boy_actor.rotation.y = -0.3
+	add_child(boy_actor)
 	opening_staff["odell"] = person(Vector3(4,0,-11.5),"272e2b")
 	opening_staff["odell"].rotation.y = 0.2
 	opening_staff["assistant"] = person(Vector3(12.5,0,-3.8),"aaa99a",false)

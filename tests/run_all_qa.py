@@ -45,6 +45,8 @@ tests = [
     (["--headless", "--path", ".", "--fixed-fps", "60", "--", "--qa-loop"], "qa_loop_flow"),
     (["--headless", "--path", ".", "--fixed-fps", "60", "--", "--qa-usability"], "qa_usability"),
     (["--headless", "--path", ".", "--script", "res://tests/break_flow.gd"], "break_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/behan_model_flow.gd"], "behan_model_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/boy_model_flow.gd"], "boy_model_flow"),
 ]
 
 sys.path.insert(0, os.path.join(repo_root, "tools"))

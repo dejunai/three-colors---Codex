@@ -58,8 +58,13 @@ func _set_behan_listening(g: Node, listening: bool) -> void:
 	if g != null and is_instance_valid(g) and is_instance_valid(g.estate) and g.estate.get("behan_actor") != null:
 		preload("res://scripts/shared/father_behan_model.gd").set_listening(g.estate.behan_actor, listening)
 
+func _set_boy_listening(g: Node, listening: bool) -> void:
+	if g != null and is_instance_valid(g) and is_instance_valid(g.estate) and g.estate.get("boy_actor") != null:
+		preload("res://scripts/shared/gatekeeper_boy_model.gd").set_listening(g.estate.boy_actor, listening)
+
 func end_session(g: Node = null) -> void:
 	_set_behan_listening(g, false)
+	_set_boy_listening(g, false)
 	clear()
 	session_actor = ""
 	if g != null and is_instance_valid(g) and is_instance_valid(g.state):
@@ -96,6 +101,7 @@ func interact(g: Node, actor: String) -> bool:
 	session_actor = actor
 	g.state.defer_dialogue_clock = true
 	if actor == "behan": _set_behan_listening(g, true)
+	if actor == "boy": _set_boy_listening(g, true)
 	var def = definition(actor)
 	# Steward visit_count reflects staged days, not repeated attempts at the bar.
 	if actor == "barman": g.state.dialogue_state.visit_counts[def.npc] = g.state.steward_visits
@@ -128,6 +134,7 @@ func show_menu(g: Node, actor: String) -> void:
 		session_actor = actor
 		g.state.defer_dialogue_clock = true
 	if actor == "behan": _set_behan_listening(g, true)
+	if actor == "boy": _set_boy_listening(g, true)
 	var def = definition(actor)
 	var entries = Runtime.menu(def, Runtime.make_context(g.state, g.state.dialogue_state)).entries
 	if entries.is_empty() and actor != "odell": g._close(); return
