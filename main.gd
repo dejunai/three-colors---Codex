@@ -273,6 +273,15 @@ func _play_model_animation(base_name: String, blend: float = 0.16, speed: float 
 func play_ground_pickup(target_position: Vector3, on_reach: Callable, on_complete: Callable) -> void:
 	_play_ground_pickup(target_position, on_reach, on_complete)
 
+func play_examine() -> void:
+	_play_model_animation("Examine", 0.18)
+
+func play_surprise() -> void:
+	_play_model_animation("Surprise", 0.08)
+
+func finish_context_animation() -> void:
+	_play_model_animation("Idle", 0.18)
+
 func _play_ground_pickup(target_position: Vector3, on_reach: Callable, on_complete: Callable) -> void:
 	if _animation_lock: return
 	var direction := target_position - player.global_position

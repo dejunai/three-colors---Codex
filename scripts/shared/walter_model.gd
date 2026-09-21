@@ -43,8 +43,16 @@ static func animation_map(player: AnimationPlayer) -> Dictionary:
 	for imported_name in player.get_animation_list():
 		var full_name := String(imported_name)
 		var base_name := full_name.get_file()
-		if base_name in ["Idle", "Walk", "Brisk", "Interact", "Pickup_Ground"]:
+		if base_name in ["Idle", "Walk", "Brisk", "Interact", "Pickup_Ground", "Surprise", "Examine"]:
 			result[base_name] = imported_name
+	# Meshy exported the two custom actions under opaque UUIDs. Keep these aliases
+	# until the next Blender rebuild writes the semantic action names into the GLB.
+	if not result.has("Surprise"):
+		var surprise := _find_animation(player, "01a0c2dc-c106-73a8-b359-a699e575b489")
+		if surprise != StringName(): result["Surprise"] = surprise
+	if not result.has("Examine"):
+		var examine := _find_animation(player, "01a0c2de-e825-716d-a1ed-53dcfa00916a")
+		if examine != StringName(): result["Examine"] = examine
 	# The generated Walk alias is a copy of Quick_Walk. Its narrow crossover
 	# stride reads like a catwalk on Walter; the separate Walking take keeps
 	# his hips square and gives the ordinary pace more weight.

@@ -63,3 +63,12 @@ After regeneration, the camera sees Walter from behind, he faces the board, his 
 The maintained aggregate runner completed its first eight grammar/content suites, then timed out at `qa_flow` while using its hard-coded repository runtime directory; its PowerShell/CIM cleanup also could not terminate the timed-out process in the sandbox. The same `--qa` flow passed directly in about three seconds with a clean writable runtime directory. This is recorded as a runner/environment limitation rather than a verified gameplay regression.
 
 The glass-break checkpoint is complete. The bounded waterfront modeling slice may begin without changing the Chapter One island beyond its provisional atmospheric silhouette.
+
+## Meshy replacement and custom-action addendum — 2026-09-21
+
+The initial procedural avatar described above has since been replaced by the textured Meshy Walter while retaining the same controller, outfit, evidence, and save-state boundaries. Two custom actions arrived in the GLB under opaque Meshy UUIDs. Runtime and the reproducible Blender integration script now expose stable semantic names:
+
+- `Examine`: Walter bends slightly at the waist and works with both hands at desk height. Authored object interactions start this action when their cards open and restore `Idle` when the interaction finishes.
+- `Surprise`: Walter moves from idle through a startled reaction and touches his ear. The final glass break triggers this action at the crack and restores `Idle` when the ending beat releases.
+
+The model audit also confirmed that Walter's short-arm appearance is structural rather than a camera illusion. On the 1.70 m source rig, each upper-arm bone is about 0.15 m and each forearm about 0.22 m; the shoulder joint is only about 0.03 m below the neck base. The upper arm is the larger proportional error. This remains a source-model/weighting correction for a separate visual pass: the runtime must not scale animated bones as a cosmetic workaround because that would distort the custom actions and every inherited Mixamo clip.

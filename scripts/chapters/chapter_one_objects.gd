@@ -68,6 +68,7 @@ func _begin(g: Node, def: Dictionary, object_id: String, label: String) -> void:
 	if result.session.is_empty(): return
 	g.scripted_dialogue.clear()
 	g.card_kind = "examine"
+	if g.rig.has_method("play_examine"): g.rig.play_examine()
 	_play(g, result, object_id, label)
 
 func _play(g: Node, result: Dictionary, object_id: String, label: String) -> void:
@@ -81,6 +82,7 @@ func _play(g: Node, result: Dictionary, object_id: String, label: String) -> voi
 			g.estate.sync_staging(g.state)
 		if g.state.world == "estate":
 			sync_points(g, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
+		if g.rig.has_method("finish_context_animation"): g.rig.finish_context_animation()
 		g._close()
 		g._toast("Recorded in Walter's case file.  [ Tab ]", 4)
 		g._save_game())

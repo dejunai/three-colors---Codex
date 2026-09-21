@@ -44,5 +44,7 @@ func run() -> void:
 	var runtime_player := WalterModel.animation_player(runtime_model)
 	var runtime_anims := WalterModel.animation_map(runtime_player)
 	assert(String(runtime_anims.get("Walk", "")).get_file() == "Walking", "Walter's ordinary gait must use the straighter Walking take")
-	print("WALTER MODEL PASS: rendered hierarchy, modular coat/badge groups, 1.33 world scale, and straight Walking gait selected")
+	assert(runtime_anims.has("Surprise"), "Walter's custom surprise-to-ear action must have a stable runtime name")
+	assert(runtime_anims.has("Examine"), "Walter's custom desk-height examination action must have a stable runtime name")
+	print("WALTER MODEL PASS: rendered hierarchy, outfit groups, scale, straight gait, Surprise, and Examine available")
 	quit()

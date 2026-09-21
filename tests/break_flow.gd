@@ -124,6 +124,7 @@ func run() -> void:
 		await process_frame
 		frames += 1
 	assert(g.state.dialogue_state.flag("glass_broken"), "The glass must break")
+	assert(g.rig._model_animation_base == "Surprise", "The glass must trigger Walter's custom Surprise action")
 	assert(g.hazard_caption.text == "[Glass breaking.]" and g.hazard_caption.visible, "The sound needs a protected caption (Law 9)")
 	assert(g.estate.glass_shattered)
 	assert(g.state.finished, "Breaking the glass is the point of no return: a save from here resumes at the ending")

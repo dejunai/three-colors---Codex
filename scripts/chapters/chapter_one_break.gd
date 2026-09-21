@@ -123,6 +123,7 @@ func _break_glass(g: Node, room: Node) -> void:
 	# inside the beat, so the beat can only ever be seen whole.
 	g.state.finished = true
 	_caption(g, "[Glass breaking.]")
+	if g.rig.has_method("play_surprise"): g.rig.play_surprise()
 	glass_player.play()
 	if room.has_method("shatter_glass"): room.shatter_glass()
 	g.presentation.return_color(0.75, 4.0 * _scale(g))
@@ -130,6 +131,7 @@ func _break_glass(g: Node, room: Node) -> void:
 
 func _finish(g: Node) -> void:
 	running = false
+	if g.rig.has_method("finish_context_animation"): g.rig.finish_context_animation()
 	g.staging.debrief(g)
 
 # A struck tumbler and what follows: one hard crack, the ring of a few inharmonic

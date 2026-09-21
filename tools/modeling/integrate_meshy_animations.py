@@ -12,6 +12,8 @@ Features:
   - Brisk: Running (17f, athletic sprint for Shift pace)
   - Interact: Call_Gesture (frames 1..48)
   - Pickup_Ground: Male_Bend_Over_Pick_Up (frames 1..80, reach apex at 46%)
+  - Surprise: custom idle-to-shock-to-ear action
+  - Examine: custom waist bend with hands working at desk height
 - Ground aligned so soles rest at Z=0.0.
 - 100% compliant with Godot's WalterModel adapter and test contracts.
 """
@@ -181,8 +183,20 @@ def main() -> None:
         pickup_act.frame_end = 80
         pickup_act.use_fake_user = True
 
-    # Setup NLA tracks for the 5 required actions
-    target_actions = ["Idle", "Walk", "Brisk", "Interact", "Pickup_Ground"]
+    # 6. Semantic aliases for the two custom Meshy actions.
+    custom_actions = {
+        "01a0c2dc-c106-73a8-b359-a699e575b489": "Surprise",
+        "01a0c2de-e825-716d-a1ed-53dcfa00916a": "Examine",
+    }
+    for source_name, target_name in custom_actions.items():
+        source = bpy.data.actions.get(source_name)
+        if source:
+            action = source.copy()
+            action.name = target_name
+            action.use_fake_user = True
+
+    # Setup NLA tracks for the required actions
+    target_actions = ["Idle", "Walk", "Brisk", "Interact", "Pickup_Ground", "Surprise", "Examine"]
     armature.animation_data_create()
     armature.animation_data.action = None
 

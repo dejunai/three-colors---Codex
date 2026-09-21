@@ -69,6 +69,7 @@ func _check_live_fork() -> void:
 	var fake_path = "res://objects/test_fork_location.object"
 	ObjectRuntime._cache[fake_path] = parsed
 	assert(g.objects.interact(g, "test_fork_location", "chest"), "interact() must accept a known, available id")
+	assert(g.rig._model_animation_base == "Examine", "opening an authored object must play Walter's Examine action")
 	while g.page == "dialogue": g._next_card()
 	assert(g.page == "witness", "reaching an unresolved FORK must present a live choice screen, not silently close")
 	var options = g.content.find_children("*", "Button", true, false)
@@ -78,4 +79,5 @@ func _check_live_fork() -> void:
 	assert(g.state.has_item("chest_key"), "TAKE on the chosen branch must reach case_state.inventory through the live adapter")
 	assert(g.state.dialogue_state.outcome_is("chest_response", "forced"), "OUTCOME must commit through the shared dialogue_state store via the live adapter")
 	assert(g.page == "play", "a finished object with no further cards must close back to play")
+	assert(g.rig._model_animation_base == "Idle", "finishing the object must return Walter to Idle")
 	ObjectRuntime._cache.erase(fake_path)
