@@ -8,6 +8,7 @@ const ContiguousTown = preload("res://scripts/chapters/contiguous_town_phase_one
 const ContiguousTownTwo = preload("res://scripts/chapters/contiguous_town_phase_two.gd")
 const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
 const CoronerModel = preload("res://scripts/shared/coroner_model.gd")
+const CastModel = preload("res://scripts/shared/cast_model.gd")
 var FILES = {"boy":"gatehouse_boy", "assistant":"coroners_assistant", "crew":"groundskeeper", "gardener":"gardener", "odell":"odell", "almy":"mrs_almy", "behan":"father_behan", "barman":"steward", "old_woman":"old_woman"}
 var TITLES = {"boy":"The gatehouse boys", "assistant":"The coroner's assistant", "crew":"The groundskeeper", "gardener":"The gardener", "odell":"Captain Odell", "almy":"Mrs. Almy", "behan":"Father Behan", "barman":"The club's steward", "old_woman":"The woman outside Kessler's shop"}
 var catalog = preload("res://scripts/chapters/dialogue_catalog.gd").new()
@@ -56,7 +57,9 @@ func populate(g: Node) -> void:
 			figure.rotation.y = PI
 			g.estate.add_child(figure)
 		else:
-			figure = g.estate.person(spot[1], "55624f", true, "b8743a" if actor=="harbor_observer" else "")
+			figure = CastModel.create_for_npc(actor, spot[0])
+			figure.position = spot[1]
+			g.estate.add_child(figure)
 		figures[actor] = figure
 		g.estate.target(actor,"Speak with " + TITLES[actor],spot[1])
 		if g.state.world == "stationer": g.estate.points.erase("local_resident")

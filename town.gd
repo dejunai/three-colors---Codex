@@ -124,8 +124,10 @@ func _street() -> void:
 	box(self,Vector3(-20,1.1,12),Vector3(3.2,2.2,0.3),"333a2f",true)
 	lettering("KESSLER",Vector3(-20,2.5,11.85),26)
 	for y in [0.6,1.1,1.6]: box(self,Vector3(-20,y,11.83),Vector3(2.6,0.16,0.1),"241f1a")
-	var old_woman = person(Vector3(-19.2,0,11.2),"3c3a34")
-	departing_woman=old_woman
+	var old_woman = CastModel.create(CastModel.LOWER_WOMAN)
+	old_woman.position = Vector3(-19.2, 0, 11.2)
+	add_child(old_woman)
+	departing_woman = old_woman
 	old_woman.rotation.y = -2.0
 	target("old_woman","Speak with the woman outside the shop",Vector3(-19.2,0,11.2))
 	register_actor("old_woman", old_woman, "old_woman", func(st): return not st.evidence.has("old_woman"))
@@ -208,7 +210,10 @@ func _boardinghouse() -> void:
 	box(self,Vector3(-5.8,0.6,-2.3),Vector3(3,0.65,1.2),"5c7853",true)
 	box(self,Vector3(-5.8,1.2,-2.8),Vector3(3,0.9,0.35),"5c7853")
 	_desk(Vector3(1.5,0,-2.3),Vector3(2.8,0.16,1.5))
-	person(Vector3(1.7,0,-4.2),"6e865d",false)
+	var almy = CastModel.create(CastModel.UPPER_WOMAN)
+	almy.position = Vector3(1.7, 0, -4.2)
+	almy.rotation.y = PI
+	add_child(almy)
 	_chair(Vector3(1.5,0,-4.3),PI)
 	_chair(Vector3(1.5,0,0))
 	for x in [0.9,1.9]:
