@@ -1,0 +1,364 @@
+commit e1d806ab8f3b4aafe053c405c9483a2767bfef49
+Author: Dejunai <dejunai@gmail.com>
+Date:   Tue Sep 8 04:51:25 2026 -0700
+
+    Build the real corkboard link mechanic, resolving the top open TDD item
+    
+    Two coexisting case-tracking systems has been the single most
+    consequential open item since TDD v1: a legacy GameState link-based
+    corkboard the active build never used, alongside case_state.gd's flat
+    evidence-count perception(). The short-story drafts describe Walter's
+    actual method as literally pinning cards and connecting them with
+    twine, which the flat formula was never honoring - grounds for
+    building the real mechanic rather than deleting it or committing to
+    flat evidence counting.
+    
+    The legacy GameState.try_link() isn't migrated as code - its
+    VALID_LINKS table references an older, smaller evidence catalog that
+    predates the current build entirely. Instead: case_state.gd gains
+    links, record_link(), has_link(), and bumps to schema VERSION 4
+    (migrating 1-3, defaulting absent "links" to empty). Which pairs are
+    valid stays chapter-specific, in chapter_one_archive.gd's new LINKS
+    table - five of six entries used to be automatic board paragraphs,
+    now genuine player-drawn connections via a new "Draw a connection"
+    button and two-step _link_picker() screen. perception() reshapes to
+    2 + min(3, evidence/3) + min(3, links.size()) so a handful of correct
+    links reaches the same ceiling raw collection needs 9+ observations
+    for - the existing Perception-4 tunnel gate is untouched and stays
+    non-blocking (route information only, never access).
+    
+    All three QA suites pass, including new coverage for a confirmed
+    link, a rejected pair, save/load persistence, and legacy-save
+    migration with no links key at all.
+    
+    Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+diff --git a/README.md b/README.md
+index 052e2b6..24ee773 100644
+--- a/README.md
++++ b/README.md
+@@ -1,6 +1,6 @@
+ # Three Colors of Madness — No Exit Wound
+ 
+-Native third-person 3D opening prototype aligned with Design Bible v13 and TDD v2. This is a playable blockout, with primitive art and provisional writing. Roughly ten minutes is an exploratory pacing target, not a measured playtime or a forced timer.
++Native third-person 3D opening prototype aligned with Design Bible v14 and TDD v6. This is a playable blockout, with primitive art and provisional writing. Roughly ten minutes is an exploratory pacing target, not a measured playtime or a forced timer.
+ 
+ ## Play
+ 
+@@ -22,7 +22,9 @@ Optional observations: wounds, grove, knife, watch, intact windows, seating list
+ 
+ A minimal run can go directly to Odell and the report. His statement supplies the count without claiming examinations Walter skipped. Odell's dismissal ("Six members, Corwin... The other two are a filing matter") opens a genuine choice — answer him to his face, or say nothing and let the notebook carry it — recorded as a distinct statement either way; neither option is scored or gates anything downstream. Opening the case file is optional; it never gates progression. The report snapshots the evidence present when prepared. Later observations remain in Walter's notebook until he revises the report at the desk.
+ 
+-The town includes optional witness questions, a meal ledger, a newspaper, a personal notice, an automatic case board, Father Behan on the street behind the rectory marker, whose own revisitable menu turns up why the Ophion Club is named for a lost ship and the money it left behind, and an unnamed woman outside Kessler's shuttered shop, who warns Walter once and does not stay to explain herself. The board never gates progression. Reports become immutable when received at the precinct; later findings can be filed as dated supplements, with optional county dispatch. Witness claims remain distinguished from corroborated findings.
++The town includes optional witness questions, a meal ledger, a newspaper, a personal notice, a case board, Father Behan on the street behind the rectory marker, whose own revisitable menu turns up why the Ophion Club is named for a lost ship and the money it left behind, and an unnamed woman outside Kessler's shuttered shop, who warns Walter once and does not stay to explain herself. The board never gates progression. Reports become immutable when received at the precinct; later findings can be filed as dated supplements, with optional county dispatch. Witness claims remain distinguished from corroborated findings.
++
++At the board, Walter can draw a connection between any two recorded observations. A meaningful pair is confirmed and stays pinned to the board with its own summary; an unrelated pair simply doesn't hold, at no cost either way. A handful of correct connections raise Perception faster than collecting more observations does — the passage's Perception-gated route rewards drawing the right links, not just gathering more facts.
+ 
+ ## Saves and accessibility
+ 
+@@ -32,7 +34,7 @@ Accessibility is available before play: static grain by default, distortion inte
+ 
+ ## Scope
+ 
+-This build includes perspective movement/camera collision, twelve optional observations (three of them behind a revisitable witness menu), a branching response to Odell, a sparse paperdoll and inventory, displayed Strength/Perception, clothing, a finite flask affecting presentation only, report choices, a persistent opening record, and a scoped Observer color tell in the active shader.
++This build includes perspective movement/camera collision, twelve optional observations (three of them behind a revisitable witness menu), a branching response to Odell, a player-drawn corkboard link mechanic feeding Perception, a sparse paperdoll and inventory, displayed Strength/Perception, clothing, a finite flask affecting presentation only, report choices, a persistent opening record, and a scoped Observer color tell in the active shader.
+ 
+ It does not include combat, forced spill, glass-shattering break, fatal comprehension, later chapters, gamepad support, full key rebinding, or a full encumbrance/level-up system. Later consumption of the record by Ekon is future work. The v10 difficulty screen is deferred. The respectful all-eight wording is provisional and needs review against Walter's intended initial bias. Neither report choice is scored as morality.
+ 
+@@ -42,7 +44,7 @@ The earlier 2.5D scenes, scripts, shaders, and tests remain available through `L
+ 
+ ## Verification and source
+ 
+-`Test town.cmd` checks travel through all three interiors, minimal progression without the board, optional inquiry, immutable report and supplement history, migration, and cross-location saves. `Test opening.cmd` checks the minimal route, Odell's response branch, optional observations including the barman's revisitable menu, clothing testimony, report snapshots, save/load, completion, actual WASD traversal, departure focus, and hedge collision. The existing `tests/smoke_test.gd` also remains runnable.
++`Test town.cmd` checks travel through all three interiors, minimal progression without the board, optional inquiry, the board's link mechanic (a confirmed pair, a rejected pair, save/load persistence, legacy-save migration), immutable report and supplement history, migration, and cross-location saves. `Test opening.cmd` checks the minimal route, Odell's response branch, optional observations including the barman's revisitable menu, clothing testimony, report snapshots, save/load, completion, actual WASD traversal, departure focus, and hedge collision. The existing `tests/smoke_test.gd` also remains runnable.
+ 
+ Live renderer captures use `-- --capture=world`, `title`, `case`, `dialogue`, `settings`, `effects`, `large_text`, or `gate`. These developer arguments are not shown in-game. Reviewed captures are in `docs/qa/`.
+ 
+@@ -53,14 +55,14 @@ Live renderer captures use `-- --capture=world`, `title`, `case`, `dialogue`, `s
+ - `tests/`: extracted traversal and integration checks.
+ - `tunnel.gd` / `tunnel_story.gd`: service passage encounter and provisional text.
+ - `estate.gd`: deterministic environment, figures, collision, interaction points.
+-- `case_state.gd`: canonical record and serialization.
++- `case_state.gd`: canonical record and serialization, including confirmed board links.
+ - `story.gd`: provisional dialogue and factual evidence.
+ - `film.gdshader`: monochrome, iris, grain, subtle drift, and a narrow-hue exception that lets Observer-flagged materials keep color.
+ - `docs/PLAYTEST.md`: first-playtest questions.
+ 
+ ## Service passage interaction loop
+ 
+-After finishing the town inquiry, choose **Continue to the service passage**. Existing completed town saves can enter it too. Read the plan, observe the cough/head-turn cycle, reach the lower measurement, and return to the entrance. The long outer route works with an empty flask and without consulting the board. Higher Perception reveals wear marks on a shorter recess route; its physical space exists for every player.
++After finishing the town inquiry, choose **Continue to the service passage**. Existing completed town saves can enter it too. Read the plan, observe the cough/head-turn cycle, reach the lower measurement, and return to the entrance. The long outer route works with an empty flask and without consulting the board. Higher Perception, whether reached by observation or by drawing the right connections on the board, reveals wear marks on a shorter recess route; its physical space exists for every player.
+ 
+ The flask reduces presentation strain; it does not change the encounter's rules. Death offers an entrance checkpoint retry restoring the full record, resources, relief, camera, and encounter state. Continuing a dead save preserves the death screen. Menus pause the encounter.
+ 
+diff --git a/case_state.gd b/case_state.gd
+index 3cfba72..cdc4b71 100644
+--- a/case_state.gd
++++ b/case_state.gd
+@@ -1,7 +1,8 @@
+ extends RefCounted
+ 
+-const VERSION = 3
++const VERSION = 4
+ var evidence: Array[String] = []
++var links: Array[String] = []
+ var statements: Array[String] = []
+ var visited: Array[String] = []
+ var report = ""
+@@ -35,8 +36,19 @@ func discover(id: String) -> void:
+ func record(id: String) -> void:
+ 	if not statements.has(id): statements.append(id)
+ 
++func record_link(id: String) -> void:
++	if not links.has(id): links.append(id)
++
++func has_link(id: String) -> bool:
++	return links.has(id)
++
+ func perception() -> int:
+-	return 2 + mini(4, evidence.size() / 2)
++	# A deliberate connection is worth more than raw collection: full evidence
++	# credit needs volume (9+ observations); full link credit needs only three
++	# meaningful ones drawn by hand. Chapter-specific validity of a link pair
++	# lives with the chapter's own content, not here — this just counts what
++	# was confirmed.
++	return 2 + mini(3, evidence.size() / 3) + mini(3, links.size())
+ 
+ func complete_report(mode: String, sources:Dictionary={}) -> void:
+ 	if intake_done: return
+@@ -67,7 +79,7 @@ func file_supplement(send_county: bool, sources:Dictionary={}) -> void:
+ 		if not copies.has("County registrar — dated supplement"): copies.append("County registrar — dated supplement")
+ 
+ func pack() -> Dictionary:
+-	return {"version":VERSION,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"statements":statements,"visited":visited,
++	return {"version":VERSION,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
+ 		"report":report,"copies":copies,"report_evidence":report_evidence,"report_statements":report_statements,"flask":flask,"coat":coat,"minutes":minutes,
+ 		"position":[position.x,position.y,position.z],"yaw":yaw,"started":started,"finished":finished,
+ 		"world":world,"estate_complete":estate_complete,"intake_done":intake_done,
+@@ -75,8 +87,8 @@ func pack() -> Dictionary:
+ 		"supplement_evidence":supplement_evidence,"county_evidence":county_evidence,"inquiry_topics":inquiry_topics,"supplement_history":supplement_history}
+ 
+ func restore(d: Dictionary) -> bool:
+-	if int(d.get("version",0)) not in [1,2,VERSION]: return false
+-	for key in ["evidence","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history","county_statements"]:
++	if int(d.get("version",0)) not in [1,2,3,VERSION]: return false
++	for key in ["evidence","links","statements","visited","copies","report_evidence","report_statements","supplement_evidence","county_evidence","inquiry_topics","supplement_history","county_statements"]:
+ 		if not d.get(key,[]) is Array: return false
+ 		if key!="supplement_history":
+ 			for value in d.get(key,[]):
+@@ -95,6 +107,7 @@ func restore(d: Dictionary) -> bool:
+ 	for value in p:
+ 		if not (value is float or value is int) or not is_finite(float(value)): return false
+ 	evidence.assign(d.get("evidence",[]))
++	links.assign(d.get("links",[]))
+ 	statements.assign(d.get("statements",[]))
+ 	visited.assign(d.get("visited",[]))
+ 	copies.assign(d.get("copies",[]))
+diff --git a/docs/ARCHITECTURE.md b/docs/ARCHITECTURE.md
+index f2af255..40cd2b9 100644
+--- a/docs/ARCHITECTURE.md
++++ b/docs/ARCHITECTURE.md
+@@ -24,7 +24,7 @@ The Observer color-preservation device is restored in film.gdshader as `preserve
+ 
+ The estate grounds crew (estate.gd, the kitchen wing yard west of the terrace, "crew" in story.gd) is Chapter One's Observer beat per the bible's Part Two material — the first Observer the player meets anywhere in the trilogy. It is built as a standard optional observation: examine it, get a factual notebook entry, nothing more. The dialogue never explains the refusal; it only describes it precisely and returns the groundskeeper to unrelated work in the same breath, per the bible's staging rule. Design Law 5 stays intact — no line of text acknowledges why the door gets a wide berth, or that the accent even has a color; only the render does that, and only for a player who happens to look.
+ 
+-The corkboard/link-mechanic question (Part Four) is left unresolved on purpose rather than rebuilt this pass: `case_state.gd`'s flat `perception()` formula is the only implementation this codebase actually exercises, it already gates the service passage's third route, and it now also gates discovery of the grounds crew observation itself (perception grows with evidence count, and the crew is one more piece of evidence to find). Migrating in the legacy `GameState` link mechanic is a bigger, separate decision and should stay that way rather than being absorbed into a content pass.
++The corkboard/link-mechanic question (Part Four) was left unresolved on purpose in this pass rather than rebuilt: `case_state.gd`'s flat `perception()` formula was the only implementation this codebase exercised, and it already gated the service passage's third route. See "The corkboard/link mechanic" below — this was later resolved by building a real link mechanic rather than committing to the flat formula.
+ 
+ `tunnel.gd`'s `cue()` now reads from `tunnel_story.gd`'s `CUES` table instead of returning inline string literals, resolving the TDD's "hazard cue text lives in code" item ahead of any second timed encounter reusing the pattern.
+ 
+@@ -42,6 +42,18 @@ Father Behan (canonical-only material — the club's naming, the two declined in
+ 
+ The woman outside Kessler's shuttered shop (canonical-only) is deliberately not a fourth menu. In the source she leaves before Walter can ask a second question, so the build treats her as a single `_town_observation()`-driven scene like `gazette` or `exemption` rather than forcing a revisitable structure onto a witness who, by the story's own logic, doesn't stay. Her card and Behan's `behan_name` card cross-reference on the board once both are recorded — the same "two halves of an argument neither speaker knew the other was making" the source states outright.
+ 
++## The corkboard/link mechanic
++
++The single most consequential open item since TDD v1: two coexisting case-tracking systems, a legacy `GameState` autoload implementing a link-based corkboard the active build never used, and `case_state.gd`'s flat evidence-count `perception()`. Resolved by building the real mechanic rather than deleting the legacy one or committing to the flat formula — the short-story drafts (`docs/design/1)` and `4)`) describe Walter's actual method as literally pinning cards and connecting them with twine ("he linked names with twine... discovered... he was good at this"), which is fiction the flat formula was never honoring.
++
++The legacy `GameState.try_link()` was not migrated as code — its `VALID_LINKS` table references an older, smaller evidence catalog (`impossible_wound`, `clean_knife`, `club_token`...) that predates the current build's evidence ids entirely and doesn't correspond to anything in `story.gd`/`town_story.gd`/`tunnel_story.gd`. `GameState` remains legacy, registered only for the retained 2.5D prototype, exactly as before.
++
++The new mechanic instead: `case_state.gd` gained `links: Array[String]`, `record_link(id)`, `has_link(id)`, and CaseState schema bumped to `VERSION = 4` (accepting 1–3 for migration; a save with no `links` key restores with an empty list, no schema-specific migration code needed). `case_state.gd` stays chapter-agnostic on purpose — it only counts confirmed link ids, with no opinion on which pairs are valid.
++
++Which pairs are valid is Chapter One's own content, living in `chapter_one_archive.gd`'s `LINKS` const (six entries, keyed by two evidence ids sorted and joined with `|`) rather than in `case_state.gd` — the same reuse boundary the shared/chapter-specific split already established elsewhere. Five of the six pairs are content that used to be automatic board paragraphs (revealed the instant both evidence ids were present); they're now genuine player-drawn connections, confirmed through `_board()`'s new "Draw a connection between two observations" button into a two-step `_link_picker(g, first_id)` screen. A correct pair calls `state.record_link()` and shows its title/summary permanently under "CONNECTIONS DRAWN" on the board; an incorrect pair records nothing and just says the line doesn't hold — unlike the legacy demo, no instability penalty attaches to a wrong guess, since instability isn't a concept this build's `case_state.gd` has (that stays part of the deferred ontological-break future work). One board paragraph (the gardener/service-door note, keyed to a statement rather than two evidence ids) couldn't convert to this shape and stays automatic.
++
++`perception()` changed shape to make the connection matter, not just decorate it: `2 + min(3, evidence.size()/3) + min(3, links.size())`. A link is worth roughly three observations' worth of raw collection, capped at three links' credit each — full evidence credit alone now needs 9+ observations (up from 8 under the old `2 + min(4, evidence.size()/2)`), while a handful of correct links reaches the same ceiling with far less volume. The service passage's existing `perception() >= 4` gate is untouched and still only reveals descriptive text, never blocks movement or access — confirmed against the existing `tests/interaction_loop.gd` scenario (7 evidence, 0 links → perception 4 under both the old and new formula, coincidentally, so that test needed no changes).
++
+ ## Review corrections
+ 
+ Observer color preservation currently uses a screen-wide red-pixel threshold, not an object mask. A controlled palette supports the intended prototype effect; true object isolation remains future work. The groundskeeper observation is available without a Perception gate. Perception reveals tunnel route information, not exclusive physical access. Odell answers are locked by their saved statement; older contradictory records are preserved rather than silently rewritten. The woman disappears after her warning and remains absent on load and travel. Barman dialogue now describes the present daytime portico encounter.
+diff --git a/docs/PLAYTEST.md b/docs/PLAYTEST.md
+index 2f496e4..e7dce95 100644
+--- a/docs/PLAYTEST.md
++++ b/docs/PLAYTEST.md
+@@ -17,7 +17,8 @@ Record:
+ 9. At the kitchen wing yard: did anything about the groundskeeper's accent read as unusual before it was pointed out here? Did the refusal itself read as expertise, or as fear?
+ 10. At Odell's dismissal: which response did you pick, and why? Did the other option feel like a real path not taken, or an obviously worse choice?
+ 11. Did the barman's and Father Behan's menus feel like real conversations to return to, or like a checklist to clear? Did unlocking each next topic feel earned or arbitrary?
+-12. Did the woman outside Kessler's shop feel like a missed opportunity to ask more, or did her leaving before Walter could press her read as intentional? Did her warning connect to anything else on its own, before the board pointed it out?
++12. Did the woman outside Kessler's shop feel like a missed opportunity to ask more, or did her leaving before Walter could press her read as intentional? Did her warning connect to anything else on its own, before you drew that connection on the board yourself?
++13. At the board: did you find "Draw a connection" without prompting? Did picking a pair that didn't hold feel like a real guess, or an obvious dead end? Did confirming a real connection feel like a discovery, or like clearing a checklist?
+ 
+ Then try a minimal second run: go to Odell, prepare a report, and leave without opening the case file. Compare its record to the first run. Save midway, quit, and continue. Optional third check: return to the gardener wearing the plain coat.
+ 
+diff --git a/scripts/chapters/chapter_one_archive.gd b/scripts/chapters/chapter_one_archive.gd
+index a0f5a90..c445f70 100644
+--- a/scripts/chapters/chapter_one_archive.gd
++++ b/scripts/chapters/chapter_one_archive.gd
+@@ -2,6 +2,35 @@ extends RefCounted
+ 
+ # Chapter One archive content, rendered through the shared panel manager.
+ 
++# Meaningful connections between two pieces of evidence, confirmed only when
++# the player draws them on the board rather than revealed automatically.
++# Keys are two evidence ids, sorted and joined by "|"; this table is Chapter
++# One's own content and deliberately does not live in case_state.gd, which
++# stays chapter-agnostic and only counts confirmed link ids.
++const LINKS := {
++	"lodging|naomi": {"id":"naomi_address","title":"TWO RECORDS, ONE WOMAN","summary":"Mrs. Almy's statement and the meal ledger name the same woman. Two independent records agree."},
++	"lay_lead|naomi": {"id":"naomi_lay","title":"THE CLAIM HAS A NAME NOW","summary":"The wage claim belongs to a woman with a name now. It still does not establish why she was killed."},
++	"eight|intake": {"id":"count_disagreement","title":"THE HEADING DISAGREES WITH THE COUNT","summary":"The precinct's own heading disagrees with Walter's report. The disagreement has a source on each side; neither page replaces the other."},
++	"lower_foundation|municipal_foundation": {"id":"two_drawings","title":"TWO DRAWINGS, ONE LIMIT","summary":"The service plan and the municipal sheet agree on where the foundation ends. The passage does not. The extension remains unexplained."},
++	"behan_name|old_woman": {"id":"chosen_delusion","title":"A DELUSION OF BEING CHOSEN","summary":"A priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making."},
++	"crew|pantry_lead": {"id":"same_door","title":"THE GROUNDSKEEPER AND THE BARMAN","summary":"One keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why."}
++}
++
++static func _link_key(a:String,b:String) -> String:
++	var ids=[a,b]
++	ids.sort()
++	return "%s|%s" % [ids[0],ids[1]]
++
++# Returns the link entry on success (already-confirmed or newly confirmed),
++# or an empty dictionary if the pair names no real connection.
++static func _try_link(g:Node,a:String,b:String) -> Dictionary:
++	if a==b: return {}
++	var key=_link_key(a,b)
++	if not LINKS.has(key): return {}
++	var link:Dictionary=LINKS[key]
++	g.state.record_link(link.id)
++	return link
++
+ func _case_file(g:Node) -> void:
+ 	g._panel("case","Walter Corwin","PERSONAL EFFECTS  /  PRECINCT 4",true)
+ 	var row = HBoxContainer.new()
+@@ -112,7 +141,7 @@ func _report_screen(g:Node) -> void:
+ 
+ func _board(g:Node) -> void:
+ 	g._panel("board","What belongs beside what","CORWIN'S ROOM  /  THE CASE BOARD",true)
+-	g._paragraph("The cards reflect the investigation already made.\nReading them does not decide whether it can continue.",19)
++	g._paragraph("The cards reflect the investigation already made.\nA connection is only real once Walter draws it himself.",19)
+ 	var grid=GridContainer.new()
+ 	grid.columns=2
+ 	grid.add_theme_constant_override("h_separation",18)
+@@ -129,24 +158,48 @@ func _board(g:Node) -> void:
+ 		box.custom_minimum_size.x=270
+ 		var source=g._label(g._source_for(id),14,false)
+ 		box.add_child(source)
+-	if g.state.evidence.has("naomi") and g.state.evidence.has("lodging"):
+-		g._paragraph("UNIDENTIFIED WOMAN  →  NAOMI FREEMAN  →  A LOCAL ADDRESS\nMrs. Almy's statement and the meal ledger support the same identification.",22)
+-	if g.state.evidence.has("lay_lead"):
+-		g._paragraph("AN UNPAID LAY  →  DOCUMENT NOT EXAMINED\nThe claim is a question to investigate. It does not establish why she was killed.",22)
+-	if g.state.evidence.has("intake"):
+-		g._paragraph("SIX IN THE HEADING  ↔  EIGHT IN WALTER'S REPORT\nThe disagreement has a source on each side. Neither page replaces the other.",22)
+-	if g.state.evidence.has("municipal_foundation"):
+-		g._paragraph("SERVICE PLAN  ↔  MUNICIPAL SHEET  ↔  MEASURED PASSAGE\nTwo drawings agree on a limit the passage exceeds. The extension remains unexplained.",22)
+ 	if g.state.evidence.has("crew") and g.state.statements.has("The gardener saw the woman at the service door. Ask the steward."):
+ 		g._paragraph("THE SERVICE DOOR\nThe gardener placed the unidentified woman there once. The groundskeeper keeps a fixed distance from it now. Neither observation explains the other.",22)
+-	if g.state.evidence.has("old_woman") and g.state.evidence.has("behan_name"):
+-		g._paragraph("A DELUSION OF BEING CHOSEN  ↔  BEWARE THE OLD GODS\nA priest calls the club's founding myth a vanity. An unnamed woman warns him it isn't only that. Two halves of an argument neither speaker knew the other was making.",22)
+-	if g.state.evidence.has("crew") and g.state.evidence.has("pantry_lead"):
+-		g._paragraph("THE GROUNDSKEEPER  ↔  THE BARMAN\nOne keeps his distance from a door in daylight. The other names the same door and will not go near it either. Neither will say why.",22)
++	var confirmed=false
++	for entry in LINKS.values():
++		if not g.state.has_link(entry.id): continue
++		if not confirmed:
++			g._paragraph("CONNECTIONS DRAWN",14)
++			confirmed=true
++		g._paragraph(str(entry.title)+"\n"+str(entry.summary),22)
++	var linkable=[]
++	for id in g.state.evidence:
++		if g.facts.has(id): linkable.append(id)
++	if linkable.size()>=2: g._button("Draw a connection between two observations",func(): _link_picker(g,""))
+ 	g._button("Read the complete notebook",g._journal)
+ 	g._button("Step away from the board",g._close)
+ 	g._focus_first()
+ 
++func _link_picker(g:Node,first_id:String) -> void:
++	var linkable=[]
++	for id in g.state.evidence:
++		if g.facts.has(id) and id!=first_id: linkable.append(id)
++	if first_id.is_empty():
++		g._panel("board","Draw a connection","CORWIN'S ROOM  /  THE CASE BOARD")
++		g._paragraph("Choose the first observation.",22)
++		for id in linkable: g._button(str(g.facts[id][0]),func(): _link_picker(g,id))
++		g._button("Cancel",func(): _board(g))
++		g._focus_first()
++		return
++	g._panel("board","Draw a connection","CORWIN'S ROOM  /  "+str(g.facts[first_id][0]))
++	g._paragraph("Choose a second observation to test against it.",22)
++	for id in linkable:
++		g._button(str(g.facts[id][0]),func():
++			var link=_try_link(g,first_id,id)
++			g._save_game()
++			if link.is_empty():
++				g._toast("The line does not hold. The facts remain separate.",5)
++			else:
++				g._toast("LINKED — "+str(link.title),5)
++			_board(g))
++	g._button("Cancel",func(): _board(g))
++	g._focus_first()
++
+ func _town_complete(g:Node) -> void:
+ 	g._panel("ending","A name brought home","END OF THE FIRST TOWN INQUIRY")
+ 	g._paragraph("Naomi Freeman.\n\nThe town has not changed its account.\nWalter's account has become harder to dismiss.",27)
+diff --git a/tests/town_flow.gd b/tests/town_flow.gd
+index f6764b1..007caa6 100644
+--- a/tests/town_flow.gd
++++ b/tests/town_flow.gd
+@@ -151,6 +151,40 @@ func run(g:Node) -> void:
+ 	assert(g.focused=="board")
+ 	g._interact("board")
+ 	assert(g.page=="board")
++	var perception_before=g.state.perception()
++	# A meaningful pair, drawn through the actual picker UI, records the link and lifts perception.
++	for button in g.content.find_children("*","Button",true,false):
++		if button.text.begins_with("Draw a connection"): button.pressed.emit(); break
++	for button in g.content.find_children("*","Button",true,false):
++		if button.text.begins_with("NAOMI FREEMAN"): button.pressed.emit(); break
++	for button in g.content.find_children("*","Button",true,false):
++		if button.text.begins_with("A LOCAL ADDRESS"): button.pressed.emit(); break
++	assert(g.state.has_link("naomi_address"),"A valid pair records its link")
++	assert(g.state.perception()>perception_before,"A confirmed link raises perception")
++	assert(g.page=="board","A successful link returns to the board")
++	var board_text=""
++	for child in g.content.get_children():
++		if child is Label: board_text+=child.text
++	assert(board_text.contains("TWO RECORDS, ONE WOMAN"),"The board shows the confirmed connection")
++	# An unrelated pair leaves the facts separate; nothing is recorded.
++	for button in g.content.find_children("*","Button",true,false):
++		if button.text.begins_with("Draw a connection"): button.pressed.emit(); break
++	for button in g.content.find_children("*","Button",true,false):
++		if button.text.begins_with("THE MORNING EDITION"): button.pressed.emit(); break
++	for button in g.content.find_children("*","Button",true,false):
++		if button.text.begins_with("NO EXIT WOUND"): button.pressed.emit(); break
++	assert(g.state.links.size()==1,"An invalid pair records nothing")
++	# The link survives a save/load round trip alongside everything else.
++	g._save_game()
++	var links_before=g.state.links.duplicate()
++	g.state=g.CaseState.new()
++	g._load_game()
++	assert(g.state.links==links_before)
++	assert(g.state.has_link("naomi_address"))
++	# Older saves with no "links" key at all still restore, with an empty link list.
++	var legacy_links=g.CaseState.new()
++	assert(legacy_links.restore({"version":3,"evidence":["eight"]}))
++	assert(legacy_links.links.is_empty())
+ 	g._close()
+ 	g.comfort_time=38
+ 	assert(g._save_game())
+@@ -160,5 +194,5 @@ func run(g:Node) -> void:
+ 	assert(g.state.county_evidence==county and g.state.report_evidence==original)
+ 	assert(g.state.coat=="Plain wool coat" and g.comfort_time==38)
+ 	assert(g.player.position.distance_to(Vector3(0,0,-6.1))<0.6)
+-	print("TOWN PASS: optional inquiry, corroboration, Father Behan's revisitable menu, the woman outside Kessler's shop, county dispatch, immutable originals and supplement history, board, cross-location save/load")
++	print("TOWN PASS: optional inquiry, corroboration, Father Behan's revisitable menu, the woman outside Kessler's shop, county dispatch, immutable originals and supplement history, board with drawn links, cross-location save/load")
+ 	g.get_tree().quit()
