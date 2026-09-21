@@ -9,8 +9,10 @@ var whiskey: MeshInstance3D
 var board_threads: Array[MeshInstance3D] = []
 var glass_shattered := false
 var behan_actor: Node3D
+var steward_actor: Node3D
 const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
 const FatherBehanModel = preload("res://scripts/shared/father_behan_model.gd")
+const StewardModel = preload("res://scripts/shared/steward_model.gd")
 
 func district_box(parent: Node3D, position: Vector3, size: Vector3, tint: String, solid: bool = false, kind: String = "soot_brick") -> MeshInstance3D:
 	return DistrictSurfaces.apply(box(parent, position, size, tint, solid), kind, tint)
@@ -323,7 +325,10 @@ func _smoking_lounge() -> void:
 			for arm in [-0.48,0.48]: box(self,seat+Vector3(arm,0.75,0),Vector3(0.22,0.35,1.05),"3b4735")
 	box(self,Vector3(0,0.03,-1),Vector3(4.4,0.03,6),"626957")
 	box(self,Vector3(0,1,-5.8),Vector3(3,2,0.8),"394638",true)
-	person(Vector3(0,0,-4.4),"3f4540",false)
+	steward_actor = StewardModel.create()
+	steward_actor.position = Vector3(0,0,-4.4)
+	steward_actor.rotation.y = PI
+	add_child(steward_actor)
 	target("barman","Speak with the club's steward",Vector3(0,0,-3.6))
 	# The steward's boarded pantry door. Only offered once he has pointed to it;
 	# see sync_pantry() and portals/lounge.portal.

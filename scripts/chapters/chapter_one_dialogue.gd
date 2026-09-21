@@ -92,9 +92,14 @@ func _set_assistant_conversing(g: Node, actor: String, conversing: bool) -> void
 		model = figures[actor] as Node3D
 	if is_instance_valid(model): CoronerModel.set_conversing(model, conversing)
 
+func _set_steward_conversing(g: Node, conversing: bool) -> void:
+	if g != null and is_instance_valid(g) and is_instance_valid(g.estate) and g.estate.get("steward_actor") != null:
+		preload("res://scripts/shared/steward_model.gd").set_conversing(g.estate.steward_actor, conversing)
+
 func end_session(g: Node = null) -> void:
 	_set_behan_listening(g, false)
 	_set_boy_listening(g, false)
+	if session_actor == "barman": _set_steward_conversing(g, false)
 	if session_actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, session_actor, false)
 	if session_actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, session_actor, false)
 	clear()
@@ -134,6 +139,7 @@ func interact(g: Node, actor: String) -> bool:
 	g.state.defer_dialogue_clock = true
 	if actor == "behan": _set_behan_listening(g, true)
 	if actor == "boy": _set_boy_listening(g, true)
+	if actor == "barman": _set_steward_conversing(g, true)
 	if actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, actor, true)
 	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
@@ -169,6 +175,7 @@ func show_menu(g: Node, actor: String) -> void:
 		g.state.defer_dialogue_clock = true
 	if actor == "behan": _set_behan_listening(g, true)
 	if actor == "boy": _set_boy_listening(g, true)
+	if actor == "barman": _set_steward_conversing(g, true)
 	if actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, actor, true)
 	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
@@ -186,6 +193,7 @@ func play_topic(g: Node, actor: String, topic_id: String) -> void:
 	if session_actor.is_empty():
 		session_actor = actor
 		g.state.defer_dialogue_clock = true
+	if actor == "barman": _set_steward_conversing(g, true)
 	if actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, actor, true)
 	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
