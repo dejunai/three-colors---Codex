@@ -22,6 +22,12 @@ func run() -> void:
 	assert(rendered.find_child("WorkingFrontage", true, false) != null, "Rendered frontage hierarchy missing")
 	assert(rendered.find_child("FishingBoat", true, false) != null, "Rendered fishing boat missing")
 	assert(rendered.find_child("WorkingProps", true, false) != null, "Rendered working props missing")
+	var hero_props = exterior.get_node_or_null("HeroQuayProps")
+	assert(hero_props != null, "Detailed quay prop hierarchy missing")
+	for prop_name in ["FishingBoatDetailed", "BoatFrameDetailed", "CargoClusterDetailed", "DockCraneDetailed", "DockShedDetailed"]:
+		assert(hero_props.has_node(prop_name), "Detailed quay prop missing: " + prop_name)
+	for collision_name in ["BoatFrameCollision", "CargoClusterCollision", "DockCraneCollision", "DockShedBackCollision", "DockShedWestCollision", "DockShedEastCollision"]:
+		assert(exterior.has_node(collision_name), "Quay prop collision proxy missing: " + collision_name)
 	assert(legacy != null and not legacy.visible, "Legacy waterfront visuals must be hidden")
 	var collision_count := 0
 	for node in legacy.find_children("*", "CollisionShape3D", true, false):

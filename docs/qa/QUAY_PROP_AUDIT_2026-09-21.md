@@ -26,3 +26,11 @@ Each Meshy source carried a 4K base-color map and a 4K metallic/roughness map. T
 - The boat frame is small-boat construction, not the offshore whaling station and not a commitment about Chapter Two's island architecture.
 
 The pale wood values are compatible with the current Chapter One treatment. Final placement lighting should provide darker wet contact areas and stronger separation from fog rather than repainting the assets before they are seen in the live waterfront.
+
+## Live placement
+
+The optimized assets are now instantiated by `waterfront_district.gd` in both the direct waterfront hub retained for old saves and the contiguous-town waterfront. The fishing boat replaces the provisional rendered silhouette at the seawall. The crane, cargo cluster, unfinished boat frame, and open shed form a working-apron sequence from west to east without moving any authored NPC schedule anchor or the central return lane.
+
+The dense meshes remain presentation-only. Simple box proxies provide collision for the workyard assets; the shed uses three wall proxies so its seaward work bay remains open. The moored fishing boat needs no player collision because the existing continuous seawall remains the gameplay boundary.
+
+Live inspection uses the existing `town_waterfront` and `town_waterfront_seaward` views plus `town_waterfront_workyard`, an along-quay view added for prop scale, spacing, and sightline checks. The seaward view confirms that only the boat's working deck and rig rise above the wall while its hull sits in the water. The workyard view confirms readable silhouettes and an unobstructed pedestrian lane.

@@ -3,6 +3,11 @@ extends RefCounted
 # Ordinary working waterfront. The distant station is scenery, never a route.
 const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
 const WATERFRONT_MODEL = preload("res://assets/models/waterfront_phase1.glb")
+const BOAT_FRAME_MODEL = preload("res://assets/models/waterfront/boat_frame.glb")
+const CARGO_CLUSTER_MODEL = preload("res://assets/models/waterfront/cargo_cluster.glb")
+const DOCK_CRANE_MODEL = preload("res://assets/models/waterfront/dock_crane.glb")
+const DOCK_SHED_MODEL = preload("res://assets/models/waterfront/dock_shed.glb")
+const FISHING_BOAT_MODEL = preload("res://assets/models/waterfront/fishing_boat.glb")
 
 var _legacy_visuals: Node3D
 
@@ -14,6 +19,50 @@ func legacy_box(w: Node, p: Vector3, size: Vector3, tint: String, solid: bool = 
 
 func legacy_cylinder(w: Node, p: Vector3, radius: float, height: float, tint: String) -> MeshInstance3D:
 	return w.cylinder(_legacy_visuals if is_instance_valid(_legacy_visuals) else w, p, radius, height, tint)
+
+func place_prop(parent: Node3D, packed: PackedScene, prop_name: String, position: Vector3, uniform_scale: float, yaw: float = 0.0) -> Node3D:
+	var prop := packed.instantiate() as Node3D
+	prop.name = prop_name
+	prop.position = position
+	prop.scale = Vector3.ONE * uniform_scale
+	prop.rotation.y = yaw
+	parent.add_child(prop)
+	return prop
+
+func collision_box(parent: Node3D, body_name: String, position: Vector3, size: Vector3) -> void:
+	var body := StaticBody3D.new()
+	body.name = body_name
+	body.position = position
+	parent.add_child(body)
+	var collision := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = size
+	collision.shape = shape
+	body.add_child(collision)
+
+func build_hero_props(w: Node3D, rendered: Node3D) -> void:
+	var props := Node3D.new()
+	props.name = "HeroQuayProps"
+	w.add_child(props)
+	# Replace the provisional boat silhouette while keeping it available in the
+	# source model for comparison and rollback.
+	var provisional_boat := rendered.find_child("FishingBoat", true, false)
+	if provisional_boat != null: provisional_boat.visible = false
+	place_prop(props, FISHING_BOAT_MODEL, "FishingBoatDetailed", Vector3(3, -2.4, -17), 4.5, 0.0)
+	# Repair-yard and working-apron landmarks. These positions deliberately stay
+	# clear of the authored waterfront schedule anchors and the central return lane.
+	place_prop(props, BOAT_FRAME_MODEL, "BoatFrameDetailed", Vector3(22, 0.04, -4.5), 2.4, -0.12)
+	place_prop(props, CARGO_CLUSTER_MODEL, "CargoClusterDetailed", Vector3(-17, 0.04, -4.5), 1.35, 0.18)
+	place_prop(props, DOCK_CRANE_MODEL, "DockCraneDetailed", Vector3(-27, 0.04, -4.5), 3.2, 0.08)
+	place_prop(props, DOCK_SHED_MODEL, "DockShedDetailed", Vector3(16, 0.04, 5), 3.4, 0.0)
+	# Broad, cheap proxies prevent walking through the dense render meshes. The
+	# shed uses three walls so its seaward-facing work bay remains enterable.
+	collision_box(w, "BoatFrameCollision", Vector3(22, 1.05, -4.5), Vector3(4.0, 2.1, 4.6))
+	collision_box(w, "CargoClusterCollision", Vector3(-17, 0.5, -4.5), Vector3(2.5, 1.0, 2.4))
+	collision_box(w, "DockCraneCollision", Vector3(-27, 1.0, -4.5), Vector3(4.5, 2.0, 2.2))
+	collision_box(w, "DockShedBackCollision", Vector3(16, 2.5, 8.0), Vector3(5.5, 5.0, 0.4))
+	collision_box(w, "DockShedWestCollision", Vector3(13.3, 2.5, 5.3), Vector3(0.4, 5.0, 5.8))
+	collision_box(w, "DockShedEastCollision", Vector3(18.7, 2.5, 5.3), Vector3(0.4, 5.0, 5.8))
 
 func build(w: Node3D) -> void:
 	_legacy_visuals = Node3D.new()
@@ -75,6 +124,7 @@ func build(w: Node3D) -> void:
 	var rendered = WATERFRONT_MODEL.instantiate()
 	rendered.name = "RenderedWaterfront"
 	w.add_child(rendered)
+	build_hero_props(w, rendered)
 	_legacy_visuals.visible = false
 	_legacy_visuals = null
 	# Low island silhouette; mud covers the base of the abandoned works.
