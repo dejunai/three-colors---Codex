@@ -32,6 +32,20 @@ func run(g:Node) -> void:
 		g.state.complete_report("Full inquest requested")
 		g._journal()
 	if g.capture_mode == "dialogue": g._interact("odell")
+	if g.capture_mode == "odell":
+		g.page = "capture"
+		g.model.hide()
+		g.camera.global_position = Vector3(4,1.7,-7.4)
+		g.camera.look_at(Vector3(4,1.15,-11.5))
+	if g.capture_mode == "odell_precinct":
+		g.state.day = 2
+		g.state.clock_minutes = 540.0
+		g.state.estate_complete = true
+		g._travel("precinct",Vector3(0,0.1,6))
+		g.page = "capture"
+		g.model.hide()
+		g.camera.global_position = Vector3(3.8,1.7,5.0)
+		g.camera.look_at(Vector3(3.8,1.15,1.0))
 	if g.capture_mode == "settings": g._settings()
 	if g.capture_mode == "effects": g._case_file()
 	if g.capture_mode == "watch":

@@ -6,6 +6,7 @@ const Runtime = preload("res://scripts/shared/dialogue_runtime.gd")
 const DialogueState = preload("res://scripts/shared/dialogue_state.gd")
 const ContiguousTown = preload("res://scripts/chapters/contiguous_town_phase_one.gd")
 const ContiguousTownTwo = preload("res://scripts/chapters/contiguous_town_phase_two.gd")
+const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
 var FILES = {"boy":"gatehouse_boy", "assistant":"coroners_assistant", "crew":"groundskeeper", "gardener":"gardener", "odell":"odell", "almy":"mrs_almy", "behan":"father_behan", "barman":"steward", "old_woman":"old_woman"}
 var TITLES = {"boy":"The gatehouse boys", "assistant":"The coroner's assistant", "crew":"The groundskeeper", "gardener":"The gardener", "odell":"Captain Odell", "almy":"Mrs. Almy", "behan":"Father Behan", "barman":"The club's steward", "old_woman":"The woman outside Kessler's shop"}
 var catalog = preload("res://scripts/chapters/dialogue_catalog.gd").new()
@@ -42,7 +43,14 @@ func populate(g: Node) -> void:
 		g.estate.points.erase(actor)
 		var spot = _slot(g,actor)
 		if spot.is_empty() or spot[0] != g.state.world: continue
-		var figure = g.estate.person(spot[1], "55624f", true, "b8743a" if actor=="harbor_observer" else "")
+		var figure: Node3D
+		if actor == "odell_precinct":
+			figure = CaptainOdellModel.create()
+			figure.position = spot[1]
+			figure.rotation.y = PI
+			g.estate.add_child(figure)
+		else:
+			figure = g.estate.person(spot[1], "55624f", true, "b8743a" if actor=="harbor_observer" else "")
 		figures[actor] = figure
 		g.estate.target(actor,"Speak with " + TITLES[actor],spot[1])
 		if g.state.world == "stationer": g.estate.points.erase("local_resident")
@@ -62,9 +70,18 @@ func _set_boy_listening(g: Node, listening: bool) -> void:
 	if g != null and is_instance_valid(g) and is_instance_valid(g.estate) and g.estate.get("boy_actor") != null:
 		preload("res://scripts/shared/gatekeeper_boy_model.gd").set_listening(g.estate.boy_actor, listening)
 
+func _set_odell_conversing(g: Node, actor: String, conversing: bool) -> void:
+	var model: Node3D
+	if actor == "odell" and g != null and is_instance_valid(g) and is_instance_valid(g.estate):
+		model = g.estate.get("odell_actor") as Node3D
+	elif actor == "odell_precinct" and figures.has(actor):
+		model = figures[actor] as Node3D
+	if is_instance_valid(model): CaptainOdellModel.set_conversing(model, conversing)
+
 func end_session(g: Node = null) -> void:
 	_set_behan_listening(g, false)
 	_set_boy_listening(g, false)
+	if session_actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, session_actor, false)
 	clear()
 	session_actor = ""
 	if g != null and is_instance_valid(g) and is_instance_valid(g.state):
@@ -102,6 +119,7 @@ func interact(g: Node, actor: String) -> bool:
 	g.state.defer_dialogue_clock = true
 	if actor == "behan": _set_behan_listening(g, true)
 	if actor == "boy": _set_boy_listening(g, true)
+	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
 	# Steward visit_count reflects staged days, not repeated attempts at the bar.
 	if actor == "barman": g.state.dialogue_state.visit_counts[def.npc] = g.state.steward_visits
@@ -135,6 +153,7 @@ func show_menu(g: Node, actor: String) -> void:
 		g.state.defer_dialogue_clock = true
 	if actor == "behan": _set_behan_listening(g, true)
 	if actor == "boy": _set_boy_listening(g, true)
+	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
 	var entries = Runtime.menu(def, Runtime.make_context(g.state, g.state.dialogue_state)).entries
 	if entries.is_empty() and actor != "odell": g._close(); return
@@ -150,6 +169,7 @@ func play_topic(g: Node, actor: String, topic_id: String) -> void:
 	if session_actor.is_empty():
 		session_actor = actor
 		g.state.defer_dialogue_clock = true
+	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
 	var ctx = Runtime.make_context(g.state, g.state.dialogue_state)
 	for index in def.topics.size():
@@ -276,5 +296,6 @@ func restore(g: Node, data: Variant) -> bool:
 	segment = result
 	session_actor = String(data.actor)
 	g.state.defer_dialogue_clock = true
+	if session_actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, session_actor, true)
 	_display(g)
 	return true

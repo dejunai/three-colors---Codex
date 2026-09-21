@@ -17,7 +17,9 @@ var birch_belongings: Node3D
 var opening_staff: Dictionary = {}
 var departure_leaves: Array[Node3D] = []
 var boy_actor: Node3D
+var odell_actor: Node3D
 const GatekeeperBoyModel = preload("res://scripts/shared/gatekeeper_boy_model.gd")
+const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
 
 func sync_staging(st) -> void:
 	for leaf in departure_leaves:
@@ -452,8 +454,13 @@ func _ready() -> void:
 	boy_actor.position = Vector3(-2,0,31)
 	boy_actor.rotation.y = -0.3
 	add_child(boy_actor)
-	opening_staff["odell"] = person(Vector3(4,0,-11.5),"272e2b")
-	opening_staff["odell"].rotation.y = 0.2
+	odell_actor = CaptainOdellModel.create()
+	odell_actor.position = Vector3(4,0,-11.5)
+	# Face Walter's approach from the garden while the rendered child retains
+	# the standard +Z-to-Godot-forward correction used by bespoke characters.
+	odell_actor.rotation.y = PI
+	add_child(odell_actor)
+	opening_staff["odell"] = odell_actor
 	opening_staff["assistant"] = person(Vector3(12.5,0,-3.8),"aaa99a",false)
 	opening_staff["assistant"].rotation.y = -1.2
 	gardener_actor = person(Vector3(-12,0,1),"4e5a4b")
