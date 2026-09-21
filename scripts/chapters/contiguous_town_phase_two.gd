@@ -18,8 +18,8 @@ class PlacementProxy extends Node3D:
 	func box(parent: Node, p: Vector3, size: Vector3, color: String, solid: bool = false):
 		return host.box(self if parent == self or parent == host else parent, p, size, color, solid)
 
-	func cylinder(_parent: Node, p: Vector3, radius: float, height: float, color: String, top: float = -1.0):
-		return host.cylinder(self, p, radius, height, color, top)
+	func cylinder(parent: Node, p: Vector3, radius: float, height: float, color: String, top: float = -1.0):
+		return host.cylinder(self if parent == self or parent == host else parent, p, radius, height, color, top)
 
 	func lettering(text: String, p: Vector3, font_size: int = 56):
 		return host.lettering(text, position + p, font_size)

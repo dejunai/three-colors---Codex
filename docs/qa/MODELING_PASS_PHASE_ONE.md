@@ -2,7 +2,7 @@
 
 Date agreed: 2026-09-20  
 Working branch: `feature/district-textures`  
-Status: Walter implemented and glass-break checkpoint passed; waterfront environment slice not yet implemented
+Status: Implementation complete — Walter and waterfront accepted in desktop play; Web profiling awaits the next authorized export
 
 ## Provenance
 

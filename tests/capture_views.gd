@@ -62,7 +62,7 @@ func run(g:Node) -> void:
 		g.aperture=0.51
 		g.aperture_target=0.51
 		g._update_camera(1)
-	if g.capture_mode in ["town","town_business","town_upper","town_lower","town_waterfront","precinct","boardinghouse","room","board","witness"]:
+	if g.capture_mode in ["town","town_business","town_upper","town_lower","town_waterfront","town_waterfront_seaward","precinct","boardinghouse","room","board","witness"]:
 		for id in ["eight","wounds","gas"]: g.state.discover(id)
 		g.state.complete_report("Full inquest requested")
 		g.state.receive_report()
@@ -82,11 +82,17 @@ func run(g:Node) -> void:
 			g.player.position = Vector3(91,-2.2,8)
 			g.yaw = 0.25
 		elif g.capture_mode == "town_waterfront":
-			g.player.position = Vector3(100,-4.9,-52)
-			g.yaw = -0.25
+			g.player.position = Vector3(100,-4.9,-58)
+			g.yaw = PI
+		elif g.capture_mode == "town_waterfront_seaward":
+			g.player.position = Vector3(100,-4.9,-65)
+			g.yaw = 0.0
 		if g.capture_mode.begins_with("town_"):
 			g.pitch = 0.42
 			g.distance = 7.2
+			if g.capture_mode in ["town_waterfront","town_waterfront_seaward"]:
+				g.pitch = 0.28
+				g.distance = 9.0
 			g._update_camera(1.0)
 		if g.capture_mode=="board": g._board()
 		if g.capture_mode=="witness": g._witness_menu()

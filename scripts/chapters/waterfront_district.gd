@@ -2,13 +2,25 @@ extends RefCounted
 
 # Ordinary working waterfront. The distant station is scenery, never a route.
 const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
+const WATERFRONT_MODEL = preload("res://assets/models/waterfront_phase1.glb")
+
+var _legacy_visuals: Node3D
 
 func block(w: Node, p: Vector3, size: Vector3, tint: String, solid: bool = false, kind: String = "salt_wood") -> MeshInstance3D:
-	return DistrictSurfaces.apply(w.box(w, p, size, tint, solid), kind, tint)
+	return DistrictSurfaces.apply(w.box(_legacy_visuals if is_instance_valid(_legacy_visuals) else w, p, size, tint, solid), kind, tint)
+
+func legacy_box(w: Node, p: Vector3, size: Vector3, tint: String, solid: bool = false) -> MeshInstance3D:
+	return w.box(_legacy_visuals if is_instance_valid(_legacy_visuals) else w, p, size, tint, solid)
+
+func legacy_cylinder(w: Node, p: Vector3, radius: float, height: float, tint: String) -> MeshInstance3D:
+	return w.cylinder(_legacy_visuals if is_instance_valid(_legacy_visuals) else w, p, radius, height, tint)
 
 func build(w: Node3D) -> void:
+	_legacy_visuals = Node3D.new()
+	_legacy_visuals.name = "LegacyWaterfrontCollisionVisuals"
+	w.add_child(_legacy_visuals)
 	block(w,Vector3(0,-0.5,8),Vector3(64,1,42),"505952",true,"algae_stone")
-	w.box(w,Vector3(0,-1.35,-53),Vector3(190,0.12,92),"465b60")
+	legacy_box(w,Vector3(0,-1.35,-53),Vector3(190,0.12,92),"465b60")
 	# Seawall: continuous collision keeps the water outside the playable quay.
 	block(w,Vector3(0,-0.3,-12),Vector3(64,2.2,1.4),"667066",true,"algae_stone")
 	for x in range(-30,31,3):
@@ -18,7 +30,7 @@ func build(w: Node3D) -> void:
 	for x in range(-30,31):
 		block(w,Vector3(x,0.03,-8),Vector3(0.94,0.08,6),"77796b",false,"salt_wood")
 	for x in [-27,-15,-3,9,21,29]:
-		var bollard = w.cylinder(w,Vector3(x,0.45,-10.5),0.19,0.9,"343e39")
+		var bollard = legacy_cylinder(w,Vector3(x,0.45,-10.5),0.19,0.9,"343e39")
 		DistrictSurfaces.apply(bollard,"rust_metal","343e39")
 		block(w,Vector3(x,0.8,-10.5),Vector3(0.8,0.12,0.22),"343e39",false,"rust_metal")
 	# Simple fishing boats moored below the quay, without boarding prompts.
@@ -26,7 +38,7 @@ func build(w: Node3D) -> void:
 		block(w,Vector3(x,-0.85,-18),Vector3(3.3,0.6,7),"333d37",false,"tar_wood")
 		block(w,Vector3(x,-0.48,-18),Vector3(2.6,0.12,5.8),"858473",false,"salt_wood")
 		block(w,Vector3(x,0.1,-19),Vector3(1.7,1.1,1.7),"656c5d",false,"salt_wood")
-		var mast = w.cylinder(w,Vector3(x,1.7,-17),0.07,5.4,"5b6053")
+		var mast = legacy_cylinder(w,Vector3(x,1.7,-17),0.07,5.4,"5b6053")
 		DistrictSurfaces.apply(mast,"tar_wood","5b6053")
 	# Four modest fronts, reserved for future writers; no invented residents.
 	for spec in [[-22,"CHANDLERY"],[-7,"FREIGHT OFFICE"],[8,"NET LOFT"],[23,"FISH STORES"]]:
@@ -48,7 +60,7 @@ func build(w: Node3D) -> void:
 	for x in [17,20,23]:
 		block(w,Vector3(x,0.35,-3),Vector3(1.8,0.7,1.3),"79796e",true,"salt_wood")
 	for x in [-25,-21]:
-		var net_pole = w.cylinder(w,Vector3(x,1.4,0),0.07,2.8,"57604f")
+		var net_pole = legacy_cylinder(w,Vector3(x,1.4,0),0.07,2.8,"57604f")
 		DistrictSurfaces.apply(net_pole,"tar_wood","57604f")
 	for y in [0.8,1.1,1.4,1.7,2.0]:
 		block(w,Vector3(-23,y,0),Vector3(4,0.025,0.025),"94957c",false,"salt_wood")
@@ -58,6 +70,13 @@ func build(w: Node3D) -> void:
 	# Return lane between the buildings, easy to see from the arrival point.
 	w.target("route_pickman","Return uphill to Pickman Street",Vector3(0,0,23))
 	w.routes["route_pickman"]=["town",Vector3(-26,0.1,7),PI/2]
+	# The imported slice owns presentation only. Hidden legacy meshes retain their
+	# child collision bodies, so established routes and solid footprints do not move.
+	var rendered = WATERFRONT_MODEL.instantiate()
+	rendered.name = "RenderedWaterfront"
+	w.add_child(rendered)
+	_legacy_visuals.visible = false
+	_legacy_visuals = null
 	# Low island silhouette; mud covers the base of the abandoned works.
 	var island=Node3D.new()
 	island.name="OffshoreWhalingStation"
