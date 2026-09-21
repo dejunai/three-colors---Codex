@@ -21,9 +21,9 @@ func run() -> void:
 	GatekeeperBoyModel.set_listening(model, false)
 	assert(player.current_animation == anims["Idle"], "set_listening(false) must return to Idle")
 	
-	# Verify scale is shorter than adult
+	# Verify the accepted child scale without allowing a future adult-size regression.
 	var rendered: Node3D = model.get_node_or_null("RenderedBoy")
-	assert(rendered != null and rendered.scale.y < 1.0, "Gatekeeper Boy scale must be shorter than 1.0 adult scale")
+	assert(rendered != null and is_equal_approx(rendered.scale.y, 0.95), "Gatekeeper Boy scale must remain 0.95")
 	
-	print("BOY MODEL PASS: instantiates, scale < 1.0, exposes Idle/Idle_Alt/Listen, and toggles listening state")
+	print("BOY MODEL PASS: instantiates at 0.95 scale, exposes Idle/Idle_Alt/Listen, and toggles listening state")
 	quit(0)

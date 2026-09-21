@@ -25,6 +25,7 @@ var _model_right_arm: Node3D
 var _model_animation: AnimationPlayer
 var _model_animations: Dictionary = {}
 var _model_animation_base := ""
+const PICKUP_PLAYBACK_SPEED := 1.6
 var _animation_lock := false
 # Guarantees a keydown/keyup pair resolves as movement even if it completes within one physics frame (synthetic/automated input).
 const MOVE_LATCH_MIN = 0.15
@@ -264,7 +265,7 @@ func _unhandled_input(event:InputEvent) -> void:
 
 func _play_model_animation(base_name: String, blend: float = 0.16, speed: float = 1.0) -> void:
 	if not is_instance_valid(_model_animation) or not _model_animations.has(base_name): return
-	_model_animation.speed_scale = speed
+	_model_animation.speed_scale = 1.0
 	if _model_animation_base == base_name and _model_animation.is_playing(): return
 	_model_animation_base = base_name
 	_model_animation.play(_model_animations[base_name], blend, speed)
@@ -283,9 +284,9 @@ func _play_ground_pickup(target_position: Vector3, on_reach: Callable, on_comple
 		if on_complete.is_valid(): on_complete.call()
 		return
 	_animation_lock = true
-	_play_model_animation("Pickup_Ground", 0.12)
+	_play_model_animation("Pickup_Ground", 0.12, PICKUP_PLAYBACK_SPEED)
 	var clip := _model_animation.get_animation(_model_animations["Pickup_Ground"])
-	var duration := clip.length if clip != null else 1.8
+	var duration := (clip.length if clip != null else 1.8) / PICKUP_PLAYBACK_SPEED
 	await get_tree().create_timer(maxf(0.2,duration*0.46)).timeout
 	if on_reach.is_valid(): on_reach.call()
 	await get_tree().create_timer(maxf(0.2,duration*0.54)).timeout

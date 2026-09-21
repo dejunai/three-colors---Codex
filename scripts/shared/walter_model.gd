@@ -45,4 +45,16 @@ static func animation_map(player: AnimationPlayer) -> Dictionary:
 		var base_name := full_name.get_file()
 		if base_name in ["Idle", "Walk", "Brisk", "Interact", "Pickup_Ground"]:
 			result[base_name] = imported_name
+	# The generated Walk alias is a copy of Quick_Walk. Its narrow crossover
+	# stride reads like a catwalk on Walter; the separate Walking take keeps
+	# his hips square and gives the ordinary pace more weight.
+	var walking := _find_animation(player, "Walking")
+	if walking != StringName():
+		result["Walk"] = walking
 	return result
+
+static func _find_animation(player: AnimationPlayer, base_name: String) -> StringName:
+	for imported_name in player.get_animation_list():
+		if String(imported_name).get_file() == base_name:
+			return imported_name
+	return StringName()
