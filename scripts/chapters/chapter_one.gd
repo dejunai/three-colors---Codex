@@ -7,6 +7,7 @@ const Town = preload("res://town.gd")
 const TownStory = preload("res://town_story.gd")
 const Tunnel = preload("res://tunnel.gd")
 const TunnelStory = preload("res://tunnel_story.gd")
+const WalterModel = preload("res://scripts/shared/walter_model.gd")
 const INK = Color("111615")
 const PAPER = Color("d6d2bd")
 const MUTED = Color("a6aa9b")
@@ -130,9 +131,8 @@ func start(player_rig:Node3D) -> void:
 
 
 func _build_player() -> void:
-	var avatar=estate.person(Vector3.ZERO,"424b43")
-	var badge=estate.box(avatar,Vector3(-0.16,1.48,-0.18),Vector3(0.07,0.10,0.025),"c3c4b3")
-	badge.name="Badge"
+	var avatar=WalterModel.create()
+	estate.add_child(avatar)
 	rig.build_player(avatar,state.position)
 	marker = MeshInstance3D.new()
 	var mesh = TorusMesh.new()
@@ -940,8 +940,7 @@ func _refresh_outfit() -> void:
 	if state.world == "estate":
 		estate.sync_staging(state)
 		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
-	if model.has_node("Coat"): model.get_node("Coat").material_override=estate.mat("5f6559" if state.coat=="Plain wool coat" else "424b43")
-	if model.has_node("Badge"): model.get_node("Badge").visible=state.coat=="Police coat" and not state.dialogue_state.flag("badge_lost")
+	WalterModel.set_outfit(model, state.coat == "Plain wool coat", state.coat == "Police coat" and not state.dialogue_state.flag("badge_lost"))
 
 func _source_for(id:String) -> String:
 	if id=="eight":

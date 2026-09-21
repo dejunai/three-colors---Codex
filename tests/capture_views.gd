@@ -38,6 +38,21 @@ func run(g:Node) -> void:
 		g.state.day = 2
 		g.state.clock_minutes = 1110.0
 		g._pocket_watch()
+	if g.capture_mode in ["walter","walter_pickup"]:
+		g.state.started = true
+		g.player.position = Vector3(1,0.1,7.5)
+		g.model.rotation.y = 0.0
+		g.pitch = 0.16
+		g.distance = 3.2
+		g.yaw = 0.05
+		g._update_camera(1.0)
+		if g.capture_mode == "walter_pickup":
+			g.rig._animation_lock = true
+			g.rig._play_model_animation("Pickup_Ground",0.0)
+			var pickup_name = g.rig._model_animations.get("Pickup_Ground","")
+			var pickup_clip = g.rig._model_animation.get_animation(pickup_name)
+			g.rig._model_animation.seek(pickup_clip.length*0.46,true)
+			g.rig._model_animation.pause()
 	if g.capture_mode == "large_text": g.settings.text_scale=1.3; g._settings()
 	if g.capture_mode == "gate":
 		g.player.position=Vector3(0,0.1,36)
@@ -114,6 +129,20 @@ func run(g:Node) -> void:
 		for id in ["naomi","lodging","wounds"]: g.state.discover(id)
 		if g.capture_mode=="link_picker": g.archive._link_picker(g,"naomi")
 		else: g.archive._link_result(g,"naomi","lodging" if g.capture_mode=="link_positive" else "wounds")
+	if g.capture_mode == "glass_break":
+		g.state.started = true
+		g.state.day = 3
+		g.state.coat = "Plain wool coat"
+		g.state.dialogue_state.set_flag("tunnel_retreated",true)
+		g._travel("room",Vector3(0,0.1,4),0,false)
+		g._refresh_outfit()
+		g.page = "break"
+		g.distance = 3.0
+		g.pitch = 0.38
+		g._update_camera(1.0)
+		g.presentation.widen_frame(0.01)
+		g.presentation.return_color(0.75,0.01)
+		g.breaker._break_glass(g,g.estate)
 	await g.get_tree().create_timer(1.5).timeout
 	await RenderingServer.frame_post_draw
 	var path=ProjectSettings.globalize_path("res://qa_"+g.capture_mode+".png")

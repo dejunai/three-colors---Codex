@@ -2,7 +2,7 @@
 
 Date agreed: 2026-09-20  
 Working branch: `feature/district-textures`  
-Status: approved production brief; character and environment models not yet implemented
+Status: Walter implemented and glass-break checkpoint passed; waterfront environment slice not yet implemented
 
 ## Provenance
 
