@@ -37,5 +37,9 @@ func run() -> void:
 			if String(imported_name).get_file() == required_animation or String(imported_name).ends_with("/" + required_animation):
 				found = true
 		assert(found, "Walter model must import animation " + required_animation + "; imported=" + str(imported_names))
-	print("WALTER MODEL PASS: rendered hierarchy, modular coat/badge groups, and five animation clips imported")
+	var runtime_model := WalterModel.create()
+	root.add_child(runtime_model)
+	var rendered := runtime_model.get_node_or_null("RenderedWalter") as Node3D
+	assert(rendered != null and is_equal_approx(rendered.scale.x, 1.33), "Walter's accepted world scale must remain 1.33")
+	print("WALTER MODEL PASS: rendered hierarchy, modular coat/badge groups, 1.33 world scale, and five animation clips imported")
 	quit()
