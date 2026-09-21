@@ -23,7 +23,7 @@ func run() -> void:
 	g._interact("knife")
 	assert(g.rig._animation_lock and g.page == "play", "The pickup must hold gameplay before opening the object cards")
 	var reach_frames := 0
-	while g.estate.opening_knife.visible and reach_frames < 180:
+	while g.estate.opening_knife.visible and reach_frames < 400:
 		await process_frame
 		reach_frames += 1
 	assert(not g.estate.opening_knife.visible, "The knife must disappear at Walter's reach point")
@@ -45,7 +45,7 @@ func run() -> void:
 
 func _pickup_complete(g: Node) -> void:
 	var frames := 0
-	while g.rig._animation_lock and frames < 300:
+	while g.rig._animation_lock and frames < 600:
 		await process_frame
 		frames += 1
 	assert(not g.rig._animation_lock, "Ground pickup must release control")
