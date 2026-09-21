@@ -178,7 +178,7 @@ static func has_filed_evidence(state, id: String) -> bool:
 
 static func has_evidence(state, id: String) -> bool:
 	if state.evidence.has(id): return true
-	var aliases = {"ophion_name":["behan_name","ophion_myth_classical"], "kessler_standing":["kessler_carriages"]}
+	var aliases = {"ophion_name":["behan_name","ophion_myth_classical"], "kessler_standing":["kessler_carriages"], "pocketwatch":["watch"], "watch":["pocketwatch"]}
 	for source in aliases.get(id, []):
 		if state.evidence.has(source): return true
 	return false

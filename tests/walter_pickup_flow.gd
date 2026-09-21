@@ -39,8 +39,21 @@ func run() -> void:
 	assert(g.page == "dialogue", "Watch examination cards must begin after the pickup finishes")
 	_drain(g)
 	assert(g.state.evidence.has("watch"), "The existing object runtime must still commit watch evidence")
+	assert(g.state.has_item("pocketwatch"), "The pocket watch must be taken into inventory")
 
-	print("WALTER PICKUP PASS: knife reach timing, watch pickup, control lock, and unchanged evidence commits")
+	# Second examination: repeat text triggers when pocketwatch is in inventory / evidence
+	g._interact("watch")
+	assert(not g.rig._animation_lock, "Second examination must not trigger ground pickup lock")
+	assert(g.page == "dialogue", "Second examination cards must open")
+	var found_repeat_text := false
+	for child in g.content.get_children():
+		if child is Label and child.text.contains("already searched the wool coat"):
+			found_repeat_text = true
+			break
+	assert(found_repeat_text, "Repeat examination must display the new flavor text reflecting watch in inventory")
+	_drain(g)
+
+	print("WALTER PICKUP PASS: knife reach timing, watch pickup, control lock, and repeat examination flavor text verified")
 	quit()
 
 func _pickup_complete(g: Node) -> void:
