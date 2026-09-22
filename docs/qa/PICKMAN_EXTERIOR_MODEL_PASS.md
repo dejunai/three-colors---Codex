@@ -12,7 +12,7 @@ The generated exteriors were treated as optional source material rather than a s
 - `pickman_house_1.glb` for Mrs. Almy's boardinghouse;
 - `pickman_house_3.glb` for Walter's rooms above the cobbler.
 
-`pickman_house_2.glb`, the storefronts, schoolhouse, estate house, and upper-district houses remain available but unplaced. In particular, the storefront family reads as lower-district or waterfront construction and was not forced into Pickman Street merely because the assets exist.
+`pickman_house_2.glb` was mislabeled during asset production; it was originally intended for the lower district and is integrated there as Dwelling No. 2. The storefronts, schoolhouse, estate house, and upper-district houses remain available but unplaced. In particular, the storefront family reads as lower-district or waterfront construction and was not forced into Pickman Street merely because the assets exist.
 
 ## Gameplay boundary
 
