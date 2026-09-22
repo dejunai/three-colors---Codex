@@ -20,6 +20,7 @@ var boy_actor: Node3D
 var odell_actor: Node3D
 var assistant_actor: Node3D
 const GatekeeperBoyModel = preload("res://scripts/shared/gatekeeper_boy_model.gd")
+const ESTATE_TREE_BUSH_MODEL = preload("res://assets/models/props/prop_tree_bush.glb")
 const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
 const CoronerModel = preload("res://scripts/shared/coroner_model.gd")
 const CastModel = preload("res://scripts/shared/cast_model.gd")
@@ -417,6 +418,24 @@ func _ready() -> void:
 	groundskeeper.hide()
 	# Boundary walls and iron gate, with a lodge beside the entrance.
 	for x in [-14,14]: box(self,Vector3(x,1.2,37),Vector3(20,2.4,0.65),"6c736b",true)
+	# Two presentation-only clusters enrich the outer approach without replacing
+	# the functional gate, lodge, rose hedges, or their tested collision.
+	var rendered_landscape := Node3D.new()
+	rendered_landscape.name = "RenderedEstateLandscaping"
+	add_child(rendered_landscape)
+	var landscape_collision := Node3D.new()
+	landscape_collision.name = "LegacyEstateLandscapeCollisionVisuals"
+	add_child(landscape_collision)
+	for side in [-1.0, 1.0]:
+		var cluster_x := -18.0 if side < 0 else 14.0
+		var cluster := ESTATE_TREE_BUSH_MODEL.instantiate() as Node3D
+		cluster.name = "EntranceTree" + ("West" if side < 0 else "East")
+		cluster.position = Vector3(cluster_x, 0, 33.0)
+		cluster.scale = Vector3.ONE * 2.3
+		cluster.rotation.y = side * 0.22
+		rendered_landscape.add_child(cluster)
+		box(landscape_collision, Vector3(cluster_x, 1.0, 33.0), Vector3(3.8, 2.0, 3.0), "343b36", true)
+	landscape_collision.visible = false
 	for x in [-4.1,4.1]:
 		box(self,Vector3(x,2.0,37),Vector3(1,4,1),"92978b",true)
 		cylinder(self,Vector3(x,4.2,37),0.75,0.4,"b0b1a1",0.5)
