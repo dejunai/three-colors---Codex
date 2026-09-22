@@ -76,7 +76,7 @@ func run(g:Node) -> void:
 		g.aperture=0.51
 		g.aperture_target=0.51
 		g._update_camera(1)
-	if g.capture_mode in ["town","town_pickman","town_business","town_upper","town_lower","town_waterfront","town_waterfront_frontage","town_waterfront_seaward","town_waterfront_workyard","precinct","boardinghouse","room","board","witness"]:
+	if g.capture_mode in ["town","town_pickman","town_business","town_schoolhouse","town_upper","town_lower","town_waterfront","town_waterfront_frontage","town_waterfront_seaward","town_waterfront_workyard","precinct","boardinghouse","room","board","witness"]:
 		for id in ["eight","wounds","gas"]: g.state.discover(id)
 		g.state.complete_report("Full inquest requested")
 		g.state.receive_report()
@@ -95,6 +95,9 @@ func run(g:Node) -> void:
 		elif g.capture_mode == "town_business":
 			g.player.position = Vector3(0,5.6,75)
 			g.yaw = 0.1
+		elif g.capture_mode == "town_schoolhouse":
+			g.player.position = Vector3(-19,5.6,70)
+			g.yaw = 0.0
 		elif g.capture_mode == "town_upper":
 			g.player.position = Vector3(0,12.6,142)
 			g.yaw = -0.15

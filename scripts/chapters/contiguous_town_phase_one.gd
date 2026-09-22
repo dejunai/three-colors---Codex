@@ -19,8 +19,8 @@ class PlacementProxy extends Node3D:
 		host = owner
 		routes = owner.routes
 
-	func box(_parent: Node, p: Vector3, size: Vector3, color: String, solid: bool = false):
-		return host.box(self, p, size, color, solid)
+	func box(parent: Node, p: Vector3, size: Vector3, color: String, solid: bool = false):
+		return host.box(self if parent == self or parent == host else parent, p, size, color, solid)
 
 	func lettering(text: String, p: Vector3, font_size: int = 56):
 		var label = host.lettering(text, position + p, font_size)
