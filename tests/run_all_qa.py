@@ -57,6 +57,7 @@ tests = [
     (["--headless", "--path", ".", "--script", "res://tests/victim_model_flow.gd"], "victim_model_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/covered_body_model_flow.gd"], "covered_body_model_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/exterior_prop_assets_flow.gd"], "exterior_prop_assets_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/pickman_exterior_model_flow.gd"], "pickman_exterior_model_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/check_model_textures.gd"], "check_model_textures"),
 ]
 

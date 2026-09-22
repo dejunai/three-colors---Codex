@@ -13,6 +13,9 @@ var steward_actor: Node3D
 const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
 const FatherBehanModel = preload("res://scripts/shared/father_behan_model.gd")
 const StewardModel = preload("res://scripts/shared/steward_model.gd")
+const PRECINCT_EXTERIOR = preload("res://assets/models/exteriors/police_precinct.glb")
+const PICKMAN_HOUSE_1 = preload("res://assets/models/exteriors/pickman_house_1.glb")
+const PICKMAN_HOUSE_3 = preload("res://assets/models/exteriors/pickman_house_3.glb")
 
 func district_box(parent: Node3D, position: Vector3, size: Vector3, tint: String, solid: bool = false, kind: String = "soot_brick") -> MeshInstance3D:
 	return DistrictSurfaces.apply(box(parent, position, size, tint, solid), kind, tint)
@@ -57,13 +60,23 @@ func _lighting(inside:bool) -> void:
 			add_child(light)
 			cylinder(self,Vector3(x,3.3,-2),0.4,0.2,"b3b29f",0.22)
 
-func _door(x:float, title:String, id:String) -> void:
-	district_box(self,Vector3(x,1.55,-7.0),Vector3(1.7,3.1,0.12),"242d2a",false,"wood")
-	for dx in [-1,1]: district_box(self,Vector3(x+dx,1.7,-6.8),Vector3(0.14,3.4,0.25),"a0a18e",false,"cut_stone")
-	district_box(self,Vector3(x,3.5,-6.7),Vector3(2.3,0.23,0.4),"a4a28f",false,"cut_stone")
-	sphere(self,Vector3(x+0.57,1.2,-6.82),0.06,"b8b29a")
+func _door(x:float, title:String, id:String, visual_parent:Node3D = null) -> void:
+	if visual_parent == null:
+		visual_parent = self
+	district_box(visual_parent,Vector3(x,1.55,-7.0),Vector3(1.7,3.1,0.12),"242d2a",false,"wood")
+	for dx in [-1,1]: district_box(visual_parent,Vector3(x+dx,1.7,-6.8),Vector3(0.14,3.4,0.25),"a0a18e",false,"cut_stone")
+	district_box(visual_parent,Vector3(x,3.5,-6.7),Vector3(2.3,0.23,0.4),"a4a28f",false,"cut_stone")
+	sphere(visual_parent,Vector3(x+0.57,1.2,-6.82),0.06,"b8b29a")
 	lettering(title,Vector3(x,4.25,-6.6),42)
 	target(id,"Enter "+title.to_lower(),Vector3(x,0,-5.6))
+
+func _place_pickman_exterior(parent:Node3D, packed:PackedScene, model_name:String, position:Vector3, model_scale:Vector3) -> Node3D:
+	var model := packed.instantiate() as Node3D
+	model.name = model_name
+	model.position = position
+	model.scale = model_scale
+	parent.add_child(model)
+	return model
 
 func _street() -> void:
 	district_box(self,Vector3(0,-0.3,7),Vector3(100,0.5,75),"4b554d",true,"stone")
@@ -74,24 +87,35 @@ func _street() -> void:
 	for x in range(-30,32,2): box(self,Vector3(x,0.06,-3),Vector3(0.026,0.015,6),"636f63")
 	for i in 370:
 		box(self,Vector3(rng.randf_range(-32,32),0.01,rng.randf_range(1,15)),Vector3(0.08,0.02,rng.randf_range(0.1,0.32)),"838c7d")
+	var legacy_pickman := Node3D.new()
+	legacy_pickman.name = "LegacyPickmanCollisionVisuals"
+	add_child(legacy_pickman)
 	# The north side of Pickman Street: ordinary institutions rather than a monumental hub.
 	for spec in [[-18,14,8.8,"677568"],[-2,15,10.7,"828c79"],[16,16,9.5,"596b5d"]]:
 		var x:float=spec[0]
 		var width:float=spec[1]
 		var h:float=spec[2]
 		var wall_kind := "soot_brick" if x in [-18,16] else "cracked_plaster"
-		district_box(self,Vector3(x,h/2,-11),Vector3(width,h,7),spec[3],true,wall_kind)
-		district_box(self,Vector3(x,h+0.2,-11),Vector3(width+0.5,0.4,7.5),"333f38",false,"slate")
-		for y in [0.4,3.9,h-0.3]: district_box(self,Vector3(x,y,-7.44),Vector3(width,0.15,0.24),"949984",false,"cut_stone")
+		district_box(legacy_pickman,Vector3(x,h/2,-11),Vector3(width,h,7),spec[3],true,wall_kind)
+		district_box(legacy_pickman,Vector3(x,h+0.2,-11),Vector3(width+0.5,0.4,7.5),"333f38",false,"slate")
+		for y in [0.4,3.9,h-0.3]: district_box(legacy_pickman,Vector3(x,y,-7.44),Vector3(width,0.15,0.24),"949984",false,"cut_stone")
 		for dx in [-4.5,0,4.5]:
 			for y in [5.6,8.1]:
 				if y>h-1: continue
-				district_box(self,Vector3(x+dx,y,-7.42),Vector3(1.4,1.7,0.12),"2b3933",false,"wood")
-				for dy in [-0.92,0,0.92]: district_box(self,Vector3(x+dx,y+dy,-7.25),Vector3(1.7,0.09,0.17),"a2a38f",false,"wood")
-				for edge in [-0.78,0.78]: district_box(self,Vector3(x+dx+edge,y,-7.25),Vector3(0.1,1.9,0.17),"969b87",false,"wood")
-	_door(-18,"PRECINCT 4","street_precinct")
-	_door(-1,"ALMY'S BOARDINGHOUSE","street_almy")
-	_door(18,"ROOMS ABOVE","street_room")
+				district_box(legacy_pickman,Vector3(x+dx,y,-7.42),Vector3(1.4,1.7,0.12),"2b3933",false,"wood")
+				for dy in [-0.92,0,0.92]: district_box(legacy_pickman,Vector3(x+dx,y+dy,-7.25),Vector3(1.7,0.09,0.17),"a2a38f",false,"wood")
+				for edge in [-0.78,0.78]: district_box(legacy_pickman,Vector3(x+dx+edge,y,-7.25),Vector3(0.1,1.9,0.17),"969b87",false,"wood")
+	_door(-18,"PRECINCT 4","street_precinct",legacy_pickman)
+	_door(-1,"ALMY'S BOARDINGHOUSE","street_almy",legacy_pickman)
+	_door(18,"ROOMS ABOVE","street_room",legacy_pickman)
+	var rendered_pickman := Node3D.new()
+	rendered_pickman.name = "RenderedPickmanFrontage"
+	add_child(rendered_pickman)
+	_place_pickman_exterior(rendered_pickman,PRECINCT_EXTERIOR,"PolicePrecinctExterior",Vector3(-18,0,-11),Vector3(8.5,4.4,3.5))
+	_place_pickman_exterior(rendered_pickman,PICKMAN_HOUSE_1,"AlmyBoardinghouseExterior",Vector3(-2,0,-11),Vector3(7.7,5.35,3.5))
+	_place_pickman_exterior(rendered_pickman,PICKMAN_HOUSE_3,"RoomsAboveExterior",Vector3(17,0,-11),Vector3(8.5,6.38,3.5))
+	# The established solid shells remain authoritative for traversal and routing.
+	legacy_pickman.visible = false
 	lettering("P I C K M A N   S T R E E T",Vector3(-11,1.4,19),35).rotation.y = PI
 	# Cobbler's display with a bench and modest shop window.
 	district_box(self,Vector3(23,1.7,-7.2),Vector3(3.8,2.0,0.14),"364a3d",false,"wood")
