@@ -20,6 +20,15 @@ func run() -> void:
 	assert(rendered.find_child("QuayAndSeawall", true, false) != null, "Rendered quay hierarchy missing")
 	assert(rendered.find_child("WaterSurface", true, false) != null, "Rendered water surface missing")
 	assert(rendered.find_child("WorkingFrontage", true, false) != null, "Rendered frontage hierarchy missing")
+	var landmarks = exterior.get_node_or_null("RenderedWaterfrontLandmarks")
+	assert(landmarks != null, "Detailed waterfront storefront hierarchy missing")
+	for model_name in ["HarborSupplyChandlery", "FishStoresExterior"]:
+		assert(landmarks.has_node(model_name), "Detailed waterfront storefront missing: " + model_name)
+		assert(landmarks.get_node(model_name).find_children("*", "MeshInstance3D", true, false).size() > 0, "Waterfront storefront has no render mesh: " + model_name)
+	var frontage = rendered.find_child("WorkingFrontage", true, false)
+	for child in frontage.get_children():
+		if String(child.name).begins_with("Chandlery") or String(child.name).begins_with("FishStores") or String(child.name).begins_with("FishStoreVent"):
+			assert(not child.visible, "Replaced primitive waterfront frontage must be hidden: " + String(child.name))
 	assert(rendered.find_child("FishingBoat", true, false) != null, "Rendered fishing boat missing")
 	assert(rendered.find_child("WorkingProps", true, false) != null, "Rendered working props missing")
 	var hero_props = exterior.get_node_or_null("HeroQuayProps")
@@ -37,5 +46,5 @@ func run() -> void:
 	assert(exterior.has_node("OffshoreWhalingStation"), "Provisional island silhouette must remain separate")
 	assert(not g.estate.routes.has("route_waterfront") and not g.estate.routes.has("route_pickman"), "Rendered slice must not restore district loading boundaries")
 	assert(g.estate.points.has("chandlers_boy"), "Waterfront schedule anchors must remain intact")
-	print("WATERFRONT MODEL PASS: rendered quay/frontage/boat/props, legacy collision, island separation, and schedule anchors")
+	print("WATERFRONT MODEL PASS: rendered quay/frontage/storefronts/boat/props, legacy collision, island separation, and schedule anchors")
 	quit(0)

@@ -53,3 +53,7 @@ The first capture pass caught a missing water plane after legacy presentation wa
 The maintained aggregate again passed its first eight grammar/content suites, timed out at its 30-second `qa_flow` limit, and hung in its sandbox-blocked CIM process cleanup. A direct clean-runtime `--qa` invocation reached the minimal-route pass and exited successfully. This matches the runner/environment limitation recorded in `WALTER_MODEL_PHASE_ONE.md`; the waterfront-specific traversal suites above completed normally.
 
 No Web export or publication was performed. The implementation is accepted on desktop; the phase brief's Web stall/memory check remains pending until the next explicitly authorized Web export.
+
+## Later storefront selection — 2026-09-21
+
+The generated exterior inventory was reviewed without treating its filenames as placement rules. Two detailed models now replace the original chandlery and fish-stores presentation at opposite ends of the working frontage; the freight office and net loft remain from this authored kit. Collision and gameplay coordinates are unchanged. See `docs/qa/WATERFRONT_STOREFRONT_PASS.md` for selection rationale and verification.

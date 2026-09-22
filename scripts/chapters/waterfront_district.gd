@@ -8,6 +8,8 @@ const CARGO_CLUSTER_MODEL = preload("res://assets/models/waterfront/cargo_cluste
 const DOCK_CRANE_MODEL = preload("res://assets/models/waterfront/dock_crane.glb")
 const DOCK_SHED_MODEL = preload("res://assets/models/waterfront/dock_shed.glb")
 const FISHING_BOAT_MODEL = preload("res://assets/models/waterfront/fishing_boat.glb")
+const CHANDLERY_MODEL = preload("res://assets/models/exteriors/storefront_2.glb")
+const FISH_STORES_MODEL = preload("res://assets/models/exteriors/storefront_1.glb")
 
 var _legacy_visuals: Node3D
 
@@ -28,6 +30,34 @@ func place_prop(parent: Node3D, packed: PackedScene, prop_name: String, position
 	prop.rotation.y = yaw
 	parent.add_child(prop)
 	return prop
+
+func place_scaled_prop(parent: Node3D, packed: PackedScene, prop_name: String, position: Vector3, model_scale: Vector3, yaw: float = 0.0) -> Node3D:
+	var prop := packed.instantiate() as Node3D
+	prop.name = prop_name
+	prop.position = position
+	prop.scale = model_scale
+	prop.rotation.y = yaw
+	parent.add_child(prop)
+	return prop
+
+func hide_frontage(rendered: Node3D, prefixes: Array[String]) -> void:
+	var frontage := rendered.find_child("WorkingFrontage", true, false)
+	if frontage == null: return
+	for child in frontage.get_children():
+		for prefix in prefixes:
+			if String(child.name).begins_with(prefix):
+				child.visible = false
+				break
+
+func build_frontage_landmarks(w: Node3D, rendered: Node3D) -> void:
+	# Replace only the two strongest generated storefronts. Freight Office and
+	# Net Loft retain the authored waterfront kit and keep the frontage varied.
+	hide_frontage(rendered, ["Chandlery", "FishStores", "FishStoreVent"])
+	var landmarks := Node3D.new()
+	landmarks.name = "RenderedWaterfrontLandmarks"
+	w.add_child(landmarks)
+	place_scaled_prop(landmarks, CHANDLERY_MODEL, "HarborSupplyChandlery", Vector3(-22, 0, 17), Vector3(6.0, 3.1, 4.5), PI)
+	place_scaled_prop(landmarks, FISH_STORES_MODEL, "FishStoresExterior", Vector3(23, 0, 17), Vector3(6.2, 2.95, 4.65), PI)
 
 func collision_box(parent: Node3D, body_name: String, position: Vector3, size: Vector3) -> void:
 	var body := StaticBody3D.new()
@@ -124,6 +154,7 @@ func build(w: Node3D) -> void:
 	var rendered = WATERFRONT_MODEL.instantiate()
 	rendered.name = "RenderedWaterfront"
 	w.add_child(rendered)
+	build_frontage_landmarks(w, rendered)
 	build_hero_props(w, rendered)
 	_legacy_visuals.visible = false
 	_legacy_visuals = null
