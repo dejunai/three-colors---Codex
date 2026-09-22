@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://rhv455viwiv2"
-path="res://.godot/imported/cast_observer_woman_texture_0_metallic_roughness.png-9ba6cfa1afc1e7b608a7f832b5b076ed.ctex"
+path.s3tc="res://.godot/imported/cast_observer_woman_texture_0_metallic_roughness.png-9ba6cfa1afc1e7b608a7f832b5b076ed.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "fad8ac8b578eca6ca37df055fc17916d"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/cast_observer_woman_texture_0_metallic_roughness.png"
-dest_files=["res://.godot/imported/cast_observer_woman_texture_0_metallic_roughness.png-9ba6cfa1afc1e7b608a7f832b5b076ed.ctex"]
+dest_files=["res://.godot/imported/cast_observer_woman_texture_0_metallic_roughness.png-9ba6cfa1afc1e7b608a7f832b5b076ed.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bdjydhyvd2s6w"
-path="res://.godot/imported/father_behan_texture_0.png-9475ad700ba5b630a930b5e8aef79ba0.ctex"
+path.s3tc="res://.godot/imported/father_behan_texture_0.png-9475ad700ba5b630a930b5e8aef79ba0.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "a74bb3da0de58c4df1989f08e89dc0b7"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/father_behan_texture_0.png"
-dest_files=["res://.godot/imported/father_behan_texture_0.png-9475ad700ba5b630a930b5e8aef79ba0.ctex"]
+dest_files=["res://.godot/imported/father_behan_texture_0.png-9475ad700ba5b630a930b5e8aef79ba0.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

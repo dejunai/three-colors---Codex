@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bdmc887lek2ih"
-path="res://.godot/imported/boat_frame_base_color.jpg-1eaa04c06d2b1259ed7812071123bdb6.ctex"
+path.s3tc="res://.godot/imported/boat_frame_base_color.jpg-1eaa04c06d2b1259ed7812071123bdb6.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "4fe166fb36445c559bb059bc43d5854f"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/waterfront/boat_frame_base_color.jpg"
-dest_files=["res://.godot/imported/boat_frame_base_color.jpg-1eaa04c06d2b1259ed7812071123bdb6.ctex"]
+dest_files=["res://.godot/imported/boat_frame_base_color.jpg-1eaa04c06d2b1259ed7812071123bdb6.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

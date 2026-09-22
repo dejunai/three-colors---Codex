@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c646hg2eip45u"
-path="res://.godot/imported/fishing_boat_base_color.jpg-c992ede09e5ad39ccd8ff850c2b0eebe.ctex"
+path.s3tc="res://.godot/imported/fishing_boat_base_color.jpg-c992ede09e5ad39ccd8ff850c2b0eebe.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "9fd42571b2caf3b79ee45464dbde31c0"
@@ -14,11 +15,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/waterfront/fishing_boat_base_color.jpg"
-dest_files=["res://.godot/imported/fishing_boat_base_color.jpg-c992ede09e5ad39ccd8ff850c2b0eebe.ctex"]
+dest_files=["res://.godot/imported/fishing_boat_base_color.jpg-c992ede09e5ad39ccd8ff850c2b0eebe.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +41,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0
