@@ -27,6 +27,8 @@ Sometimes credited as "Copilot" by GitHub's own tooling attribution regardless o
 
 **Lumo and MetaAI** — consulted occasionally for outside assessments of the repository, usually after major updates; may or may not red-team the code depending on what's asked of them for that pass.
 
+**Meshy.AI** — 3D asset contributor: character models, generic cast archetypes, corpses, quay/waterfront props, and exterior building models were all generated through Meshy under Dejunai's own artistic direction (poses, silhouettes, materials, and which real-world references to build from are his calls, not Meshy's). Much of this generation was driven through Meshy's own "Agent" product — a conversational, delegating workflow tool (their branding, trademarked as "Agent™") that takes a described asset and routes it to the appropriate underlying Meshy models/pipelines on its own. Meshy exports still need correction after generation — most notably per-asset scale, since exports normalize to a roughly uniform bounding box regardless of intended real-world size — which is why every model above got tuned against a known reference (Walter's height, an estate NPC, a doorway) before integration; see the HCL for the specific scale factors and commits.
+
 ## Verification standard
 
 This is the load-bearing convention across the whole project history, made explicit here for the first time:
