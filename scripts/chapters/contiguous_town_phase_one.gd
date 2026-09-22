@@ -32,8 +32,8 @@ class PlacementProxy extends Node3D:
 	func lamp(p: Vector3, tall: bool = true) -> void:
 		host.lamp(position + p, tall)
 
-	func cylinder(_parent: Node, p: Vector3, radius: float, height: float, color: String, top: float = -1.0):
-		return host.cylinder(self, p, radius, height, color, top)
+	func cylinder(parent: Node, p: Vector3, radius: float, height: float, color: String, top: float = -1.0):
+		return host.cylinder(self if parent == self or parent == host else parent, p, radius, height, color, top)
 
 	func tree(p: Vector3) -> void:
 		host.tree(position + p)
