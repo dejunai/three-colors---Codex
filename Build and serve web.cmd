@@ -36,4 +36,4 @@ echo %date% %time% 4
 :serve
 echo Serving %OUT% at http://localhost:5173 ...
 start "" http://localhost:5173/index.html
-python -m http.server 5173 -d "%OUT%"
+python "%~dp0tools\serve_web.py" --port 5173 --dir "%OUT%"
