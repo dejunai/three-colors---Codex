@@ -90,7 +90,7 @@ TOPIC: service_work
   EVIDENCE: service_work
 
 TOPIC: almy_ledger
-  GATE: evidence(naomi)
+  GATE: evidence(service_work)
   TAG: almy_ledger
   LABEL: "Ask to corroborate the visit in her ledger"
   VOICE: trombone_bureaucratic_medium_v2

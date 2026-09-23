@@ -17,7 +17,7 @@ NPC: almy
     GATE: evidence(naomi)
     EVIDENCE: service_work
   TOPIC: almy_ledger (LABEL: "Ask to corroborate the visit in her ledger")
-    GATE: evidence(naomi)
+    GATE: evidence(service_work)
   TOPIC: almy_trust (LABEL: "Ask why the coat made a difference")
     GATE: coat = plain AND NOT topic_done(almy, almy_trust)
     NOTEBOOK: almy_trust_1_1 | "Mrs. Almy distinguished speaking to a uniform from speaking to a man. The name she...

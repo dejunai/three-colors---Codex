@@ -30,7 +30,7 @@ Use UTF-8 text, two spaces per nesting level, and no tabs. Keep directives upper
 | `GATE: expression` | Availability; omitted means `never`. |
 | `LABEL: "Menu/hover text"` | Optional; otherwise a capitalized version of the portal id. |
 | `TAG: estate_service_entrance` | Optional additional completion identity and timing key, same purpose as dialogue's/objects'. |
-| `TIME: 12.5` | Optional override, finite and nonnegative; `0` is valid. **Omitted defaults to 3 minutes** (matching dialogue substantive topic defaults), charged once on first completion of a traversal (`GO`). Portals without a `GO` (e.g. locked doors or paperwork refusals) do not charge clock time. |
+| `TIME: 12.5` | Optional override, finite and nonnegative; `0` is valid. **Omitted defaults to 3 minutes** (matching dialogue substantive topic defaults), charged on every completed traversal (`GO`) of a matching block, not just the first. Portals without a `GO` (e.g. locked doors or paperwork refusals) do not charge clock time. |
 
 | Step | Meaning |
 | --- | --- |
@@ -88,7 +88,7 @@ Same completion-only semantics as objects: `NOTEBOOK`/`EVIDENCE` commit once the
 
 `OUTCOME` behaves identically to dialogue's/objects': the selected value commits only when the player finishes the entire chosen path, is immutable, survives save/load, and shares the same store — do not reuse a `decision_id` across a PORTAL and a TOPIC/OBJECT unless they are genuinely the same decision.
 
-`TIME` defaults to 3 minutes when omitted (matching dialogue's substantive topic default); authored, it overrides that default with the authored amount (0 is valid). Either way the charge fires once per location+id (or TAG) on first completion of a traversal (`GO`), matching `portal_done()`'s bookkeeping, with subsequent crossings free. Non-traversing portal segments (e.g. locked doors, flavor rejections) do not charge clock time.
+`TIME` defaults to 3 minutes when omitted (matching dialogue's substantive topic default); authored, it overrides that default with the authored amount (0 is valid). Either way the charge fires on every completed traversal (`GO`) of a matching block — `portal_done()` is not consulted for charging, so repeat crossings of a timed route cost time again, same as the first; it remains useful only for gating content/labels (e.g. switching a "Pay the toll" label to "Cross again"). Non-traversing portal segments (e.g. locked doors, flavor rejections) do not charge clock time.
 
 Evidence written by a PORTAL still needs an authored entry in `chapter_one_archive.gd`'s LINKS table to become linkable, same rule as dialogue/objects.
 

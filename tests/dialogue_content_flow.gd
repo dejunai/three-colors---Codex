@@ -119,8 +119,14 @@ func _run() -> void:
 	var almy_menu_with_naomi = Runtime.menu(defs.almy, ctx)
 	var almy_ids_with_naomi = []
 	for entry in almy_menu_with_naomi.entries: almy_ids_with_naomi.append(entry.id)
-	assert(almy_ids_with_naomi.has("lay_lead") and almy_ids_with_naomi.has("service_work") and almy_ids_with_naomi.has("almy_ledger"), "naomi known must unlock the three follow-up topics")
+	assert(almy_ids_with_naomi.has("lay_lead") and almy_ids_with_naomi.has("service_work") and not almy_ids_with_naomi.has("almy_ledger"), "naomi known unlocks lay_lead and service_work; almy_ledger requires service_work")
 	assert(not almy_ids_with_naomi.has("almy_trust"), "almy_trust still needs the plain coat")
+	_play(Runtime.play_topic(defs.almy, dstate, "service_work"), state, dstate)
+	state.discover("service_work")
+	var almy_menu_with_service = Runtime.menu(defs.almy, ctx)
+	var almy_ids_with_service = []
+	for entry in almy_menu_with_service.entries: almy_ids_with_service.append(entry.id)
+	assert(almy_ids_with_service.has("almy_ledger"), "service_work known must unlock almy_ledger")
 	state.coat = "Plain wool coat"
 	var almy_menu_plain = Runtime.menu(defs.almy, ctx)
 	var almy_ids_plain = []
