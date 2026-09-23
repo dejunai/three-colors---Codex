@@ -561,13 +561,26 @@ func _pause() -> void:
 	_focus_first()
 
 func _save_and_return_to_title() -> void:
-	playthrough_log.end(state,"closed")
-	_save_game()
-	_title()
+	staging.exit_debrief(self,"return to title",_return_to_title_after_debrief)
 
 func _save_and_quit() -> void:
+	staging.exit_debrief(self,"quit",_quit_after_debrief)
+
+func _finish_exit_debrief(town_feel:String,time_natural:String,continuation:Callable) -> void:
+	state.dialogue_state.set_flag("exit_debrief_completed",true)
+	_save_game()
+	playthrough_log.close_with_debrief(state,town_feel,time_natural)
+	continuation.call()
+
+func _continue_exit_without_debrief(continuation:Callable) -> void:
 	playthrough_log.end(state,"closed")
 	_save_game()
+	continuation.call()
+
+func _return_to_title_after_debrief() -> void:
+	_title()
+
+func _quit_after_debrief() -> void:
 	get_tree().quit()
 
 func _settings() -> void:

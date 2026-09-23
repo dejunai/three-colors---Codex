@@ -217,6 +217,24 @@ func complete(state, town_feel:String, time_natural:String) -> void:
 		_flush()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(SESSION_PATH))
 
+func close_with_debrief(state, town_feel:String, time_natural:String) -> void:
+	if session_id.is_empty() or ended: return
+	latest_day = int(state.day)
+	debrief_sent = true
+	var final_events := [
+		_event("debrief", {"town_feel": town_feel, "time_natural": time_natural}),
+		_event("session_end", {
+			"total_real_seconds": _total_real_seconds(),
+			"final_day": latest_day,
+			"ended_via": "closed",
+			"dev_brisk_used": dev_brisk_used
+		})
+	]
+	ended = true
+	if not _send_web_beacon(_with_recent_pending(final_events)):
+		for event in final_events: _queue_event(event, false)
+		_flush()
+
 func end(state, ended_via:String) -> void:
 	if session_id.is_empty() or ended: return
 	latest_day = int(state.day)
