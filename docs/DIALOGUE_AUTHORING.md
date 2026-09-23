@@ -92,7 +92,6 @@ These are the full exposed runtime fields/functions. Clock minutes, Perception, 
 Examples:
 
 ```text
-GATE: NOT topic_done(example_witness, account)
 GATE: topic_done(example_historian, referral) AND coat = plain
 GATE: topic_count(crew_omission) >= 4
 GATE: filed(eight) AND filed(naomi) AND filed(lodging)
@@ -103,7 +102,7 @@ Use a shared named TOPIC for spreading questions, with a different TAG for each 
 
 ## Completion, consequences, evidence, and time
 
-Notes and evidence apply as the player acknowledges the preceding cards. Topic and TAG completion occur only after the chosen branches and final continuation finish. A cancelled or unfinished conversation does not earn completion. A completed topic remains available if its gate stays true. For a once-only decision use `NOT topic_done(this_npc, this_topic)`; otherwise a later replay can choose another branch.
+Notes and evidence apply as the player acknowledges the preceding cards. Topic and TAG completion occur only after the chosen branches and final continuation finish. A cancelled or unfinished conversation does not earn completion. A completed topic remains available if its gate stays true — do **not** gate a topic behind `NOT topic_done(this_npc, this_topic)` to make it disappear after one ask. No topic should vanish forever: the player may want to revisit it to check for a clue they missed, and a completed topic already shows a " · recorded" marker in the menu (sorted below active topics) rather than needing to hide. NOTEBOOK/EVIDENCE effects are idempotent and TIME is charged only on first completion, so replaying a topic is always safe. For a consequential decision, don't try to lock it out with `topic_done` — use `OUTCOME` instead (below): it keeps the topic available but locks the FORK to the branch already chosen.
 
 Use `OUTCOME` for a consequential FORK whose chosen path must affect later dialogue. Put the same decision ID with a different value inside each branch. The selected value commits only when the player finishes the entire chosen path; closing or abandoning it early commits nothing. Outcomes are immutable and survive save/load. After commitment, the topic remains available whenever its authored `GATE` remains true, but the resolved fork presents only the previously chosen branch. This lets the player reread hidden detail without sampling the rejected alternative. Replaying the branch does not reapply notes, evidence, outcomes, or time. Existing forks without `OUTCOME` continue to present every choice on replay. Later gates can read `outcome(decision_id)` or `outcome_is(decision_id, value_id)`. Describe the concrete act (`pressed`, `withheld`, `deferred`) rather than awarding morality or affinity points.
 

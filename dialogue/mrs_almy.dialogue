@@ -52,7 +52,7 @@ TOPIC: default
   MRS. ALMY: "If the town wants more statements, tell Captain Odell to send an official clerk. I have sheets to boil."
 
 TOPIC: identify
-  GATE: coat = plain
+  GATE: always
   TAG: identify
   LABEL: "Ask for the woman's name"
   TIME: 6
@@ -97,7 +97,7 @@ TOPIC: almy_ledger
   MRS. ALMY: "On the sideboard.\nCopy the entry, if you need it.\nThe book stays here."
 
 TOPIC: almy_trust
-  GATE: coat = plain AND NOT topic_done(almy, almy_trust)
+  GATE: coat = plain
   TAG: almy_trust
   LABEL: "Ask why the coat made a difference"
   VOICE: trombone_bureaucratic_medium_v1
@@ -106,7 +106,7 @@ TOPIC: almy_trust
 
 
 TOPIC: show_printed_correction
-  GATE: evidence(gazette_correction_printed) AND NOT topic_done(almy, show_printed_correction)
+  GATE: evidence(gazette_correction_printed)
   TAG: almy_printed_correction
   LABEL: "Show her the correction with Naomi's name"
   TIME: 5

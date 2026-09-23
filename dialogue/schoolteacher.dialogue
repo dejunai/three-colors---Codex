@@ -117,7 +117,7 @@ TOPIC: the_slain_boy
       OUTCOME: slain_boy_response = district_refusal
 
 TOPIC: reader_letter
-  GATE: evidence(curriculum_abridgment) AND NOT topic_done(schoolteacher, reader_letter)
+  GATE: evidence(curriculum_abridgment)
   TAG: teacher_reader_letter
   LABEL: "Ask for the covering letter Abernathy mentioned"
   TIME: 7
@@ -138,7 +138,7 @@ TOPIC: reader_letter
   EVIDENCE: reader_omission_letter
 
 TOPIC: personal_questions
-  GATE: evidence(naomi) AND NOT evidence(reader_omission_letter) AND NOT topic_done(schoolteacher, personal_questions)
+  GATE: evidence(naomi) AND NOT evidence(reader_omission_letter)
   TAG: teacher_personal_refusal
   LABEL: "Ask whether she remembers Naomi's boy"
   TIME: 4

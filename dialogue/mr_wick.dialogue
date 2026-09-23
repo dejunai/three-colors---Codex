@@ -69,7 +69,7 @@ TOPIC: claim
   EVIDENCE: legal_claim
 
 TOPIC: filing
-  GATE: coat = plain AND NOT topic_done(sebastian_wick, filing)
+  GATE: coat = plain
   TAG: wick_plain
   LABEL: "Ask what he would do"
   VOICE: trombone_neutral_medium_v2

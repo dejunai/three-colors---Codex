@@ -42,7 +42,7 @@ TOPIC: default
   CHANDLER'S BOY: "The precinct oil invoice is paid up for the month. Captain Odell signed the receipt on Tuesday."
 
 TOPIC: lamp_question
-  GATE: visit_count(chandlers_boy) >= 2 AND NOT topic_done(chandlers_boy, lamp_question)
+  GATE: visit_count(chandlers_boy) >= 2
   TAG: chandlers_boy_lamp_question
   LABEL: "Ask about the chandlery's customers"
   TIME: 5
@@ -56,7 +56,7 @@ TOPIC: lamp_question
 
 # Historical IDs retained for save/dependency compatibility; no island delivery is established.
 TOPIC: island_delivery
-  GATE: coat = plain AND evidence(naomi_quay_inquiry) AND NOT topic_done(chandlers_boy, island_delivery)
+  GATE: coat = plain AND evidence(naomi_quay_inquiry)
   TAG: chandlers_boy_island_delivery
   LABEL: "Ask if oil was ever delivered to the island station"
   TIME: 8
@@ -93,7 +93,7 @@ TOPIC: the_woman_with_the_notebook
   EVIDENCE: naomi_quay_inquiry
 
 TOPIC: cash_buyer_details
-  GATE: evidence(chandlery_island_delivery) AND NOT topic_done(chandlers_boy, cash_buyer_details)
+  GATE: evidence(chandlery_island_delivery)
   TAG: chandlers_boy_buyer
   LABEL: "Ask what else he noticed about the cash buyer"
   TIME: 6

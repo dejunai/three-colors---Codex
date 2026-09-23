@@ -105,7 +105,7 @@ func _run() -> void:
 	_play(gardener_after, state, dstate)
 	assert(gardener_after.cards[0][1] == "You took the badge off.", "estate_complete + plain coat must unlock the later gardener scene")
 
-	# --- Mrs. Almy: coat-gated intro, evidence-gated menu, disappearing topic ---
+	# --- Mrs. Almy: coat-gated intro, evidence-gated menu, revisitable topic ---
 	state.coat = "Police coat" # undo the gardener section's coat change above
 	var almy_badge_intro = Runtime.enter(defs.almy, ctx, dstate)
 	_play(almy_badge_intro, state, dstate)
@@ -130,7 +130,11 @@ func _run() -> void:
 	var almy_menu_after_trust = Runtime.menu(defs.almy, ctx)
 	var almy_ids_after_trust = []
 	for entry in almy_menu_after_trust.entries: almy_ids_after_trust.append(entry.id)
-	assert(not almy_ids_after_trust.has("almy_trust"), "answering almy_trust once must remove it from the menu, via topic_done")
+	assert(almy_ids_after_trust.has("almy_trust"), "topics stay revisitable — answering almy_trust once must not remove it from the menu")
+	assert(almy_menu_after_trust.entries[almy_ids_after_trust.find("almy_trust")].label.ends_with("· recorded"), "a completed topic must carry the recorded marker")
+	var facts_after_first_trust = dstate.facts.size()
+	_play(Runtime.play_topic(defs.almy, dstate, "almy_trust"), state, dstate)
+	assert(dstate.facts.size() == facts_after_first_trust, "replaying a self-guard-free topic must not duplicate its recorded fact")
 
 	# --- old woman: one-shot, gated on evidence(naomi) (known via almy above) plus the scene's own evidence() ---
 	var woman_menu_before = Runtime.menu(defs.old_woman, ctx)
@@ -158,7 +162,7 @@ func _run() -> void:
 	_play(odell_replay, state, dstate)
 	assert(odell_replay.cards.is_empty(), "once answered, topic_done(odell, default) must keep the scene from replaying")
 
-	# --- Father Behan: the real behan_name topic, mutually exclusive with club_invitation ---
+	# --- Father Behan: the real behan_name topic, unlocked by (not exclusive with) club_invitation ---
 	dstate.complete_topic("steward", "club_talk")
 	var behan_ctx_intro = Runtime.make_context(state, dstate)
 	var behan_intro = Runtime.enter(defs.father_behan, behan_ctx_intro, dstate)
@@ -172,7 +176,7 @@ func _run() -> void:
 	var behan_menu_after = Runtime.menu(defs.father_behan, behan_ctx)
 	var behan_ids_after = []
 	for entry in behan_menu_after.entries: behan_ids_after.append(entry.id)
-	assert(behan_ids_after.has("behan_name") and not behan_ids_after.has("club_invitation"), "behan_name must replace club_invitation, never both at once")
+	assert(behan_ids_after.has("behan_name") and behan_ids_after.has("club_invitation"), "behan_name must unlock alongside club_invitation, which stays revisitable rather than disappearing")
 	_play(Runtime.play_topic(defs.father_behan, dstate, "behan_name"), state, dstate)
 	assert(dstate.evidence.has("behan_name"), "the real ship-naming fact must be recorded")
 

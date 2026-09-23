@@ -80,7 +80,7 @@ TOPIC: servant_talk
   EVIDENCE: ridge_haste
   
 TOPIC: crew_omission
-  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(mrs_pell, crew_omission)
+  GATE: topic_done(local_historian, crew_omission_official)
   TAG: mrs_pell_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 6

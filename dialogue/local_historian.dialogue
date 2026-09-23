@@ -67,7 +67,7 @@ TOPIC: dr_fenn_library
 
       OUTCOME: fenn_library_response = removed_volume
 TOPIC: the_free_crew
-  GATE: evidence(lay_lead) AND topic_done(local_historian, crew_omission_followup) AND NOT topic_done(local_historian, the_free_crew)
+  GATE: evidence(lay_lead) AND topic_done(local_historian, crew_omission_followup)
   TAG: historian_crew_lineage
   LABEL: "Ask about free Black whalemen aboard the 1823 voyage"
   TIME: 7
@@ -84,7 +84,7 @@ TOPIC: the_free_crew
   EVIDENCE: freeman_lineage_free
 
 TOPIC: crew_omission_official
-  GATE: (evidence(lay_lead) OR evidence(sanitized_textbook)) AND NOT topic_done(local_historian, crew_omission_official)
+  GATE: (evidence(lay_lead) OR evidence(sanitized_textbook))
   TAG: historian_crew_official
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 6
@@ -97,7 +97,7 @@ TOPIC: crew_omission_official
   NOTEBOOK: crew_official | "Abernathy defended separating the crew list from the civic history. He would not explain the editorial decision. Other people in town may remember how the account was circulated."
 
 TOPIC: crew_omission_followup
-  GATE: topic_done(local_historian, crew_omission_official) AND topic_count(crew_omission) >= 4 AND NOT topic_done(local_historian, crew_omission_followup)
+  GATE: topic_done(local_historian, crew_omission_official) AND topic_count(crew_omission) >= 4
   TAG: historian_crew_followup
   LABEL: "Return to the question of the missing crew names"
   TIME: 8

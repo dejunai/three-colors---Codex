@@ -149,7 +149,7 @@ TOPIC: sixth_member_deed
 
 # Shared inquiry: four different completed refusals make the question travel.
 TOPIC: crew_omission
-  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(county_clerk, crew_omission)
+  GATE: topic_done(local_historian, crew_omission_official)
   TAG: county_clerk_crew_omission
   LABEL: "Ask why no county record names the drowned crew"
   TIME: 5

@@ -35,14 +35,14 @@ func run() -> void:
 	state.estate_complete=true
 	assert(menu_ids(runtime,odell,state).has("day_two_check"))
 	state.dialogue_state.complete_topic("odell_precinct","day_two_check")
-	assert(not menu_ids(runtime,odell,state).has("day_two_check"))
+	assert(menu_ids(runtime,odell,state).has("day_two_check"),"day-gated beats stay revisitable within their day window, not just their day gate")
 	state.discover("insurance_fraud_record")
 	assert(menu_ids(runtime,odell,state).has("day_two_pressure"))
 	state.dialogue_state.complete_topic("odell_precinct","day_two_pressure")
-	assert(not menu_ids(runtime,odell,state).has("day_two_pressure"))
+	assert(menu_ids(runtime,odell,state).has("day_two_pressure"),"day-gated beats stay revisitable within their day window, not just their day gate")
 	state.day=3
 	assert(menu_ids(runtime,odell,state).has("day_three_final"))
 	state.dialogue_state.complete_topic("odell_precinct","day_three_final")
-	assert(not menu_ids(runtime,odell,state).has("day_three_final"))
+	assert(menu_ids(runtime,odell,state).has("day_three_final"),"day-gated beats stay revisitable within their day window, not just their day gate")
 	print("RETURNING STAFF PASS: slots and location-specific topic completion")
 	quit()

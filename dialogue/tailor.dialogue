@@ -96,7 +96,7 @@ TOPIC: the_sixth_jacket
   EVIDENCE: ancestral_sixth_coat
 
 TOPIC: coat_lining
-  GATE: NOT topic_done(tailor, coat_lining)
+  GATE: always
   #evidence(ancestral_sixth_coat) AND NOT topic_done(tailor, coat_lining)
   TAG: tailor_lining
   LABEL: "Ask what distinguished the Ophion club pattern"
@@ -161,7 +161,7 @@ TOPIC: the_altered_shoulder
 
 # Shared inquiry: four different completed refusals make the question travel.
 TOPIC: crew_omission
-  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(tailor, crew_omission)
+  GATE: topic_done(local_historian, crew_omission_official)
   TAG: tailor_crew_omission
   LABEL: "Ask why the commemorative dinner never toasts the crew"
   TIME: 5

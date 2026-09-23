@@ -60,7 +60,7 @@ TOPIC: default
   QUAY DOCKER: "Nothing moving today that wasn't stuck yesterday. Mind the cleats."
 
 TOPIC: naomi_sighting
-  GATE: evidence(naomi) AND NOT topic_done(quay_docker, naomi_sighting)
+  GATE: evidence(naomi)
   TAG: quay_docker_naomi_sighting
   LABEL: "Ask if anyone saw Naomi Freeman near the water"
   TIME: 7

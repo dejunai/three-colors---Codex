@@ -46,7 +46,7 @@ TOPIC: default
   FATHER BEHAN: "Be careful what you demand of this town in the name of the badge, Corwin. Some doors were shut for reasons your regulations don't contemplate."
 
 TOPIC: club_invitation
-  GATE: topic_done(father_behan, default) AND topic_done(steward, club_talk) AND NOT topic_done(father_behan, club_invitation)
+  GATE: topic_done(father_behan, default) AND topic_done(steward, club_talk)
   TAG: behan_invitation
   LABEL: "Ask why he declined the club's invitations"
   TIME: 7

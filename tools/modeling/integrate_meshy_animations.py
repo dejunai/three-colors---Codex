@@ -1,14 +1,19 @@
-"""Integrate Meshy_Gothic-Walter-Animations.glb into Godot (Phase 1).
+"""Integrate Meshy_Walter-Animations.glb into Godot (Phase 1).
 
 Runs in Blender 5.2 headless:
   & 'C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe' --background --python tools/modeling/integrate_meshy_animations.py
 
 Features:
-- Native 17,193 polygons (in 15k-18k budget).
-- High quality PBR textures: Police uniform (navy, gold buttons, badge 317) & Plain civilian coat.
-- Full Mixamo motion capture animations already rigged to the mesh:
+- Native 17,193 polygons with fixed long-arm proportions.
+- High-fidelity PBR textures:
+  - Police uniform (midnight navy, gold buttons, peaked cap badge, collar pins #317)
+  - Toggleable 3D metallic police shield badge #317 (properly hides when badge_lost=true,
+    revealing plain navy uniform wool underneath).
+  - Civilian plain wool coat (rich 1920s warm brown tweed wool, plain civilian cap,
+    dark horn buttons, no collar pins, no badge).
+- Full Mixamo motion capture animations rigged to the mesh:
   - Idle: Idle_11 (47f)
-  - Walk: Walking (26f)
+  - Walk: Walking (straight, grounded gait)
   - Brisk: Running (17f, athletic sprint for Shift pace)
   - Interact: Listening_Gesture
   - Pickup_Ground: Collect_Object
@@ -20,9 +25,10 @@ Features:
 
 from __future__ import annotations
 
-import math
-import colorsys
+import json
 from pathlib import Path
+import subprocess
+import sys
 
 import bpy
 import bmesh
@@ -39,8 +45,8 @@ if not SRC_GLB.exists():
 if not SRC_GLB.exists():
     SRC_GLB = ROOT / "archive" / "Meshy_Gothic-Walter-Animations.glb"
 
-POLICE_TEX_PATH = MODEL_DIR / "walter_police_anim_tex.jpg"
-PLAIN_TEX_PATH = MODEL_DIR / "walter_plain_anim_tex.jpg"
+TEX_SCRIPT = ROOT / "tools" / "modeling" / "generate_walter_textures.py"
+UV_JSON = ROOT / "tests" / "walter_mesh_uvs.json"
 
 
 def reset() -> None:
@@ -51,15 +57,17 @@ def reset() -> None:
             datablocks.remove(block)
 
 
-def get_textured_material(name: str, image_path: Path) -> bpy.types.Material:
+def get_textured_material(name: str, image_path: Path, metallic: float = 0.0, roughness: float = 0.85) -> bpy.types.Material:
     mat = bpy.data.materials.new(name)
     mat.use_nodes = True
     p = mat.node_tree.nodes.get("Principled BSDF")
-    p.inputs["Roughness"].default_value = 0.85
+    p.inputs["Roughness"].default_value = roughness
+    p.inputs["Metallic"].default_value = metallic
     p.inputs["Specular IOR Level"].default_value = 0.20
 
     if image_path.exists():
-        img = bpy.data.images.load(str(image_path))
+        img = bpy.data.images.load(str(image_path), check_existing=False)
+        img.reload()
     else:
         img = bpy.data.images.new(name + "_img", width=2048, height=2048)
 
@@ -70,8 +78,32 @@ def get_textured_material(name: str, image_path: Path) -> bpy.types.Material:
     return mat
 
 
-def save_native_outfit_textures(mesh_obj: bpy.types.Object) -> tuple[Path, Path]:
-    """Persist the remesh's own UV atlas and a restrained plain-coat recolor."""
+def export_mesh_uvs(mesh_obj: bpy.types.Object) -> Path:
+    """Export polygon centers, normals, bone influences and UV coordinates to JSON."""
+    mesh = mesh_obj.data
+    uv_layer = mesh.uv_layers.active.data
+    vg_map = {vg.index: vg.name for vg in mesh_obj.vertex_groups}
+
+    polys_data = []
+    for p in mesh.polygons:
+        c = p.center
+        uvs = [list(uv_layer[li].uv) for li in p.loop_indices]
+        bones = list({vg_map[g.group] for vi in p.vertices for g in mesh.vertices[vi].groups if g.weight > 0.2})
+        polys_data.append({
+            "idx": p.index,
+            "center": [round(c.x, 3), round(c.y, 3), round(c.z, 3)],
+            "normal": [round(p.normal.x, 3), round(p.normal.y, 3), round(p.normal.z, 3)],
+            "bones": bones,
+            "uvs": uvs,
+        })
+
+    UV_JSON.parent.mkdir(parents=True, exist_ok=True)
+    UV_JSON.write_text(json.dumps(polys_data))
+    return UV_JSON
+
+
+def save_native_outfit_textures(mesh_obj: bpy.types.Object) -> tuple[Path, Path, Path]:
+    """Extract embedded texture, export mesh UV layout, and invoke texture generator."""
     material = mesh_obj.data.materials[0] if mesh_obj.data.materials else None
     image = None
     if material and material.use_nodes:
@@ -79,40 +111,31 @@ def save_native_outfit_textures(mesh_obj: bpy.types.Object) -> tuple[Path, Path]
     if image is None:
         raise RuntimeError("Fresh Walter remesh has no embedded base-color texture")
 
-    # Walter is normally viewed at mid distance through the Chapter One film
-    # treatment. A 4K character atlas spends Web memory without visible return;
-    # keep the authored aspect ratio and cap the longest edge at 2K.
     source_width, source_height = image.size
     if max(source_width, source_height) > 2048:
         ratio = 2048.0 / float(max(source_width, source_height))
         image.scale(max(1, round(source_width * ratio)), max(1, round(source_height * ratio)))
 
+    raw_path = MODEL_DIR / "walter_police_raw.jpg"
     police_path = MODEL_DIR / "walter_police_remesh.jpg"
     plain_path = MODEL_DIR / "walter_plain_remesh.jpg"
-    image.filepath_raw = str(police_path)
+
+    image.filepath_raw = str(raw_path)
     image.file_format = "JPEG"
     image.save()
 
-    width, height = image.size
-    source = list(image.pixels[:])
-    recolored = source.copy()
-    for index in range(0, len(source), 4):
-        red, green, blue, alpha = source[index:index + 4]
-        hue, saturation, value = colorsys.rgb_to_hsv(red, green, blue)
-        # Recolor the dark blue/neutral uniform cloth while retaining skin,
-        # brass, leather, shirt and facial detail from the native atlas.
-        blue_or_neutral_cloth = value < 0.42 and (blue >= red * 0.82 or saturation < 0.18)
-        if blue_or_neutral_cloth:
-            new_red = min(1.0, value * 1.12 + 0.035)
-            new_green = min(1.0, value * 0.92 + 0.025)
-            new_blue = min(1.0, value * 0.68 + 0.018)
-            recolored[index:index + 4] = [new_red, new_green, new_blue, alpha]
-    plain_image = bpy.data.images.new("WalterPlainRemesh", width=width, height=height, alpha=False)
-    plain_image.pixels[:] = recolored
-    plain_image.filepath_raw = str(plain_path)
-    plain_image.file_format = "JPEG"
-    plain_image.save()
-    return police_path, plain_path
+    # Export polygon and UV layout for texture generator
+    export_mesh_uvs(mesh_obj)
+
+    # Run texture generator using system Python
+    cmd = ["python", str(TEX_SCRIPT)]
+    result = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace")
+    if result.returncode != 0:
+        print(f"Texture generator stderr: {result.stderr}")
+        raise RuntimeError(f"Texture generator failed: {result.stderr}")
+    print(result.stdout)
+
+    return police_path, plain_path, raw_path
 
 
 def main() -> None:
@@ -135,7 +158,7 @@ def main() -> None:
     for pose_bone in armature.pose.bones:
         pose_bone.custom_shape = None
 
-    mesh_obj = bpy.data.objects.get("Mesh0")
+    mesh_obj = bpy.data.objects.get("char1") or bpy.data.objects.get("Mesh0")
     if not mesh_obj:
         for o in bpy.data.objects:
             if o.type == "MESH":
@@ -147,21 +170,58 @@ def main() -> None:
     print(f"Original lowest Z: {lowest_z:.3f}")
     armature.location.z -= lowest_z
 
-    # Prepare materials from this remesh's UV atlas. The previous Walter's
-    # external atlases are not UV-compatible with the rebuilt long-arm mesh.
-    police_texture, plain_texture = save_native_outfit_textures(mesh_obj)
+    # Prepare textures and materials
+    police_texture, plain_texture, raw_texture = save_native_outfit_textures(mesh_obj)
     police_mat = get_textured_material("WalterPoliceMat", police_texture)
     plain_mat = get_textured_material("WalterPlainMat", plain_texture)
+    # Badge material uses the sharp metallic badge texture
+    badge_mat = get_textured_material("WalterBadgeMat", raw_texture, metallic=0.85, roughness=0.25)
 
-    # Setup PoliceMesh and PlainMesh
+    # Extract 3D Badge mesh from chest badge polygons
+    bpy.ops.object.select_all(action="DESELECT")
+    mesh_obj.select_set(True)
+    bpy.context.view_layer.objects.active = mesh_obj
+    bpy.ops.object.mode_set(mode="EDIT")
+    bm = bmesh.from_edit_mesh(mesh_obj.data)
+
+    badge_faces = []
+    for f in bm.faces:
+        c = f.calc_center_median()
+        if 7.0 <= c.x <= 13.0 and 123.0 <= c.z <= 134.5 and -12.0 <= c.y <= -6.0:
+            f.select = True
+            badge_faces.append(f)
+        else:
+            f.select = False
+
+    print(f"Extracting {len(badge_faces)} chest badge faces into separate 3D Badge mesh")
+    bpy.ops.mesh.duplicate()
+    bpy.ops.mesh.separate(type="SELECTED")
+    bpy.ops.object.mode_set(mode="OBJECT")
+
+    # Find the separated badge object
+    badge_obj = None
+    for o in bpy.data.objects:
+        if o.type == "MESH" and o != mesh_obj:
+            badge_obj = o
+            break
+
+    assert badge_obj is not None, "3D Badge mesh object must be created"
+    badge_obj.name = "Badge"
+    badge_obj.data.name = "Badge"
+    badge_obj.data.materials.clear()
+    badge_obj.data.materials.append(badge_mat)
+
+    # Offset badge slightly forward along normals to eliminate any z-fighting
+    for v in badge_obj.data.vertices:
+        v.co += v.normal * 0.12
+
+    # Setup PoliceMesh
     mesh_obj.name = "PoliceMesh"
     mesh_obj.data.name = "PoliceMesh"
     mesh_obj.data.materials.clear()
     mesh_obj.data.materials.append(police_mat)
 
-    # Duplicate the skinned object, not only its Mesh datablock. Vertex groups
-    # live on the Object; recreating only the data silently strips every skin
-    # weight and lets the armature parent distort the plain-coat copy.
+    # Duplicate the skinned object to PlainMesh
     plain_obj = mesh_obj.copy()
     plain_obj.data = mesh_obj.data.copy()
     plain_obj.name = "PlainMesh"
@@ -182,7 +242,7 @@ def main() -> None:
     root.empty_display_type = "PLAIN_AXES"
     bpy.context.collection.objects.link(root)
 
-    for marker_name in ["Body", "PoliceCoat", "PlainCoat", "Badge"]:
+    for marker_name in ["Body", "PoliceCoat", "PlainCoat"]:
         marker = bpy.data.objects.new(marker_name, None)
         marker.empty_display_type = "PLAIN_AXES"
         marker.parent = root
@@ -226,7 +286,7 @@ def main() -> None:
         interact_act.frame_end = listening_act.frame_end
         interact_act.use_fake_user = True
 
-    # 5. Pickup_Ground: the rebuilt source's shorter collection action.
+    # 5. Pickup_Ground: the rebuilt source's collection action.
     pickup_raw = bpy.data.actions.get("Collect_Object")
     if pickup_raw:
         pickup_act = pickup_raw.copy()
@@ -252,7 +312,6 @@ def main() -> None:
     armature.animation_data_create()
     armature.animation_data.action = None
 
-    # Clear existing NLA tracks
     for t in list(armature.animation_data.nla_tracks):
         armature.animation_data.nla_tracks.remove(t)
 

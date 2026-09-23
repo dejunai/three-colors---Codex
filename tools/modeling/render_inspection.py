@@ -4,11 +4,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 GLB_PATH = ROOT / "assets" / "models" / "walter_phase1.glb"
 
-def render_outfit(plain: bool, angle_name: str, cam_loc, cam_rot, out_filename: str):
+def render_outfit(plain: bool, badge_visible: bool, angle_name: str, cam_loc, cam_rot, out_filename: str):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=str(GLB_PATH))
 
-    # Toggle outfit
+    # Toggle outfit matching Godot WalterModel.set_outfit contract
     for o in bpy.data.objects:
         if o.name.startswith("Police"):
             o.hide_render = plain
@@ -17,8 +17,8 @@ def render_outfit(plain: bool, angle_name: str, cam_loc, cam_rot, out_filename: 
             o.hide_render = not plain
             o.hide_viewport = not plain
         elif o.name.startswith("Badge"):
-            o.hide_render = plain
-            o.hide_viewport = plain
+            o.hide_render = not badge_visible
+            o.hide_viewport = not badge_visible
 
     # Play Idle animation at frame 1 so arms are in natural resting pose
     arm = bpy.data.objects.get("WalterSkeleton")
@@ -56,18 +56,30 @@ def render_outfit(plain: bool, angle_name: str, cam_loc, cam_rot, out_filename: 
     bpy.ops.render.render(write_still=True)
     print(f"Rendered {out_filename}")
 
-# Render Police Front
+# 1. Render Police Front with Badge
 render_outfit(
     plain=False,
+    badge_visible=True,
     angle_name="police_front",
     cam_loc=(0, -2.5, 1.05),
     cam_rot=(1.5708, 0, 0),
     out_filename="walter_police_render.png"
 )
 
-# Render Plain Coat Front
+# 2. Render Police Badge Lost (narrative state: Walter lost badge in tunnel)
+render_outfit(
+    plain=False,
+    badge_visible=False,
+    angle_name="police_no_badge",
+    cam_loc=(0, -2.5, 1.05),
+    cam_rot=(1.5708, 0, 0),
+    out_filename="walter_badge_lost_render.png"
+)
+
+# 3. Render Plain Civilian Wool Coat Front
 render_outfit(
     plain=True,
+    badge_visible=False,
     angle_name="plain_front",
     cam_loc=(0, -2.5, 1.05),
     cam_rot=(1.5708, 0, 0),

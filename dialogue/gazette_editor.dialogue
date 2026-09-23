@@ -129,7 +129,7 @@ TOPIC: press_the_arithmetic
 
       OUTCOME: press_retraction_response = wage_claim_argument
 TOPIC: gas_main_origin
-  GATE: evidence(press_suppression) AND NOT topic_done(gazette_editor, gas_main_origin)
+  GATE: evidence(press_suppression)
   TAG: editor_gas_source
   LABEL: "Ask who suggested the 'gas-main' story"
   TIME: 6
@@ -144,7 +144,7 @@ TOPIC: gas_main_origin
 
 # Shared inquiry: four different completed refusals make the question travel.
 TOPIC: crew_omission
-  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(gazette_editor, crew_omission)
+  GATE: topic_done(local_historian, crew_omission_official)
   TAG: gazette_editor_crew_omission
   LABEL: "Ask why the commemorative column never named the crew"
   TIME: 5
@@ -158,7 +158,7 @@ TOPIC: crew_omission
 
 # An optional return inquiry: the counter's received pages change what he will print.
 TOPIC: correction_terms
-  GATE: evidence(press_suppression) AND evidence(naomi) AND NOT topic_done(gazette_editor, correction_terms)
+  GATE: evidence(press_suppression) AND evidence(naomi)
   TAG: editor_correction_terms
   LABEL: "Ask what he needs to correct the count and print Naomi's name"
   TIME: 6
@@ -175,7 +175,7 @@ TOPIC: correction_terms
   EVIDENCE: gazette_correction_terms
 
 TOPIC: correction_pending
-  GATE: evidence(gazette_correction_terms) AND NOT (filed(eight) AND filed(naomi) AND filed(lodging)) AND NOT topic_done(gazette_editor, correction_pending)
+  GATE: evidence(gazette_correction_terms) AND NOT (filed(eight) AND filed(naomi) AND filed(lodging))
   TAG: editor_correction_pending
   LABEL: "Ask whether the correction can go ahead yet"
   TIME: 0
@@ -184,7 +184,7 @@ TOPIC: correction_pending
   NOTEBOOK: correction_pending | "Halleck still requires the count and both identification sources in received paperwork. A discovery made after filing needs a dated supplement."
 
 TOPIC: print_correction
-  GATE: evidence(gazette_correction_terms) AND filed(eight) AND filed(naomi) AND filed(lodging) AND NOT topic_done(gazette_editor, print_correction)
+  GATE: evidence(gazette_correction_terms) AND filed(eight) AND filed(naomi) AND filed(lodging)
   TAG: editor_print_correction
   LABEL: "Lay out the received pages and request the correction"
   TIME: 10
@@ -204,7 +204,7 @@ TOPIC: print_correction
   EVIDENCE: gazette_correction_printed
 
 TOPIC: the_counter_slips
-  GATE: evidence(gazette_correction_printed) AND NOT topic_done(gazette_editor, the_counter_slips)
+  GATE: evidence(gazette_correction_printed)
   TAG: editor_counter_slips
   LABEL: "Ask how readers are taking the correction"
   TIME: 5

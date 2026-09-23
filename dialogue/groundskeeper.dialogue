@@ -73,7 +73,7 @@ TOPIC: default
   THE GROUNDSKEEPER: "Town law ends where Grange gravel begins. Mind your steps."
 
 TOPIC: perimeter_trench
-  GATE: evidence(crew) AND NOT topic_done(crew, perimeter_trench)
+  GATE: evidence(crew)
   TAG: groundskeeper_perimeter
   LABEL: "Ask about the white powder trenched into the soil thirty paces from the door"
   TIME: 6

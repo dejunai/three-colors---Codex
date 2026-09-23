@@ -37,7 +37,7 @@ TOPIC: default
   CAPTAIN ODELL: "If your rounds on Pickman Street are finished, file your log and clear the doorway."
 
 TOPIC: day_two_check
-  GATE: day >= 2 AND day <= 2 AND NOT topic_done(odell_precinct, day_two_check)
+  GATE: day >= 2 AND day <= 2
   TAG: odell_day_two
   LABEL: "Report progress to the captain"
   TIME: 6
@@ -56,7 +56,7 @@ TOPIC: day_two_check
   NOTEBOOK: odell_day_two | "Odell wants a written supplemental by four. He did not acknowledge Naomi or the boy as part of the count. He did not tell Walter to stop."
 
 TOPIC: day_two_pressure
-  GATE: day >= 2 AND (evidence(insurance_fraud_record) OR evidence(bulk_opium_spirits)) AND NOT topic_done(odell_precinct, day_two_pressure)
+  GATE: day >= 2 AND (evidence(insurance_fraud_record) OR evidence(bulk_opium_spirits))
   TAG: odell_day_two_pressure
   LABEL: "Raise the insurance records with Odell"
   TIME: 7
@@ -73,7 +73,7 @@ TOPIC: day_two_pressure
   NOTEBOOK: odell_pressure | "Odell knew immediately what record Walter meant. He did not deny its contents. He redirected."
 
 TOPIC: day_three_final
-  GATE: day >= 3 AND NOT topic_done(odell_precinct, day_three_final)
+  GATE: day >= 3
   TAG: odell_day_three
   LABEL: "Face Odell on Day 3"
   TIME: 8

@@ -79,7 +79,7 @@ TOPIC: butcher_parcels
       OUTCOME: butcher_parcel_response = silt_cuffs
 
 TOPIC: the_mother
-  GATE: evidence(club_devotion) AND NOT topic_done(widow_kessler, the_mother)
+  GATE: evidence(club_devotion)
   TAG: kessler_mother
   LABEL: "Ask how Otto spoke about the club at the end"
   TIME: 7
@@ -95,7 +95,7 @@ TOPIC: the_mother
   EVIDENCE: maternal_delusion
 
 TOPIC: coat_difference
-  GATE: coat = plain AND (evidence(kessler_carriages) OR topic_done(widow_kessler, club_standing)) AND NOT topic_done(widow_kessler, coat_difference)
+  GATE: coat = plain AND (evidence(kessler_carriages) OR topic_done(widow_kessler, club_standing))
   TAG: kessler_coat
   LABEL: "Ask why she told Walter instead of Odell"
   VOICE: violin_neutral_long_v1

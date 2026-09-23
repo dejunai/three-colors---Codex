@@ -114,7 +114,7 @@ TOPIC: drowned_island
   EVIDENCE: island_memory
 
 TOPIC: the_ring
-  GATE: coat = plain AND NOT topic_done(harbor_observer, the_ring)
+  GATE: coat = plain
   TAG: observer_ring
   LABEL: "Ask about the copper ring on his hand"
   WALTER CORWIN: "That copper band on your hand. The observers on the water have worn those colored links since long before I was born."

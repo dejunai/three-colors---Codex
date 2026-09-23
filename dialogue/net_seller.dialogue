@@ -62,7 +62,7 @@ TOPIC: default
   NET SELLER: "Keep your brass buttons off my hemp racks, Officer."
 
 TOPIC: crew_omission
-  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(net_seller, crew_omission)
+  GATE: topic_done(local_historian, crew_omission_official)
   TAG: net_seller_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 6
@@ -78,7 +78,7 @@ TOPIC: crew_omission
   NOTEBOOK: net_seller_crew_omission | "The net seller said the drowned crew's names are preserved in the harbor families, not in civic records. She drew a clear line between 'the town' and 'we.'"
 
 TOPIC: harbor_currents
-  GATE: evidence(sub_harbor_drag) AND NOT topic_done(net_seller, harbor_currents)
+  GATE: evidence(sub_harbor_drag)
   TAG: net_seller_currents
   LABEL: "Ask about the unnatural stillness before the murders"
   TIME: 6
@@ -95,7 +95,7 @@ TOPIC: harbor_currents
   EVIDENCE: inland_subsea_current
 
 TOPIC: stone_sinkers
-  GATE: NOT topic_done(net_seller, stone_sinkers)
+  GATE: always
   TAG: net_seller_sinkers
   LABEL: "Ask why the skiffs by the slipway use grooved stones instead of iron anchors"
   TIME: 6
@@ -109,7 +109,7 @@ TOPIC: stone_sinkers
   EVIDENCE: stone_sinker_discipline
 
 TOPIC: copper_rings
-  GATE: coat = plain AND evidence(observer_color_tell) AND NOT topic_done(net_seller, copper_rings)
+  GATE: coat = plain AND evidence(observer_color_tell)
   TAG: net_seller_rings
   LABEL: "Ask about the colored jewelry the harbor families wear"
   TIME: 7

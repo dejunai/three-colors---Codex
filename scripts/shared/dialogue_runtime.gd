@@ -189,7 +189,8 @@ static func has_evidence(state, id: String) -> bool:
 static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 	var default_topic = null
 	var eligible_defaults: Array = []
-	var entries: Array = []
+	var new_entries: Array = []
+	var recorded_entries: Array = []
 	for topic in def.topics:
 		if topic.steps.is_empty(): continue
 		if not topic_available(topic, ctx): continue
@@ -198,9 +199,16 @@ static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 			if default_topic == null: default_topic = topic
 		else:
 			var label = topic.label if not topic.label.is_empty() else topic.id.capitalize()
-			if _menu_topic_recorded(def, topic, ctx): label += "  · recorded"
-			entries.append({"id": topic.id, "label": label})
-	return {"default_topic": default_topic, "default_topics": eligible_defaults, "entries": entries}
+			var recorded = _menu_topic_recorded(def, topic, ctx)
+			if recorded: label += "  · recorded"
+			var entry = {"id": topic.id, "label": label}
+			# Recorded (previously completed) topics sink to the bottom of the
+			# menu, keeping active/new topics on top, so revisitable topics
+			# don't bury fresh leads as the list grows. File order is preserved
+			# within each group.
+			if recorded: recorded_entries.append(entry)
+			else: new_entries.append(entry)
+	return {"default_topic": default_topic, "default_topics": eligible_defaults, "entries": new_entries + recorded_entries}
 
 static func topic_available(topic: Dictionary, ctx: Dictionary) -> bool:
 	return Lang.evaluate(topic.gate, ctx)

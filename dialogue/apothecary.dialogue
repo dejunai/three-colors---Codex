@@ -117,7 +117,7 @@ TOPIC: the_camphor_stranger
   EVIDENCE: chandlery_island_delivery
 
 TOPIC: the_stranger_remedies
-  GATE: evidence(naomi) AND NOT topic_done(apothecary, the_stranger_remedies)
+  GATE: evidence(naomi)
   TAG: apothecary_naomi
   LABEL: "Ask if Naomi Freeman sought medicine for her son"
   TIME: 7
