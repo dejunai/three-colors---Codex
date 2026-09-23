@@ -214,8 +214,7 @@ static func _next_segment(session: Dictionary) -> Dictionary:
 
 # Call only after the first count cards of this segment have been consumed.
 # Returns true exactly once when the whole portal finishes (reaching the true
-# end with no pending FORK/GO). An omitted TIME: defaults to 3 minutes
-# (charged on first completion, mirroring substantive dialogue topics).
+# end with no pending FORK/GO).
 static func commit_through(result: Dictionary, state, count: int) -> bool:
 	if result.session.is_empty() or result.resumed or result.finished: return false
 	if count < result.acknowledged or count > result.cards.size(): return false

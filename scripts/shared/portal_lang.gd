@@ -130,7 +130,7 @@ static func _parse_portal_body(body: Array, errors: Array) -> Dictionary:
 	var gate_src = "never"
 	var label = ""
 	var tag = ""
-	var timing = "3"
+	var timing = ""
 	var k = 0
 	while k < body.size() and body[k].indent == base_indent:
 		var text = body[k].text
