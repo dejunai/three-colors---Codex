@@ -187,7 +187,8 @@ func show_menu(g: Node, actor: String) -> void:
 	g._panel("witness", TITLES[actor], "ASK, LISTEN, RECORD", false, "dialogue")
 	if actor == "odell": g._paragraph("Walter's answer is already in his notebook. Odell has nothing further to add.")
 	for entry in entries:
-		g._button(entry.label, func(): play_topic(g, actor, entry.id))
+		var button = g._button(entry.label, func(): play_topic(g, actor, entry.id))
+		if bool(entry.get("recorded", false)): g._style_recorded_topic_button(button)
 	g._button("Leave the conversation", g._close)
 	g._focus_first()
 

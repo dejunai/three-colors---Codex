@@ -49,6 +49,11 @@ func _run() -> void:
 	_play(Runtime.play_topic(behan_def, dstate, "club_five"), state, dstate)
 	var recorded_entry = Runtime.menu(behan_def, Runtime.make_context(state, dstate)).entries.filter(func(entry): return entry.id == "club_five")[0]
 	assert(recorded_entry.label.ends_with("  · recorded"), "A completed repeatable dialogue topic must be marked recorded")
+	assert(bool(recorded_entry.recorded), "A completed menu entry must expose recorded state to its renderer")
+	var recorded_section_started = false
+	for entry in Runtime.menu(behan_def, Runtime.make_context(state, dstate)).entries:
+		if bool(entry.recorded): recorded_section_started = true
+		else: assert(not recorded_section_started, "Fresh topics must remain above every recorded topic")
 	dstate.complete_topic("father_behan", "tagged_complete")
 	assert(Runtime._menu_topic_recorded(behan_def, {"id":"unfinished", "tag":"tagged_complete"}, Runtime.make_context(state, dstate)), "A completed TAG must also mark its menu topic recorded")
 

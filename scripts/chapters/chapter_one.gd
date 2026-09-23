@@ -171,6 +171,9 @@ func _style(bg:Color,border:Color=Color("626d5b")) -> StyleBoxFlat:
 func _button(text:String,callback:Callable,parent:Node=null) -> Button:
 	return interface._button(text,callback,parent)
 
+func _style_recorded_topic_button(button:Button) -> void:
+	interface.style_recorded_topic_button(button)
+
 func _panel(kind:String,heading:String,kicker:String="",wide:bool=false,visual_kind:String="") -> void:
 	page=kind
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE

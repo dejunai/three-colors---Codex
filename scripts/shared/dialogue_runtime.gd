@@ -201,7 +201,7 @@ static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 			var label = topic.label if not topic.label.is_empty() else topic.id.capitalize()
 			var recorded = _menu_topic_recorded(def, topic, ctx)
 			if recorded: label += "  · recorded"
-			var entry = {"id": topic.id, "label": label}
+			var entry = {"id": topic.id, "label": label, "recorded": recorded}
 			# Recorded (previously completed) topics sink to the bottom of the
 			# menu, keeping active/new topics on top, so revisitable topics
 			# don't bury fresh leads as the list grows. File order is preserved
