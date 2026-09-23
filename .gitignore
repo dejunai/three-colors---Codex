@@ -6,3 +6,4 @@ qa_*.png.import
 *.tmp.*
 tools/edge_user_data/
 tools/server_log.txt
+build/web/
