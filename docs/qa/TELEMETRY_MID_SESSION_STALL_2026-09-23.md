@@ -1,7 +1,7 @@
 # Telemetry mid-session stall — root cause and repair evidence
 
 Date: 2026-09-23
-Status: code and tests repaired locally; production Worker deployment still pending
+Status: repaired, deployed, and verified in production
 
 ## Confirmed production pattern
 
@@ -33,6 +33,8 @@ Focused verification passed locally:
 - `tests/playthrough_log_flow.gd`
 - `cloudflare/three-colors-worker/test.mjs`
 
-## Deployment boundary
+## Production verification
 
-The repository Worker already writes `dev_brisk_used`, but production D1 did not contain that column when inspected during this investigation. Apply `cloudflare/three-colors-worker/add-dev-brisk-d1.sql` to the remote database before deploying the Worker source. After deployment, repeat the isolated Web POST against production and require Godot `result=0`, HTTP 200, then run a greater-than-32-event browser session and confirm monotonically delivered unique events through `debrief` and `session_end`.
+After deployment, session `a2cd8722-54bf-4f38-afc7-2a91d4a18010` recorded 36 unique events in 36 consecutive D1 row ids, 4593 through 4628. It also recorded both `debrief` and `session_end`. The consecutive ids show that acknowledged prefixes are being retired rather than retransmitted, and the session crossing 32 events confirms that the former hard stall is gone.
+
+This closes the telemetry mid-session stall. Future Web publishing checks should retain the HTTP 200 acknowledgement and run at least one session beyond 32 events.
