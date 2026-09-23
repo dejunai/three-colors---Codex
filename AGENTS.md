@@ -23,6 +23,8 @@ Sometimes credited as "Copilot" by GitHub's own tooling attribution regardless o
 
 **DeepSeek V4 Pro in Bionic** — logic-gating review: audits the `.dialogue`/`.object`/`.portal` `GATE:` clauses for topics/clues that can trigger before the evidence or story-state that should unlock them. Its first credited pass (see `docs/qa/GATE_TIGHTENING_PASS.md` and the HCL) found six "triggers too soon" gates across the older, hand-migrated dialogue NPCs; all six were independently verified against live source before being applied. Also raised a parser-bug lead (`widow_kessler.dialogue`'s `coat_difference` gate misparsing `AND`) that did not hold up under a direct trace of `dialogue_lang.gd` — reported here per this project's standard for a lead that didn't pan out, not just the ones that did.
 
+**Gemini (Drive-embedded)** — an occasional second check on dialogue-gating logic, on hand by virtue of being built into Drive rather than specially invited; its first pass (2026-09-22) independently confirmed the same gate structure DeepSeek's review and the six-fix pass established, no discrepancies found.
+
 **Manus** — third-party auditor, a later arrival to the team; distinguished from the other reviewers by being able to actually play the game rather than only read source and docs.
 
 **Grok-bot-minis** — red-team the conceptual commercial release (market/positioning concerns, not code or docs).
