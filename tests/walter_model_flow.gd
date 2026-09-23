@@ -1,6 +1,7 @@
 extends SceneTree
 
 const MODEL_PATH := "res://assets/models/walter_phase1.glb"
+const PLAIN_MODEL_PATH := "res://assets/models/walter_plain.glb"
 const REQUIRED_ANIMATIONS := ["Idle", "Walk", "Brisk", "Interact", "Pickup_Ground"]
 const WalterModel = preload("res://scripts/shared/walter_model.gd")
 
@@ -15,18 +16,12 @@ func run() -> void:
 	assert(model.find_child("WalterPhase1", true, false) != null or model.name == "WalterPhase1", "Walter model must retain its authored root")
 	for required_node in ["Body", "PoliceCoat", "PlainCoat", "Badge", "WalterSkeleton"]:
 		assert(model.find_child(required_node, true, false) != null, "Walter model must expose " + required_node)
-	WalterModel.set_outfit(model,false,true)
-	for node in model.find_children("Plain*", "", true, false):
-		assert(not node.visible, "The plain-coat shell must hide in police state")
-	for node in model.find_children("Police*", "", true, false):
-		assert(node.visible, "Police geometry must show in police state")
-	WalterModel.set_outfit(model,true,false)
-	for node in model.find_children("Police*", "", true, false):
-		assert(not node.visible, "Police geometry must hide in plain-coat state")
-	for node in model.find_children("Plain*", "", true, false):
-		assert(node.visible, "The plain-coat shell must show in plain-coat state")
-	for node in model.find_children("Badge*", "", true, false):
-		assert(not node.visible, "Badge geometry must obey badge-loss/plain-coat state")
+	var plain_packed: PackedScene = load(PLAIN_MODEL_PATH)
+	assert(plain_packed != null, "Walter's independently modeled civilian GLB must load")
+	var plain_source := plain_packed.instantiate()
+	root.add_child(plain_source)
+	assert(plain_source.find_child("PlainWalterMesh", true, false) != null, "Civilian Walter must expose its own rendered mesh")
+	assert(plain_source.find_child("PlainWalterSkeleton", true, false) != null, "Civilian Walter must preserve its own compatible rig")
 	var players := model.find_children("*", "AnimationPlayer", true, false)
 	assert(not players.is_empty(), "Walter model must import an AnimationPlayer")
 	var player: AnimationPlayer = players[0]
@@ -41,10 +36,20 @@ func run() -> void:
 	root.add_child(runtime_model)
 	var rendered := runtime_model.get_node_or_null("RenderedWalter") as Node3D
 	assert(rendered != null and is_equal_approx(rendered.scale.x, 1.30), "Walter's accepted world scale must remain 1.30")
-	var runtime_player := WalterModel.animation_player(runtime_model)
-	var runtime_anims := WalterModel.animation_map(runtime_player)
-	assert(String(runtime_anims.get("Walk", "")).get_file() == "Walking", "Walter's ordinary gait must use the straighter Walking take")
-	assert(runtime_anims.has("Surprise"), "Walter's custom surprise-to-ear action must have a stable runtime name")
-	assert(runtime_anims.has("Examine"), "Walter's custom desk-height examination action must have a stable runtime name")
-	print("WALTER MODEL PASS: rendered hierarchy, outfit groups, scale, straight gait, Surprise, and Examine available")
+	var rendered_plain := runtime_model.get_node_or_null("RenderedPlainWalter") as Node3D
+	assert(rendered_plain != null and is_equal_approx(rendered_plain.scale.x, 1.30), "Civilian Walter must share the accepted world scale")
+	assert(rendered.visible and not rendered_plain.visible, "Police Walter must be the initial rendered outfit")
+	WalterModel.set_outfit(runtime_model, true, false)
+	assert(not rendered.visible and rendered_plain.visible, "Plain coat must switch complete rendered models")
+	assert(not runtime_model.find_child("Badge", true, false).visible, "The badge must remain absent in civilian clothes")
+	WalterModel.set_outfit(runtime_model, false, true)
+	assert(rendered.visible and not rendered_plain.visible, "Police coat must restore the complete police model")
+	var runtime_players := WalterModel.animation_players(runtime_model)
+	assert(runtime_players.size() == 2, "Both independently rigged outfits must expose an animation player")
+	for runtime_player in runtime_players:
+		var runtime_anims := WalterModel.animation_map(runtime_player)
+		assert(String(runtime_anims.get("Walk", "")).get_file() == "Walking", "Both outfits must use the straighter Walking take")
+		assert(runtime_anims.has("Surprise"), "Both outfits need the surprise-to-ear action")
+		assert(runtime_anims.has("Examine"), "Both outfits need the desk-height examination action")
+	print("WALTER MODEL PASS: distinct police/civilian models, complete outfit switch, two compatible rigs, scale, straight gait, Surprise, and Examine available")
 	quit()

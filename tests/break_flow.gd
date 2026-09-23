@@ -138,7 +138,8 @@ func run() -> void:
 	assert(g.page == "case" and _button(g, "Skip") != null, "The glass must cut directly to the out-of-fiction tester questions")
 	assert(g.presentation.frame_edge == 0.0, "The frame must finish fully wide")
 	assert(g.state.evidence == evidence_before, "The beat must not add or remove evidence (Law 4)")
-	assert(g.breaker.build_glass_stream().data.size() > 44100, "The glass must have a real sound")
+	assert(g.breaker.glass_player.stream == load("res://glass_shatter.ogg"), "The ending must use the authored glass-shatter recording")
+	assert(g.breaker.glass_player.stream.get_length() > 0.1, "The authored glass-shatter recording must contain audio")
 
 	# --- Save after the glass resumes at the ending, never inside the beat.
 	var resumed = g.CaseState.new()

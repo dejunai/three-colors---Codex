@@ -1,6 +1,7 @@
 extends RefCounted
 
 const MODEL_SCENE: PackedScene = preload("res://assets/models/walter_phase1.glb")
+const PLAIN_MODEL_SCENE: PackedScene = preload("res://assets/models/walter_plain.glb")
 
 static func create() -> Node3D:
 	var wrapper := Node3D.new()
@@ -19,24 +20,43 @@ static func create() -> Node3D:
 	# including his cap, retaining his stature without excess height.
 	rendered.scale = Vector3.ONE * 1.30
 	wrapper.add_child(rendered)
+	var plain_rendered := PLAIN_MODEL_SCENE.instantiate()
+	plain_rendered.name = "RenderedPlainWalter"
+	plain_rendered.rotation.y = PI
+	plain_rendered.scale = Vector3.ONE * 1.30
+	wrapper.add_child(plain_rendered)
 	set_outfit(wrapper, false, true)
 	return wrapper
 
 static func set_outfit(model: Node3D, plain: bool, badge_visible: bool) -> void:
 	if not is_instance_valid(model): return
-	for node in model.find_children("Police*", "", true, false):
-		node.visible = not plain
-	for node in model.find_children("Plain*", "", true, false):
-		node.visible = plain
+	var police_rendered := model.get_node_or_null("RenderedWalter") as Node3D
+	var plain_rendered := model.get_node_or_null("RenderedPlainWalter") as Node3D
+	if police_rendered != null:
+		police_rendered.visible = not plain
+		# The earlier single-asset experiment left a recolored police duplicate in
+		# this GLB.  It must never substitute for the independently modeled coat.
+		for node in police_rendered.find_children("Police*", "", true, false):
+			node.visible = true
+		for node in police_rendered.find_children("Plain*", "", true, false):
+			node.visible = false
+	if plain_rendered != null:
+		plain_rendered.visible = plain
 	for node in model.find_children("Badge*", "", true, false):
 		node.visible = badge_visible
 	var marker := model.get_node_or_null("Badge")
 	if marker != null: marker.visible = badge_visible
 
 static func animation_player(model: Node3D) -> AnimationPlayer:
-	if not is_instance_valid(model): return null
-	var players := model.find_children("*", "AnimationPlayer", true, false)
+	var players := animation_players(model)
 	return players[0] as AnimationPlayer if not players.is_empty() else null
+
+static func animation_players(model: Node3D) -> Array[AnimationPlayer]:
+	var result: Array[AnimationPlayer] = []
+	if not is_instance_valid(model): return result
+	for node in model.find_children("*", "AnimationPlayer", true, false):
+		result.append(node as AnimationPlayer)
+	return result
 
 static func animation_map(player: AnimationPlayer) -> Dictionary:
 	var result := {}

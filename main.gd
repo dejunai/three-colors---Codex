@@ -25,6 +25,8 @@ var _model_left_arm: Node3D
 var _model_right_arm: Node3D
 var _model_animation: AnimationPlayer
 var _model_animations: Dictionary = {}
+var _model_animation_players: Array[AnimationPlayer] = []
+var _model_animation_maps: Array[Dictionary] = []
 var _model_animation_base := ""
 const PICKUP_PLAYBACK_SPEED := 1.6
 var _animation_lock := false
@@ -84,13 +86,19 @@ func build_player(avatar:Node3D,spawn:Vector3) -> void:
 	_model_right_leg = model.get_node_or_null("RightLeg")
 	_model_left_arm = model.get_node_or_null("LeftArm")
 	_model_right_arm = model.get_node_or_null("RightArm")
-	_model_animation = preload("res://scripts/shared/walter_model.gd").animation_player(model)
-	_model_animations = preload("res://scripts/shared/walter_model.gd").animation_map(_model_animation)
-	if is_instance_valid(_model_animation):
+	var walter_model = preload("res://scripts/shared/walter_model.gd")
+	_model_animation_players = walter_model.animation_players(model)
+	_model_animation_maps.clear()
+	for player in _model_animation_players:
+		var animation_map: Dictionary = walter_model.animation_map(player)
+		_model_animation_maps.append(animation_map)
 		for loop_name in ["Idle", "Walk", "Brisk"]:
-			if not _model_animations.has(loop_name): continue
-			var clip := _model_animation.get_animation(_model_animations[loop_name])
+			if not animation_map.has(loop_name): continue
+			var clip := player.get_animation(animation_map[loop_name])
 			if clip != null: clip.loop_mode = Animation.LOOP_LINEAR
+	_model_animation = _model_animation_players[0] if not _model_animation_players.is_empty() else null
+	_model_animations = _model_animation_maps[0] if not _model_animation_maps.is_empty() else {}
+	if is_instance_valid(_model_animation):
 		_play_model_animation("Idle", 0.0)
 	player.position = spawn
 	camera = Camera3D.new()
@@ -268,11 +276,24 @@ func _unhandled_input(event:InputEvent) -> void:
 	chapter.handle_input(event)
 
 func _play_model_animation(base_name: String, blend: float = 0.16, speed: float = 1.0) -> void:
-	if not is_instance_valid(_model_animation) or not _model_animations.has(base_name): return
-	_model_animation.speed_scale = 1.0
-	if _model_animation_base == base_name and _model_animation.is_playing(): return
+	if _model_animation_players.is_empty(): return
+	var all_playing := _model_animation_base == base_name
+	for i in range(_model_animation_players.size()):
+		var player := _model_animation_players[i]
+		var animation_map := _model_animation_maps[i]
+		if not is_instance_valid(player) or not animation_map.has(base_name):
+			all_playing = false
+			continue
+		if not player.is_playing() or player.current_animation != animation_map[base_name]:
+			all_playing = false
+	if all_playing: return
 	_model_animation_base = base_name
-	_model_animation.play(_model_animations[base_name], blend, speed)
+	for i in range(_model_animation_players.size()):
+		var player := _model_animation_players[i]
+		var animation_map := _model_animation_maps[i]
+		if not is_instance_valid(player) or not animation_map.has(base_name): continue
+		player.speed_scale = 1.0
+		player.play(animation_map[base_name], blend, speed)
 
 func play_ground_pickup(target_position: Vector3, on_reach: Callable, on_complete: Callable) -> void:
 	_play_ground_pickup(target_position, on_reach, on_complete)
