@@ -52,7 +52,7 @@ TOPIC: default
   MRS. ALMY: "If the town wants more statements, tell Captain Odell to send an official clerk. I have sheets to boil."
 
 TOPIC: identify
-  GATE: always
+  GATE: coat = plain
   TAG: identify
   LABEL: "Ask for the woman's name"
   TIME: 6

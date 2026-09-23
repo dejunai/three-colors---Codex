@@ -44,7 +44,7 @@ TOPIC: naomi_letters
   EVIDENCE: new_bedford_letters
 
 TOPIC: ophion_club_mail
-  GATE: always
+  GATE: evidence(club_talk)
   TAG: postal_club_mail
   LABEL: "Ask about correspondence received by the Ophion Club"
   TIME: 8

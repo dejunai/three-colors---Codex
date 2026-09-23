@@ -108,7 +108,7 @@ TOPIC: wage_claim_inquiry
 
       OUTCOME: wage_claim_response = triplicate_filing
 TOPIC: ophion_settlement
-  GATE: evidence(behan_name) OR evidence(ophion_myth_classical)
+  GATE: (evidence(behan_name) OR evidence(ophion_myth_classical)) AND evidence(lay_lead)
   TAG: clerk_ophion_records
   LABEL: "Request the 1820s Ophion insurance and probate filings"
   TIME: 7

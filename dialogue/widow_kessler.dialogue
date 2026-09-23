@@ -37,7 +37,7 @@ TOPIC: the_knife
   EVIDENCE: kessler_knife_confirmed
 
 TOPIC: club_standing
-  GATE: always
+  GATE: coat = plain
   TAG: kessler_standing
   LABEL: "Ask how Otto came to join the club"
   TIME: 7

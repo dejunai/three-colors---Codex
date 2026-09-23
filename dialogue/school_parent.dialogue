@@ -70,7 +70,7 @@ TOPIC: the_estate_talk
 # Redundant-carrier backup: if schoolteacher is missed, this supplies the
 # same EVIDENCE the covering-letter lead relies on downstream.
 TOPIC: the_covering_letter
-  GATE: evidence(curriculum_abridgment) OR evidence(sanitized_textbook)
+  GATE: evidence(curriculum_abridgment)
   TAG: parent_covering_letter
   LABEL: "Ask if she recalls the covering letter approving the reader"
   TIME: 7
@@ -105,7 +105,6 @@ TOPIC: the_reader_lesson
   NOTEBOOK: parent_reader_lesson_1 | "Mrs. Teague's daughter recites the school reader's Chapter Four passage from memory: 'The sea received its harvest... founding estates preserved Widow's Bight from ruin.'"
   NOTEBOOK: parent_curriculum_abridgment | "Mrs. Teague confirms the school edition omitted the crew roster from the 1823 founding history, teaching only the benefactors' survival."
   EVIDENCE: sanitized_textbook
-  EVIDENCE: curriculum_abridgment
 
 # Redundant-carrier backup: if post_office_clerk is missed, this supplies the
 # same EVIDENCE the New Bedford letters lead relies on downstream, building
