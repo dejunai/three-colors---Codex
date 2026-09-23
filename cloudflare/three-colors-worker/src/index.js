@@ -48,6 +48,13 @@ function response(request, status, message) {
   return new Response(message, { status, headers: corsHeaders(request) });
 }
 
+function acceptedResponse(request, accepted) {
+  return new Response(JSON.stringify({ accepted }), {
+    status: 200,
+    headers: { ...corsHeaders(request), "Content-Type": "application/json" },
+  });
+}
+
 function cleanEvent(raw) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error("event must be an object");
   const eventName = raw.event;
@@ -148,6 +155,6 @@ export default {
         httpMetadata: { contentType: "application/json" },
       }),
     ]);
-    return response(request, 204, null);
+    return acceptedResponse(request, events.length);
   },
 };

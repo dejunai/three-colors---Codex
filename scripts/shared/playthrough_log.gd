@@ -5,6 +5,7 @@ const SESSION_PATH = "user://anonymous_playthrough_session.json"
 const REQUEST_TIMEOUT_SEC := 5.0
 const REQUEST_TIMEOUT_MS := 5000
 const MAX_BUFFER_SIZE := 300
+const MAX_REQUEST_BATCH := 32 # Must match the Worker's MAX_EVENTS contract.
 const MAX_BEACON_BACKLOG := 24 # Worker accepts at most 32 events per request.
 
 # Empty by design until the collection endpoint and its CORS policy are approved.
@@ -289,6 +290,9 @@ func _send_web_beacon(events:Array) -> bool:
 	var script := "navigator.sendBeacon(%s, new Blob([%s], {type: 'text/plain;charset=UTF-8'}))" % [JSON.stringify(endpoint_url), JSON.stringify(body)]
 	return bool(JavaScriptBridge.eval(script, true))
 
+func _request_batch() -> Array:
+	return buffer.slice(0, mini(buffer.size(), MAX_REQUEST_BATCH))
+
 func _flush() -> void:
 	if endpoint_url.is_empty() or buffer.is_empty(): return
 	_ensure_request()
@@ -304,17 +308,18 @@ func _flush() -> void:
 		else:
 			return
 
-	in_flight_count = buffer.size()
+	var batch := _request_batch()
+	in_flight_count = batch.size()
 	request_busy = true
 	request_sent_ms = Time.get_ticks_msec()
-	var error := request.request(endpoint_url, ["Content-Type: application/json"], HTTPClient.METHOD_POST, JSON.stringify({"events": buffer.slice(0, in_flight_count)}))
+	var error := request.request(endpoint_url, ["Content-Type: application/json"], HTTPClient.METHOD_POST, JSON.stringify({"events": batch}))
 	if error != OK:
 		request_busy = false
 		in_flight_count = 0
 		request_sent_ms = 0
 
-func _request_completed(_result:int, response_code:int, _headers:PackedStringArray, _body:PackedByteArray) -> void:
-	var succeeded := response_code >= 200 and response_code < 300
+func _request_completed(result:int, response_code:int, _headers:PackedStringArray, _body:PackedByteArray) -> void:
+	var succeeded := result == HTTPRequest.RESULT_SUCCESS and response_code >= 200 and response_code < 300
 	if succeeded:
 		for _index in in_flight_count:
 			if not buffer.is_empty(): buffer.pop_front()

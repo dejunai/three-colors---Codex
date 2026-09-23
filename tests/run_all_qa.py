@@ -37,6 +37,7 @@ tests = [
     (["--headless", "-s", "tests/dialogue_lang_flow.gd"], "dialogue_lang_flow"),
     (["--headless", "-s", "tests/dialogue_template_flow.gd"], "dialogue_template_flow"),
     (["--headless", "-s", "tests/dialogue_content_flow.gd"], "dialogue_content_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/playthrough_log_flow.gd"], "playthrough_log_flow"),
     (["--headless", "-s", "tests/portal_lang_flow.gd"], "portal_lang_flow"),
     (["--headless", "-s", "tests/portal_template_flow.gd"], "portal_template_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/portal_content_flow.gd"], "portal_content_flow"),

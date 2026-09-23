@@ -84,6 +84,23 @@ func run() -> void:
 	assert(_events(logger,"session_end")[0].dev_brisk_used == true)
 	assert(_payload_is_private(logger.buffer))
 
+	# The Worker accepts at most 32 events. A long or temporarily offline session
+	# must never create an oversized request that can poison all later delivery.
+	logger.buffer.clear()
+	for _index in 40: logger.buffer.append(logger._event("session_start"))
+	assert(logger._request_batch().size() == 32)
+	logger.endpoint_url = ""
+	logger.request_busy = true
+	logger.in_flight_count = 32
+	logger._request_completed(HTTPRequest.RESULT_SUCCESS, 200, PackedStringArray(), PackedByteArray())
+	assert(logger.buffer.size() == 8, "a successful acknowledgement must remove only its capped in-flight batch")
+	var pending_after_success:int = logger.buffer.size()
+	logger.request_busy = true
+	logger.in_flight_count = pending_after_success
+	logger._request_completed(HTTPRequest.RESULT_CANT_CONNECT, 0, PackedStringArray(), PackedByteArray())
+	assert(logger.buffer.size() == pending_after_success, "transport failure must retain pending events")
+	logger.buffer.clear()
+
 	var fresh_state = CaseState.new()
 	logger.begin(fresh_state,npcs)
 	assert(logger.session_id != first_id)
@@ -104,7 +121,7 @@ func run() -> void:
 	# The stale lock must be broken (request.request to dummy port will fail or connect, but request_busy will not stay hung from the prior 8s-old request)
 	logger.endpoint_url = ""
 
-	print("PLAYTHROUGH LOG PASS: UUID lifecycle, objective, phase, transition, conversation context, Day 3, timeout recovery, and privacy payload")
+	print("PLAYTHROUGH LOG PASS: UUID lifecycle, objective, phase, transition, conversation context, Day 3, capped acknowledgement delivery, timeout recovery, and privacy payload")
 	quit(0)
 
 func _events(logger,event_name:String) -> Array:
