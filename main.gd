@@ -18,6 +18,7 @@ const WALK_ACCEL = 13.0
 const BRISK_ACCEL = 18.0
 const DEVELOPER_BRISK_ACCEL = 39.0
 var developer_brisk = false
+var developer_brisk_used = false
 var _model_left_leg: Node3D
 var _model_right_leg: Node3D
 var _model_left_arm: Node3D
@@ -242,6 +243,9 @@ func _unhandled_input(event:InputEvent) -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if mode == DisplayServer.WINDOW_MODE_FULLSCREEN else DisplayServer.WINDOW_MODE_FULLSCREEN)
 	if event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_F3 or event.physical_keycode == KEY_F3):
 		developer_brisk = not developer_brisk
+		if developer_brisk:
+			developer_brisk_used = true
+			chapter.note_developer_brisk_used()
 		print("[movement] Shift pace: ", "DEVELOPER (10.5)" if developer_brisk else "PLAYER BRISK (4.0)")
 	if chapter.page == "play":
 		if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:

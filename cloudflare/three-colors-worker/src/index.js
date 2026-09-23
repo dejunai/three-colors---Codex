@@ -6,7 +6,7 @@ const EVENT_FIELDS = {
   conversation: ["npc_id", "topic_id", "coat_state", "world", "day", "phase"],
   day3_bed_reached: ["real_seconds_since_day3_start"],
   debrief: ["town_feel", "time_natural"],
-  session_end: ["total_real_seconds", "final_day", "ended_via"],
+  session_end: ["total_real_seconds", "final_day", "ended_via", "dev_brisk_used"],
 };
 
 const STANDARD_FIELDS = ["session_id", "event", "timestamp"];
@@ -20,8 +20,8 @@ const INSERT_EVENT = `INSERT OR IGNORE INTO game_events (
   real_seconds_since_day3_start, town_feel, time_natural,
   total_real_seconds, final_day, ended_via,
   npc_id, topic_id, coat_state, world, phase,
-  page_origin, received_at
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  dev_brisk_used, page_origin, received_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 function corsHeaders(request) {
   const origin = request.headers.get("Origin") || "";
@@ -75,6 +75,7 @@ function cleanEvent(raw) {
   if (Object.hasOwn(raw, "ended_via") && !["closed", "completed"].includes(raw.ended_via)) throw new Error("invalid ending");
   if (Object.hasOwn(raw, "town_feel") && !["alive", "confusing", "too_large", "easy", "skipped"].includes(raw.town_feel)) throw new Error("invalid town_feel");
   if (Object.hasOwn(raw, "time_natural") && !["yes", "no", "skipped"].includes(raw.time_natural)) throw new Error("invalid time_natural");
+  if (Object.hasOwn(raw, "dev_brisk_used") && typeof raw.dev_brisk_used !== "boolean") throw new Error("invalid dev_brisk_used");
   return Object.fromEntries([...allowed].filter((key) => Object.hasOwn(raw, key)).map((key) => [key, raw[key]]));
 }
 
@@ -95,6 +96,7 @@ async function d1Statements(env, events, origin, receivedAt) {
     event.total_real_seconds ?? null, event.final_day ?? null, event.ended_via ?? null,
     event.npc_id ?? null, event.topic_id ?? null, event.coat_state ?? null,
     event.world ?? null, event.phase ?? null,
+    event.dev_brisk_used == null ? null : (event.dev_brisk_used ? 1 : 0),
     origin, receivedAt,
   )));
 }

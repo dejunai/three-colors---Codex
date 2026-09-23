@@ -63,6 +63,15 @@ func run() -> void:
 	assert(_events(logger,"debrief")[0].town_feel == "alive")
 	assert(_events(logger,"debrief")[0].time_natural == "yes")
 
+	logger.note_developer_brisk_used()
+	logger.note_developer_brisk_used()
+	assert(logger.dev_brisk_used)
+	var resumed_logger = PlaythroughLog.new()
+	resumed_logger.endpoint_url = ""
+	root.add_child(resumed_logger)
+	resumed_logger.resume(state,npcs)
+	assert(resumed_logger.session_id == first_id and resumed_logger.dev_brisk_used, "developer pace usage must survive process restart/save load")
+
 	# Loading during this runtime keeps the same opaque id and emits no second start.
 	logger.resume(state,npcs)
 	assert(logger.session_id == first_id)
@@ -70,10 +79,15 @@ func run() -> void:
 	logger.end(state,"completed")
 	assert(_events(logger,"session_end")[0].ended_via == "completed")
 	assert(_events(logger,"session_end")[0].total_real_seconds is int)
+	assert(_events(logger,"session_end")[0].dev_brisk_used == true)
 	assert(_payload_is_private(logger.buffer))
 
-	logger.begin(CaseState.new(),npcs)
+	var fresh_state = CaseState.new()
+	logger.begin(fresh_state,npcs)
 	assert(logger.session_id != first_id)
+	assert(not logger.dev_brisk_used)
+	logger.end(fresh_state,"closed")
+	assert(_events(logger,"session_end")[0].dev_brisk_used == false)
 	assert(logger.request != null and logger.request.timeout == 5.0)
 
 	# Verify stuck request recovery on timeout threshold
@@ -97,7 +111,7 @@ func _valid_uuid_v4(value:String) -> bool:
 	return regex.search(value) != null
 
 func _payload_is_private(events:Array) -> bool:
-	var allowed = ["session_id","event","timestamp","from_world","to_world","real_seconds_elapsed","game_minutes_elapsed","day","new_phase","npcs_spoken_to_this_phase","real_seconds_since_day3_start","town_feel","time_natural","total_real_seconds","final_day","ended_via","npc_id","topic_id","coat_state","world","phase"]
+	var allowed = ["session_id","event","timestamp","from_world","to_world","real_seconds_elapsed","game_minutes_elapsed","day","new_phase","npcs_spoken_to_this_phase","real_seconds_since_day3_start","town_feel","time_natural","total_real_seconds","final_day","ended_via","dev_brisk_used","npc_id","topic_id","coat_state","world","phase"]
 	for event in events:
 		for key in event:
 			if not allowed.has(key): return false

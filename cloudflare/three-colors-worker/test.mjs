@@ -66,10 +66,25 @@ if (rows[2].values[17] !== "mrs_almy" || rows[2].values[19] !== "plain") throw n
 result = await worker.fetch(post({ events: [{ ...conversation.events[0], coat_state: "raincoat" }] }), env);
 if (result.status !== 400 || writes.length !== 3) throw new Error("invalid coat state was accepted");
 
+const sessionEnd = { events: [{
+  session_id: "12345678-1234-4123-8123-123456789abc",
+  event: "session_end",
+  timestamp: "2026-09-13T12:03:00Z",
+  total_real_seconds: 2612,
+  final_day: 3,
+  ended_via: "completed",
+  dev_brisk_used: true,
+}] };
+result = await worker.fetch(post(sessionEnd), env);
+if (result.status !== 204 || writes.length !== 4 || rows.length !== 4) throw new Error("valid session end was not dual-written");
+if (rows[3].values[22] !== 1) throw new Error("developer brisk usage was not mapped to D1");
+result = await worker.fetch(post({ events: [{ ...sessionEnd.events[0], dev_brisk_used: "yes" }] }), env);
+if (result.status !== 400 || writes.length !== 4) throw new Error("non-boolean developer brisk usage was accepted");
+
 result = await worker.fetch(new Request("https://example.test", {
   method: "OPTIONS",
   headers: { "Origin": "https://html-classic.itch.zone" },
 }), env);
 if (result.status !== 204 || result.headers.get("Access-Control-Allow-Origin") !== "https://html-classic.itch.zone") throw new Error("itch.io preflight failed");
 
-console.log("WORKER PASS: strict schema, conversation context, idempotent D1 + R2 dual write, privacy rejection, and CORS preflight");
+console.log("WORKER PASS: strict schema, conversation context, developer-brisk session context, idempotent D1 + R2 dual write, privacy rejection, and CORS preflight");

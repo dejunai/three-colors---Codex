@@ -27,6 +27,7 @@ var day3_started_ms := -1
 var day3_bed_sent := false
 var debrief_sent := false
 var ended := false
+var dev_brisk_used := false
 
 func _ready() -> void:
 	_ensure_request()
@@ -52,10 +53,13 @@ func resume(state, npc_ids:Array = []) -> void:
 	var file := FileAccess.open(SESSION_PATH, FileAccess.READ)
 	if file == null: return
 	var parsed = JSON.parse_string(file.get_as_text())
+	var persisted_dev_brisk_used := false
 	if parsed is Dictionary:
 		session_id = String(parsed.get("session_id", ""))
+		persisted_dev_brisk_used = bool(parsed.get("dev_brisk_used", false))
 	if session_id.is_empty(): return
 	reset_runtime(false)
+	dev_brisk_used = persisted_dev_brisk_used
 	_initialize_tracking(state, npc_ids)
 
 func reset_runtime(clear_id:bool = true) -> void:
@@ -77,6 +81,7 @@ func reset_runtime(clear_id:bool = true) -> void:
 	day3_bed_sent = false
 	debrief_sent = false
 	ended = false
+	dev_brisk_used = false
 
 func _initialize_tracking(state, npc_ids:Array) -> void:
 	var now := Time.get_ticks_msec()
@@ -135,6 +140,11 @@ func conversation(npc_id:String, topic_id:String, state) -> void:
 		"phase": DayClock.phase(float(state.clock_minutes))
 	})
 
+func note_developer_brisk_used() -> void:
+	if session_id.is_empty() or ended or dev_brisk_used: return
+	dev_brisk_used = true
+	_store_session_id()
+
 func day3_bed_reached() -> void:
 	if session_id.is_empty() or ended or day3_bed_sent: return
 	day3_bed_sent = true
@@ -151,7 +161,8 @@ func end(state, ended_via:String) -> void:
 	_log("session_end", {
 		"total_real_seconds": roundi(maxf(0.0, float(Time.get_ticks_msec() - session_started_ms) / 1000.0)),
 		"final_day": int(state.day),
-		"ended_via": ended_via
+		"ended_via": ended_via,
+		"dev_brisk_used": dev_brisk_used
 	})
 	ended = true
 	_flush()
@@ -206,7 +217,7 @@ func _request_completed(_result:int, response_code:int, _headers:PackedStringArr
 
 func _store_session_id() -> void:
 	var file := FileAccess.open(SESSION_PATH, FileAccess.WRITE)
-	if file != null: file.store_string(JSON.stringify({"session_id": session_id}))
+	if file != null: file.store_string(JSON.stringify({"session_id": session_id, "dev_brisk_used": dev_brisk_used}))
 
 func _uuid_v4() -> String:
 	var bytes := Crypto.new().generate_random_bytes(16)

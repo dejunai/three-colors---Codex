@@ -239,7 +239,11 @@ func _new_game() -> void:
 	tunnel_dead = false
 	comfort_time = 0
 	state = CaseState.new()
+	# F3 may already be active at the title screen. Start each playthrough's
+	# sticky usage flag from the current pace rather than a prior playthrough.
+	rig.developer_brisk_used = rig.developer_brisk
 	playthrough_log.begin(state,scripted_dialogue.FILES.keys())
+	if rig.developer_brisk_used: playthrough_log.note_developer_brisk_used()
 	_travel("estate",state.position,0,false)
 	player.position = state.position
 	yaw = 0
@@ -645,6 +649,9 @@ func _load_settings() -> void:
 func _toast(text:String,duration:float = 4) -> void:
 	toast_label.text=text
 	toast_time=duration
+
+func note_developer_brisk_used() -> void:
+	playthrough_log.note_developer_brisk_used()
 
 func _notification(what:int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
