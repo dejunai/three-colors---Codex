@@ -12,7 +12,7 @@ const SLOTS = {
 	"printer":["business",Vector3(3,0,18)], "repairer":["business",Vector3(22,0,18)],
 	"apothecary":["business",Vector3(-26,0,8)], "registrar":["precinct",Vector3(5,0,-3)],
 	"post_office":["post_office",Vector3(4,0,-2)],
-	"kessler_shop":["town",Vector3(9,0,-2)], "kessler_parlor":["town",Vector3(12,0,-2)],
+	"kessler_shop":["town",Vector3(-19.2,0,11.2)], "kessler_parlor":["town",Vector3(-21.0,0,11.2)],
 	"pickman_precinct_walk":["town",Vector3(-13,0,-1)], "pickman_boarding_walk":["town",Vector3(5,0,-1)],
 	"pickman_shop_walk":["town",Vector3(18,0,-1)], "pickman_west_bench":["town",Vector3(-14,0,14)],
 	"pickman_center_bench":["town",Vector3(0,0,14)], "pickman_east_bench":["town",Vector3(19,0,14)],

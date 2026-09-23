@@ -1,19 +1,11 @@
-**\# Scorched Earth: What He Was Willing to Lose**
-
-&nbsp;
+# Scorched Earth: What He Was Willing to Lose
 
 *Reference novella for mixed-method player behavior — canonical*  
 *Three Colors of Madness — Chapter Three*
 
-&nbsp;
+---
 
-**\---**
-
-&nbsp;
-
-**\#\# I. The One Line**
-
-&nbsp;
+## I. The One Line
 
 Ekon Freeman had crossed half of Europe with the United States Army and come home to a country that still could not decide whether that counted for anything. He had expected, returning to Widow's Bight after twenty years away, to find the town unchanged in the specific, stubborn way small places resisted every war fought on their behalf. He had not expected to find it smaller than memory had kept it — the harbor narrower, the business street shorter, the whole place shrunk down to the size a man's eye could take in without effort, the way anything looks smaller once you've learned what a real distance is.
 
@@ -39,11 +31,7 @@ Ekon opened it there, standing in the lawyer's office, before he had even decide
 
 *Case Number 114. Officer W. Corwin, reporting.*
 
-&nbsp;
-
-**\#\# II. Two Dead Men's Handwriting**
-
-&nbsp;
+## II. Two Dead Men's Handwriting
 
 He read the file at the boardinghouse that night, by a single lamp, in the unhurried, total way he had learned to read maps before an operation — not for the general shape, which he already understood too well, but for every particular he might otherwise miss the one time missing it mattered.
 
@@ -55,11 +43,7 @@ He felt no gratitude toward Corwin exactly. Gratitude implied the man had succee
 
 He copied three names out of the file into his own notebook before he closed it: Wexford. Fenn. Corliss. Men his mother's murder had never touched, in any account anyone had ever bothered to keep. He did not yet know what he intended to do with the names. He wrote them down anyway, the way a soldier logs a position before deciding whether the position matters.
 
-&nbsp;
-
-**\#\# III. The Skill That Isn't in Question**
-
-&nbsp;
+## III. The Skill That Isn't in Question
 
 He had not come to Widow's Bight untrained, and he did not pretend otherwise to himself the way a less honest man might, dressing competence up as luck to make it feel less like a debt owed to the Army that taught it to him. He could read ground. He could clear a room, or choose not to, and either choice would be a decision rather than a guess. He carried a service rifle he had kept, against regulation and against his own better judgment, because a man who had spent two years depending on a weapon did not find it easy to travel without one, whatever the destination.
 
@@ -69,11 +53,7 @@ The Observers worked the ruins the same way, he was told by the one weathered ol
 
 He moved through the upper ruin the way his training had built him to move — economical, unhurried, reading each space before committing to it — and found, within the first week, that the ground here rewarded exactly the discipline he already had. He did not need to learn caution the way a green man learns it. He had already paid that tuition, in a country an ocean away, in a currency he did not care to think about too closely.
 
-&nbsp;
-
-**\#\# IV. What Two Men Left Behind**
-
-&nbsp;
+## IV. What Two Men Left Behind
 
 He found Ward Kohistani in the tenth week, in a lower gallery no map of the ruin's upper works had prepared him for: a Codex, swollen with damp, beside remains that had settled into the stone the way remains settle when no one comes looking for a very long time.
 
@@ -87,11 +67,7 @@ He did not know, and would never know, the specific hour or the specific fall th
 
 He took nothing from the pocket of silt where they lay. He photographed nothing, kept no measurements, added no entry to any record. He crouched beside them for a long moment, in the particular stillness of a man who has learned, at cost, what a moment like this is actually for, and then he stood, and did not disturb them again.
 
-&nbsp;
-
-**\#\# V. The Groan and the Cough**
-
-&nbsp;
+## V. The Groan and the Cough
 
 He learned to read the tunnel's two populations the way he had learned to read everything else — by watching first, moving second, and never mistaking stillness for safety.
 
@@ -103,31 +79,19 @@ He found one of them not yet fully changed, still close enough to a man that a s
 
 He was, he understood clearly by the fourteenth week, better at this than either man before him. It did not comfort him. He had already begun to suspect, reading both their records too closely to unsuspect it, that being better at this was not the same thing as this ever intending to let him leave.
 
-&nbsp;
-
-**\#\# VI. The Discovery**
-
-&nbsp;
+## VI. The Discovery
 
 He found the book in Ward's own pack, wrapped in oilcloth that had somehow kept most of the damp out for a decade — a scholarly survey of an old cosmogony, two hands crowding its margins, one urgent and self-flattering, the other flat and corrective, arguing across years neither writer had known the other held the pen for.
 
 He read the passage both men had returned to most, in Ward's careful annotation copied out beneath the earlier owner's underlining:
 
-&nbsp;
-
 *Overthrown, but not destroyed. Cast down, and left waiting.*
-
-&nbsp;
 
 He had encountered the name *Ophion* three times by then — once in Corwin's file, naming a lost ship and, separately, a private society Corwin had died investigating; once in Ward's Codex, a professional cross-reference logged and left unresolved; and now here, in a stranger's book, defining exactly what the word had meant before a hundred years of a town's own silence let it come to mean something else entirely to the men who'd since built a club around it.
 
 No one told him the club and the creature shared more than a name. He arrived at it himself, in the same unhurried way he arrived at everything, laying three unrelated records beside each other until the line between them stopped requiring anyone's help to see. It was, he thought, closing the book, the first thing in twenty years that the town of Widow's Bight had never intended for him to be able to assemble, and he had assembled it anyway, out of three dead men's careful, honest work, none of them aware they were building anything together at all.
 
-&nbsp;
-
-**\#\# VII. The Pivot**
-
-&nbsp;
+## VII. The Pivot
 
 He reached the lower charges with a full magazine and the specific, hard-won confidence of a man who had never yet met a threat his training hadn't eventually solved.
 
@@ -137,11 +101,7 @@ He did not waste a second round confirming it.
 
 The pivot that followed was not panic. It was doctrine, the same doctrine any soldier eventually reached for once an objective stopped being *defeat the enemy* and became, instead, *deny the enemy ground* — rubble instead of resistance, a collapsed passage instead of a held one, delay standing in for a victory that had never been available to begin with. He began, with the same economical, trained calm he had carried the whole chapter, converting the tools that had kept him alive into tools that might, at best, buy someone else time he would not be using himself.
 
-&nbsp;
-
-**\#\# VIII. His Fatal Realization**
-
-&nbsp;
+## VIII. His Fatal Realization
 
 He saw them directly, in the abyss below the lowest gallery, and did not break the way the two records in his pack told him both men before him had broken.
 
@@ -149,11 +109,7 @@ There was no shattering comprehension in it, no mind giving way under a weight i
 
 He did not feel destroyed by the understanding. He felt, if anything, exactly as intact as he had felt reading Corwin's file by lamplight three weeks earlier — a man in full possession of himself, finishing a piece of work he had always known might not end in his own survival.
 
-&nbsp;
-
-**\#\# IX. What He Was Willing to Lose**
-
-&nbsp;
+## IX. What He Was Willing to Lose
 
 He had spent the whole chapter unable to settle, cleanly, on what a record was actually for.
 
@@ -165,13 +121,9 @@ He sealed Corwin's file and Ward's Codex together in a length of oilcloth and a 
 
 It would not collect the debt. Nothing available to him would ever make Widow's Bight pay what it owed. He understood that as clearly as he understood everything else in that last minute, and did it anyway, because the alternative — leaving nothing, deciding on his family's behalf that none of it had ever been worth writing down — was the one failure among all the ones available to him that he still, at the very end, refused to commit.
 
-&nbsp;
+## What the Film Could Not Hold
 
-**\#\# What the Film Could Not Hold**
-
-&nbsp;
-
-No record fixes the instant itself — no camera was ever going to be permitted to hold what came for him in the moment it arrived, any more than one had been permitted to hold what came for Corwin or for Kohistani before him. But there is no version of what he had already set in motion that leaves room for him to have walked back out of that passage, and the record does not pretend otherwise. He had already lit the fuse. He had already chosen collapse over retreat, the same as Ward before him and Walter before Ward, and a man does not survive bringing a cavern like that one down on top of himself by any route this story is willing to invent for him.
+No record fixes the instant itself — no camera was ever going to be permitted to hold what came for him in the moment it arrived, any more than one had been permitted to hold what came for Corwin or for Kohistani before him. But there is no version of what he had already set in motion that leaves room for him to have walked back out of that passage, and the record does not pretend otherwise. He had already lit the fuse. He had already chosen collapse over retreat. That was a choice neither Ward before him nor Walter before Ward had ever been lucid enough to make: the tunnel had turned Walter back, and it had simply kept Ward. And a man does not survive bringing a cavern like that one down on top of himself by any route this story is willing to invent for him.
 
 What survives is what he left: a sealed tube above the tide line, holding two dead men's careful, honest work, waiting for a reader neither of them ever got to meet. A burned file that will never mislead anyone again. A wage claim, proven, witnessed, and useless against a town that was never going to pay it, sitting now in a drawer three hundred miles from the coast that owed it.
 

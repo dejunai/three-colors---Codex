@@ -149,11 +149,11 @@ func _street() -> void:
 	lettering("KESSLER",Vector3(-20,2.5,11.85),26)
 	for y in [0.6,1.1,1.6]: box(self,Vector3(-20,y,11.83),Vector3(2.6,0.16,0.1),"241f1a")
 	var old_woman = CastModel.create(CastModel.LOWER_WOMAN)
-	old_woman.position = Vector3(-19.2, 0, 11.2)
+	old_woman.position = Vector3(-17.5, 0, 8.8)
 	add_child(old_woman)
 	departing_woman = old_woman
 	old_woman.rotation.y = -2.0
-	target("old_woman","Speak with the woman outside the shop",Vector3(-19.2,0,11.2))
+	target("old_woman","Speak with the woman outside the shop",Vector3(-17.5,0,8.8))
 	register_actor("old_woman", old_woman, "old_woman", func(st): return not st.evidence.has("old_woman"))
 	for x in [-28,28]: tree(Vector3(x,0,20))
 	# District portals have been replaced by physical streets. Interior doors
