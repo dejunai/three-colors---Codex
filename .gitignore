@@ -4,3 +4,5 @@ qa_*.png
 qa_*.png.import
 *.log
 *.tmp.*
+tools/edge_user_data/
+tools/server_log.txt
