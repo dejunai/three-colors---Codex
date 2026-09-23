@@ -21,9 +21,9 @@ const valid = {
   }],
 };
 
-const post = (body) => new Request("https://example.test", {
+const post = (body, contentType = "application/json") => new Request("https://example.test", {
   method: "POST",
-  headers: { "Content-Type": "application/json", "Origin": "https://dejunai.github.io" },
+  headers: { "Content-Type": contentType, "Origin": "https://dejunai.github.io" },
   body: JSON.stringify(body),
 });
 
@@ -81,10 +81,22 @@ if (rows[3].values[22] !== 1) throw new Error("developer brisk usage was not map
 result = await worker.fetch(post({ events: [{ ...sessionEnd.events[0], dev_brisk_used: "yes" }] }), env);
 if (result.status !== 400 || writes.length !== 4) throw new Error("non-boolean developer brisk usage was accepted");
 
+const beaconEnd = { events: [{ ...sessionEnd.events[0], timestamp: "2026-09-13T12:04:00Z" }] };
+result = await worker.fetch(post(beaconEnd, "text/plain;charset=UTF-8"), env);
+if (result.status !== 204 || writes.length !== 5 || rows.length !== 5) throw new Error("Beacon text/plain batch was not accepted");
+result = await worker.fetch(post(beaconEnd, "text/html"), env);
+if (result.status !== 415 || writes.length !== 5) throw new Error("unsupported content type was accepted");
+result = await worker.fetch(new Request("https://example.test", {
+  method: "POST",
+  headers: { "Content-Type": "text/plain;charset=UTF-8", "Origin": "https://attacker.example" },
+  body: JSON.stringify(beaconEnd),
+}), env);
+if (result.status !== 403 || writes.length !== 5 || rows.length !== 5) throw new Error("Beacon from an unapproved browser origin was accepted");
+
 result = await worker.fetch(new Request("https://example.test", {
   method: "OPTIONS",
   headers: { "Origin": "https://html-classic.itch.zone" },
 }), env);
 if (result.status !== 204 || result.headers.get("Access-Control-Allow-Origin") !== "https://html-classic.itch.zone") throw new Error("itch.io preflight failed");
 
-console.log("WORKER PASS: strict schema, conversation context, developer-brisk session context, idempotent D1 + R2 dual write, privacy rejection, and CORS preflight");
+console.log("WORKER PASS: strict schema, conversation context, developer-brisk session context, Beacon final delivery, idempotent D1 + R2 dual write, privacy rejection, and CORS preflight");

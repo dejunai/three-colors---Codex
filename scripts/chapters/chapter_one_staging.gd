@@ -118,9 +118,10 @@ func _debrief_time_natural(g:Node,town_feel:String) -> void:
 	g._panel("case","One more thought.","A QUIET MOMENT")
 	g._paragraph("Did the passage of time feel natural while investigating?")
 	var finish = func(answer:String):
-		g.playthrough_log.debrief(town_feel,answer)
 		g.state.finished=true
+		g.state.dialogue_state.set_flag("debrief_completed",true)
 		g._save_game()
+		g.playthrough_log.complete(g.state,town_feel,answer)
 		g._town_complete()
 	g._button("Yes",finish.bind("yes"))
 	g._button("No",finish.bind("no"))

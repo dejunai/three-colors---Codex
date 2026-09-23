@@ -23,16 +23,20 @@ const INSERT_EVENT = `INSERT OR IGNORE INTO game_events (
   dev_brisk_used, page_origin, received_at
 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-function corsHeaders(request) {
-  const origin = request.headers.get("Origin") || "";
-  const allowed = origin === "https://dejunai.github.io"
+function isAllowedOrigin(origin) {
+  return !origin
+    || origin === "https://dejunai.github.io"
     || origin.endsWith(".itch.io")
     || origin.endsWith(".itch.zone")
     || origin.endsWith(".hwcdn.net")
     || origin === "http://localhost:5173"
     || origin === "http://127.0.0.1:5173";
+}
+
+function corsHeaders(request) {
+  const origin = request.headers.get("Origin") || "";
   return {
-    "Access-Control-Allow-Origin": allowed ? origin : "https://dejunai.github.io",
+    "Access-Control-Allow-Origin": isAllowedOrigin(origin) && origin ? origin : "https://dejunai.github.io",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
@@ -103,11 +107,14 @@ async function d1Statements(env, events, origin, receivedAt) {
 
 export default {
   async fetch(request, env) {
+    const origin = request.headers.get("Origin") || "";
+    if (!isAllowedOrigin(origin)) return response(request, 403, "Origin not allowed");
     if (request.method === "OPTIONS") return response(request, 204, null);
     if (request.method !== "POST") return response(request, 405, "Method not allowed");
-    if (!request.headers.get("Content-Type")?.toLowerCase().startsWith("application/json")) {
-      return response(request, 415, "JSON required");
-    }
+    const contentType = request.headers.get("Content-Type")?.toLowerCase() || "";
+    const isJson = contentType.startsWith("application/json");
+    const isBeacon = contentType.startsWith("text/plain");
+    if (!isJson && !isBeacon) return response(request, 415, "JSON required");
     const declaredLength = Number(request.headers.get("Content-Length") || 0);
     if (declaredLength > MAX_BODY_BYTES) return response(request, 413, "Payload too large");
 

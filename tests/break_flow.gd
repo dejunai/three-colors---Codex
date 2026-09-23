@@ -157,6 +157,8 @@ func run() -> void:
 	assert(_button(g, "Review the board") != null)
 	var debriefs = g.playthrough_log.buffer.filter(func(item): return item.event == "debrief")
 	assert(debriefs.size() == 1, "Exactly one debrief event")
+	assert(g.playthrough_log.buffer.filter(func(item): return item.event == "session_end").size() == 1, "Debrief and completion must be queued together")
+	assert(g.state.dialogue_state.flag("debrief_completed"))
 	assert(g.playthrough_log.buffer.filter(func(item): return item.event == "day3_bed_reached").size() == 1)
 
 	# --- Loading the finished save returns to the ending, and the break cannot replay.

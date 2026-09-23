@@ -386,8 +386,8 @@ func _town_complete(g:Node) -> void:
 	g._paragraph("This is where the alpha slice of Three Colors of Madness ends. Thank you for playing.",22)
 	g._button("Review the board",g._board)
 	g._button("Continue exploring",g._close)
-	g._button("Save and return to title",func(): g._save_game(); g._title())
-	g._button("Save and quit",func(): g._save_game(); g.get_tree().quit())
+	g._button("Save and return to title",g._save_and_return_to_title)
+	g._button("Save and quit",g._save_and_quit)
 	g._focus_first()
 
 # The slice's ending (chapter_one_break.gd): it stops on the glass. No verdict on the
@@ -398,6 +398,6 @@ func _slice_complete(g:Node) -> void:
 	g._paragraph("Notebook: %d observations\nEstate report: %d observations, retained as submitted\nDated supplements: %d\nCounty dispatch: %s" % [g.state.evidence.size(),g.state.report_evidence.size(),g.state.supplement_history.size(),"recorded" if g.state.county_dispatched else "none"],20)
 	g._paragraph("This is where this slice of Three Colors of Madness ends. Thank you for playing.",22)
 	g._button("Review the board",g._board)
-	g._button("Save and return to title",func(): g._save_game(); g._title())
-	g._button("Save and quit",func(): g._save_game(); g.get_tree().quit())
+	g._button("Save and return to title",g._save_and_return_to_title)
+	g._button("Save and quit",g._save_and_quit)
 	g._focus_first()

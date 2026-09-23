@@ -33,6 +33,8 @@ func run() -> void:
 	assert(debriefs.size() == 1)
 	assert(debriefs[0].town_feel == "skipped" and debriefs[0].time_natural == "skipped")
 	assert(g.state.finished and g.page == "ending", "Skipping both questions must still reach the ending")
+	assert(g.state.dialogue_state.flag("debrief_completed"))
+	assert(g.playthrough_log.buffer.filter(func(item): return item.event == "session_end").size() == 1)
 
 	# Completed playthroughs return directly to the ending instead of reopening the questions.
 	g._close()

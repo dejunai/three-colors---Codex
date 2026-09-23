@@ -556,9 +556,19 @@ func _pause() -> void:
 	_button("Return to the grounds",_close)
 	_button("Case file",_journal)
 	_button("Accessibility & controls",func(): return_page="pause"; _settings())
-	_button("Save and return to title",_title)
-	_button("Save and quit",func(): _save_game(); get_tree().quit())
+	_button("Save and return to title",_save_and_return_to_title)
+	_button("Save and quit",_save_and_quit)
 	_focus_first()
+
+func _save_and_return_to_title() -> void:
+	playthrough_log.end(state,"closed")
+	_save_game()
+	_title()
+
+func _save_and_quit() -> void:
+	playthrough_log.end(state,"closed")
+	_save_game()
+	get_tree().quit()
 
 func _settings() -> void:
 	_panel("settings","Accessibility & controls","AVAILABLE BEFORE PLAY",true)
@@ -630,6 +640,7 @@ func _load_game() -> void:
 	tunnel_dead=bool(d.get("tunnel_dead",false))
 	if tunnel_dead: _show_tunnel_death(false)
 	elif state.montage_index >= 0: staging.draw_montage(self)
+	elif state.finished and state.world != "tunnel" and state.dialogue_state.flag("glass_broken") and not state.dialogue_state.flag("debrief_completed"): staging.debrief(self)
 	elif state.finished and state.world != "tunnel": _town_complete()
 	else:
 		_close()
