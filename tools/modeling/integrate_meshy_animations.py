@@ -123,6 +123,8 @@ def save_native_outfit_textures(mesh_obj: bpy.types.Object) -> tuple[Path, Path,
     image.filepath_raw = str(raw_path)
     image.file_format = "JPEG"
     image.save()
+    raw_extracted = MODEL_DIR / "walter_phase1_walter_police_raw.jpg"
+    shutil.copyfile(raw_path, raw_extracted)
 
     # Export polygon and UV layout for texture generator
     export_mesh_uvs(mesh_obj)

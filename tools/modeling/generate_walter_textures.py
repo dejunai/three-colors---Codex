@@ -23,6 +23,8 @@ MODEL_DIR = ROOT / "assets" / "models"
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
 POLICE_OUT = MODEL_DIR / "walter_police_remesh.jpg"
 PLAIN_OUT = MODEL_DIR / "walter_plain_remesh.jpg"
+POLICE_EXTRACTED = MODEL_DIR / "walter_phase1_walter_police_remesh.jpg"
+PLAIN_EXTRACTED = MODEL_DIR / "walter_phase1_walter_plain_remesh.jpg"
 
 
 def generate_textures(uv_json_path: Path, raw_police_tex_path: Path | None = None) -> tuple[Path, Path]:
@@ -134,8 +136,10 @@ def generate_textures(uv_json_path: Path, raw_police_tex_path: Path | None = Non
     navy_patch = np.clip(navy_base + weave_noise, 0, 255).astype(np.uint8)
     police_arr[chest_np] = navy_patch[chest_np]
 
-    Image.fromarray(police_arr).save(POLICE_OUT, quality=94)
-    print(f"Generated clean police texture: {POLICE_OUT}")
+    police_img = Image.fromarray(police_arr)
+    police_img.save(POLICE_OUT, quality=94)
+    police_img.save(POLICE_EXTRACTED, quality=94)
+    print(f"Generated clean police texture: {POLICE_OUT} and {POLICE_EXTRACTED}")
 
     # -----------------------------------------------------------------
     # PLAIN CIVILIAN TWEED SUIT TEXTURE:
@@ -181,8 +185,10 @@ def generate_textures(uv_json_path: Path, raw_police_tex_path: Path | None = Non
     # Buttons -> dark horn buttons
     plain_arr[is_gold] = horn_rgb[is_gold]
 
-    Image.fromarray(plain_arr).save(PLAIN_OUT, quality=94)
-    print(f"Generated civilian plain coat texture: {PLAIN_OUT}")
+    plain_img = Image.fromarray(plain_arr)
+    plain_img.save(PLAIN_OUT, quality=94)
+    plain_img.save(PLAIN_EXTRACTED, quality=94)
+    print(f"Generated civilian plain coat texture: {PLAIN_OUT} and {PLAIN_EXTRACTED}")
 
     return POLICE_OUT, PLAIN_OUT
 

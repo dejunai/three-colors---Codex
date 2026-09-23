@@ -19,6 +19,7 @@ static func create() -> Node3D:
 	# including his cap, retaining his stature without excess height.
 	rendered.scale = Vector3.ONE * 1.30
 	wrapper.add_child(rendered)
+	set_outfit(wrapper, false, true)
 	return wrapper
 
 static func set_outfit(model: Node3D, plain: bool, badge_visible: bool) -> void:
