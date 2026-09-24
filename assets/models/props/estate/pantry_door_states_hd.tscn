@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/estate/pantry_door_boarded_hd.glb" id="1_boarded"]
+[ext_resource type="PackedScene" path="res://assets/models/props/estate/pantry_door_cleared_hd.glb" id="2_cleared"]
+
+[node name="PantryDoorStatesHD" type="Node3D"]
+
+[node name="Boarded" type="Node3D" parent="."]
+
+[node name="Door" parent="Boarded" instance=ExtResource("1_boarded")]
+
+[node name="Cleared" type="Node3D" parent="."]
+visible = false
+
+[node name="Door" parent="Cleared" instance=ExtResource("2_cleared")]
