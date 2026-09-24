@@ -3,87 +3,87 @@ NPC: crew
 LOCATION: estate
 
 TOPIC: default
-  GATE: NOT topic_done(crew, default)
+  GATE: lounge_exited AND NOT topic_done(crew, default)
   TAG: crew
-  THE KITCHEN WING YARD: "A groundskeeper stacks crates beside a banked fire, working fast in the cold. The service door stands a few feet off. He never sets a crate nearer to it than the last."
+  THE KITCHEN WING YARD: "A groundskeeper stacks crates beside a banked fire, working fast in the cold, the dull copper band on his wrist catching the ember-light. The service door stands a few feet off. He never sets a crate nearer to it than the last."
   WALTER CORWIN: "Something wrong with the door?"
   VOICE: trombone_cautious_long_v1
-  THE GROUNDSKEEPER: "Uneven step. Easy to turn an ankle in this light.\n\nMind the same on your way out."
+  ABEL TAVARES: "Uneven step. Easy to turn an ankle in this light.\n\nMind the same on your way out."
   WALTER'S NOTEBOOK: "The distance he keeps is exact, not nervous. He named a reason before Walter asked for one, then went back to the crates without slowing down.\n\nThe observation is exact. The reason he gave may not be."
   EVIDENCE: crew
 
 TOPIC: default
-  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat = plain
+  GATE: lounge_exited AND visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat = plain
   TAG: crew_repeat_plain_cartway
   WEIGHT: 3
   [He stacks another cabbage crate with loud, deliberate rhythm.]
   VOICE: trombone_neutral_medium_v1
-  THE GROUNDSKEEPER: "The cartway's busy, Walter. Stand clear of the wheels, plain coat or no."
+  ABEL TAVARES: "The cartway's busy, Walter. Stand clear of the wheels, plain coat or no."
 
 TOPIC: default
-  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat = plain
+  GATE: lounge_exited AND visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat = plain
   TAG: crew_repeat_plain_footing
   WEIGHT: 2
   VOICE: trombone_cautious_short_v1
-  THE GROUNDSKEEPER: "Uneven step by that kitchen door. Mind your footing on the flagstones."
+  ABEL TAVARES: "Uneven step by that kitchen door. Mind your footing on the flagstones."
 
 TOPIC: default
-  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat != plain
+  GATE: lounge_exited AND visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat != plain
   TAG: crew_repeat_badge_officer
   WEIGHT: 3
   VOICE: trombone_bureaucratic_short_v1
-  THE GROUNDSKEEPER: "The cartway's busy, Officer. The brass buttons won't keep a dray from pinning you against the wall."
+  ABEL TAVARES: "The cartway's busy, Officer. The brass buttons won't keep a dray from pinning you against the wall."
 
 TOPIC: default
-  GATE: visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat != plain
+  GATE: lounge_exited AND visit_count(crew) >= 2 AND NOT topic_done(crew, perimeter_trench) AND coat != plain
   TAG: crew_repeat_badge_crates
   WEIGHT: 2
   [He drops a heavy crate onto the flagstones with deliberate force.]
   VOICE: trombone_cautious_short_v2
-  THE GROUNDSKEEPER: "Precinct business belongs in the front hall, Officer. Not among the kitchen root cellars."
+  ABEL TAVARES: "Precinct business belongs in the front hall, Officer. Not among the kitchen root cellars."
 
 TOPIC: default
-  GATE: topic_done(crew, perimeter_trench) AND coat = plain
+  GATE: lounge_exited AND topic_done(crew, perimeter_trench) AND coat = plain
   TAG: crew_exhausted_plain_lime
   WEIGHT: 3
   VOICE: trombone_cautious_short_v2
-  THE GROUNDSKEEPER: "Keep on the path, Walter. You're kicking the sulfur into the grass."
+  ABEL TAVARES: "Keep on the path, Walter. You're kicking the sulfur into the grass."
 
 TOPIC: default
-  GATE: topic_done(crew, perimeter_trench) AND coat = plain
+  GATE: lounge_exited AND topic_done(crew, perimeter_trench) AND coat = plain
   TAG: crew_exhausted_plain_boundary
   WEIGHT: 2
   [He stays thirty paces back from the kitchen door, eyes fixed on the trench line.]
   VOICE: trombone_dismissive_short_v1
-  THE GROUNDSKEEPER: "You've got your notes. Let the yard be."
+  ABEL TAVARES: "You've got your notes. Let the yard be."
 
 TOPIC: default
-  GATE: topic_done(crew, perimeter_trench) AND coat != plain
+  GATE: lounge_exited AND topic_done(crew, perimeter_trench) AND coat != plain
   TAG: crew_exhausted_badge_patrol
   WEIGHT: 3
   VOICE: trombone_dismissive_short_v2
-  THE GROUNDSKEEPER: "You saw the furrow, Officer. Now take the badge back down the drive before someone asks what you're trampling."
+  ABEL TAVARES: "You saw the furrow, Officer. Now take the badge back down the drive before someone asks what you're trampling."
 
 TOPIC: default
-  GATE: topic_done(crew, perimeter_trench) AND coat != plain
+  GATE: lounge_exited AND topic_done(crew, perimeter_trench) AND coat != plain
   TAG: crew_exhausted_badge_watch
   WEIGHT: 2
   [He stands rigidly by the cabbage stack, watching Walter's uniform with guarded stillness.]
   VOICE: trombone_cautious_medium_v1
-  THE GROUNDSKEEPER: "Town law ends where Grange gravel begins. Mind your steps."
+  ABEL TAVARES: "Town law ends where Grange gravel begins. Mind your steps."
 
 TOPIC: perimeter_trench
-  GATE: evidence(crew)
+  GATE: lounge_exited AND evidence(crew)
   TAG: groundskeeper_perimeter
   LABEL: "Ask about the white powder trenched into the soil thirty paces from the door"
   TIME: 6
   WALTER CORWIN: "There's a shallow furrow scored into the dirt thirty paces back from the kitchen door. Ground oyster shell and yellow brimstone."
   [The groundskeeper drops a crate onto the stack with a sharp, hollow hollow clatter.]
   VOICE: trombone_dismissive_short_v2
-  THE GROUNDSKEEPER: "Grange orders. Slugs in the rhododendrons."
+  ABEL TAVARES: "Grange orders. Slugs in the rhododendrons."
   WALTER CORWIN: "Slugs don't cross thirty yards of open carriage gravel in November."
   VOICE: trombone_cautious_long_v2
-  THE GROUNDSKEEPER: "They don't cross that line either, Officer. That's why it's there.\nNow step back on the gravel path. You're kicking the lime into the grass."
-  NOTEBOOK: groundskeeper_perimeter_line | "A furrow packed with crushed oyster shell and brimstone sulfur rings the kitchen yard thirty paces out. Groundskeeper claimed it was for garden slugs, but insisted Walter not disturb the boundary."
+  ABEL TAVARES: "They don't cross that line either, Officer. That's why it's there.\nNow step back on the gravel path. You're kicking the lime into the grass."
+  NOTEBOOK: groundskeeper_perimeter_line | "A furrow packed with crushed oyster shell and brimstone sulfur rings the kitchen yard thirty paces out. Abel Tavares claimed it was for garden slugs, but insisted Walter not disturb the boundary."
   EVIDENCE: sulfur_shell_perimeter
 

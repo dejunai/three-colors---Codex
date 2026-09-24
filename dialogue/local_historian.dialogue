@@ -54,10 +54,10 @@ TOPIC: dr_fenn_library
   MR. ABERNATHY: "Pre-Colonial shoreline surveys. And translations of Aegean mystery rites.\nHe brought in a battered German volume on Near Eastern chthonic cults."
   FORK:
     CHOICE: "Ask about the annotations."
-      VOICE: trombone_happy_long_v1
-      MR. ABERNATHY: "He was manic with his pencil. Underlining passages about gods that were not slain, only 'displaced.'\nI told him he was reading modern occultist rubbish into straightforward Athenian allegory, but a wealthy doctor does not welcome correction from a curator."
-      NOTEBOOK: historian_fenn_annotations | "Fenn studied Aegean mystery rites, obsessively annotating passages regarding gods 'displaced rather than slain.'"
-      EVIDENCE: displaced_god_doctrine
+      VOICE: trombone_bureaucratic_long_v1
+      MR. ABERNATHY: "He was frantic with his pencil, Officer, but not with our holdings. He filled the margins with foreign shelf-marks, European booksellers' catalogues, and queries our provincial shelves couldn't answer. He was convinced some continental commentary had traced the name further than Harvard's cataloguers ever bothered to go. When our texts failed to satisfy him, he went abroad for his reading."
+      NOTEBOOK: historian_fenn_annotations | "Abernathy recalls Fenn annotating library folios with foreign catalogue citations and bookseller lists, obsessed with importing commentaries on classical names."
+      EVIDENCE: fenn_bibliographic_trail
       OUTCOME: fenn_library_response = annotations
     CHOICE: "Ask what Fenn took from the collection."
       VOICE: trombone_haunting_long_v1

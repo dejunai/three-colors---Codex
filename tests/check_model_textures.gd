@@ -3,6 +3,7 @@ extends SceneTree
 const MODELS_TO_CHECK = [
 	"res://assets/models/steward.glb",
 	"res://assets/models/coroner.glb",
+	"res://assets/models/coroners_assistant.glb",
 	"res://assets/models/father_behan.glb",
 	"res://assets/models/gatekeeper_boy.glb",
 	"res://assets/models/captain_odell.glb",

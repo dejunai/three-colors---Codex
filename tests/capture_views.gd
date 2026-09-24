@@ -37,6 +37,12 @@ func run(g:Node) -> void:
 		g.model.hide()
 		g.camera.global_position = Vector3(4,1.7,-7.4)
 		g.camera.look_at(Vector3(4,1.15,-11.5))
+	if g.capture_mode == "coroners_assistant":
+		g.page = "capture"
+		g.model.hide()
+		# View her from Walter's garden approach rather than from behind the tables.
+		g.camera.global_position = Vector3(7.0,1.75,3.0)
+		g.camera.look_at(Vector3(12.5,1.1,-3.8))
 	if g.capture_mode == "odell_precinct":
 		g.state.day = 2
 		g.state.clock_minutes = 540.0

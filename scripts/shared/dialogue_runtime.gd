@@ -146,6 +146,7 @@ static func make_context(state, dstate) -> Dictionary:
 			"lounge_exited": func(): return state.lounge_exited,
 			"report": func(): return state.report,
 			"report_filed": func(): return not state.report.is_empty(),
+			"intake_done": func(): return bool(state.intake_done),
 		}
 	}
 

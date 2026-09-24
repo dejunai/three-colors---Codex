@@ -16,8 +16,8 @@ static func create() -> Node3D:
 	rendered.name = "RenderedWalter"
 	# Blender's authored face points +Z; the existing controller's forward is -Z.
 	rendered.rotation.y = PI
-	# The imported rest mesh is 1.70m tall; 1.30 puts Walter at about 2.21m
-	# including his cap, retaining his stature without excess height.
+	# Walter establishes the baseline player-character scale (1.30), retaining
+	# commanding investigator stature against which other cast models are tuned.
 	rendered.scale = Vector3.ONE * 1.30
 	wrapper.add_child(rendered)
 	var plain_rendered := PLAIN_MODEL_SCENE.instantiate()

@@ -1,9 +1,8 @@
 extends RefCounted
 
 const MODEL_SCENE: PackedScene = preload("res://assets/models/coroner.glb")
-# Base authored height is 1.70m; scaled to 1.18x (~2.01m), placing the coroner and assistant
-# in a natural adult proportion between Walter (1.30 on 1.70m ~2.21m) / Odell (1.30 on 1.80m ~2.34m)
-# and the gatekeeper boy (1.05 on 1.70m ~1.78m).
+# Tuned against Walter, Odell, and the gatekeeper boy: 1.18 scale places the coroner and assistant
+# in natural adult proportion, standing slightly below Walter and Odell but above the gatekeeper boy.
 const SCALE_FACTOR: float = 1.18
 
 static func create() -> Node3D:

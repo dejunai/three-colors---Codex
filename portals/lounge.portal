@@ -5,9 +5,15 @@ PORTAL: lounge_exit
   LABEL: "Leave through the service entrance"
   GO: estate | -10,0.1,-17 | 3.14159265
 
-# The steward's old pantry door (dialogue/steward.dialogue, pantry_lead). The hotspot
-# itself is only offered once that evidence exists (town.gd::sync_pantry); the GATE
-# repeats the condition so a stale hotspot can never bypass it.
+# The steward's old pantry door (dialogue/steward.dialogue, pantry_lead).
+# Before the steward mentions the door, curious players can examine the boarded door.
+PORTAL: pantry_door
+  GATE: NOT evidence(pantry_lead)
+  LABEL: "Examine the boarded pantry door"
+  THE BOARDED DOOR: "Heavy pine boards nailed across the doorframe, sealed with old iron spikes.\n\nWhatever was being renovated here was abandoned long ago. From the seam near the floor comes a slow, cool draft smelling of cellar dust and damp lime."
+  WALTER CORWIN: "Boarded tight. Without a crowbar or a reason to force it, there's no getting through."
+
+# The hotspot transitions to opening once the steward names it; see sync_pantry().
 # The tunnel checkpoint and death flag are set by chapter_one_portals.gd's
 # _before_travel()/_after_travel(), not here.
 PORTAL: pantry_door

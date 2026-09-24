@@ -42,6 +42,9 @@ var ammo = 6
 var flask_spilled = false
 var flask_spill_amount = 0
 var drowned_dead = false
+var tunnel_spur_seen: bool:
+	get: return dialogue_state.flag("tunnel_spur_seen")
+	set(v): dialogue_state.set_flag("tunnel_spur_seen", v)
 # Staging milestones are explicit; re-entering a room never advances a day.
 var rose_bodies_removed = false
 var birch_bodies_removed = false

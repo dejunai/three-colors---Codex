@@ -23,6 +23,7 @@ const GatekeeperBoyModel = preload("res://scripts/shared/gatekeeper_boy_model.gd
 const ESTATE_TREE_BUSH_MODEL = preload("res://assets/models/props/prop_tree_bush.glb")
 const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
 const CoronerModel = preload("res://scripts/shared/coroner_model.gd")
+const CoronersAssistantModel = preload("res://scripts/shared/coroners_assistant_model.gd")
 const CastModel = preload("res://scripts/shared/cast_model.gd")
 const VictimModel = preload("res://scripts/shared/victim_model.gd")
 const CoveredBodyModel = preload("res://scripts/shared/covered_body_model.gd")
@@ -479,7 +480,7 @@ func _ready() -> void:
 	odell_actor.rotation.y = PI
 	add_child(odell_actor)
 	opening_staff["odell"] = odell_actor
-	assistant_actor = CoronerModel.create()
+	assistant_actor = CoronersAssistantModel.create()
 	assistant_actor.position = Vector3(12.5, 0, -3.8)
 	assistant_actor.rotation.y = -1.2
 	add_child(assistant_actor)

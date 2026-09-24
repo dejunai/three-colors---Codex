@@ -62,7 +62,7 @@ Odell looked at him for a long moment, the particular look of a superior officer
 
 He did not, in fact, have their names yet. He had only the certainty that he intended to get them, and enough experience of Odell to know that a man who announced intentions with total confidence bought himself more room than a man who asked permission. It worked, that once. Odell gave him three days rather than none, mostly, Walter suspected, because refusing outright would have required an explanation Odell did not want to have to give either of them.
 
-Walter used the three days to make the refusal harder to walk back later. He filed his own report in triplicate — one copy to the precinct, one to the county registrar's office in Arkham proper, one kept in his own hand at Pickman Street, on the theory that a fact recorded in only one place had already halfway ceased to exist. He was not wrong about that theory. He would spend the rest of the case discovering just how thoroughly right he was.
+Walter used the three days to make the refusal harder to walk back later. He filed his own report in triplicate — one copy to the precinct, one to the Miskatonic County registrar's office, one kept in his own hand at Pickman Street, on the theory that a fact recorded in only one place had already halfway ceased to exist. He was not wrong about that theory. He would spend the rest of the case discovering just how thoroughly right he was.
 
 Kessler's widow came to the precinct that same afternoon, demanding to know how her husband's shop money had bought him a chair among men who called him tradesman to his face. Odell steered her gently toward the door. Walter, on his way out, gave her his own name and Pickman Street address instead of the precinct's, and told her, plainly, that if anyone told her the case was closed before she'd had her answer, she should come find him there and not the captain.
 
@@ -120,7 +120,7 @@ YOU WEAR THAT LIKE IT BELONGS TO SOMEBODY ELSE, OFFICER.
 
 He looked down at the coat and could not, in that moment, have said with any confidence which garment she meant.
 
-He tried the Arkham Gazette next, on the theory that a fact printed in a hundred copies was harder to erase than a fact filed in one drawer.
+He tried the Miskatonic Gazette next, on the theory that a fact printed in a hundred copies was harder to erase than a fact filed in one drawer.
 
 The reporter who took his statement was young and plainly interested — until an editor, two desks over, glanced at the names Walter had written down and quietly suggested the young man might want a second source before running anything that named five of the county's most generous advertisers as members of a private society with a body count. The story that eventually ran gave the six dead men their names, their professions, a paragraph each on their civic contributions, and a closing line about an ongoing police investigation into "an apparent accident." It did not mention the birches. It did not mention two more names Walter had personally supplied.
 
@@ -168,7 +168,7 @@ Sound came in behind it, his mother's cough, and then her voice, occupying the r
 
 His mind, in its last clear seconds, reached for the oldest refuge it owned — a square yellow-curtained room, his mother coughing patient in her bed, an unopened exemption notice folded on the dresser, a version of himself who had never once left that room and therefore never once earned any of what came after. It was not true. It had never been true. He had spent three weeks refusing to let a town erase two names by the same easy arithmetic it had erased a hundred others, and the refusal had been real even though nothing about the outcome had changed for having made it.
 
-That, in the end, was the whole of what he managed to leave behind: not a case solved, not a claim honored, not a story printed, not a captain persuaded — only a file, kept in triplicate against exactly this outcome, that recorded eight names where the town's own version would record six. He had fought for that single stubborn number with everything a beat cop's authority actually contained, and had lost every larger fight along the way, and the number survived regardless, in a drawer in Arkham and in his own hand on Pickman Street, because he had made it survive rather than simply hoping it might.
+That, in the end, was the whole of what he managed to leave behind: not a case solved, not a claim honored, not a story printed, not a captain persuaded — only a file, kept in triplicate against exactly this outcome, that recorded eight names where the town's own version would record six. He had fought for that single stubborn number with everything a beat cop's authority actually contained, and had lost every larger fight along the way, and the number survived regardless, in a drawer at the Miskatonic County registrar's and in his own hand on Pickman Street, because he had made it survive rather than simply hoping it might.
 
 Whether that counted as a victory was not a question the case had ever been built to answer for him.
 

@@ -8,9 +8,10 @@ const ContiguousTown = preload("res://scripts/chapters/contiguous_town_phase_one
 const ContiguousTownTwo = preload("res://scripts/chapters/contiguous_town_phase_two.gd")
 const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
 const CoronerModel = preload("res://scripts/shared/coroner_model.gd")
+const CoronersAssistantModel = preload("res://scripts/shared/coroners_assistant_model.gd")
 const CastModel = preload("res://scripts/shared/cast_model.gd")
-var FILES = {"boy":"gatehouse_boy", "assistant":"coroners_assistant", "crew":"groundskeeper", "gardener":"gardener", "odell":"odell", "almy":"mrs_almy", "behan":"father_behan", "barman":"steward", "old_woman":"old_woman"}
-var TITLES = {"boy":"The gatehouse boys", "assistant":"The coroner's assistant", "crew":"The groundskeeper", "gardener":"The gardener", "odell":"Captain Odell", "almy":"Mrs. Almy", "behan":"Father Behan", "barman":"The club's steward", "old_woman":"The woman outside Kessler's shop"}
+var FILES = {"boy":"gatehouse_boy", "assistant":"coroners_assistant", "crew":"groundskeeper", "gardener":"gardener", "odell":"odell", "almy":"mrs_almy", "behan":"father_behan", "barman":"steward", "old_woman":"old_woman", "morgue_coroner":"morgue_coroner", "intake_clerk":"intake_clerk"}
+var TITLES = {"boy":"The gatehouse boys", "assistant":"The coroner's assistant", "crew":"Abel Tavares", "gardener":"The gardener", "odell":"Captain Odell", "almy":"Mrs. Almy", "behan":"Father Behan", "barman":"The club's steward", "old_woman":"The woman outside Kessler's shop", "morgue_coroner":"The coroner", "intake_clerk":"The intake clerk"}
 var catalog = preload("res://scripts/chapters/dialogue_catalog.gd").new()
 var extra_actors: Array[String] = []
 var figures: Dictionary = {}
@@ -52,7 +53,7 @@ func populate(g: Node) -> void:
 			figure.rotation.y = PI
 			g.estate.add_child(figure)
 		elif actor == "coroners_assistant_morgue":
-			figure = CoronerModel.create()
+			figure = CoronersAssistantModel.create()
 			figure.position = spot[1]
 			figure.rotation.y = PI
 			g.estate.add_child(figure)
@@ -93,7 +94,8 @@ func _set_assistant_conversing(g: Node, actor: String, conversing: bool) -> void
 		model = g.estate.get("assistant_actor") as Node3D
 	elif actor == "coroners_assistant_morgue" and figures.has(actor):
 		model = figures[actor] as Node3D
-	if is_instance_valid(model): CoronerModel.set_conversing(model, conversing)
+	if not is_instance_valid(model): return
+	CoronersAssistantModel.set_conversing(model, conversing)
 
 func _set_steward_conversing(g: Node, conversing: bool) -> void:
 	if g != null and is_instance_valid(g) and is_instance_valid(g.estate) and g.estate.get("steward_actor") != null:
@@ -126,7 +128,12 @@ func allowed(g: Node, actor: String) -> bool:
 	if actor == "barman": return g.state.world == "lounge" and g.state.visited.has("almy")
 	if actor in ["odell", "assistant"]: return g.state.world == "estate" and not g.state.estate_complete
 	if actor == "crew": return g.state.world == "estate" and g.state.lounge_exited
-	if actor == "old_woman": return g.state.world == "town" and not g.state.evidence.has("old_woman")
+	if actor == "old_woman":
+		return g.state.world == "town" and not g.state.evidence.has("old_woman") and bool(g.state.intake_done) and (
+			g.state.evidence.has("behan_name") or
+			g.state.evidence.has("quay_inquiry") or
+			("dialogue_state" in g.state and g.state.dialogue_state.topic_done("local_historian", "ship_origin"))
+		)
 	return definition(actor).location == g.state.world
 
 func _slot(g: Node, actor: String) -> Array:

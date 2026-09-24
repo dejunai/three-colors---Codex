@@ -150,11 +150,10 @@ func _street() -> void:
 	for y in [0.6,1.1,1.6]: box(self,Vector3(-20,y,11.83),Vector3(2.6,0.16,0.1),"241f1a")
 	var old_woman = CastModel.create(CastModel.LOWER_WOMAN)
 	old_woman.position = Vector3(-17.5, 0, 8.8)
+	old_woman.rotation.y = -2.0
+	old_woman.visible = false
 	add_child(old_woman)
 	departing_woman = old_woman
-	old_woman.rotation.y = -2.0
-	target("old_woman","Speak with the woman outside the shop",Vector3(-17.5,0,8.8))
-	register_actor("old_woman", old_woman, "old_woman", func(st): return not st.evidence.has("old_woman"))
 	for x in [-28,28]: tree(Vector3(x,0,20))
 	# District portals have been replaced by physical streets. Interior doors
 	# retain their stable route IDs in the shared exterior.
@@ -221,6 +220,7 @@ func _precinct() -> void:
 	_chair(Vector3(-5,0,2.2))
 	for z in [0,2,4]: _chair(Vector3(7,0,z),PI/2)
 	box(self,Vector3(6.8,2.3,7.78),Vector3(2.2,1.5,0.1),"374d37")
+	target("intake_clerk","Speak with the intake clerk",Vector3(0.4,0,-2.5))
 	target("intake","Submit the estate report",Vector3(0,0,-1.3))
 	target("supplement","File additional observations",Vector3(-5,0,2.1))
 	lettering("SURVEYS",Vector3(7,3.25,-4.85),28)
@@ -332,7 +332,26 @@ func update_board(evidence:Array) -> void:
 		var card=get_node_or_null("BoardCard"+str(i))
 		if card: card.visible=i<evidence.size()
 
+func sync_actors(state_obj: RefCounted) -> void:
+	super.sync_actors(state_obj)
+	if state_obj == null: return
+	if state_obj.evidence.has("old_woman"):
+		dismiss_old_woman()
+		return
+	var ready: bool = bool(state_obj.get("intake_done")) and (
+		state_obj.evidence.has("behan_name") or
+		state_obj.evidence.has("quay_inquiry") or
+		("dialogue_state" in state_obj and state_obj.dialogue_state.topic_done("local_historian", "ship_origin"))
+	)
+	if is_instance_valid(departing_woman):
+		departing_woman.visible = ready
+	if ready:
+		target("old_woman", "Speak with the woman outside the shop", Vector3(-17.5, 0, 8.8))
+	else:
+		points.erase("old_woman")
+
 func dismiss_old_woman() -> void:
+	points.erase("old_woman")
 	dismiss_actor("old_woman")
 	if is_instance_valid(departing_woman):
 		departing_woman.hide()
@@ -365,11 +384,11 @@ func _smoking_lounge() -> void:
 	for y in [0.7,1.55,2.4]:
 		var board=box(self,Vector3(-8.62,y,-3.0),Vector3(0.1,0.22,2.0),"5b5f52")
 		if y > 2.0: board.rotation.z=0.11
+	target("pantry_door","Examine the boarded pantry door",Vector3(-7.4,0,-3.0))
 
-# The old pantry door exists in the wall from the start; the way to it is not
-# offered until the steward has named it. Portal sync only ever erases a hotspot,
-# so the chapter re-offers it here whenever the lounge's conversation closes.
+# The old pantry door exists in the wall from the start. Before the steward
+# names it, curious players can examine the boarded door. Once named, it can be opened.
 func sync_pantry(open:bool) -> void:
 	if location != "lounge": return
 	if open: target("pantry_door","Open the boarded pantry door",Vector3(-7.4,0,-3.0))
-	else: points.erase("pantry_door")
+	else: target("pantry_door","Examine the boarded pantry door",Vector3(-7.4,0,-3.0))

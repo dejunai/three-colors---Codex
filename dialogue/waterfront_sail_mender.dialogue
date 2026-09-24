@@ -5,19 +5,21 @@ SCHEDULE: morning=waterfront_mideast_quay, midday=waterfront_west_quay, evening=
 TOPIC: default
   GATE: NOT topic_done(waterfront_sail_mender, default)
   TAG: waterfront_sail_mender_greeting
+  [He drives a triangular needle through stiff bolt-rope canvas, the copper plate of a heavy sailmaker's palm gleaming dull against his calloused hand. He never glances out past the breakwater.]
   VOICE: violin_neutral_short_v2
-  THE SAIL MENDER: "A clean tear is easy. Sailors never bring me a clean tear."
+  ENOCH VANE: "A clean tear is easy. Sailors never bring me a clean tear.\n\nKeep your eyes on the stitch, Corwin. A man who looks up from heavy canvas loses his thumb."
 
 TOPIC: default
   GATE: topic_done(waterfront_sail_mender, default)
   WEIGHT: 2
   TAG: waterfront_sail_mender_repeat_canvas
+  [He bears down on the seam with the copper heel of his leather palm.]
   VOICE: violin_weary_short_v1
-  THE SAIL MENDER: "Wet canvas fights the needle all afternoon."
+  ENOCH VANE: "Wet canvas fights the needle all afternoon. Keep out of my light."
 
 TOPIC: default
   GATE: topic_done(waterfront_sail_mender, default)
   WEIGHT: 1
   TAG: waterfront_sail_mender_repeat_nothing
   VOICE: violin_dismissive_short_v2
-  THE SAIL MENDER: "I mend cloth, Officer, not stories."
+  ENOCH VANE: "I mend cloth, Walter, not stories. The water has enough eyes on it already."

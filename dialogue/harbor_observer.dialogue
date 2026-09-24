@@ -10,14 +10,14 @@ TOPIC: default
   [The laborer chips mortar from a sea-wall block with a cold chisel, his ring flashing dull umber in the salt air.]
   [He does not look up when Walter stops beside the staging.]
   VOICE: trombone_neutral_medium_v1
-  MASON: "High water comes at quarter past five.\nIf you're going to stand on that timber in wool, mind the moss."
+  MANUEL SILVA: "High water comes at quarter past five.\nIf you're going to stand on that timber in wool, mind the moss."
 
 TOPIC: default
   GATE: NOT topic_done(harbor_observer, default)
   TAG: observer_default_badge
   [The laborer chips mortar from a sea-wall block with a cold chisel, his ring flashing dull umber in the salt air.]
   VOICE: trombone_neutral_medium_v1
-  MASON: "High water comes at quarter past five, Officer.\nIf you're going to stand on that timber, watch your step."
+  MANUEL SILVA: "High water comes at quarter past five, Officer.\nIf you're going to stand on that timber, watch your step."
 
 TOPIC: default
   GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)) AND coat = plain
@@ -25,21 +25,21 @@ TOPIC: default
   WEIGHT: 3
   [The chisel strikes the granite seam with a flat, dull ring.]
   VOICE: trombone_neutral_short_v1
-  MASON: "High water comes at quarter past five. Watch your step on the timber."
+  MANUEL SILVA: "High water comes at quarter past five. Watch your step on the timber."
 
 TOPIC: default
   GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)) AND coat = plain
   TAG: observer_repeat_plain_stone
   WEIGHT: 2
   VOICE: trombone_neutral_medium_v2
-  MASON: "A sensible man doesn't ask twice about stone he doesn't own."
+  MANUEL SILVA: "A sensible man doesn't ask twice about stone he doesn't own."
 
 TOPIC: default
   GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)) AND coat != plain
   TAG: observer_repeat_badge_timber
   WEIGHT: 3
   VOICE: trombone_bureaucratic_short_v2
-  MASON: "A brass badge won't stop the surge from taking the staging out from under you, Officer."
+  MANUEL SILVA: "A brass badge won't stop the surge from taking the staging out from under you, Officer."
 
 TOPIC: default
   GATE: visit_count(harbor_observer) >= 2 AND NOT (topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring)) AND coat != plain
@@ -47,7 +47,7 @@ TOPIC: default
   WEIGHT: 2
   [He chips mortar with deliberate force, sending gray dust across Walter's boots.]
   VOICE: trombone_dismissive_short_v2
-  MASON: "The precinct doesn't pay wharf repair. Stand back."
+  MANUEL SILVA: "The precinct doesn't pay wharf repair. Stand back."
 
 TOPIC: default
   GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring) AND coat = plain
@@ -55,28 +55,28 @@ TOPIC: default
   WEIGHT: 3
   [He chips mortar with steady, measured strokes, his anchor ring gleaming dull umber.]
   VOICE: trombone_haunting_medium_v1
-  MASON: "We leave the mud where it settled, Walter. You should do the same."
+  MANUEL SILVA: "We leave the mud where it settled, Walter. You should do the same."
 
 TOPIC: default
   GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring) AND coat = plain
   TAG: observer_exhausted_plain_tide
   WEIGHT: 2
   VOICE: trombone_neutral_short_v2
-  MASON: "The tide is making. Go home."
+  MANUEL SILVA: "The tide is making. Go home."
 
 TOPIC: default
   GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring) AND coat != plain
   TAG: observer_exhausted_badge_quarry
   WEIGHT: 3
   VOICE: trombone_dismissive_short_v1
-  MASON: "The town has no business with drowned granite, Officer. Take the uniform up the hill."
+  MANUEL SILVA: "The town has no business with drowned granite, Officer. Take the uniform up the hill."
 
 TOPIC: default
   GATE: topic_done(harbor_observer, estate_grounds_crew) AND topic_done(harbor_observer, drowned_island) AND topic_done(harbor_observer, the_ring) AND coat != plain
   TAG: observer_exhausted_badge_surge
   WEIGHT: 2
   VOICE: trombone_cautious_short_v1
-  MASON: "The surge is in the slipway. Move along, Corwin."
+  MANUEL SILVA: "The surge is in the slipway. Move along, Corwin."
 
 TOPIC: estate_grounds_crew
   GATE: always
@@ -85,14 +85,14 @@ TOPIC: estate_grounds_crew
   TIME: 7
   WALTER CORWIN: "The men who tend the hedges near the kitchen wing at the estate.\nThey come from down here."
   VOICE: trombone_neutral_short_v2
-  MASON: "Harbor people work where there's coin."
+  MANUEL SILVA: "Harbor people work where there's coin."
   WALTER CORWIN: "None of them would go within thirty feet of the pantry door."
   [The chisel pauses on a granite edge, perfectly balanced.]
   VOICE: trombone_neutral_medium_v1
-  MASON: "A sensible man doesn't put his hand where the stone is soft."
+  MANUEL SILVA: "A sensible man doesn't put his hand where the stone is soft."
   WALTER CORWIN: "The stone wasn't soft. It was dry granite."
   VOICE: trombone_haunting_medium_v1
-  MASON: "Granite rots too, if you give it reasons.\nWe mend what holds boats. What sits beneath cellars isn't our trade."
+  MANUEL SILVA: "Granite rots too, if you give it reasons.\nWe mend what holds boats. What sits beneath cellars isn't our trade."
   NOTEBOOK: observer_pantry_refusal | "Harbor mason on grounds crew avoiding pantry: 'A sensible man doesn't put his hand where the stone is soft.'"
   EVIDENCE: observer_stone_discipline
 
@@ -103,13 +103,13 @@ TOPIC: drowned_island
   TIME: 7
   WALTER CORWIN: "Nobody takes dories out to the old whaling ruins anymore."
   VOICE: trombone_dismissive_short_v1
-  MASON: "Nothing out there to catch."
+  MANUEL SILVA: "Nothing out there to catch."
   WALTER CORWIN: "The try-works buildings are still standing above the mud."
   VOICE: trombone_neutral_short_v2
-  MASON: "Standing isn't the same as welcoming."
+  MANUEL SILVA: "Standing isn't the same as welcoming."
   [He resumes chipping, steady, flat strikes without anger or haste.]
   VOICE: trombone_haunting_long_v2
-  MASON: "Our grandfathers learned in a single night what looking at that water costs.\nThose who came back couldn't tell the same story twice.\nThe insurance paid the big houses on the hill; the sea kept the men.\nWe leave the mud where it settled."
+  MANUEL SILVA: "Our grandfathers learned in a single night what looking at that water costs.\nThose who came back couldn't tell the same story twice.\nThe insurance paid the big houses on the hill; the sea kept the men.\nWe leave the mud where it settled."
   NOTEBOOK: observer_island_1 | "Mason on the drowned island: 'Our grandfathers learned in a single night what looking at that water costs... We leave the mud where it settled.'"
   EVIDENCE: island_memory
 
@@ -120,10 +120,10 @@ TOPIC: the_ring
   WALTER CORWIN: "That copper band on your hand. The observers on the water have worn those colored links since long before I was born."
   [The mason turns his hand slightly, the reddish-brown metal familiar against the grey stone, worn smooth by decades of granite work.]
   VOICE: trombone_neutral_medium_v1
-  MASON: "An anchor link beaten flat. Worn since my father's time, and his father before him."
+  MANUEL SILVA: "An anchor link beaten flat. Worn since my father's time, and his father before him."
   WALTER CORWIN: "The old people along the slipway say the observers wear them for a purpose."
   VOICE: trombone_bureaucratic_long_v2
-  MASON: "To remind the eye what belongs to the daylight.\n\nYou ask a great many questions, Officer.\nYou should ask yourself sometime whether you're trying to solve this town or just trying to become the next thing it forgets."
+  MANUEL SILVA: "To remind the eye what belongs to the daylight.\n\nYou ask a great many questions, Officer.\nYou should ask yourself sometime whether you're trying to solve this town or just trying to become the next thing it forgets."
   NOTEBOOK: observer_ring_1 | "The harbor observers have worn colored anchor links for generations to 'remind the eye what belongs to daylight.' Warned Walter against asking too far."
   EVIDENCE: observer_color_tell
 

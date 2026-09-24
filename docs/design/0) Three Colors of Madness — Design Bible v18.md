@@ -118,6 +118,10 @@ These are not style notes. They are load-bearing. Breaking one to serve a single
 
 A coastal New England town whose founding story it tells about itself, and whose actual founding story, are two different things. Roughly a century before Chapter One, a whaling fleet went out and never fully came home. The survivors who did return could never tell the same account of what happened twice. Much insurance money nonetheless found its way into a small number of hands, and those hands became the town's ruling families.
 
+Widow's Bight sits on the Massachusetts coast north of Boston, in Miskatonic County. The county registrar's office is at the county seat, and the local paper is the Miskatonic Gazette. New Bedford, where Ekon's family keeps its house, lies a hundred-odd miles down the coast, past Boston. Travelers from Boston reach the town by packet north.
+
+**Naming rule.** This trilogy is cosmic horror adjacent to Lovecraft's lore, not set inside it. Only two proper nouns are borrowed from that lore: **Pickman** (the street) and **Miskatonic** (the county and its institutions). No other Lovecraft proper noun appears anywhere: no place, deity, book, family, or creature name. That applies to the game, this Bible, the TDD, the stories, the authoring files, and any forward-facing material. The Old Gods stay unnamed, and the entity has no name. Nothing in the game borrows the lore's creature iconography either. This is Design Law 8's refusal of genre shorthand, applied to vocabulary as well as image. A borrowed name brings in exactly the tentacle-and-shock expectations this game exists to deny.
+
 The town has never had to examine any of this. That insularity is not a personality quirk applied to individual characters — it is the town's baseline condition, and it is why Walter Corwin, its beat cop, has no mental category for what he encounters. He is a native product of a place that has never once been asked to look past its own coastline.
 
 ## What the Mud Took

@@ -1,0 +1,26 @@
+# Precinct intake clerk: processing the incoming estate report.
+NPC: intake_clerk
+LOCATION: precinct
+
+TOPIC: default
+  GATE: NOT topic_done(intake_clerk, default)
+  TAG: intake_clerk_default
+  VOICE: trombone_bureaucratic_medium_v1
+  THE INTAKE CLERK: "Ophion Club. Six members. Apparent accident.\n\nThe captain's heading, Officer.\nYour report goes underneath."
+  WALTER CORWIN: "Eight deaths.\nCause unestablished."
+  VOICE: trombone_bureaucratic_medium_v2
+  THE INTAKE CLERK: "Then that is what your report will say.\n\nI'm receiving it, not deciding it. Set your sheet on the intake tray at the counter when you're ready to file."
+
+TOPIC: default
+  GATE: topic_done(intake_clerk, default) AND NOT intake_done
+  TAG: intake_clerk_unfiled
+  WEIGHT: 1
+  VOICE: trombone_bureaucratic_short_v1
+  THE INTAKE CLERK: "Set your sheet on the intake tray, Officer. I can't stamp what's still in your notebook."
+
+TOPIC: default
+  GATE: intake_done
+  TAG: intake_clerk_filed
+  WEIGHT: 1
+  VOICE: trombone_neutral_medium_v1
+  THE INTAKE CLERK: "Received as written. If you have more observations from the street, file a supplement at the side desk."

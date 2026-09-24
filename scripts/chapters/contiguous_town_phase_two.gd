@@ -79,14 +79,16 @@ static func build_waterfront_approach(g: Node) -> void:
 		rbody.add_child(rcol)
 	g.target("route_waterfront", "Continue downhill to the waterfront", Vector3(100, -5.0, -31))
 	g.routes["route_waterfront"] = ["waterfront", Vector3(0, 0.1, 23), 0.0]
-	# A low, unreachable preview keeps the abandoned island visible throughout
-	# the descent without turning it into a destination.
+	# A low, unreachable preview of the buried-whole whaling station (Bible v18).
 	var station = Node3D.new()
 	station.name = "DistantWhalingStation"
 	root.add_child(station)
-	DistrictSurfaces.apply(g.box(station, Vector3(103, -6.8, -128), Vector3(30, 2.0, 13), "626b62"), "algae_stone", "626b62")
-	DistrictSurfaces.apply(g.box(station, Vector3(102, -4.8, -128), Vector3(14, 4.2, 6), "46534d"), "tar_wood", "46534d")
-	DistrictSurfaces.apply(g.box(station, Vector3(95, -2.7, -129), Vector3(1.8, 8.0, 1.8), "3d4b45"), "soot_brick", "3d4b45")
+	DistrictSurfaces.apply(g.cylinder(station, Vector3(108, -4.7, -132), 16.0, 3.6, "4b544b", 9.5), "algae_stone", "4b544b")
+	DistrictSurfaces.apply(g.cylinder(station, Vector3(102, -4.1, -133), 10.5, 3.2, "444c44", 5.5), "algae_stone", "444c44")
+	DistrictSurfaces.apply(g.cylinder(station, Vector3(116, -4.4, -131), 9.5, 3.0, "485048", 5.0), "algae_stone", "485048")
+	DistrictSurfaces.apply(g.box(station, Vector3(101.5, -2.1, -133), Vector3(1.7, 2.4, 1.7), "384440"), "rust_metal", "384440")
+	DistrictSurfaces.apply(g.box(station, Vector3(109.0, -2.4, -131.5), Vector3(11.0, 0.45, 1.7), "2c3933"), "slate", "2c3933")
+	DistrictSurfaces.apply(g.box(station, Vector3(114.5, -2.7, -128.5), Vector3(5.2, 1.3, 0.45), "36423c"), "tar_wood", "36423c")
 
 static func build_waterfront(g: Node) -> void:
 	var root = g.get_node("ContiguousTownPhaseTwo")

@@ -1,7 +1,8 @@
 extends RefCounted
 
 const MODEL_SCENE: PackedScene = preload("res://assets/models/father_behan.glb")
-# Authored rest height is 1.70m; Father Behan's canonical height is 1.93m (eye level 1.78m)
+# Tuned against Walter: 1.135 scale presents a tall, slender parish priest standing
+# just under Walter's stature while preserving a dignified, measured presence.
 const SCALE_FACTOR: float = 1.135
 
 static func create() -> Node3D:

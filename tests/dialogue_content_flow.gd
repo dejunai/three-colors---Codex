@@ -142,9 +142,11 @@ func _run() -> void:
 	_play(Runtime.play_topic(defs.almy, dstate, "almy_trust"), state, dstate)
 	assert(dstate.facts.size() == facts_after_first_trust, "replaying a self-guard-free topic must not duplicate its recorded fact")
 
-	# --- old woman: one-shot, gated on evidence(naomi) (known via almy above) plus the scene's own evidence() ---
+	# --- old woman: one-shot, gated on intake_done + harbor bridge (behan_name/ship_origin/quay_inquiry) ---
+	state.intake_done = true
+	state.discover("behan_name")
 	var woman_menu_before = Runtime.menu(defs.old_woman, ctx)
-	assert(woman_menu_before.default_topic != null, "the scene must be available once naomi is known, before it has ever been recorded")
+	assert(woman_menu_before.default_topic != null, "the scene must be available once harbor bridge is known, before it has ever been recorded")
 	_play(Runtime.enter(defs.old_woman, ctx, dstate), state, dstate)
 	state.discover("old_woman")
 	var woman_menu_after = Runtime.menu(defs.old_woman, ctx)

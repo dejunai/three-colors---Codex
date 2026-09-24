@@ -18,19 +18,41 @@ func run(g:Node) -> void:
 	g.state.evidence.assign(["eight", "naomi", "wounds", "gas"])
 	g.state.discover("knife")
 
-	# 1. Test Forced Spill on Descent
+	# 1. Test Descent and Retreat Losses
 	g._travel("tunnel", Vector3(0, 0.1, 7), 0, false)
 	await settle(g)
 	assert(g.state.flask == 3, "Flask is intact on entry")
 	assert(not g.state.flask_spilled, "Flask is not yet spilled")
+	assert(not g.state.dialogue_state.flag("badge_lost"), "Badge is not yet lost")
 	
-	# Interact with tunnel_descent
+	# Interact with tunnel_descent (first time: spur observation)
 	g._interact("tunnel_descent")
 	finish_cards(g)
-	assert(g.state.flask_spilled, "Descent past foundation must trigger forced spill")
+	assert(g.state.flask == 3, "Flask remains intact after observing the spur")
+	assert(not g.state.flask_spilled, "Flask not spilled after observing the spur")
+	assert(not g.state.dialogue_state.flag("badge_lost"), "Badge intact after spur")
+
+	# Step back keeps effects intact
+	g._interact("tunnel_descent")
+	for button in g.content.find_children("*", "Button", true, false):
+		if button.text.begins_with("Step back"):
+			button.pressed.emit()
+			break
+	assert(g.state.flask == 3 and not g.state.flask_spilled, "Flask intact after stepping back")
+	assert(not g.state.dialogue_state.flag("badge_lost"), "Badge intact after stepping back")
+
+	# Go on into the dark triggers retreat fall where flask, badge, whistle are lost together
+	g._interact("tunnel_descent")
+	for button in g.content.find_children("*", "Button", true, false):
+		if button.text.begins_with("Go on into the dark"):
+			button.pressed.emit()
+			break
+	finish_cards(g)
+	assert(g.state.flask_spilled, "Retreat fall triggers flask loss")
 	assert(g.state.flask == 0, "Spilled flask must be empty")
 	assert(g.state.flask_spill_amount == 3, "Exact amount hoarded (3 pours) must be recorded")
 	assert(g.state.evidence.has("flask_spill"), "Flask spill must be recorded in evidence")
+	assert(g.state.dialogue_state.flag("badge_lost"), "Badge must be lost on retreat")
 
 	# 2. Test Personal Effects & Flask Inspection
 	g._case_file()

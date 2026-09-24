@@ -19,8 +19,12 @@ extends RefCounted
 #     GATE: <expression>          ("never" / "always" / a boolean expression)
 #     LABEL: "Try the service entrance"  (optional; otherwise object_id.capitalize())
 #     TAG: estate_service_entrance        (optional; extra completion/timing key)
-#     TIME: 5                     (optional override; omitted defaults to 3 minutes,
-#                                   charged once on first completion)
+#     TIME: 5                     (optional override; explicit TIME overrides automatic travel
+#                                   time and is charged on every completed GO. Omitted TIME
+#                                   delegates to _travel(), which charges 30 minutes when origin
+#                                   and destination belong to different hubs and zero within the
+#                                   same hub; nosave suppresses automatic charging unless elapsed
+#                                   is also present)
 #     [A heavy oak door set into the stone of the kitchen wing.]
 #     WALTER CORWIN: "Hours before dawn. Nobody inside is answering."
 #

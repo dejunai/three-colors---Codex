@@ -1,15 +1,15 @@
 # Bible and TDD inconsistencies with the live codebase
 
-Audited 2026-09-19, re-checked 2026-09-20 against repository HEAD, refreshed 2026-09-23 against **TDD v45**. This is the separate discrepancy register requested during the documentation sync. The Design Bible and TDD were read but intentionally not edited in this register's original pass, and were again not edited on 2026-09-23 (this file only was refreshed; see the dated pass at the bottom). The Bible remains the narrative/design authority; the TDD is expected to describe the implementation and should be revised where its concrete claims have gone stale. Current TDD on disk: `docs/design/07) Three Colors of Madness — TDD v45.md`.
+Audited 2026-09-19, re-checked 2026-09-20 against repository HEAD, refreshed 2026-09-23 against **TDD v45**, and again the same day against **TDD v46 / Design Bible v18**. This is the separate discrepancy register requested during the documentation sync. The Design Bible and TDD were read but intentionally not edited in this register's original pass, and were again not edited on 2026-09-23 (this file only was refreshed; see the dated pass at the bottom). The Bible remains the narrative/design authority; the TDD is expected to describe the implementation and should be revised where its concrete claims have gone stale. Current authorities on disk: `docs/design/0) Three Colors of Madness — Design Bible v18.md` and `docs/design/07) Three Colors of Madness — TDD v46.md`.
 
 ## Verified live baseline
 
 - `CaseState.VERSION` is 11 and accepts save versions 1–11.
-- `dialogue/` has 72 root files: 71 concrete NPC definitions plus one template. `tests/dialogue_catalog_flow.gd` passes with **71 NPCs and 449 nonempty runtime topics**. Raw source has 465 `TOPIC:` headers because documentation-only blocks are excluded.
-- `tests/instrument_voice_flow.gd` passes with the 144-cue manifest and **723 NPC lines**, including default-cue fallback.
+- `dialogue/` has 72 root files: 71 concrete NPC definitions plus one template. `tests/dialogue_catalog_flow.gd` reported **71 NPCs and 458 nonempty runtime topics** as of 2026-09-23; re-run it rather than trusting this figure.
+- `tests/instrument_voice_flow.gd` reported the 144-cue manifest and **733 NPC lines** as of 2026-09-23; re-run it rather than trusting this figure.
 - `objects/` has three live content files plus one template; all eleven scoped hotspots remain migrated.
 - `portals/` has five live content files plus one template; ten live portal ids remain migrated.
-- The maintained 12-suite aggregate (`python tests/run_all_qa.py`) is clean in `qa_run_log.txt`.
+- The maintained aggregate (`python tests/run_all_qa.py`) has **36 suites** as of 2026-09-23 (count the `tests = [...]` entries); all passed on the last full run that day.
 - Focused checks run during this audit: dialogue catalog PASS; placement audit PASS (62 living NPCs, zero coordinate collisions across morning/noon/evening/night); speakeasy PASS; instrument voices PASS.
 - Personal Effects now uses a state-driven paper doll for coat, badge, notebook, revolver, flask and boots. Its compact closed-watch icon opens the live analogue face, with exact text retained for accessibility, a 6 AM/6 PM sun–moon aperture, and a midnight ceiling. F3 toggles the development Shift pace between 4.0 and 10.5 for the current process.
 - Telemetry accepts eight event types and dual-writes individual events to D1 plus raw request batches to R2. `watch_checked` is not one of those event types.
@@ -90,3 +90,16 @@ Scope of this pass: refresh this register against the current TDD on disk (**v45
 - **Item 3 (`watch_checked`) — RESOLVED.** Direct read of TDD v45 Part Four ("Playthrough telemetry") confirms: "The pocket watch does not currently emit a distinct telemetry event." Spot-check of `docs/LOG_PLAYER_ASK.md` (allowlist omits `watch_checked`; proposed event remains unimplemented) and this file's own verified baseline ("`watch_checked` is not one of those event types") already agreed with code/Worker. The former inconsistency was TDD-v44-and-earlier wording that credited the event; living docs did **not** disagree with source, so they were left untouched.
 - **Design Bible v17 scope gaps (items 1–6 under that heading):** still open as declared scope gaps, not TDD wording bugs. Unchanged this pass.
 - **Not invented:** no new inconsistency rows were added. Model-integration / Odell-scale / aggregate-suite history above remains provenance; this pass did not re-audit those against v45 beyond confirming the watch telemetry claim that was the open TDD wording gap.
+
+## 2026-09-23 pass (second): TDD v46 and Design Bible v18
+
+Scope: point this register at the current authorities (**Design Bible v18** and **TDD v46**, both in `docs/design/`) and refresh the baseline above. Both documents were revised at the author's request in this pass. The Bible v17 and TDD v45 files are superseded.
+
+- **Baseline refreshed:** the aggregate is 36 suites, the catalog 458 topics, the voice lines 733. The stale "12-suite / 449 / 723" figures above were replaced, and each now names the command that re-derives it.
+- **Bible v18 canon now tracked as build work, not wording drift:** TDD v46 Part Four lists every concrete build change v18 implies. That includes the Ophion meaning leaking through `local_historian` `dr_fenn_library`, the flask being lost on the descent instead of the retreat, unnamed Observers, the old woman's gating, the sixth-man audit, and what the offshore scenery shows. This register does not duplicate that list. Check TDD v46 Part Four for status.
+- **Scope gap 3 (Observer continuity) updated:** v18 names Abel Tavares as Chapter One's ring-wearing estate-crew member and requires every Observer to be named. The build's Observer speakers are still role-only (`THE GROUNDSKEEPER`, `THE GARDENER`, the harbor laborer).
+- **Scope gap 4 (presentation baseline), partially narrowed:** the glass-break order in `chapter_one_break.gd::_play()` (frame widens and color returns, cough twice, silence, glass) matches v18's fixed-beat rule exactly.
+- **New drift found:** `portal_lang.gd`'s header comment and `docs/PORTAL_AUTHORING.md` still say an omitted portal `TIME:` defaults to 3 minutes. Since the per-trip charging fix (HCL (44)), an omitted `TIME:` parses empty and falls through to `_travel()`'s automatic path. Not edited here; logged in TDD v46 Part Six for Codex.
+- **New drift found:** repo-root `narrative_threads.txt` still shows self-referencing `NOT topic_done(npc, this_topic)` guards that the live `.dialogue` corpus no longer contains (a script check found zero). Logged in TDD v46 Part Six.
+- **Character heights (resolved by the author):** scale is settled and coherent in play. TDD v46 and `docs/ARCHITECTURE.md` now record scale factors and relative stature, not absolute heights. The `.gd` header comments still quote heights from earlier scale passes; rewriting them is in `docs/qa/CODEX_PROMPT_bible_v18_alignment.md` item 10.
+- **Also fixed in `docs/ARCHITECTURE.md`:** it said the morgue coroner's assistant "is not yet given this treatment." Live `chapter_one_dialogue.gd` renders `coroners_assistant_morgue` with `CoronerModel.create()`, as TDD v46 states.

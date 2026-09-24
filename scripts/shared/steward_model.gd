@@ -1,8 +1,8 @@
 extends RefCounted
 
 const MODEL_SCENE: PackedScene = preload("res://assets/models/steward.glb")
-# Base authored height is 1.70m; scaled to 1.15x (~1.95m), placing the club steward
-# in an authentic, dignified adult stature behind the lounge counter.
+# Tuned against Walter and the smoking lounge bar: 1.15 scale gives the club steward
+# a dignified adult stature standing behind the counter, slightly below Walter in height.
 const SCALE_FACTOR: float = 1.15
 
 static func create() -> Node3D:

@@ -1,5 +1,5 @@
 # Haberdasher & Tailor, Business District.
-# Material evidence: five cut jackets, five recorded men, and a phantom sixth.
+# Material evidence: six cut jackets, five recorded men, and an unnamed sixth.
 NPC: tailor
 LOCATION: business_district
 SCHEDULE: morning=haberdasher, midday=haberdasher, evening=haberdasher, night=closed
@@ -66,15 +66,20 @@ TOPIC: cut_jackets
   TIME: 7
   WALTER CORWIN: "Six men died in identical broadcloth evening coats. Did you cut them?"
   VOICE: trombone_bureaucratic_medium_v1
-  MR. KREBS: "I cut five, Officer. Italian wool, satin lapels, horn buttons imported through Boston."
-  WALTER CORWIN: "Five?"
+  MR. KREBS: "I cut all six, Officer. Italian wool, satin lapels, horn buttons imported through Boston."
+  WALTER CORWIN: "All six?"
   VOICE: trombone_neutral_long_v1
   MR. KREBS: "The Judge, Dr. Fenn, Mr. Corliss, Mr. Pruitt, and poor Otto Kessler.\nKessler had to be let out across the shoulder — butcher's bulk, you know. Not a gentleman's posture."
-  NOTEBOOK: tailor_five_1 | "Mr. Krebs tailored five identical club evening coats: Wexford, Fenn, Corliss, Pruitt, and Kessler."
+  WALTER CORWIN: "And the sixth?"
+  VOICE: trombone_neutral_medium_v2
+  MR. KREBS: "Paid in cash on the counter. The measurements were brought on a scrap of paper — no name written down, no fitting in person. Just the numbers and the bills."
+  NOTEBOOK: tailor_five_1 | "Mr. Krebs tailored all six club coats: five fitted in person (Wexford, Fenn, Corliss, Pruitt, Kessler), the sixth cut to paper measurements and paid in cash with no name given."
   EVIDENCE: five_tailored_coats
 
 TOPIC: the_sixth_jacket
-# PERMANENT EXCLUSION — do not gate this live, see Design Law 5
+# PERMANENT EXCLUSION — do not gate this live, see Design Law 5 and Bible v18:
+# The sixth man's identity is non-discoverable in Chapter 1. Krebs cut all six coats,
+# but the sixth was paid in cash to paper measurements with no name given.
   GATE: never
   #evidence(five_tailored_coats)
   TAG: tailor_sixth_jacket

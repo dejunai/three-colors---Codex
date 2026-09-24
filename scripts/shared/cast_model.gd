@@ -19,9 +19,8 @@ const SCENES: Dictionary = {
 	OBSERVER_WOMAN: preload("res://assets/models/cast_observer_woman.glb"),
 }
 
-# Authored base height is ~1.90m; at 1.05x they stand at ~1.99m, fitting naturally
-# alongside Walter (1.30 ~2.21m), Odell (1.30 ~2.34m), Coroner (1.18 ~2.01m),
-# Steward (1.15 ~1.95m), and Boy (1.05 ~1.78m).
+# Tuned against Walter and Odell: at 1.05 scale, townsfolk archetypes stand at natural
+# civilian stature below Walter and Odell, while remaining clearly taller than the gatekeeper boy.
 const SCALE_FACTOR: float = 1.05
 
 static func create(archetype: String) -> Node3D:

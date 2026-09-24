@@ -158,13 +158,28 @@ func build(w: Node3D) -> void:
 	build_hero_props(w, rendered)
 	_legacy_visuals.visible = false
 	_legacy_visuals = null
-	# Low island silhouette; mud covers the base of the abandoned works.
+	# Offshore whaling station buried whole beneath a single unnatural mud mass (Bible v18).
+	# Scenery remains distant, unreachable, and provisional for Chapter Two.
 	var island=Node3D.new()
 	island.name="OffshoreWhalingStation"
 	w.add_child(island)
-	DistrictSurfaces.apply(w.box(island,Vector3(9,-0.3,-72),Vector3(28,2.2,13),"626b62"),"algae_stone","626b62")
-	DistrictSurfaces.apply(w.box(island,Vector3(8,1.25,-72),Vector3(13,3.8,6),"4a5751"),"tar_wood","4a5751")
-	DistrictSurfaces.apply(w.box(island,Vector3(8,3.25,-72),Vector3(14,0.5,7),"364941"),"slate","364941")
-	DistrictSurfaces.apply(w.box(island,Vector3(1,3.5,-73),Vector3(1.7,8,1.7),"48574f"),"rust_metal","48574f")
-	for spec in [[3,-68,8],[12,-67,12],[20,-71,9]]:
-		DistrictSurfaces.apply(w.box(island,Vector3(spec[0],0.8,spec[1]),Vector3(spec[2],2.8,7),"777563"),"tar_wood","777563")
+	# Unnatural continuous mud mass swallowing the station footprint (sloping mounds and banks)
+	DistrictSurfaces.apply(w.cylinder(island,Vector3(8,0.3,-72),16.0,3.6,"4b544b",9.5),"algae_stone","4b544b")
+	var m_west = DistrictSurfaces.apply(w.cylinder(island,Vector3(2,0.9,-73),10.5,3.2,"444c44",5.5),"algae_stone","444c44")
+	m_west.rotation.z = 0.04
+	var m_east = DistrictSurfaces.apply(w.cylinder(island,Vector3(16,0.6,-71),9.5,3.0,"485048",5.0),"algae_stone","485048")
+	m_east.rotation.z = -0.03
+	var m_far_west = DistrictSurfaces.apply(w.cylinder(island,Vector3(-4,0.3,-73),8.0,2.6,"444c44",3.5),"algae_stone","444c44")
+	# Heavy mud heave connecting the mounds into a single continuous mass
+	var m_fill = DistrictSurfaces.apply(w.box(island,Vector3(7,1.0,-72),Vector3(22,2.6,15),"485048"),"algae_stone","485048")
+	m_fill.rotation.z = 0.02
+	# Limited upper fragments protruding from the mud
+	# 1. Truncated chimney tip and collar protruding through the west mud bank
+	DistrictSurfaces.apply(w.box(island,Vector3(1.5,2.9,-73),Vector3(1.7,2.4,1.7),"384440"),"rust_metal","384440")
+	DistrictSurfaces.apply(w.box(island,Vector3(1.5,4.0,-73),Vector3(2.0,0.22,2.0),"323c38"),"rust_metal","323c38")
+	# 2. Narrow slate roof ridge emerging along the crest of the mud heave
+	var roof_ridge = DistrictSurfaces.apply(w.box(island,Vector3(9.0,2.6,-71.5),Vector3(11.0,0.45,1.7),"2c3933"),"slate","2c3933")
+	roof_ridge.rotation.z = -0.025
+	# 3. One partial upper wall section protruding from the south-east flank
+	var wall_frag = DistrictSurfaces.apply(w.box(island,Vector3(14.5,2.3,-68.5),Vector3(5.2,1.3,0.45),"36423c"),"tar_wood","36423c")
+	wall_frag.rotation.y = 0.07
