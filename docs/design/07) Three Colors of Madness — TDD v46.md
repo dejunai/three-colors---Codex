@@ -1,6 +1,6 @@
 # THREE COLORS OF MADNESS
 
-## Technical Design Document — v46 (revised 2026-09-23, after commit `120a488`)
+## Technical Design Document — v46 (revised 2026-09-24, after commit `45b54b9` and the VS Code doc-sync pass)
 
 **Internal working document. Not for external distribution. Companion to the Design Bible (v18).**
 
@@ -57,8 +57,8 @@ The day/night clock drives scheduled-resident placement and, separately, the sun
 
 Content volume, as of 2026-09-23:
 
-- **Dialogue:** 73 NPCs and 462 nonempty authored `TOPIC:` blocks (74 `.dialogue` files including the template). Re-derive with `tests/dialogue_catalog_flow.gd`.
-- **Voice cues:** 739 NPC lines carry a wordless instrumental voice cue, drawn from a 144-entry cue manifest. Re-derive with `tests/instrument_voice_flow.gd`. Walter, narration, beats, objects, notebook entries and system text are intentionally silent by design, not by omission.
+- **Dialogue:** 73 NPCs and 468 nonempty authored `TOPIC:` blocks (484 raw `TOPIC:` headers) (74 `.dialogue` files including the template). Re-derive with `tests/dialogue_catalog_flow.gd`.
+- **Voice cues:** 745 NPC lines carry a wordless instrumental voice cue, drawn from a 144-entry cue manifest. Re-derive with `tests/instrument_voice_flow.gd`. Walter, narration, beats, objects, notebook entries and system text are intentionally silent by design, not by omission.
 - **Objects:** all eleven scoped hotspots are migrated and live (estate seven, town three, tunnel one). Re-derive with `tests/object_content_flow.gd`.
 - **Portals:** ten ids across five files are migrated and live. Re-derive with `tests/portal_content_flow.gd`.
 
@@ -78,7 +78,7 @@ This is a build-status list, not a lore gap. The reference novellas (`08`, `09`,
 
 ## Verification
 
-`python tests/run_all_qa.py` is the maintained aggregate runner. It had **38 suites** as of 2026-09-23 (count the `tests = [...]` entries to re-derive), and all 38 passed on a full run after commit `120a488`.
+`python tests/run_all_qa.py` is the maintained aggregate runner. It had **39 suites** as of 2026-09-24 (count the `tests = [...]` entries to re-derive), and all 39 passed on a full run of the working tree after `45b54b9`, including the uncommitted VS Code doc-sync changes.
 
 Standing rule: a suite that times out under the aggregate's process contention is re-run on its own before it is either dismissed or trusted. Leftover headless Godot processes produce false timeouts (`Kill headless tests.cmd` clears them). Genuine failures have also surfaced first as timeouts. The rule exists because it has caught both.
 
@@ -86,7 +86,7 @@ Standing rule: a suite that times out under the aggregate's process contention i
 
 The local Web export under `build/web/` is git-ignored and untracked. `.github/workflows/deploy-pages.yml` still triggers on `build/web/**`, but ordinary pushes can no longer fire it, so **the workflow is dormant**. GitHub Pages shows the last build published before `build/web/` was untracked. itch.io shows whatever was last uploaded by hand, independently of Pages.
 
-The working branch (`feature/district-textures`) was **76 commits ahead of `origin/main`** as of 2026-09-23. Re-derive with `git rev-list --count origin/main..HEAD`. So the "current build" in this document means the development branch. "Published build" means only what is actually deployed to Pages or itch.io. Restoring a publish path is Part Eight's first item, because the top-priority cold playtest cannot happen without it.
+The working branch (`feature/district-textures`) was **79 commits ahead of `origin/main`** as of 2026-09-23. Re-derive with `git rev-list --count origin/main..HEAD`. So the "current build" in this document means the development branch. "Published build" means only what is actually deployed to Pages or itch.io. Restoring a publish path is Part Eight's first item, because the top-priority cold playtest cannot happen without it.
 
 Local Web testing uses `tools/serve_web.py`, with a Node fallback in `tools/serve.js`:
 
@@ -112,7 +112,7 @@ Local Web testing uses `tools/serve_web.py`, with a Node fallback in `tools/serv
 - **Odell and the coroner's assistant (`assistant`):** available whenever `world == "estate"` and the estate isn't complete.
 - **Abel Tavares, the groundskeeper (`crew`):** available once the lounge has been exited. Every one of his topics also gates on `lounge_exited`.
 - **The old woman:** available in town, not yet recorded, and only after the estate report is filed (`intake_done`) and at least one of `evidence(behan_name)`, `evidence(quay_inquiry)` or `topic_done(local_historian, ship_origin)`. The same rule is applied in `chapter_one_dialogue.gd::allowed()` and `town.gd::sync_actors()`, which shows her figure only when she's available.
-- **The intake clerk (`intake_clerk`)** and **the morgue coroner (`morgue_coroner`)** are dialogue-file story actors keyed by location (`precinct`, `morgue`).
+- **The intake clerk (`intake_clerk`)** and **the morgue coroner (`morgue_coroner`)** are dialogue-file story actors placed through `dialogue_catalog.gd`'s `FIXED_STAFF`: the clerk renders with the upper-man cast archetype behind the precinct desk (talk point on the public side), and the coroner with `coroner_model.gd`.
 - **The steward (`barman`):** keyed to the lounge and to whether Mrs. Almy has been spoken to.
 
 A phase shift is deferred while a multi-topic conversation is open, so an interlocutor's slot can't move out from under the player mid-dialogue. The mechanism has three parts:
@@ -347,7 +347,7 @@ All character, cast, corpse, prop and exterior-building models are Meshy-generat
 | The gatehouse boy | 1.05x | |
 | The club steward | 1.15x | Custom `Clean_Glass` idle. |
 | Father Behan | 1.135x | `Idle`/`Idle_Alt`/`Listen`; `tests/behan_model_flow.gd`. |
-| Coroner's assistant | 1.18x | `coroners_assistant_model.gd` (female model, `coroners_assistant.glb`), used for both the estate `assistant` and the scheduled `coroners_assistant_morgue`, which keep separate topic-completion identities; `tests/coroners_assistant_model_flow.gd`. The older `coroner_model.gd`/`coroner.glb` is no longer instantiated anywhere but its own test (Part Six). |
+| Coroner's assistant | 1.18x | `coroners_assistant_model.gd` (female model, `coroners_assistant.glb`), used for both the estate `assistant` and the scheduled `coroners_assistant_morgue`, which keep separate topic-completion identities; `tests/coroners_assistant_model_flow.gd`. `coroner_model.gd`/`coroner.glb` now renders the morgue coroner. |
 
 **Scale is settled.** Character heights are coherent with each other and with the doors, props and furniture around them, as confirmed by the author in play. This document tracks relative stature (Odell above Walter, the boy smallest) and each model's scale factor, not absolute heights in world units. Height figures in older revisions and in `.gd` header comments come from earlier scale passes and are not authoritative.
 
@@ -383,12 +383,13 @@ All character, cast, corpse, prop and exterior-building models are Meshy-generat
    - `the_ring`: "To remind the eye what belongs to the daylight." This explains the color tell, which the Bible says only the tell itself may carry.
    - Rewrite both as refusals or glimpses. **(author call)**
 2. **Scenery line out of date:** in `harbor_observer` `drowned_island`, Walter still says "The try-works buildings are still standing above the mud." The station now reads as buried.
-3. **Abel's tell:** the build has "the dull copper band on his wrist." The Bible and the novellas have a colored **ring**. Align one to the other. **(author call)**
+3. **Abel's tell:** there are now three versions. The Bible and the novellas have a colored **ring**, his dialogue has "the dull copper band on his wrist," and his rendered model (`estate.gd`) carries a small chest-height red accent, called a "brooch" in the code comment. Pick one and align the others. **(author call)**
 4. **The retreat card** (`tunnel_story.gd` `RETREAT`) says "The badge tears loose from its pin" even when the badge was pocketed under the plain coat. It needs coat-aware wording.
 5. **Pronoun:** `story.gd`'s `testimony` fact still calls the coroner's assistant "He." The model is now female.
 6. **Notebook labels:** two `harbor_observer` notebook lines (`observer_island_1`, `observer_pantry_refusal`) still call Manuel Silva "Mason"/"Harbor mason."
-7. **Morgue coroner line:** `morgue_coroner.dialogue` puts stage directions ("The coroner spreads his hands…") in `THE CORONER`'s mouth, with a violin voice cue. It should be a bracketed stage direction or narration line, and silent.
-8. **Birch victims and geography:** no change needed. Covered-body and case-file wording must never attribute the mother and son's deaths to the no-exit-wound method, and player-facing place references must fit Miskatonic County, Massachusetts, north of Boston.
+7. **Two coroners in the morgue.** `town_expansion.gd::_morgue()` still draws the old primitive coroner figure (`person(Vector3(0,0,-5.5)…)`) and still sets a `morgue_coroner` talk point at `(0,0,-4.5)`, in addition to the rendered coroner that `FIXED_STAFF` places at `(-1.6,0,-1.0)`. Remove the primitive and the stale talk point, as was done for the intake clerk in `town.gd`.
+8. **Morgue coroner line:** `morgue_coroner.dialogue` puts stage directions ("The coroner spreads his hands…") in `THE CORONER`'s mouth, with a violin voice cue. It should be a bracketed stage direction or narration line, and silent.
+9. **Birch victims and geography:** no change needed. Covered-body and case-file wording must never attribute the mother and son's deaths to the no-exit-wound method, and player-facing place references must fit Miskatonic County, Massachusetts, north of Boston.
 
 **1918: optional content** (Bible v18, Part Two, "1918"). This is texture only. It follows the Bible's guardrails: never connected to the entity, no set piece, and no character naming the cough as influenza. Candidate places, all optional and all author calls:
 
@@ -428,7 +429,7 @@ These need an author decision before build work can proceed. Nothing else in thi
 - **Publishing is dormant.** See Part Two. This blocks the cold playtest.
 - **Telemetry timestamps.** Client-side timestamps from the Web export have been observed roughly a day off. `playthrough_log.gd` stamps with `Time.get_datetime_string_from_system(true)`, and the Worker stores the value verbatim. Root cause unconfirmed. Until it's fixed, telemetry dates can't be cross-checked against itch.io counts.
 - **Backup routes.** `tests/backup_route_flow.gd` verifies that all 13 redundant-carrier backup topics are reachable, gate against the primary evidence being absent, and grant the intended evidence. A scripted check that the three investigative threads have no content-level soft locks is still open.
-- **Orphaned coroner model.** `coroner_model.gd`/`coroner.glb` is still preloaded in `estate.gd` and `chapter_one_dialogue.gd` and still has its own suite (`tests/coroner_model_flow.gd`), but nothing instantiates it since the coroner's-assistant model replaced it. Either remove it or give it to the morgue coroner, who currently has no rendered figure (confirm that too).
+- **Gate-function parity.** The dialogue, object and portal runtimes now expose nearly the same GATE functions and fields (`visit_count`, `topic_count`, `visited`, `attempt_count`, `object_done`/`object_count`, `intake_done`), all three accept single- or double-quoted strings, and all three warn on `phase = midday` (the runtime phase is `noon`). One gap remains: `examine_count` exists in dialogue and object contexts but not portal. Text comparison also still differs: dialogue `=` is fuzzy (contains-match), while object and portal `=` are exact.
 - **Conversation/travel time scale.**
   - `DEFAULT_MINUTES` is 5.0, and every corpus `TIME:` carries a +2 adjustment.
   - `TRAVEL_MINUTES` is 30.0. `day_clock.gd`'s `CONVERSATION_MINUTES = 30.0` applies only to a small enumerated list of legacy story scenes.
@@ -444,7 +445,6 @@ These need an author decision before build work can proceed. Nothing else in thi
   - a per-physics-frame `_find_focus()` raycast throttle;
   - uncached procedural meshes in `estate.gd`;
   - a travel-teardown-ordering runtime test;
-  - `tests/audit_dialogue_ast.gd`'s field allowlist is missing five fields the runtime registers (`rose_bodies_removed`, `birch_bodies_removed`, `lounge_exited`, `report`, `report_filed`). This is latent: no current gate uses them.
 - **Test harness isolation.** Some focused tests read and write a real `user://` save path, so state can leak between back-to-back runs. The aggregate sets `APPDATA` to `.runtime-data`; focused runs don't.
 - **`docs/qa/` and repo-root housekeeping.** There are 30+ dated pass reports plus fifteen or more `qa_*.png` captures at the repo root, which Godot imports. Triage them into a keep/archive split.
 - **`walter_certainty` engine placement is unverified** (see Part Five).
@@ -467,6 +467,8 @@ The Bible is the authority; this list is a build-facing index of canon points th
 - **Walter's effects:** badge, flask and whistle are lost together on the retreat in all three tellings, and found together by Ward and Ekon.
 - **Abel Tavares** is the young estate-crew member with the colored ring in Chapter One, the continuity Observer across all three decades. In the build he is the groundskeeper (`crew`). Other named Observers: Manuel Silva (harbor mason) and Enoch Vane (sail mender).
 - **Sarah Munn** is named in all three Chapter One tellings. The older vanished "kitchen maid" remains deliberately unnamed and distinct from her.
+- **The season:** the murders happen in late autumn 1923, in November. The build's lines agree (Walter's "November" at the perimeter trench, Behan's "autumn"), and novella `10` now says "autumn of 1923."
+- **The Vanes are siblings:** Mr. Vane the clockmaker and Enoch Vane the sail mender (an Observer) are brothers, one in trade on the business street and one on the waterfront. Nothing in the game needs to state it.
 - **Walter lodges** in a rented room above the cobbler's shop on Pickman Street.
 - **Constance's illness has two phases.** Before the war it was chronic and ambiguous, enough to earn Walter his 1917 exemption, and never settled as illness vs. control. From the autumn of 1918 she survived the influenza and was bedridden for the "four winters" until her death eleven months before Chapter One. The cough Walter remembers comes from 1918; nothing in the game says so.
 - **1918** is shared background for everyone alive in the story. It is never connected to the entity, and no character names the cough as influenza.
@@ -498,7 +500,7 @@ In priority order:
     - Stage 3, backup routes: authored.
     - Stage 4, ambient eavesdropping: deferred.
     - Stage 5, the pocket watch: shipped.
-11. **Housekeeping:** the orphaned coroner model, the bridge cooldown test, `docs/qa/` and repo-root triage.
+11. **Housekeeping:** the second morgue coroner, the portal `examine_count` gap, the bridge cooldown test, `docs/qa/` and repo-root triage.
 
 **Explicitly not current priorities:**
 

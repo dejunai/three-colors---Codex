@@ -18,7 +18,7 @@ const TunnelStory = preload("res://tunnel_story.gd")
 # location's .object file to define. Update this alongside chapter_one.gd's own
 # wiring so drift between the two is caught here, not discovered live.
 const LIVE_FILES = {
-	"estate": ["wounds", "watch", "knife", "eight", "shoes"],
+	"estate": ["wounds", "watch", "knife", "eight", "shoes", "gas", "register"],
 	"town": ["gazette", "lodging", "exemption", "morgue_tables"],
 	"tunnel": ["tunnel_record"],
 }

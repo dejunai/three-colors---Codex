@@ -167,10 +167,16 @@ func _check_cmp(def: Dictionary, topic: Dictionary, ast: Dictionary, all_topics:
 			"outcome", "outcome_is":
 				# OUTCOME identifiers are author-defined and validated by the parser.
 				pass
+			"npc_done", "object_done", "object_count", "taken", "portal_done", "portal_count", "attempt_count", "examine_count", "visited":
+				pass
 			_:
 				errors.append("%s: Unknown gate function '%s'" % [topic_ref, name])
 	else:
 		# Field check
-		var valid_fields = ["coat", "day", "phase", "estate_complete", "steward_ready"]
+		var valid_fields = [
+			"coat", "day", "phase", "estate_complete", "steward_ready",
+			"rose_bodies_removed", "birch_bodies_removed", "lounge_exited",
+			"report", "report_filed", "intake_done"
+		]
 		if not valid_fields.has(name):
 			errors.append("%s: Unknown gate field '%s'" % [topic_ref, name])

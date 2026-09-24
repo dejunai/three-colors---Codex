@@ -389,9 +389,9 @@ static func _tokenize(src: String) -> Array:
 			tokens.append({"kind": "op", "value": c})
 			i += 1
 			continue
-		if c == "\"":
+		if c == "\"" or c == "'":
 			var j = i + 1
-			while j < n and src[j] != "\"": j += 1
+			while j < n and src[j] != c: j += 1
 			tokens.append({"kind": "ident", "value": src.substr(i + 1, j - i - 1)})
 			i = j + 1
 			continue
@@ -489,11 +489,13 @@ static func _evaluate_cmp(ast: Dictionary, ctx: Dictionary) -> bool:
 		var field = fields.get(name)
 		result = field.call() if field is Callable and field.is_valid() else false
 	if String(ast.cmp).is_empty(): return bool(result)
+	if name == "phase" and str(ast.value).to_lower() == "midday":
+		push_warning("Portal gate uses 'phase = midday', but runtime phase is 'noon'. Gate will never match.")
 	var expected = str(ast.value) if ast.value != null else ""
 	var res_str = str(result) if result != null else ""
 	match String(ast.cmp):
 		"=":
-			if expected.is_empty() and res_str.is_empty(): return true
+			if expected.is_empty(): return res_str.is_empty()
 			if (result is int or result is float or res_str.is_valid_float()) and expected.is_valid_float():
 				return is_equal_approx(float(result), float(expected))
 			return res_str.to_lower().contains(expected.to_lower()) or expected.to_lower().contains(res_str.to_lower())

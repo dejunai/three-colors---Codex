@@ -47,6 +47,14 @@ Items 2–10 above landed in `120a488` and were verified against source, with al
    - `morgue_coroner.dialogue` voices a stage direction as speech, with a violin cue.
 6. **Orphaned `coroner_model.gd`.** Remove it, or give it to the morgue coroner. Confirm whether the morgue coroner has a rendered figure.
 
+## Round 3 (after the 2026-09-24 VS Code doc-sync pass)
+
+Round 2 item 6 (orphaned `coroner_model.gd`) is resolved: it now renders the morgue coroner. Round 2 items 1–5 are still open. New:
+
+1. **Remove the second morgue coroner.** `town_expansion.gd::_morgue()` still calls `person(Vector3(0,0,-5.5),"a1ae98",false)` and `target("morgue_coroner","Speak with the coroner",Vector3(0,0,-4.5))`. The rendered coroner now comes from `dialogue_catalog.gd` `FIXED_STAFF` at `(-1.6,0,-1.0)`. Remove the primitive and the stale target, as `town.gd` did for the intake clerk. Afterwards, re-run `tests/dialogue_catalog_flow.gd`, `tests/test_placement_audit.gd` and `tests/staff_model_integration_flow.gd`.
+2. **Portal `examine_count`.** Add `examine_count` to `portal_runtime.gd::make_context()` so all three runtimes expose the same functions, and add one assertion to `tests/portal_lang_flow.gd`.
+3. **Abel's tell (author call).** There are three versions: a ring (Bible and novellas), a copper wrist band (dialogue), and a chest-height red accent (model). Wait for Dejunai's choice, then align the dialogue line and the model accent to it.
+
 ## Definition of done
 
-Run each change's focused test, then the full aggregate (36 suites as of 2026-09-23). Visually check any presentation change. Leave a short dated `docs/qa/` pass note for each item landed. The TDD maintainer will verify it and fold it into the TDD and HCL.
+Run each change's focused test, then the full aggregate (39 suites as of 2026-09-24). Visually check any presentation change. Leave a short dated `docs/qa/` pass note for each item landed. The TDD maintainer will verify it and fold it into the TDD and HCL.

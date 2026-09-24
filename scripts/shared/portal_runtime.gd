@@ -54,9 +54,16 @@ static func make_context(state) -> Dictionary:
 			"portal_done": func(args): return state.portal_state.portal_done(args[0], args[1]) if args.size() > 1 else false,
 			"portal_count": func(args): return state.portal_state.portal_count(args[0]) if args.size() > 0 else 0,
 			"attempt_count": func(args): return state.portal_state.attempt_count(args[0], args[1]) if args.size() > 1 else 0,
+			# Symmetric with object_runtime.gd's make_context(): lets a PORTAL GATE
+			# react to the object system.
+			"object_done": func(args): return state.object_state.object_done(args[0], args[1]) if args.size() > 1 else false,
+			"object_count": func(args): return state.object_state.object_count(args[0]) if args.size() > 0 else 0,
+			"examine_count": func(args): return state.examine_count(args[0]) if args.size() > 0 else 0,
 			"taken": func(args): return state.has_item(args[0]) if args.size() > 0 else false,
 			"spoken_to": func(args): return state.dialogue_state.visit_count(args[0]) > 0 if args.size() > 0 else false,
+			"visit_count": func(args): return state.dialogue_state.visit_count(args[0]) if args.size() > 0 else 0,
 			"topic_done": func(args): return state.dialogue_state.topic_done(args[0], args[1]) if args.size() > 1 else false,
+			"topic_count": func(args): return state.dialogue_state.topic_count(args[0]) if args.size() > 0 else 0,
 			"npc_done": func(args): return state.dialogue_state.topic_done(args[0], "default") if args.size() > 0 else false,
 			# Distinct from spoken_to(): state.visited only records a FULLY completed
 			# interaction (see chapter_one_dialogue.gd::_segment_done()), while
@@ -89,6 +96,7 @@ static func make_context(state) -> Dictionary:
 			# field for any new boolean-shaped gate; `report` itself stays
 			# for authors who need the actual filed text.
 			"report_filed": func(): return not state.report.is_empty(),
+			"intake_done": func(): return bool(state.intake_done),
 		}
 	}
 

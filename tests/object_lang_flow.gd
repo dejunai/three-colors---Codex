@@ -127,5 +127,19 @@ func _run() -> void:
 	var bad_take = Lang.parse("LOCATION: x\nOBJECT: y\n  GATE: always\n  TAKE: not a valid id\n")
 	assert(bad_take.errors.size() == 1, "TAKE must require a simple identifier")
 
+	# --- report = '' empty string check ---
+	var rep_state = CaseState.new()
+	var rep_ctx = Runtime.make_context(rep_state)
+	assert(Lang.evaluate(Lang._parse_gate("report = ''"), rep_ctx), "report = '' must be true when report is empty")
+	rep_state.complete_report("Filed")
+	var filed_ctx = Runtime.make_context(rep_state)
+	assert(not Lang.evaluate(Lang._parse_gate("report = ''"), filed_ctx), "report = '' must be false when report is non-empty")
+
+	# --- cross-system parity: visit_count, topic_count, visited, intake_done ---
+	assert(not Lang.evaluate(Lang._parse_gate("visit_count(odell) >= 1"), filed_ctx), "visit_count must evaluate correctly in object runtime")
+	assert(not Lang.evaluate(Lang._parse_gate("topic_count(crew_omission) >= 1"), filed_ctx), "topic_count must evaluate correctly in object runtime")
+	assert(not Lang.evaluate(Lang._parse_gate("visited(almy)"), filed_ctx), "visited must evaluate correctly in object runtime")
+	assert(not Lang.evaluate(Lang._parse_gate("intake_done"), filed_ctx), "intake_done must evaluate correctly in object runtime")
+
 	print("PASS: object grammar parses; GATE cascade, FORK/OUTCOME, TAKE/inventory, object_count, timing, and dialogue-shared facts verified")
 	quit(0)

@@ -130,10 +130,11 @@ static func make_context(state, dstate) -> Dictionary:
 			"object_done": func(args): return state.object_state.object_done(args[0], args[1]) if args.size() > 1 else false,
 			"object_count": func(args): return state.object_state.object_count(args[0]) if args.size() > 0 else 0,
 			"taken": func(args): return state.has_item(args[0]) if args.size() > 0 else false,
-			# Symmetric with portal_runtime.gd's make_context(): lets a dialogue GATE
-			# react to travel (e.g. an NPC who only appears once a place is reached).
 			"portal_done": func(args): return state.portal_state.portal_done(args[0], args[1]) if args.size() > 1 else false,
 			"portal_count": func(args): return state.portal_state.portal_count(args[0]) if args.size() > 0 else 0,
+			"attempt_count": func(args): return state.portal_state.attempt_count(args[0], args[1]) if args.size() > 1 else 0,
+			"examine_count": func(args): return state.object_state.examine_count(args[0], args[1]) if args.size() > 1 else 0,
+			"visited": func(args): return state.visited.has(args[0]) if args.size() > 0 else false,
 		},
 		"fields": {
 			"coat": func(): return state.coat,

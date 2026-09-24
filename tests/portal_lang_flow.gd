@@ -93,11 +93,19 @@ func _run() -> void:
 	var rep_ctx = Runtime.make_context(rep_state)
 	assert(not Lang.evaluate(Lang._parse_gate("report_filed"), rep_ctx), "report_filed must evaluate false before report is completed")
 	assert(Lang.evaluate(Lang._parse_gate("NOT report_filed"), rep_ctx), "NOT report_filed must evaluate true before report is completed")
+	assert(Lang.evaluate(Lang._parse_gate("report = ''"), rep_ctx), "report = '' must be true when report is empty")
 	rep_state.complete_report("Observations filed")
 	var filed_ctx = Runtime.make_context(rep_state)
 	assert(Lang.evaluate(Lang._parse_gate("report_filed"), filed_ctx), "report_filed must evaluate true after report is completed")
 	assert(not Lang.evaluate(Lang._parse_gate("NOT report_filed"), filed_ctx), "NOT report_filed must evaluate false after report is completed")
 	assert(Lang.evaluate(Lang._parse_gate("report = 'Observations filed'"), filed_ctx), "report mode string must still match for textual reads")
+	assert(not Lang.evaluate(Lang._parse_gate("report = ''"), filed_ctx), "report = '' must be false when report is non-empty")
+
+	# --- cross-system parity: object_done, visit_count, topic_count, intake_done ---
+	assert(not Lang.evaluate(Lang._parse_gate("object_done(estate, knife)"), filed_ctx), "object_done must evaluate correctly in portal runtime")
+	assert(not Lang.evaluate(Lang._parse_gate("visit_count(odell) >= 1"), filed_ctx), "visit_count must evaluate correctly in portal runtime")
+	assert(not Lang.evaluate(Lang._parse_gate("topic_count(crew_omission) >= 1"), filed_ctx), "topic_count must evaluate correctly in portal runtime")
+	assert(not Lang.evaluate(Lang._parse_gate("intake_done"), filed_ctx), "intake_done must evaluate correctly in portal runtime")
 
 	print("PASS: portal grammar parses; GATE cascade, GO/after_go continuation, attempt_count, known_ids, omitted TIME empty, report_filed, and validation verified")
 	quit(0)
