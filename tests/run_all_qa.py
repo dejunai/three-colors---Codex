@@ -54,6 +54,7 @@ tests = [
     (["--headless", "--path", ".", "--script", "res://tests/coroner_model_flow.gd"], "coroner_model_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/coroners_assistant_model_flow.gd"], "coroners_assistant_model_flow"),
     (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/coroner_model_integration_flow.gd"], "coroner_model_integration_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/staff_model_integration_flow.gd"], "staff_model_integration_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/steward_model_flow.gd"], "steward_model_flow"),
     (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/steward_model_integration_flow.gd"], "steward_model_integration_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/walter_model_flow.gd"], "walter_model_flow"),

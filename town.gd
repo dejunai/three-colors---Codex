@@ -209,7 +209,6 @@ func _chair(pos:Vector3,angle:float=0) -> void:
 func _precinct() -> void:
 	lettering("PRECINCT 4  ·  INTAKE",Vector3(0,3.3,-7.6),46)
 	_desk(Vector3(0,0,-2.5),Vector3(6.2,0.16,1.4))
-	person(Vector3(0.4,0,-4),"78896b",false)
 	_chair(Vector3(0,0,-4.2),PI)
 	for x in [-7,7]:
 		box(self,Vector3(x,1.5,-6),Vector3(1.5,3,2),"4d654b",true)

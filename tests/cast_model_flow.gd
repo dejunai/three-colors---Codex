@@ -28,6 +28,8 @@ func run() -> void:
 
 	# 2. Verify NPC classification logic
 	assert(CastModel.archetype_for_npc("harbor_observer") == CastModel.OBSERVER_MAN)
+	assert(CastModel.archetype_for_npc("waterfront_sail_mender") == CastModel.OBSERVER_MAN)
+	assert(CastModel.archetype_for_npc("crew") == CastModel.OBSERVER_MAN)
 	assert(CastModel.archetype_for_npc("almy") == CastModel.UPPER_WOMAN)
 	assert(CastModel.archetype_for_npc("mrs_almy") == CastModel.UPPER_WOMAN)
 	assert(CastModel.archetype_for_npc("old_woman") == CastModel.LOWER_WOMAN)
@@ -38,7 +40,21 @@ func run() -> void:
 	assert(CastModel.archetype_for_npc("quay_docker") == CastModel.LOWER_MAN)
 	assert(CastModel.archetype_for_npc("waterfront_stevedore") == CastModel.LOWER_MAN)
 	assert(CastModel.archetype_for_npc("lower_laundress") == CastModel.LOWER_WOMAN)
+	assert(CastModel.archetype_for_npc("miriam_ashcroft") == CastModel.UPPER_WOMAN)
+	assert(CastModel.archetype_for_npc("eleanor_whitlock") == CastModel.UPPER_WOMAN)
+	assert(CastModel.archetype_for_npc("schoolteacher") == CastModel.UPPER_WOMAN)
+	assert(CastModel.archetype_for_npc("salt_mender") == CastModel.LOWER_WOMAN)
 	assert(CastModel.archetype_for_npc("gardener") == CastModel.LOWER_MAN)
+
+	# 3. Verify Observer tell attachment
+	var sail_mender_fig := CastModel.create_for_npc("waterfront_sail_mender")
+	assert(sail_mender_fig.has_node("Accent"), "Observer figures must receive an Accent tell")
+	var tell_mesh := sail_mender_fig.get_node("Accent") as MeshInstance3D
+	var tell_mat := tell_mesh.material_override as StandardMaterial3D
+	assert(tell_mat != null and tell_mat.shading_mode == BaseMaterial3D.SHADING_MODE_UNSHADED, "Tell must be unshaded")
+	assert(tell_mat.disable_fog, "Tell must disable fog")
+	sail_mender_fig.queue_free()
 
 	print("CAST MODEL PASS: all 6 archetypes instantiate at 1.05 scale with PI yaw, and NPC classification maps accurately")
 	quit(0)
+

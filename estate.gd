@@ -413,7 +413,16 @@ func _ready() -> void:
 	box(self,Vector3(-13.3,0.85,-11.7),Vector3(0.5,0.42,0.5),"353c36")
 	cylinder(self,Vector3(-13.5,0.06,-10.5),0.32,0.12,"242626")
 	sphere(self,Vector3(-13.5,0.24,-10.5),0.15,"656a66")
-	var groundskeeper = person(Vector3(-13.5,0,-11.7),"3a3f36",true,"7a2a1a")
+	var groundskeeper = CastModel.create(CastModel.OBSERVER_MAN)
+	groundskeeper.position = Vector3(-13.5,0,-11.7)
+	add_child(groundskeeper)
+	# Keep Abel's first color tell independent of lighting and fog. The rendered
+	# archetype supplies the figure; this small brooch preserves the established
+	# gameplay-readable accent and the shader contract.
+	var accent = box(groundskeeper,Vector3(0.18,1.5,-0.24),Vector3(0.12,0.15,0.04),"7a2a1a")
+	accent.name = "Accent"
+	accent.material_override = accent_material("7a2a1a")
+	accent.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	groundskeeper.rotation.y = 2.4
 	groundskeeper_actor = groundskeeper
 	groundskeeper.hide()

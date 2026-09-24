@@ -30,6 +30,11 @@ func setup(g: Node) -> void:
 		FILES[npc] = catalog.paths[npc]
 		TITLES[npc] = catalog.titles[npc]
 		extra_actors.append(npc)
+	# These room actors predate the scheduled catalog, so their files are already
+	# in FILES and the scan above intentionally skips them. They still need to
+	# participate in population now that they have rendered figures.
+	for actor in ["intake_clerk", "morgue_coroner"]:
+		if not extra_actors.has(actor): extra_actors.append(actor)
 	catalog.add_facts(g.facts)
 
 func populate(g: Node) -> void:
@@ -57,13 +62,42 @@ func populate(g: Node) -> void:
 			figure.position = spot[1]
 			figure.rotation.y = PI
 			g.estate.add_child(figure)
+		elif actor == "morgue_coroner":
+			figure = CoronerModel.create()
+			figure.position = spot[1]
+			figure.rotation.y = PI
+			g.estate.add_child(figure)
+		elif actor == "intake_clerk":
+			figure = CastModel.create(CastModel.UPPER_MAN)
+			figure.position = spot[1]
+			figure.rotation.y = PI
+			g.estate.add_child(figure)
 		else:
 			figure = CastModel.create_for_npc(actor, spot[0])
 			figure.position = spot[1]
+			figure.rotation.y = _default_facing(spot[0], spot[1])
 			g.estate.add_child(figure)
 		figures[actor] = figure
-		g.estate.target(actor,"Speak with " + TITLES[actor],spot[1])
+		var interaction_position: Vector3 = Vector3(0.4,0,-2.5) if actor == "intake_clerk" else spot[1]
+		g.estate.target(actor,"Speak with " + TITLES[actor],interaction_position)
 		if g.state.world == "stationer": g.estate.points.erase("local_resident")
+
+func _default_facing(world: String, position: Vector3) -> float:
+	# Rendered children already correct Meshy's +Z front to Godot's -Z. This
+	# wrapper yaw turns street residents toward the usable pavement and interior
+	# staff toward the room entrance instead of leaving every model facing north.
+	if world == "waterfront": return PI if position.z < 0.0 else 0.0
+	if world in ["town", "business", "upper", "lower"]:
+		return PI if position.z < 5.0 else 0.0
+	return PI
+
+func face_actor(actor: String, world_position: Vector3) -> void:
+	if not figures.has(actor) or not is_instance_valid(figures[actor]): return
+	var figure := figures[actor] as Node3D
+	var local_target := figure.get_parent_node_3d().to_local(world_position)
+	local_target.y = figure.position.y
+	if figure.position.distance_squared_to(local_target) > 0.01:
+		figure.look_at(local_target, Vector3.UP)
 
 func definition(actor: String) -> Dictionary:
 	return Runtime.load_npc("res://dialogue/" + FILES[actor] + ".dialogue")

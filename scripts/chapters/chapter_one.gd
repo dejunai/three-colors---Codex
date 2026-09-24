@@ -415,6 +415,7 @@ func _find_focus() -> void:
 	prompt.text = "" if focused.is_empty() else "[ E ]  "+str(estate.points[focused].title)
 	marker.visible = not focused.is_empty() and bool(settings.hints)
 	if marker.visible: marker.position = estate.points[focused].get("marker",estate.points[focused].pos)+Vector3(0,0.06,0)
+	if not focused.is_empty(): scripted_dialogue.face_actor(focused, player.global_position)
 
 func _interact(id:String) -> void:
 	if staging.interact(self,id): return

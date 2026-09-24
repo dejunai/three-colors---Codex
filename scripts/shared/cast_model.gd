@@ -42,7 +42,7 @@ static func archetype_for_npc(actor_id: String, location: String = "") -> String
 	var loc := location.to_lower()
 
 	# 1. Observers
-	if id.contains("observer"):
+	if id.contains("observer") or id == "waterfront_sail_mender" or id == "crew":
 		if id.contains("woman") or id.contains("female"):
 			return OBSERVER_WOMAN
 		return OBSERVER_MAN
@@ -50,13 +50,14 @@ static func archetype_for_npc(actor_id: String, location: String = "") -> String
 	# 2. Known female characters
 	var upper_women := [
 		"almy", "mrs_almy", "mrs_pell", "mrs_ashcroft", "mrs_whitlock",
-		"miss_wexley", "upper_companion", "upper_housemaid", "school_parent"
+		"miriam_ashcroft", "eleanor_whitlock", "miss_wexley", "upper_companion",
+		"upper_housemaid", "school_parent", "schoolteacher"
 	]
 	if id in upper_women:
 		return UPPER_WOMAN
 
 	var lower_women := [
-		"old_woman", "widow_kessler", "sarah_munn", "lower_laundress"
+		"old_woman", "widow_kessler", "sarah_munn", "lower_laundress", "salt_mender"
 	]
 	if id in lower_women:
 		return LOWER_WOMAN
@@ -86,6 +87,26 @@ static func archetype_for_npc(actor_id: String, location: String = "") -> String
 	# 4. Default to Lower Class Man
 	return LOWER_MAN
 
+static func attach_accent(figure: Node3D, hex: String = "b8743a") -> MeshInstance3D:
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(hex)
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.disable_fog = true
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(0.12, 0.15, 0.04)
+	var accent := MeshInstance3D.new()
+	accent.name = "Accent"
+	accent.mesh = mesh
+	accent.material_override = mat
+	accent.position = Vector3(0.18, 1.5, -0.24)
+	accent.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	figure.add_child(accent)
+	return accent
+
 static func create_for_npc(actor_id: String, location: String = "") -> Node3D:
 	var arch := archetype_for_npc(actor_id, location)
-	return create(arch)
+	var figure := create(arch)
+	if arch in [OBSERVER_MAN, OBSERVER_WOMAN]:
+		attach_accent(figure, "b8743a")
+	return figure
+
