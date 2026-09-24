@@ -33,6 +33,20 @@
 
 10. **Stale height comments.** Character scale is settled (TDD v46, Character and Environment Models). The header comments in `walter_model.gd`, `captain_odell_model.gd`, `cast_model.gd`, `coroner_model.gd`, `steward_model.gd`, `father_behan_model.gd` and `gatekeeper_boy_model.gd` still quote absolute heights from earlier scale passes ("~2.21m", "~2.34m" and so on). Rewrite them to describe relative stature and the reference each model was tuned against. Comments only: don't change any `SCALE_FACTOR` or `scale` values.
 
+## Round 2 (after commit `120a488`)
+
+Items 2–10 above landed in `120a488` and were verified against source, with all 38 suites passing. Item 1 (publish path) is still open. What's left is listed in TDD v46 Part Four under "Still open" and in Part Six. In order:
+
+1. **Harbor-mason Law 5 lines.** In `harbor_observer`, `drowned_island` states the Observers' origin outright, and `the_ring` explains the color tell. Propose refusal/glimpse rewrites for both. **(author call)**
+2. **Out-of-date scenery line.** Walter's "The try-works buildings are still standing above the mud" in `drowned_island` needs to fit the buried-station scenery.
+3. **Abel's tell.** The build has a copper wrist band; the Bible and novellas have a ring. **(author call)**
+4. **Coat-aware retreat card.** `tunnel_story.gd` `RETREAT` says "tears loose from its pin" even when the badge was pocketed.
+5. **Small text fixes:**
+   - `story.gd` `testimony` calls the coroner's assistant "He."
+   - The `harbor_observer` notebook lines still say "Mason."
+   - `morgue_coroner.dialogue` voices a stage direction as speech, with a violin cue.
+6. **Orphaned `coroner_model.gd`.** Remove it, or give it to the morgue coroner. Confirm whether the morgue coroner has a rendered figure.
+
 ## Definition of done
 
 Run each change's focused test, then the full aggregate (36 suites as of 2026-09-23). Visually check any presentation change. Leave a short dated `docs/qa/` pass note for each item landed. The TDD maintainer will verify it and fold it into the TDD and HCL.

@@ -34,6 +34,11 @@ OBJECT: lodging
 OBJECT: exemption
   GATE: always
   LABEL: "Examine the folded notice"
-  THE DRESSER: "An exemption notice, folded along the same worn crease.\nConstance Corwin's name beneath his own.\n\nWalter puts it back.\nThere are other papers requiring him tonight."
+  THE DRESSER: "An exemption notice, folded along the same worn crease.\nConstance Corwin's name beneath his own.\nBeside it, in the half-open drawer: a tin of menthol ointment dried to dark resin, and three folded gauze masks with brittle, yellowed ties.\n\nWalter puts the notice back.\nThere are other papers requiring him tonight."
   NOTEBOOK: exemption_note | "Walter's old exemption notice records the need to care for Constance Corwin. It concerns his life before the case. It supplies no evidence about the deaths at the estate."
   EVIDENCE: exemption
+
+OBJECT: morgue_tables
+  GATE: always
+  LABEL: "Examine the tables"
+  THE TABLES: "Six tables. Four newer than the others, the enamel still bright. The county put them in during the autumn of '18 and never took them out."

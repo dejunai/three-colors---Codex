@@ -214,7 +214,7 @@ func _run() -> void:
 	assert(clerk_first.session.tag == "clerk_badge", "initial encounter with badge must deliver the six-deceased notice")
 	var clerk_repeat_badge = Runtime.enter(defs.county_clerk, clerk_badge_ctx, dstate)
 	assert(not clerk_repeat_badge.cards.is_empty(), "Mr. Pence must not become a totem pole after the initial notice")
-	assert(clerk_repeat_badge.session.tag in ["clerk_repeat_badge_notices", "clerk_repeat_badge_requisition", "clerk_repeat_badge_entries"], "repeat encounter with badge must play a badge repeat default")
+	assert(clerk_repeat_badge.session.tag in ["clerk_repeat_badge_notices", "clerk_repeat_badge_requisition", "clerk_repeat_badge_entries", "clerk_repeat_badge_ledgers"], "repeat encounter with badge must play a badge repeat default")
 	state.coat = "Plain wool coat"
 	var clerk_repeat_plain = Runtime.enter(defs.county_clerk, Runtime.make_context(state, dstate), dstate)
 	assert(not clerk_repeat_plain.cards.is_empty(), "Mr. Pence must speak to plain-coated Walter on repeat visits")

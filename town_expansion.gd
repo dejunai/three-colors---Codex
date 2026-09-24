@@ -217,3 +217,5 @@ func _morgue() -> void:
 			body(Vector3(x,0.83,z),0,true,false,"morgue")
 	person(Vector3(0,0,-5.5),"a1ae98",false)
 	target("morgue_coroner","Speak with the coroner",Vector3(0,0,-4.5))
+	target("morgue_tables","Examine the tables",Vector3(-2.4,0,0))
+

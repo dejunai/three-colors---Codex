@@ -739,7 +739,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 		estate.sync_pantry(state.evidence.has("pantry_lead"))
 		portals.sync_points(self, "lounge", ["lounge_exit", "pantry_door"])
 	else:
-		objects.sync_points(self, "town", ["gazette","lodging","exemption"])
+		objects.sync_points(self, "town", ["gazette","lodging","exemption","morgue_tables"])
 		if destination == "town": portals.sync_points(self, "town", ["street_precinct", "street_almy", "street_room", "street_estate", "route_post"])
 		if destination == "lower": portals.sync_points(self, "lower", ["route_speakeasy"])
 	if estate and estate.has_method("sync_actors"):

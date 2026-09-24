@@ -22,6 +22,13 @@ TOPIC: default
   VOICE: violin_questioning_medium_v1
   MRS. TEAGUE: "Visitors? This town has people who live here and people who ought not to be here.\nThat isn't complicated."
 
+TOPIC: default
+  GATE: topic_done(school_parent, default)
+  TAG: parent_repeat_schoolhouse_desks
+  WEIGHT: 2
+  VOICE: violin_neutral_medium_v1
+  MRS. TEAGUE: "The fifth grade has only eight desks filled this term. That autumn left empty benches in every schoolhouse from here to Danvers."
+
 TOPIC: the_stranger_woman
   GATE: evidence(naomi)
   TAG: parent_naomi_sighting

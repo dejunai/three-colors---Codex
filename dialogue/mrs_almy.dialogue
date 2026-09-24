@@ -35,6 +35,13 @@ TOPIC: default
   VOICE: trombone_weary_short_v1
   MRS. ALMY: "Mind the third stair if you go up. The board is loose since the winter rains."
 
+TOPIC: default
+  GATE: topic_done(almy, default) AND coat = plain
+  TAG: almy_repeat_plain_camphor
+  WEIGHT: 2
+  VOICE: trombone_neutral_long_v1
+  MRS. ALMY: "The front corner room still smells of camphor whenever the autumn damp sets in. I boiled the counterpanes three times after that October, but camphor never truly leaves horsehair."
+
 # Police coat / badge defaults: precinct wariness, neighborhood eyes, official distance
 TOPIC: default
   GATE: topic_done(almy, default) AND coat != plain

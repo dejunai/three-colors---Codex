@@ -19,7 +19,7 @@ const TunnelStory = preload("res://tunnel_story.gd")
 # wiring so drift between the two is caught here, not discovered live.
 const LIVE_FILES = {
 	"estate": ["wounds", "watch", "knife", "eight", "shoes"],
-	"town": ["gazette", "lodging", "exemption"],
+	"town": ["gazette", "lodging", "exemption", "morgue_tables"],
 	"tunnel": ["tunnel_record"],
 }
 

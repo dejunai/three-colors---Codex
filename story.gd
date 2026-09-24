@@ -38,6 +38,7 @@ const SCENES = {
 	"wounds": [
 		["THE ROSE GARDEN", "Six men in evening dress, arranged in a half-circle.\n\nWalter knows five of the faces. Judge Wexford. Dr. Fenn. Corliss, the district attorney. Pruitt. Kessler.\n\nThe sixth means nothing to him."],
 		["EXAMINE · JUDGE WEXFORD", "A wound above the bridge of the nose.\nNo powder scorching.\n\nWalter turns the head.\nThere is no exit wound."],
+		["EXAMINE · DR. FENN", "Dr. Aldous Fenn. In his inside breast pocket, past the silk handkerchief: a brass fountain pen and two folded death certificates, blank on the line for the cause.\nFenn signed Constance Corwin's death certificate eleven months back with that same pen, without once looking up from the counter."],
 		["WALTER'S NOTEBOOK", "The other five present the same condition.\n\nNo weapon in any visible hand.\nCause and sequence unestablished.\n\nThe observation is exact. It is the explanation that is missing."]],
 	"eight": [
 		["BEYOND THE BIRCHES", "A woman and a boy lie apart from the club members.\n\nSomeone has brought two more sheets. These deaths were not clean. Walter leaves the coverings in place."],

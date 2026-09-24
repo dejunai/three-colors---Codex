@@ -69,6 +69,13 @@ TOPIC: default
   VOICE: trombone_dismissive_medium_v1
   MR. PENCE: "I have seventy probate entries to verify before the evening packet leaves. Move along unless you have official papers to tender."
 
+TOPIC: default
+  GATE: topic_done(county_clerk, default) AND coat != plain
+  TAG: clerk_repeat_badge_ledgers
+  WEIGHT: 2
+  VOICE: trombone_bureaucratic_long_v1
+  MR. PENCE: "We filled three ledgers in October five years back, Officer. Forty names before lunch, cause of death scribbled in pencil when the ink ran dry.\nWhen you've stamped that many dockets in a single month, you learn not to argue with whatever the doctor writes down."
+
 
 TOPIC: wage_claim_inquiry
   GATE: evidence(lay_lead) AND evidence(new_bedford_letters) AND evidence(postal_bureaucracy_refusal)

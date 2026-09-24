@@ -134,6 +134,24 @@ Nobody goes out to the island anymore, and hasn't for longer than anyone still l
 
 This is the catastrophe the Observers' own discipline already traces back to (see The Observers, below) — not a separate event alongside the fleet's loss, but the same one, seen from the ground instead of from the water. What they carry forward is not a secret being withheld so much as a discipline never broken: they know not to look, the same flat, unbothered refusal they already give the tunnel mouth and the drowned ruins, extended to the island itself rather than to one hazard on it. Nothing in any chapter has them explain why. The game does not either.
 
+## 1918
+
+Five years before Chapter One, in the autumn of 1918, the influenza reached the Massachusetts coast early and hard. Everyone alive in Widow's Bight in 1923 lived through it, and every household lost someone or nursed someone through it. It isn't a plot, a mystery or a cause of anything in the trilogy. It is sediment: the town's most recent experience of death arriving faster than it could be understood, and its most recent practice at filing death quickly.
+
+It does three kinds of work, none of them explained on screen:
+
+- **The cough.** Walter's comfortable false slot for the cough (Part Three, Mechanics) isn't his alone. A town that spent an autumn listening to coughing through its walls hears every cough as memory, not as a question. Nobody in Widow's Bight treats the sound as strange, and nobody says why. The player can connect it; no character does it for them (Design Law 5).
+- **The records.** October 1918 taught the county to write down a cause and move on. The same reflex that files the mother and son as "transients" was practised on a full death register. The cult's earlier victims (Part Three, The Crime: a missing laborer, a vanished kitchen maid) were easiest to lose in exactly that season, and some of them may sit in the 1918 register under a cause that doesn't hold up. This is an optional lead, backed by a second source (Laws 4 and 13), never a required one. It is consistent with Law 7: they were taken because a crowded register made them easy to lose, not because of who they were.
+- **The cult.** Six men watched 1918 happen and afterward began reaching for a protective, maternal power. Their error is their own, but it has a date. Nothing in the game states the connection.
+
+Across the trilogy it is simply shared. Ekon was sixteen and in New Bedford that autumn. Abel Tavares, elderly by Chapter Three, remembers it. No protagonist ever discusses it with anyone.
+
+Guardrails, held as firmly as any Design Law:
+
+- **The influenza is never connected to the entity, the Old Gods, the tunnel or the Ophion,** in either direction, not even ambiguously. It was a natural catastrophe, and the universe was as indifferent to it as to everything else. Making it a sign would break the trilogy's indifference exactly where breaking it is most tempting.
+- **Texture, never a set piece.** It shows up only in the world and its records: dates clustered in the churchyard, a quarantine notice under a newer notice, masks at the back of a drawer, Father Behan's burial lists, a doctor's run of signed certificates from that October. No flashback, no memorial scene, and no character explaining what 1918 meant.
+- **No character names the cough as influenza.** Constance's cough (Part Three, Supporting Cast) comes from 1918, but that is for the player to assemble, never to be told.
+
 ## The Prologue
 
 Before Chapter One begins, the game opens on Widow's Bight's own official history, staged the way the town would present it about itself — a civic reel, not a confession. It states the fleet's disappearance, the contradictory survivor accounts, and the arrival of the insurance money as bare facts, and connects none of them to anything. It never mentions a bloodline.
@@ -190,7 +208,7 @@ The chapter loop is demonstrated in prose in the short story "No Exit Wound," wr
 
 ## Protagonist: Walter Corwin
 
-A rigid Widow's Bight beat cop, shaped by a closed, insular town that has never had reason to look past its own coastline. Descended, unknowingly, from the drowned crew of the Ophion. Stayed home from the war on a compassionate exemption to care for his mother, Constance Corwin — an abusive, controlling presence whose care he gave out of duty long before he understood it as a wound. His arc across the chapter runs from dutiful son to, in retrospect, abused caretaker — revealed backward, the way everything in this trilogy is revealed, never announced as a twist. The register is closer to *Ethan Frome* than to any horror-genre "monstrous mother" trope: a slow erosion inside total isolation, not a jump scare. His baseline color and its origin are established in Part One, The Baseline.
+A rigid Widow's Bight beat cop, shaped by a closed, insular town that has never had reason to look past its own coastline. Descended, unknowingly, from the drowned crew of the Ophion. Stayed home from the war on a compassionate exemption, granted in 1917, to care for his mother, Constance Corwin — an abusive, controlling presence whose care he gave out of duty long before he understood it as a wound. His arc across the chapter runs from dutiful son to, in retrospect, abused caretaker — revealed backward, the way everything in this trilogy is revealed, never announced as a twist. The register is closer to *Ethan Frome* than to any horror-genre "monstrous mother" trope: a slow erosion inside total isolation, not a jump scare. His baseline color and its origin are established in Part One, The Baseline.
 
 The waiver itself is a private wound, not a relief. Walter did not ask for the compassionate exemption; it was given, and he has never stopped experiencing it as a mark of shame rather than mercy, because he believed the era's own recruitment propaganda completely — a war that would make a nine-to-five soldier of any man who went, then hand him back to adoring citizens as a mature man and a hero. He measures himself daily against a version of manhood he was never permitted to test, and has never once connected this private humiliation to the parallel sitting directly beside it: a physical wound can be seen; a psychological wound must be hidden. He hides his own, the exact way he privately resents the soldiers he imagines for supposedly not having to hide theirs, and never once clocks the symmetry — he accepts the town's read of him as "the dutiful son" instead, the same closed-system certainty his baseline color already names as his central limitation (Part One, The Baseline). Neither he nor the era around him had the language for what mechanized war actually leaves behind; that ignorance is period-accurate, not a failure of his own insight alone.
 
@@ -200,7 +218,12 @@ His central failure, and the hinge Chapter Three turns on: he gave more weight t
 
 ## Supporting Cast
 
-- **Constance Corwin** — Walter's late mother. Abusive, controlling, illness used as a trap in the *Ethan Frome* register — "no wire hangers" and *Sunset Blvd.*'s decayed grande dame as touchstones for that register, not literal reference. Control through abuse, love through manipulation.
+- **Constance Corwin** — Walter's late mother. Abusive, controlling, illness used as a trap in the *Ethan Frome* register — "no wire hangers" and *Sunset Blvd.*'s decayed grande dame as touchstones for that register, not literal reference. Control through abuse, love through manipulation. Her illness has two phases, and the order matters:
+
+  - **Before the war:** a long, chronic, never clearly diagnosed illness. She was dependent enough on Walter by 1917 to earn him his exemption, and neither this Bible nor the game ever settles how much of it was illness and how much was control.
+  - **From the autumn of 1918:** the influenza reached her. She survived it and never rose again. The "four winters" Walter sat at her bed are this final, bedridden stretch, ending in her death eleven months before Chapter One.
+
+  The illness she may have used as a trap became real, and Walter never learns which version of his sacrifice was the true one. The dry, patient cough he remembers is the influenza's aftermath, not a lifelong trait. Nothing in the game says so (Part Two, 1918).
 
 - **Judge Absalom Wexford** — cultist.
 

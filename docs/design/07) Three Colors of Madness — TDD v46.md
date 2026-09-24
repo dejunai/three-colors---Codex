@@ -1,6 +1,6 @@
 # THREE COLORS OF MADNESS
 
-## Technical Design Document — v46
+## Technical Design Document — v46 (revised 2026-09-23, after commit `120a488`)
 
 **Internal working document. Not for external distribution. Companion to the Design Bible (v18).**
 
@@ -45,7 +45,7 @@ The slice covers:
 - the Ophion estate grounds (rose garden, service passage, tunnel entry);
 - Pickman Street (boardinghouse, cobbler's shop/Walter's room, precinct, morgue);
 - three neighborhood hubs (business district, upper-residential ridge, lower-residential quarter) and a post office;
-- the waterfront: a playable outdoor hub with scheduled residents, its own travel time, full save restoration, and the offshore whaling station visible as unreachable scenery (but see Part Four: what exactly is visible needs checking against the Bible).
+- the waterfront: a playable outdoor hub with scheduled residents, its own travel time, full save restoration, and the offshore whaling station visible as unreachable scenery: a single mud mass with only a chimney tip, a roof ridge and one wall fragment showing, per Bible v18's "buried whole."
 
 Geography is contiguous, not hub-and-spoke. Pickman Street, the business district, the upper ridge, the lower district and the full waterfront are one shared walkable exterior; only interiors are separate scenes.
 
@@ -57,8 +57,8 @@ The day/night clock drives scheduled-resident placement and, separately, the sun
 
 Content volume, as of 2026-09-23:
 
-- **Dialogue:** 71 NPCs and 458 nonempty authored `TOPIC:` blocks. Re-derive with `tests/dialogue_catalog_flow.gd`.
-- **Voice cues:** 733 NPC lines carry a wordless instrumental voice cue, drawn from a 144-entry cue manifest. Re-derive with `tests/instrument_voice_flow.gd`. Walter, narration, beats, objects, notebook entries and system text are intentionally silent by design, not by omission.
+- **Dialogue:** 73 NPCs and 462 nonempty authored `TOPIC:` blocks (74 `.dialogue` files including the template). Re-derive with `tests/dialogue_catalog_flow.gd`.
+- **Voice cues:** 739 NPC lines carry a wordless instrumental voice cue, drawn from a 144-entry cue manifest. Re-derive with `tests/instrument_voice_flow.gd`. Walter, narration, beats, objects, notebook entries and system text are intentionally silent by design, not by omission.
 - **Objects:** all eleven scoped hotspots are migrated and live (estate seven, town three, tunnel one). Re-derive with `tests/object_content_flow.gd`.
 - **Portals:** ten ids across five files are migrated and live. Re-derive with `tests/portal_content_flow.gd`.
 
@@ -78,7 +78,7 @@ This is a build-status list, not a lore gap. The reference novellas (`08`, `09`,
 
 ## Verification
 
-`python tests/run_all_qa.py` is the maintained aggregate runner. It had **36 suites** as of 2026-09-23 (count the `tests = [...]` entries to re-derive), and all passed on the last full run that day.
+`python tests/run_all_qa.py` is the maintained aggregate runner. It had **38 suites** as of 2026-09-23 (count the `tests = [...]` entries to re-derive), and all 38 passed on a full run after commit `120a488`.
 
 Standing rule: a suite that times out under the aggregate's process contention is re-run on its own before it is either dismissed or trusted. Leftover headless Godot processes produce false timeouts (`Kill headless tests.cmd` clears them). Genuine failures have also surfaced first as timeouts. The rule exists because it has caught both.
 
@@ -86,7 +86,7 @@ Standing rule: a suite that times out under the aggregate's process contention i
 
 The local Web export under `build/web/` is git-ignored and untracked. `.github/workflows/deploy-pages.yml` still triggers on `build/web/**`, but ordinary pushes can no longer fire it, so **the workflow is dormant**. GitHub Pages shows the last build published before `build/web/` was untracked. itch.io shows whatever was last uploaded by hand, independently of Pages.
 
-The working branch (`feature/district-textures`) was **75 commits ahead of `origin/main`** as of 2026-09-23. Re-derive with `git rev-list --count origin/main..HEAD`. So the "current build" in this document means the development branch. "Published build" means only what is actually deployed to Pages or itch.io. Restoring a publish path is Part Eight's first item, because the top-priority cold playtest cannot happen without it.
+The working branch (`feature/district-textures`) was **76 commits ahead of `origin/main`** as of 2026-09-23. Re-derive with `git rev-list --count origin/main..HEAD`. So the "current build" in this document means the development branch. "Published build" means only what is actually deployed to Pages or itch.io. Restoring a publish path is Part Eight's first item, because the top-priority cold playtest cannot happen without it.
 
 Local Web testing uses `tools/serve_web.py`, with a Node fallback in `tools/serve.js`:
 
@@ -110,8 +110,9 @@ Local Web testing uses `tools/serve_web.py`, with a Node fallback in `tools/serv
 **Story actors** have bespoke, state-driven availability. None of these rules reads the day/night clock, and none of these actors hides at night:
 
 - **Odell and the coroner's assistant (`assistant`):** available whenever `world == "estate"` and the estate isn't complete.
-- **The groundskeeper (`crew`):** available once the lounge has been exited.
-- **The old woman:** available while in town and not yet recorded as evidence.
+- **Abel Tavares, the groundskeeper (`crew`):** available once the lounge has been exited. Every one of his topics also gates on `lounge_exited`.
+- **The old woman:** available in town, not yet recorded, and only after the estate report is filed (`intake_done`) and at least one of `evidence(behan_name)`, `evidence(quay_inquiry)` or `topic_done(local_historian, ship_origin)`. The same rule is applied in `chapter_one_dialogue.gd::allowed()` and `town.gd::sync_actors()`, which shows her figure only when she's available.
+- **The intake clerk (`intake_clerk`)** and **the morgue coroner (`morgue_coroner`)** are dialogue-file story actors keyed by location (`precinct`, `morgue`).
 - **The steward (`barman`):** keyed to the lounge and to whether Mrs. Almy has been spoken to.
 
 A phase shift is deferred while a multi-topic conversation is open, so an interlocutor's slot can't move out from under the player mid-dialogue. The mechanism has three parts:
@@ -245,9 +246,9 @@ A third sibling to `.dialogue` and `.object`, not built on either. A travel poin
   - `tunnel_exit` (`portals/tunnel.portal`, two destinations depending on `evidence(lower_foundation)`).
 - **`TIME:` semantics, as built:**
   - An authored `TIME:` greater than 0 is charged on **every** completed traversal, not only the first. `estate.portal` `exit` and `town.portal` `street_estate` carry `TIME: 30`.
-  - An omitted `TIME:` now parses to an empty timing value and falls through to `_travel()`'s automatic path (the `elapsed` flag).
+  - An omitted `TIME:` parses empty and delegates to `_travel()`. That charges 30 minutes when origin and destination are in different hubs and nothing within one hub. `nosave` suppresses the automatic charge unless `elapsed` is also present.
   - `portal_done()` is used for content and label gating only, never for charging.
-  - *Open doc discrepancy:* `portal_lang.gd`'s header comment and `docs/PORTAL_AUTHORING.md` still say an omitted `TIME:` "defaults to 3 minutes." See Part Six.
+  - `portal_lang.gd`'s header and `docs/PORTAL_AUTHORING.md` state this correctly.
 - **Cross-system sharing:**
   - `OUTCOME`/`flag()` read and write the shared `dialogue_state`.
   - `evidence()`/`filed()` reuse `dialogue_runtime.gd`'s helpers.
@@ -278,9 +279,32 @@ A save made from the break point onward resumes at the ending, never inside the 
 
 ## Tunnel Retreat and Walter's Lost Effects
 
-`chapter_one.gd` sets `badge_lost` on the retreat and records "The badge and the whistle were lost on the retreat, with the flask already gone." to the case file, satisfying Law 4's legible-tell requirement; `tests/break_flow.gd` asserts it. `tunnel_story.gd` narrates the fall. `paper_doll.gd` and `walter_model.gd` stop showing the badge, and `chapter_one_archive.gd` records the loss.
+The descent and the retreat now match Bible v18:
 
-**Currently the flask is lost at the spur on the way down, and only the badge and whistle go on the retreat. Bible v18 has all three lost together on the retreat.** See Part Four.
+- **First `tunnel_descent` interaction:** plays `TunnelStory.ROCK_SPUR` (the spur catches Walter's coat, nothing is lost) and sets `tunnel_spur_seen`, exposed on `case_state.gd` as a property.
+- **Later interactions** offer "Go on into the dark" or "Step back to the foundation support." Stepping back costs nothing.
+- **Going on** plays the pressure and retreat cards. `_tunnel_turn_back()` then does the following at once:
+  - empties the flask and records `flask_spill_amount`;
+  - sets `flask_spilled`, `tunnel_retreated` and `badge_lost`;
+  - grants `flask_spill`;
+  - records "The badge and the whistle were lost on the retreat, with the flask torn away in the fall." to the case file (Law 4).
+- **Personal effects:** `chapter_one_archive.gd` describes the badge as pocketed inside the plain coat before the loss and "lost below the estate, with the whistle and the flask" after. `paper_doll.gd` and `walter_model.gd` stop showing the badge.
+- **Tests:** `tests/break_flow.gd` and `tests/phase_two_mechanics.gd` assert every step, including the plain-coat case and save/load of the loss state.
+
+## Lounge Pantry Door
+
+Before the steward names the pantry (`pantry_lead`), the door can be examined. The `portals/lounge.portal` `pantry_door` block, labelled "Examine the boarded pantry door," shows a flavor card and never travels. Once the lead is recorded, `town.gd::sync_pantry()` relabels the hotspot "Open the boarded pantry door" and it leads to the tunnel as before.
+
+## Precinct Intake
+
+The intake clerk is a required step before filing the estate report:
+
+- `chapter_one.gd::_find_focus()` hides the "Submit the estate report" hotspot until `visited.has("intake_clerk")` or `intake_done`.
+- `_town_interaction("intake")` repeats the check with a "Speak with the intake clerk" panel.
+- When the clerk has been visited, `_intake()` skips the older scripted intake cards and falls back to a plain filing card if nothing else applies.
+- `tests/town_flow.gd` walks to the clerk before filing.
+
+Filing is on Day 1's critical path (sleep is blocked until `intake_done`), so watch this step in the cold playtest.
 
 ## Playthrough Telemetry
 
@@ -323,7 +347,7 @@ All character, cast, corpse, prop and exterior-building models are Meshy-generat
 | The gatehouse boy | 1.05x | |
 | The club steward | 1.15x | Custom `Clean_Glass` idle. |
 | Father Behan | 1.135x | `Idle`/`Idle_Alt`/`Listen`; `tests/behan_model_flow.gd`. |
-| Coroner / coroner's assistant | 1.18x | One shared model across `assistant`/`coroners_assistant` and `coroners_assistant_morgue`. |
+| Coroner's assistant | 1.18x | `coroners_assistant_model.gd` (female model, `coroners_assistant.glb`), used for both the estate `assistant` and the scheduled `coroners_assistant_morgue`, which keep separate topic-completion identities; `tests/coroners_assistant_model_flow.gd`. The older `coroner_model.gd`/`coroner.glb` is no longer instantiated anywhere but its own test (Part Six). |
 
 **Scale is settled.** Character heights are coherent with each other and with the doors, props and furniture around them, as confirmed by the author in play. This document tracks relative stature (Odell above Walter, the boy smallest) and each model's scale factor, not absolute heights in world units. Height figures in older revisions and in `.gd` header comments come from earlier scale passes and are not authoritative.
 
@@ -343,23 +367,43 @@ All character, cast, corpse, prop and exterior-building models are Meshy-generat
 
 # Part Four — Build vs. Bible v18: Alignment Work
 
-Bible v18 settled several canon questions the build predates. Each item below is a concrete build change, not an open decision. Assign to Codex (code) or Antigravity (content) under the author's lead.
+**Landed and verified** (commit `120a488`; all 38 suites passing):
 
-1. **The Ophion meaning must not reach Walter.** Bible v18 (Part Two, The Ophion) allows Chapter One only the name: "a Greek name, fashionable among merchants." What the myth says, and Fenn's "displaced, not slain" reading, are held back for Fenn's book in Chapters Two and Three.
-   - `local_historian.dialogue` `dr_fenn_library` → the "Ask about the annotations" branch: Abernathy's line about Fenn underlining gods "not slain, only 'displaced'" and `EVIDENCE: displaced_god_doctrine` must go or be rewritten. `displaced_god_doctrine` has no downstream `GATE:` references anywhere in the corpus as of 2026-09-23, so removing it breaks nothing.
-   - `local_historian.dialogue` `ship_origin` ("a name from Greek mythology… nothing more sinister than an educated man's literary vanity") and `tailor.dialogue` `pruitt_family_naming` are compliant as written. Keep both.
-2. **Flask, badge and whistle are lost together on the retreat** (Bible v18, Part Three, Coping mechanism). Move the flask loss from the spur on the descent to the stair fall. The case-file record then reads that all three were lost on the retreat.
-   - The Bible also says Walter carries the badge whichever coat he wears (pocketed beneath the plain coat). Confirm `badge_lost` and the paper doll behave sensibly on a plain-coat descent.
-3. **No Observer is unnamed** (Bible v18, Part Two, The Observers). Observers are a classification of ordinary citizens, and every one the player can meet has a name, even where Walter never learns it.
-   - Current speaker labels are role-only: `THE GROUNDSKEEPER` (`crew`), `THE GARDENER`, and the harbor laborer (`harbor_observer`).
-   - Each needs a canonical name in data. The Chapter One estate-crew member with the colored ring is **Abel Tavares**.
-   - Whether the speaker label shows the name or keeps the role is an author content call. The name must exist either way.
-   - Any ambient NPC using the `cast_observer_*` archetype must be a named NPC, not anonymous filler.
-4. **The old woman appears too early.** Author direction: keep her for now, but gate her to appear later in the investigation. Today she is available as soon as `evidence(naomi)` is held and she is not yet recorded. The new gate is an author content call.
-5. **The sixth man stays unanswered but can be investigated.** Walter may pursue him through the tailor, steward, undertaker, rolls and staff, and every line returns the same shape: remembered, unknown, unrecorded. No content may imply that a name exists to be found. Audit existing sixth-man topics against this, starting with `tailor.dialogue` `the_sixth_jacket`. That topic has Pruitt say the sixth coat was "already provided," hanging in cedar "since his grandfather's winter." Decide whether that reads as an unanswered question (allowed) or as a planted clue toward an answer (not allowed).
-6. **The birch victims:** the build already places them apart from the rose garden, which matches v18. No change is needed. Covered-body and case-file wording must never attribute their deaths to the no-exit-wound method.
-7. **Offshore scenery:** the build shows "the offshore whaling station" as unreachable scenery, but Bible v18 (Part Two, What the Mud Took) has the station buried whole. Confirm the silhouette reads as ruins on the drowned island, not a standing station.
-8. **Geography text:** any player-facing reference to place must fit Miskatonic County, Massachusetts, north of Boston (Bible v18, Part Two). The corpus is already clean of other Lovecraft names; keep it that way.
+- **The Ophion meaning is out of Chapter One.** `local_historian` `dr_fenn_library`'s annotations branch now describes Fenn's foreign catalogue citations and trips abroad for reading, granting `fenn_bibliographic_trail`. `displaced_god_doctrine` is gone. `ship_origin` and `tailor` `pruitt_family_naming` stay name-only.
+- **Flask, badge and whistle are lost together on the retreat** (Part Three, Tunnel Retreat).
+- **Observers are named:** Abel Tavares (groundskeeper, `crew`), Manuel Silva (harbor mason, `harbor_observer`), Enoch Vane (sail mender, `waterfront_sail_mender`), each with a colored-metal tell.
+- **The old woman appears later** (Part Three, Story Actors).
+- **The sixth man is investigable but unanswered.** Krebs now cut all six coats; the sixth was paid in cash to paper measurements, with no name and no fitting. `the_sixth_jacket` (the "grandfather's winter" line) stays `GATE: never`.
+- **Offshore scenery** reads as buried (Part Two).
+
+**Still open:**
+
+1. **Law 5: two harbor-mason lines explain what the Bible allows only as a glimpse.**
+   - `harbor_observer` `drowned_island`: "Our grandfathers learned in a single night what looking at that water costs… The insurance paid the big houses on the hill; the sea kept the men." This states the Observers' origin and the two inheritances outright.
+   - `the_ring`: "To remind the eye what belongs to the daylight." This explains the color tell, which the Bible says only the tell itself may carry.
+   - Rewrite both as refusals or glimpses. **(author call)**
+2. **Scenery line out of date:** in `harbor_observer` `drowned_island`, Walter still says "The try-works buildings are still standing above the mud." The station now reads as buried.
+3. **Abel's tell:** the build has "the dull copper band on his wrist." The Bible and the novellas have a colored **ring**. Align one to the other. **(author call)**
+4. **The retreat card** (`tunnel_story.gd` `RETREAT`) says "The badge tears loose from its pin" even when the badge was pocketed under the plain coat. It needs coat-aware wording.
+5. **Pronoun:** `story.gd`'s `testimony` fact still calls the coroner's assistant "He." The model is now female.
+6. **Notebook labels:** two `harbor_observer` notebook lines (`observer_island_1`, `observer_pantry_refusal`) still call Manuel Silva "Mason"/"Harbor mason."
+7. **Morgue coroner line:** `morgue_coroner.dialogue` puts stage directions ("The coroner spreads his hands…") in `THE CORONER`'s mouth, with a violin voice cue. It should be a bracketed stage direction or narration line, and silent.
+8. **Birch victims and geography:** no change needed. Covered-body and case-file wording must never attribute the mother and son's deaths to the no-exit-wound method, and player-facing place references must fit Miskatonic County, Massachusetts, north of Boston.
+
+**1918: optional content** (Bible v18, Part Two, "1918"). This is texture only. It follows the Bible's guardrails: never connected to the entity, no set piece, and no character naming the cough as influenza. Candidate places, all optional and all author calls:
+
+- **Father Behan:** a parish burial list or register page with an October 1918 cluster, reachable through his existing topics.
+- **County clerk / registrar:** the 1918 death register as a document Walter can consult. One or two entries of the cult's earlier victims can sit there under a cause that doesn't hold up. Only one lead may come from this, and it must be backed by a second source (Laws 4 and 13).
+- **Dr. Fenn:** a run of death certificates from October 1918 in his hand, next to the certificate he signed for Constance. This is an object/record, not dialogue.
+- **Set dressing:** a faded quarantine notice pasted under a newer bill on Pickman Street or at the post office; a churchyard corner with 1918 dates; masks at the back of a drawer in Walter's room or at Mrs. Almy's.
+- **Ambient lines:** at most one or two residents' `default` lines touching the autumn of 1918 in passing (a lost child, a closed school), never explaining it.
+  - Ready to place: *"Six in one night. Haven't seen the undertaker's wagon that busy since October of '18."*
+    - Give it to one Pickman Street resident as a weighted `default`, gated to the first day or two after the deaths, so it plays as fresh news and then fades.
+    - "Six" is deliberate. The townsperson repeats the town's count, not the true eight.
+- **The morgue's six tables:** a town this size would normally keep one or two. The extra tables were added during the influenza, so the room built for the last catastrophe fits this one exactly. Nobody in the game points this out. It can surface through:
+  - *Examine text on the tables* (a morgue object hotspot): *"Six tables. Four newer than the others, the enamel still bright. The county put them in during the autumn of '18 and never took them out."*
+  - *One flat, work-detail line from the coroner's assistant* in a morgue topic: *"We ran two tables until '18. The county added the rest that October."*
+  - *Optional, author call:* a small brass plate on the newer tables naming the Ophion Club as donor. It's the kind of civic gift the six would have made after 1918, and the kind the Gazette would have praised them for. It must only ever be findable, never remarked on, the same treatment as the Observers' color tell. It's close to too neat, so use it only if it still reads as coincidence in play.
 
 # Part Five — Decisions Needed
 
@@ -383,9 +427,8 @@ These need an author decision before build work can proceed. Nothing else in thi
 
 - **Publishing is dormant.** See Part Two. This blocks the cold playtest.
 - **Telemetry timestamps.** Client-side timestamps from the Web export have been observed roughly a day off. `playthrough_log.gd` stamps with `Time.get_datetime_string_from_system(true)`, and the Worker stores the value verbatim. Root cause unconfirmed. Until it's fixed, telemetry dates can't be cross-checked against itch.io counts.
-- **Portal `TIME:` doc drift.** `portal_lang.gd`'s header comment and `docs/PORTAL_AUTHORING.md` (the metadata table and the "Completion, consequences, evidence, and time" section) still say an omitted `TIME:` defaults to 3 minutes. Since the per-trip charging fix, an omitted `TIME:` falls through to `_travel()`'s automatic path instead. Find out what that path actually charges, then correct both.
-- **`narrative_threads.txt` is stale.** This repo-root gate dump still shows self-referencing guards (for example `NOT topic_done(almy, almy_trust)`) that no longer exist in live source. External gate reviewers could audit logic that's no longer there. Regenerate it as part of the QA run, or delete it.
-- **Missable-NPC audit runs against the old corpus.** The twelve-route backup audit was done at 42 dialogue files (now 72), before the self-guard removal. The twelve backup topics have never been walked by name. A scripted reachability test that asserts each backup topic can fire on at least one route should run before the cold playtest.
+- **Backup routes.** `tests/backup_route_flow.gd` verifies that all 13 redundant-carrier backup topics are reachable, gate against the primary evidence being absent, and grant the intended evidence. A scripted check that the three investigative threads have no content-level soft locks is still open.
+- **Orphaned coroner model.** `coroner_model.gd`/`coroner.glb` is still preloaded in `estate.gd` and `chapter_one_dialogue.gd` and still has its own suite (`tests/coroner_model_flow.gd`), but nothing instantiates it since the coroner's-assistant model replaced it. Either remove it or give it to the morgue coroner, who currently has no rendered figure (confirm that too).
 - **Conversation/travel time scale.**
   - `DEFAULT_MINUTES` is 5.0, and every corpus `TIME:` carries a +2 adjustment.
   - `TRAVEL_MINUTES` is 30.0. `day_clock.gd`'s `CONVERSATION_MINUTES = 30.0` applies only to a small enumerated list of legacy story scenes.
@@ -416,15 +459,17 @@ The Bible is the authority; this list is a build-facing index of canon points th
   - "No exit wound" belongs only to the six; the mother and son are never counted among its dead.
 - **The two official records.** The sanitized replacement file names the six (as a gas-main failure) and omits the mother and son. A separate, unconnected county record names them under "transients." Walter's investigation is what recovered their names.
 - **The six are dead from the opening** in all three Chapter One tellings (`01`, `04`, `08`). The investigation is posthumous.
-- **The sixth man is never named anywhere.** He can be investigated, but nothing implies a name exists.
+- **The sixth man is never named anywhere.** He can be investigated, but nothing implies a name exists. The tailor, Krebs, cut all six club coats; the sixth was paid in cash to paper measurements, with no name given.
 - **Ekon Freeman** was born about 1902 and was 21 and living independently in 1923, working the New Bedford yards when his mother went north to Widow's Bight without him. He is about 40 in Chapter Three: a veteran who served and was discharged. His first name comes from his mother's free Black whaling line. The discharge's historical basis is a content-pass research task.
 - **Ward's book** was bought secondhand from a Boston dealer before his posting. It is Fenn's copy, with Fenn's underlining and Ward's annotations.
 - **The Ophion meaning:** Chapter One gets the name only; the myth reaches the player through the book.
 - **The glass-shatter crack** falls at Chapter One's climax in every telling and in the build: the frame widens, color returns, then the glass breaks. The cough may sound before it; nothing else may. `08`'s earlier washstand moment is now a silent near-miss, not the crack.
 - **Walter's effects:** badge, flask and whistle are lost together on the retreat in all three tellings, and found together by Ward and Ekon.
-- **Abel Tavares** is the young estate-crew member with the colored ring in Chapter One, the continuity Observer across all three decades.
+- **Abel Tavares** is the young estate-crew member with the colored ring in Chapter One, the continuity Observer across all three decades. In the build he is the groundskeeper (`crew`). Other named Observers: Manuel Silva (harbor mason) and Enoch Vane (sail mender).
 - **Sarah Munn** is named in all three Chapter One tellings. The older vanished "kitchen maid" remains deliberately unnamed and distinct from her.
 - **Walter lodges** in a rented room above the cobbler's shop on Pickman Street.
+- **Constance's illness has two phases.** Before the war it was chronic and ambiguous, enough to earn Walter his 1917 exemption, and never settled as illness vs. control. From the autumn of 1918 she survived the influenza and was bedridden for the "four winters" until her death eleven months before Chapter One. The cough Walter remembers comes from 1918; nothing in the game says so.
+- **1918** is shared background for everyone alive in the story. It is never connected to the entity, and no character names the cough as influenza.
 - **Geography:** Widow's Bight is on the Massachusetts coast north of Boston, in Miskatonic County, and reached by packet north. The county registrar sits at the county seat, and the paper is the Miskatonic Gazette. New Bedford is a hundred-odd miles down the coast.
 - **Ekon's death in `10`** is unambiguous: he has lit the fuse and chosen collapse over retreat, a choice neither Walter (turned back) nor Ward (kept by the tunnel) was lucid enough to make.
 
@@ -437,11 +482,11 @@ Unchanged production direction: *validate and improve the first 30 minutes of in
 In priority order:
 
 1. **Restore a publish path** (Part Two): a `workflow_dispatch` or artifact-upload step for Pages, plus a deliberate merge-and-publish checkpoint the author signs off. Nothing below can reach an outside tester without this.
-2. **Reachability test for the twelve backup routes** (Part Six), then a scripted pass confirming no content-level soft locks across the three threads.
+2. **Scripted soft-lock pass across the three investigative threads.** The backup-route reachability test has landed (Part Six).
 3. **A cold playthrough of the development build by someone confirmed not to be the author.** Focus it on whether the opening 30 minutes' three investigative threads land.
    - The placeholder-model deterrent that blocked a known candidate playtester is largely addressed on this branch.
    - Whether it changes that playtester's answer hasn't been re-tested.
-4. **Bible v18 alignment** (Part Four), items 1–3 first, since they touch what a cold player sees in the opening.
+4. **Remaining Bible v18 alignment** (Part Four, "Still open"), items 1–2 first, since the harbor mason is reachable in the opening.
 5. **Address whatever the cold playthrough surfaces** in the opening 30 minutes before touching anything past it.
 6. **Telemetry timestamp defect** (Part Six). Fix it before relying on telemetry dates from outside players.
 7. **Web-profile comparison** of the district texture pass against the pre-texture baseline (load time and memory), on a published build.
@@ -453,7 +498,7 @@ In priority order:
     - Stage 3, backup routes: authored.
     - Stage 4, ambient eavesdropping: deferred.
     - Stage 5, the pocket watch: shipped.
-11. **Housekeeping:** `narrative_threads.txt`, portal `TIME:` doc drift, the bridge cooldown test, `docs/qa/` and repo-root triage.
+11. **Housekeeping:** the orphaned coroner model, the bridge cooldown test, `docs/qa/` and repo-root triage.
 
 **Explicitly not current priorities:**
 

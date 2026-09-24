@@ -103,3 +103,25 @@ Scope: point this register at the current authorities (**Design Bible v18** and 
 - **New drift found:** repo-root `narrative_threads.txt` still shows self-referencing `NOT topic_done(npc, this_topic)` guards that the live `.dialogue` corpus no longer contains (a script check found zero). Logged in TDD v46 Part Six.
 - **Character heights (resolved by the author):** scale is settled and coherent in play. TDD v46 and `docs/ARCHITECTURE.md` now record scale factors and relative stature, not absolute heights. The `.gd` header comments still quote heights from earlier scale passes; rewriting them is in `docs/qa/CODEX_PROMPT_bible_v18_alignment.md` item 10.
 - **Also fixed in `docs/ARCHITECTURE.md`:** it said the morgue coroner's assistant "is not yet given this treatment." Live `chapter_one_dialogue.gd` renders `coroners_assistant_morgue` with `CoronerModel.create()`, as TDD v46 states.
+
+## 2026-09-23 pass (third): commit `120a488` folded into TDD v46
+
+- **Baseline:** 73 NPCs / 462 topics (`tests/dialogue_catalog_flow.gd`), 739 voiced lines (`tests/instrument_voice_flow.gd`), 38 suites, all passing on a full run after `120a488`.
+- **Resolved:**
+  - portal `TIME:` doc drift (`portal_lang.gd` header and `docs/PORTAL_AUTHORING.md` now describe delegation to `_travel()`);
+  - stale `narrative_threads.txt` (deleted);
+  - flask timing (lost on the retreat);
+  - Ophion meaning in `dr_fenn_library` (removed);
+  - unnamed Observers (Abel Tavares, Manuel Silva, Enoch Vane);
+  - old woman gating;
+  - offshore scenery;
+  - stale height comments.
+- **New drift, logged in TDD v46 Part Four ("Still open"):**
+  - two harbor-mason lines state what Law 5 reserves for a glimpse;
+  - Walter's "try-works buildings are still standing" line contradicts the buried scenery;
+  - Abel's copper wrist band vs. the Bible's ring;
+  - the retreat card's "pin" wording under the plain coat;
+  - `story.gd` calls the now-female coroner's assistant "He";
+  - "Mason" in two notebook lines;
+  - the morgue coroner's stage direction voiced as speech.
+- **`docs/ARCHITECTURE.md` is now out of date** in its coroner entry. It says the morgue assistant renders with `CoronerModel.create()`, but since `120a488` both assistant identities use `coroners_assistant_model.gd`. Corrected in the same pass.
