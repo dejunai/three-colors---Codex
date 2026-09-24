@@ -5,7 +5,7 @@ LOCATION: estate
 TOPIC: default
   GATE: lounge_exited AND NOT topic_done(crew, default)
   TAG: crew
-  THE KITCHEN WING YARD: "A groundskeeper stacks crates beside a banked fire, working fast in the cold, the dull copper band on his wrist catching the ember-light. The service door stands a few feet off. He never sets a crate nearer to it than the last."
+  THE KITCHEN WING YARD: "A groundskeeper stacks crates beside a banked fire, working fast in the cold, the dull copper ring on his hand catching the ember-light. The service door stands a few feet off. He never sets a crate nearer to it than the last."
   WALTER CORWIN: "Something wrong with the door?"
   VOICE: trombone_cautious_long_v1
   ABEL TAVARES: "Uneven step. Easy to turn an ankle in this light.\n\nMind the same on your way out."

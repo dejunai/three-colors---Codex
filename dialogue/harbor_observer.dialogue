@@ -93,7 +93,7 @@ TOPIC: estate_grounds_crew
   WALTER CORWIN: "The stone wasn't soft. It was dry granite."
   VOICE: trombone_haunting_medium_v1
   MANUEL SILVA: "Granite rots too, if you give it reasons.\nWe mend what holds boats. What sits beneath cellars isn't our trade."
-  NOTEBOOK: observer_pantry_refusal | "Harbor mason on grounds crew avoiding pantry: 'A sensible man doesn't put his hand where the stone is soft.'"
+  NOTEBOOK: observer_pantry_refusal | "Manuel Silva, asked about the harbor men on the estate crew who won't go near the pantry door: 'A sensible man doesn't put his hand where the stone is soft.'"
   EVIDENCE: observer_stone_discipline
 
 TOPIC: drowned_island
@@ -104,26 +104,27 @@ TOPIC: drowned_island
   WALTER CORWIN: "Nobody takes dories out to the old whaling ruins anymore."
   VOICE: trombone_dismissive_short_v1
   MANUEL SILVA: "Nothing out there to catch."
-  WALTER CORWIN: "The try-works buildings are still standing above the mud."
+  WALTER CORWIN: "There's a chimney standing up out of the mud. Somebody built a station out there once."
   VOICE: trombone_neutral_short_v2
-  MANUEL SILVA: "Standing isn't the same as welcoming."
+  MANUEL SILVA: "Somebody did."
   [He resumes chipping, steady, flat strikes without anger or haste.]
   VOICE: trombone_haunting_long_v2
-  MANUEL SILVA: "Our grandfathers learned in a single night what looking at that water costs.\nThose who came back couldn't tell the same story twice.\nThe insurance paid the big houses on the hill; the sea kept the men.\nWe leave the mud where it settled."
-  NOTEBOOK: observer_island_1 | "Mason on the drowned island: 'Our grandfathers learned in a single night what looking at that water costs... We leave the mud where it settled.'"
+  MANUEL SILVA: "My grandfather never went out past the point. Neither did his.\nWe leave the mud where it settled."
+  NOTEBOOK: observer_island_1 | "Manuel Silva on the drowned island: three generations of his family have not gone out past the point. 'We leave the mud where it settled.' He offered nothing further."
   EVIDENCE: island_memory
 
 TOPIC: the_ring
   GATE: coat = plain
   TAG: observer_ring
-  LABEL: "Ask about the copper ring on his hand"
-  WALTER CORWIN: "That copper band on your hand. The observers on the water have worn those colored links since long before I was born."
-  [The mason turns his hand slightly, the reddish-brown metal familiar against the grey stone, worn smooth by decades of granite work.]
+  LABEL: "Ask about the ring on his hand"
+  [The mason turns his hand slightly: a flattened copper ring, worn smooth by decades of granite work.]
+  WALTER CORWIN: "That ring. I've seen the same on others down here."
   VOICE: trombone_neutral_medium_v1
-  MANUEL SILVA: "An anchor link beaten flat. Worn since my father's time, and his father before him."
-  WALTER CORWIN: "The old people along the slipway say the observers wear them for a purpose."
+  MANUEL SILVA: "An anchor link, beaten flat. My father wore it. His father before him."
+  WALTER CORWIN: "What's it for?"
+  [He looks at the ring, then at Walter, and goes back to the stone.]
   VOICE: trombone_bureaucratic_long_v2
-  MANUEL SILVA: "To remind the eye what belongs to the daylight.\n\nYou ask a great many questions, Officer.\nYou should ask yourself sometime whether you're trying to solve this town or just trying to become the next thing it forgets."
-  NOTEBOOK: observer_ring_1 | "The harbor observers have worn colored anchor links for generations to 'remind the eye what belongs to daylight.' Warned Walter against asking too far."
+  MANUEL SILVA: "It's for wearing, Officer.\n\nYou ask a great many questions.\nYou should ask yourself sometime whether you're trying to solve this town or just trying to become the next thing it forgets."
+  NOTEBOOK: observer_ring_1 | "Manuel Silva wears a flattened copper anchor link as a ring, passed father to son for three generations. He would not say what it was for, and warned Walter against asking too far."
   EVIDENCE: observer_color_tell
 
