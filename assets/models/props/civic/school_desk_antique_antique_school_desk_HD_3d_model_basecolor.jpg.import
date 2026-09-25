@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c07w2odsi3b75"
-path="res://.godot/imported/oval_metal_tin_plain_tripo_image_4475e622-3abc-4962-95f6-882be44286dc_0.jpg-96e41a84a667882a278dfecfeb4a8c10.ctex"
+uid="uid://d14u8p07wo8sw"
+path="res://.godot/imported/school_desk_antique_antique_school_desk_HD_3d_model_basecolor.jpg-d9ba2437e9ef2d3d50a62a1048353fde.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "967bee48bd2f88debb7fac63a886231b"
+"md5": "cf98fc07f11e00c5152993ca1a91685c"
 }
 
 [deps]
 
-source_file="res://assets/models/props/common/oval_metal_tin_plain_tripo_image_4475e622-3abc-4962-95f6-882be44286dc_0.jpg"
-dest_files=["res://.godot/imported/oval_metal_tin_plain_tripo_image_4475e622-3abc-4962-95f6-882be44286dc_0.jpg-96e41a84a667882a278dfecfeb4a8c10.ctex"]
+source_file="res://assets/models/props/civic/school_desk_antique_antique_school_desk_HD_3d_model_basecolor.jpg"
+dest_files=["res://.godot/imported/school_desk_antique_antique_school_desk_HD_3d_model_basecolor.jpg-d9ba2437e9ef2d3d50a62a1048353fde.ctex"]
 
 [params]
 

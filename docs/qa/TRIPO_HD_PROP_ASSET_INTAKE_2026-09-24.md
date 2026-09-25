@@ -1,13 +1,13 @@
 # Tripo HD Prop Asset Intake — 2026-09-24
 
-Eighteen lower-poly Tripo HD exports were visually audited, imported under stable asset names, and validated in an isolated Godot project. The untouched export files were moved from the project root to `archive/`. The author reports that this HD/lower-poly generation path is faster, includes textures on its first pass, produces materially better results, and costs less than the earlier workflow; those workflow comparisons are author-reported rather than independently measured here.
+Twenty-one lower-poly Tripo HD exports were visually audited. Twenty distinct props were imported under stable asset names and validated in an isolated Godot project; `faceted+metal+box+3d+model.glb` duplicated the menthol tin and remains archive-only. The untouched export files were moved from the project root to `archive/`. The author reports that this HD/lower-poly generation path is faster, includes textures on its first pass, produces materially better results, and costs less than the earlier workflow; those workflow comparisons are author-reported rather than independently measured here.
 
 ## Active assets
 
 | Category | Active asset | Archived source export |
 | --- | --- | --- |
 | Common | `assets/models/props/common/wall_clock_body.glb` | `analog+clock+3d+model.glb` |
-| Common | `assets/models/props/common/oval_metal_tin_plain.glb` | `faceted+metal+box+3d+model.glb` |
+| Duplicate (archive only) | — | `faceted+metal+box+3d+model.glb` |
 | Common | `assets/models/props/common/metal_storage_box.glb` | `metal+storage+box+3d+model.glb` |
 | Domestic | `assets/models/props/domestic/cloth_pile.glb` | `cloth+pile+3d+model.glb` |
 | Domestic | `assets/models/props/domestic/menthol_tin.glb` | `menthol+metal+box+3d+model.glb` |
@@ -22,6 +22,9 @@ Eighteen lower-poly Tripo HD exports were visually audited, imported under stabl
 | Civic | `assets/models/props/civic/clerk_nameplate.glb` | `stone+nameplate+3d+model.glb` |
 | Civic | `assets/models/props/civic/filing_drawer_wide.glb` | `wide+drawer+3d+model.glb` |
 | Civic | `assets/models/props/civic/filing_cabinet_wide.glb` | `wide+metal+filing+cabinet+3d+model.glb` |
+| Civic | `assets/models/props/civic/school_desk_antique.glb` | `antique+school+desk+HD+3d+model.glb` |
+| Civic | `assets/models/props/civic/filing_drawer_single.glb` | `metal+file+cabinet+drawer+3d+model.glb` |
+| Civic | `assets/models/props/civic/filing_cabinet_single.glb` | `metal+filing+cabinet+3d+model.glb` |
 | Estate | `assets/models/props/estate/pantry_door_boarded_hd.glb` | `pantry+boarded+up+3d+model.glb` |
 | Estate | `assets/models/props/estate/pantry_door_cleared_hd.glb` | `pantry+door+un-boarded+3d+model.glb` |
 
@@ -29,6 +32,6 @@ Eighteen lower-poly Tripo HD exports were visually audited, imported under stabl
 
 ## Direct audit
 
-All 18 assets contain one mesh and one material. Triangle counts range from 1,665 to 2,406. Twelve use 1024×1024 embedded textures and six use 2048×2048 textures. Direct Godot renders confirmed readable silhouettes and textures; the cabinet and drawer are separate resources, both morgue-table variants remain distinct, and the clock body is suitable for separate runtime-driven hands. The assets and HD pantry state scene load successfully in Godot. They are processed resources but have not yet been placed into gameplay scenes.
+All 20 active assets contain one mesh and one material. Triangle counts range from 1,665 to 2,406. Fifteen use 1024×1024 embedded textures and five use 2048×2048 textures. Direct Godot renders confirmed readable silhouettes and textures. The antique desk retained its cast-iron scrollwork, attached seat, shelf, and inkwell. The single cabinet has the intended open top bay, and its loose drawer has complete sides and hardware. The cabinet and drawer are separate resources and were normalized independently by Tripo, so their matching scale should be tuned during scene placement. Both morgue-table variants remain distinct, and the clock body is suitable for separate runtime-driven hands. The assets and HD pantry state scene load successfully in Godot. They are processed resources but have not yet been placed into gameplay scenes.
 
 `archive/.gdignore` remains the archive boundary; archived exports are preserved for provenance and excluded from Godot resource scanning.
