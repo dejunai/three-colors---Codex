@@ -8,3 +8,4 @@ tools/edge_user_data/
 tools/server_log.txt
 build/web/
 cloudflare/three-colors-worker/.wrangler/
+Claude outputs/

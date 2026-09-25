@@ -10,6 +10,8 @@ var board_threads: Array[MeshInstance3D] = []
 var glass_shattered := false
 var behan_actor: Node3D
 var steward_actor: Node3D
+var pantry_door_states: Node3D
+var interior_collision_root: Node3D
 const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
 const FatherBehanModel = preload("res://scripts/shared/father_behan_model.gd")
 const StewardModel = preload("res://scripts/shared/steward_model.gd")
@@ -42,6 +44,7 @@ const PROP_POST_COUNTER = "res://assets/models/props/civic/post_office_counter.g
 const PROP_POST_PIGEONHOLES = "res://assets/models/props/civic/post_office_pigeonholes.glb"
 const PROP_DISPLAY_RECTANGULAR = "res://assets/models/props/civic/display_case_rectangular.glb"
 const PROP_DISPLAY_SLOPED = "res://assets/models/props/civic/display_case_sloped.glb"
+const PROP_PANTRY_DOOR_STATES = "res://assets/models/props/estate/pantry_door_states_hd.tscn"
 
 func district_box(parent: Node3D, position: Vector3, size: Vector3, tint: String, solid: bool = false, kind: String = "soot_brick") -> MeshInstance3D:
 	return DistrictSurfaces.apply(box(parent, position, size, tint, solid), kind, tint)
@@ -84,7 +87,9 @@ func _lighting(inside:bool) -> void:
 			light.light_energy = 1.2
 			light.omni_range = 11
 			add_child(light)
-			cylinder(self,Vector3(x,3.3,-2),0.4,0.2,"b3b29f",0.22)
+			var shade := cylinder(self,Vector3(x,3.3,-2),0.4,0.2,"b3b29f",0.22)
+			shade.name = "InteriorLampShade"
+			shade.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 func _door(x:float, title:String, id:String, visual_parent:Node3D = null) -> void:
 	if visual_parent == null:
@@ -215,27 +220,55 @@ func _room_shell() -> void:
 	# Cutaway doorway keeps the third-person view into the room clear.
 	target("interior_exit","Return to Pickman Street",Vector3(0,0,7.2))
 
-func _place_prop(packed_path: String, prop_name: String, pos: Vector3, prop_scale: Vector3, angle: float = 0.0, collision_size: Vector3 = Vector3.ZERO) -> Node3D:
+func _place_prop(packed_path: String, prop_name: String, pos: Vector3, prop_scale: float, angle: float = 0.0, collision_size: Vector3 = Vector3.ZERO) -> Node3D:
+	assert(prop_scale > 0.0, "Prop scale must be a positive uniform factor: " + prop_name)
 	var packed := load(packed_path) as PackedScene
 	assert(packed != null, "Failed to load prop: " + packed_path)
 	var prop := packed.instantiate() as Node3D
 	assert(prop != null, "Prop scene root must be Node3D: " + prop_name)
 	prop.name = prop_name
 	prop.position = pos
-	prop.scale = prop_scale
+	prop.scale = Vector3.ONE * prop_scale
 	prop.rotation.y = angle
 	add_child(prop)
+	# Rendered assets stay presentation-only. Simple sibling bodies preserve the
+	# traversal footprint without coupling collision to imported mesh transforms.
 	if collision_size != Vector3.ZERO:
+		if not is_instance_valid(interior_collision_root):
+			interior_collision_root = Node3D.new()
+			interior_collision_root.name = "LegacyInteriorCollisionVisuals"
+			add_child(interior_collision_root)
 		var body := StaticBody3D.new()
-		body.name = "Collision"
+		body.name = prop_name + "Collision"
+		body.position = pos
+		body.scale = Vector3.ONE * prop_scale
+		body.rotation.y = angle
 		var shape := BoxShape3D.new()
 		shape.size = collision_size
 		var collision := CollisionShape3D.new()
 		collision.shape = shape
 		collision.position = Vector3(0, collision_size.y * 0.5, 0)
 		body.add_child(collision)
-		prop.add_child(body)
+		interior_collision_root.add_child(body)
 	return prop
+
+func _place_chair(prop_name: String, pos: Vector3, prop_scale: float, angle: float = 0.0) -> Node3D:
+	# Keep chair placement angles literal so the visible seat faces its work surface.
+	return _place_prop(PROP_CHAIR,prop_name,pos,prop_scale,angle)
+
+func _book_stack(pos: Vector3) -> Node3D:
+	var stack := Node3D.new()
+	stack.name = "PrecinctBookStack"
+	stack.position = pos
+	add_child(stack)
+	for spec in [
+		[Vector3(0,0.035,0),Vector3(0.66,0.07,0.42),"3e4b45",0.03],
+		[Vector3(0.04,0.105,-0.01),Vector3(0.58,0.07,0.38),"596052",-0.025],
+		[Vector3(-0.02,0.175,0.02),Vector3(0.62,0.07,0.40),"424943",0.015],
+	]:
+		var book := box(stack,spec[0],spec[1],spec[2])
+		book.rotation.y = spec[3]
+	return stack
 
 func _desk(pos:Vector3,size:Vector3=Vector3(3,0.16,1.4)) -> void:
 	box(self,pos+Vector3(0,0.95,0),size,"687c5c",true)
@@ -256,16 +289,17 @@ func _chair(pos:Vector3,angle:float=0) -> void:
 
 func _precinct() -> void:
 	lettering("PRECINCT 4  ·  INTAKE",Vector3(0,3.3,-7.6),46)
-	_place_prop(PROP_PRECINCT_COUNTER,"PrecinctIntakeCounter",Vector3(0,0,-2.5),Vector3(6.2,3.75,2.9),0.0,Vector3(1,0.28,0.48))
-	_place_prop(PROP_CHAIR,"PrecinctClerkChair",Vector3(0,0,-4.2),Vector3.ONE*1.2,PI,Vector3(0.59,1,0.51))
-	_place_prop(PROP_FILING_SINGLE,"PrecinctFilesSingle",Vector3(-7.1,0,-6.35),Vector3.ONE*2.6,0.0,Vector3(0.38,1,0.45))
-	_place_prop(PROP_FILING_WIDE,"PrecinctFilesWide",Vector3(7.0,0,-6.15),Vector3.ONE*2.5,0.0,Vector3(0.75,1,0.8))
-	_place_prop(PROP_DESK_LONG,"PrecinctSideDesk",Vector3(-5,0,1),Vector3(2.6,2.2,3.1),PI/2,Vector3(0.5,0.44,1))
-	_place_prop(PROP_CHAIR,"PrecinctSideChair",Vector3(-5,0,2.2),Vector3.ONE*1.15,0.0)
-	_place_prop(PROP_DESK_LAMP,"PrecinctDeskLamp",Vector3(-5.65,0.98,0.85),Vector3.ONE*0.65,0.0)
-	_place_prop(PROP_BINDERS,"PrecinctBinderStack",Vector3(-4.45,0.98,0.9),Vector3.ONE*0.65,0.0)
+	for x in [-1.78,1.78]:
+		_place_prop(PROP_PRECINCT_COUNTER,"PrecinctIntakeCounter"+("Left" if x < 0 else "Right"),Vector3(x,0,-2.5),3.55,0.0,Vector3(1,0.28,0.48))
+	_place_chair("PrecinctClerkChair",Vector3(0,0,-4.2),1.2,PI)
+	_place_prop(PROP_FILING_SINGLE,"PrecinctFilesSingle",Vector3(-7.1,0,-6.35),2.6,0.0,Vector3(0.38,1,0.45))
+	_place_prop(PROP_FILING_WIDE,"PrecinctFilesWide",Vector3(7.25,0,-6.4),2.5,0.0,Vector3(0.75,1,0.8))
+	_place_prop(PROP_DESK_LONG,"PrecinctSideDesk",Vector3(-5,0,1),2.25,PI/2,Vector3(0.5,0.44,1))
+	_place_chair("PrecinctSideChair",Vector3(-5,0,2.2),1.15,0.0)
+	_place_prop(PROP_DESK_LAMP,"PrecinctDeskLamp",Vector3(-5.65,0.98,0.85),0.65,0.0)
+	_book_stack(Vector3(-4.45,0.99,0.9))
 	for z in [0,2,4]:
-		_place_prop(PROP_CHAIR,"PrecinctWaitingChair"+str(z),Vector3(7,0,z),Vector3.ONE*1.15,PI/2)
+		_place_chair("PrecinctWaitingChair"+str(z),Vector3(7,0,z),1.15,PI/2)
 	box(self,Vector3(6.8,2.3,7.78),Vector3(2.2,1.5,0.1),"374d37")
 	target("intake_clerk","Speak with the intake clerk",Vector3(0.4,0,-2.5))
 	target("intake","Submit the estate report",Vector3(0,0,-1.3))
@@ -301,15 +335,14 @@ func _boardinghouse() -> void:
 	tabletop_target("lodging","Examine the meal ledger",Vector3(6.3,1.9,2),ledger_cabinet)
 
 func _corwin_room() -> void:
-	# The rendered furnishings preserve the original interaction anchors while giving
-	# Corwin's room a readable domestic silhouette at gameplay distance.
-	_place_prop(PROP_METAL_BED,"CorwinBed",Vector3(-5.5,0,-3.1),Vector3.ONE*4.2,PI/2,Vector3(1,0.5,0.72))
-	_place_prop(PROP_DESK_LONG,"CorwinDesk",Vector3(3.5,0,-4),Vector3(2.8,2.2,3.8),PI/2,Vector3(0.5,0.44,1))
-	_place_prop(PROP_CHAIR,"CorwinDeskChair",Vector3(3.5,0,-2.7),Vector3.ONE*1.2,0.0)
-	_place_prop(PROP_RADIATOR,"CorwinRadiator",Vector3(-8.35,0,1.0),Vector3.ONE*2.8,0.0,Vector3(0.19,0.56,1))
-	_place_prop(PROP_WASHSTAND,"CorwinWashstand",Vector3(-6.25,0,5.45),Vector3.ONE*1.4,PI/2,Vector3(0.78,0.9,1))
-	_place_prop(PROP_WASH_BASIN,"CorwinWashBasin",Vector3(-6.25,1.26,5.45),Vector3.ONE*0.65,0.0)
-	_place_prop(PROP_WASH_PITCHER,"CorwinWashPitcher",Vector3(-5.75,1.26,5.45),Vector3.ONE*0.45,0.0)
+	# Uniform scale follows real-world height; the room keeps the original interaction anchors.
+	_place_prop(PROP_METAL_BED,"CorwinBed",Vector3(-5.5,0,-3.6),2.4,PI/2,Vector3(1,0.5,0.72))
+	_place_prop(PROP_DESK_LONG,"CorwinDesk",Vector3(3.5,0,-4),2.25,PI/2,Vector3(0.5,0.44,1))
+	_place_chair("CorwinDeskChair",Vector3(3.5,0,-2.7),1.2,0.0)
+	_place_prop(PROP_RADIATOR,"CorwinRadiator",Vector3(-8.35,0,0.5),2.8,0.0,Vector3(0.19,0.56,1))
+	_place_prop(PROP_WASHSTAND,"CorwinWashstand",Vector3(-6.25,0,5.45),1.4,PI/2,Vector3(0.78,0.9,1))
+	_place_prop(PROP_WASH_BASIN,"CorwinWashBasin",Vector3(-6.25,1.26,5.45),0.65,0.0)
+	_place_prop(PROP_WASH_PITCHER,"CorwinWashPitcher",Vector3(-5.75,1.26,5.45),0.45,0.0)
 	box(self,Vector3(0,2.2,-7.64),Vector3(5.8,2.9,0.19),"374b33")
 	box(self,Vector3(0,2.2,-7.50),Vector3(5.4,2.5,0.06),"817d5b")
 	for i in 8:
@@ -323,12 +356,9 @@ func _corwin_room() -> void:
 		var thread=box(self,Vector3(x,2.15,-7.35),Vector3(1.8,0.016,0.018),"343e2a")
 		thread.rotation.z=0.6
 		board_threads.append(thread)
-	# A tumbler with an inch of something in it, left beside the notebook. Kept
-	# inside the room's gray palette until the break: a warm color anywhere in the
-	# world before then would read as the Observers' tell.
 	desk_glass=Node3D.new()
 	desk_glass.name="DeskGlass"
-	desk_glass.position=Vector3(4.75,1.03,-3.5)
+	desk_glass.position=Vector3(4.35,1.0,-3.65)
 	add_child(desk_glass)
 	var tumbler=cylinder(desk_glass,Vector3(0,0.12,0),0.095,0.24,"c3cbc2")
 	var tumbler_material=mat("c3cbc2").duplicate()
@@ -336,13 +366,13 @@ func _corwin_room() -> void:
 	tumbler_material.albedo_color=Color(0.76,0.8,0.76,0.42)
 	tumbler.material_override=tumbler_material
 	whiskey=cylinder(desk_glass,Vector3(0,0.05,0),0.083,0.09,"7e7c6e")
-	var notice_dresser=_place_prop(PROP_WOODEN_DRESSER,"CorwinDresser",Vector3(6.8,0,3.5),Vector3.ONE*2.6,PI/2,Vector3(0.53,0.70,1))
-	box(self,Vector3(6.8,1.84,3.5),Vector3(0.7,0.025,0.45),"c8c7a8")
+	var notice_dresser=_place_prop(PROP_WOODEN_DRESSER,"CorwinDresser",Vector3(6.8,0,3.5),1.45,PI/2,Vector3(0.53,0.70,1))
+	box(self,Vector3(6.8,1.035,3.5),Vector3(0.55,0.025,0.36),"c8c7a8")
 	lettering("",Vector3(0,3.6,-7.35),28)
 	target("board","Consult the case board",Vector3(0,0,-6.2))
 	target("sleep","Turn in for the night",Vector3(-3.4,0,-2.2))
 	target("day_close","Set the notebook down for the evening",Vector3(3.5,0,-2.9))
-	tabletop_target("exemption","Examine the folded notice",Vector3(6.8,1.9,3.5),notice_dresser)
+	tabletop_target("exemption","Examine the folded notice",Vector3(6.8,1.08,3.5),notice_dresser)
 
 # Color returns as materials the film grade already lets through: a red thread
 # (red-dominant, so film.gdshader's preserve band passes it) then amber in the glass.
@@ -410,17 +440,12 @@ func _smoking_lounge() -> void:
 	points.erase("interior_exit")
 	target("lounge_exit","Leave through the service entrance",Vector3(0,0,7.2))
 	lettering("SMOKING LOUNGE",Vector3(0,3.3,-7.6),42)
-	# Two compact seating groups leave clear lanes to the steward, pantry, and exit.
-	for x in [-4.5,4.5]:
-		var side := "Left" if x < 0 else "Right"
-		_place_prop(PROP_TABLE_SQUARE,"LoungeTable"+side,Vector3(x,0,-1.5),Vector3.ONE*1.8,0.0,Vector3(0.87,0.58,1))
-		_place_prop(PROP_ARMCHAIR,"LoungeArmchair"+side+"A",Vector3(x-1.55,0,-1.5),Vector3.ONE*1.25,-PI/2,Vector3(0.69,1,0.70))
-		_place_prop(PROP_ARMCHAIR,"LoungeArmchair"+side+"B",Vector3(x+1.55,0,-1.5),Vector3.ONE*1.25,PI/2,Vector3(0.69,1,0.70))
-	_place_prop(PROP_BOOKSHELF,"LoungeBookshelf",Vector3(6.9,0,-6.85),Vector3.ONE*2.7,PI/2,Vector3(0.27,1,0.70))
-	_place_prop(PROP_CABINET,"LoungeCabinet",Vector3(8.0,0,3.6),Vector3.ONE*1.9,PI,Vector3(0.50,0.80,1))
-	_place_prop(PROP_DISPLAY_SLOPED,"LoungeDisplaySloped",Vector3(-5.8,0,4.65),Vector3.ONE*2.1,PI/2,Vector3(0.51,0.70,1))
-	_place_prop(PROP_DISPLAY_RECTANGULAR,"LoungeDisplayRectangular",Vector3(4.7,0,4.65),Vector3.ONE*2.0,PI/2,Vector3(0.50,0.66,1))
-	_place_prop(PROP_CLOCK,"LoungeWallClock",Vector3(0,1.75,-7.63),Vector3.ONE*1.05,PI/2,Vector3.ZERO)
+	# Keep the club sparse until purpose-built leather seating and bar furniture exist.
+	_place_prop(PROP_BOOKSHELF,"LoungeBookshelf",Vector3(6.9,0,-6.85),2.7,PI/2,Vector3(0.27,1,0.70))
+	_place_prop(PROP_CABINET,"LoungeCabinet",Vector3(8.0,0,3.6),1.9,PI,Vector3(0.50,0.80,1))
+	_place_prop(PROP_DISPLAY_SLOPED,"LoungeDisplaySloped",Vector3(-5.8,0,4.65),2.1,PI/2,Vector3(0.51,0.70,1))
+	_place_prop(PROP_DISPLAY_RECTANGULAR,"LoungeDisplayRectangular",Vector3(4.7,0,4.65),2.0,PI/2,Vector3(0.50,0.66,1))
+	_place_prop(PROP_CLOCK,"LoungeWallClock",Vector3(0,1.75,-7.63),1.05,PI/2)
 	box(self,Vector3(0,0.03,-1),Vector3(4.4,0.03,6),"626957")
 	box(self,Vector3(0,1,-5.8),Vector3(3,2,0.8),"394638",true)
 	steward_actor = StewardModel.create()
@@ -428,18 +453,17 @@ func _smoking_lounge() -> void:
 	steward_actor.rotation.y = PI
 	add_child(steward_actor)
 	target("barman","Speak with the club's steward",Vector3(0,0,-3.6))
-	# The steward's boarded pantry door. Only offered once he has pointed to it;
-	# see sync_pantry() and portals/lounge.portal.
-	box(self,Vector3(-8.78,1.55,-3.0),Vector3(0.12,3.1,1.7),"2a302b")
-	for y in [0.7,1.55,2.4]:
-		var board=box(self,Vector3(-8.62,y,-3.0),Vector3(0.1,0.22,2.0),"5b5f52")
-		if y > 2.0: board.rotation.z=0.11
+	pantry_door_states = _place_prop(PROP_PANTRY_DOOR_STATES,"PantryDoorStates",Vector3(-8.58,0,-3.0),3.1,PI/2,Vector3(0.7145,1,0.3656))
 	target("pantry_door","Examine the boarded pantry door",Vector3(-7.4,0,-3.0))
 
 # The old pantry door exists in the wall from the start. Before the steward
-# names it, curious players can examine the boarded door. Once named, it can be opened.
+# names it, curious players can examine the boarded door. Once forced, the
+# cleared state survives every later round trip through the portal state.
 
-func sync_pantry(open:bool) -> void:
+func sync_pantry(open:bool, cleared:bool = false) -> void:
 	if location != "lounge": return
 	if open: target("pantry_door","Open the boarded pantry door",Vector3(-7.4,0,-3.0))
 	else: target("pantry_door","Examine the boarded pantry door",Vector3(-7.4,0,-3.0))
+	if is_instance_valid(pantry_door_states):
+		pantry_door_states.get_node("Boarded").visible = not cleared
+		pantry_door_states.get_node("Cleared").visible = cleared

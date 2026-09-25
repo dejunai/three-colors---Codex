@@ -82,6 +82,14 @@ func run() -> void:
 	assert(not g.tunnel_checkpoint.is_empty(), "Entering by the pantry door must take the service-stair checkpoint")
 	assert(g.state.portal_state.portal_done("lounge", "pantry_door"))
 
+	# The forced door state is portal history, not a transient room flag. An early
+	# detour through the precinct must never rebuild the boards on return.
+	g._travel("precinct", Vector3(0,0.1,6), 0, false)
+	g._travel("lounge", Vector3(0,0.1,6), 0, false)
+	var pantry_states: Node3D = g.estate.get_node("PantryDoorStates")
+	assert(not pantry_states.get_node("Boarded").visible and pantry_states.get_node("Cleared").visible, "Completed pantry door must stay cleared after precinct-to-lounge round trip")
+	g._travel("tunnel", Vector3(0,0.1,7), 0, false)
+
 	# --- Assertion 1: Flask intact on tunnel entry.
 	assert(g.state.flask == 3 and not g.state.flask_spilled, "Flask must remain intact on tunnel entry")
 	assert(not g.state.dialogue_state.flag("badge_lost"), "Badge must remain intact on tunnel entry")

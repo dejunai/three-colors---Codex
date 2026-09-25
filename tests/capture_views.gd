@@ -174,6 +174,19 @@ func run(g:Node) -> void:
 			g.state.record_link("naomi_address")
 			g._notebook()
 		else: g._travel("estate",Vector3(1,0.1,7.5))
+	if g.capture_mode in ["pantry_boarded","pantry_cleared"]:
+		g.state.day = 3
+		g.state.estate_complete = true
+		g.state.visited.append("almy")
+		if g.capture_mode == "pantry_cleared":
+			g.state.discover("pantry_lead")
+			g.state.portal_state.complete_portal("lounge", "pantry_door")
+		g._travel("lounge",Vector3(0,0.1,2))
+		g.page = "capture"
+		g.model.hide()
+		g.camera.global_position = Vector3(-4.7,1.75,-3.0)
+		g.camera.look_at(Vector3(-8.55,1.45,-3.0))
+		g.set_process(false)
 	if g.capture_mode in ["link_picker","link_positive","link_negative"]:
 		g._travel("room",Vector3(0,0.1,4))
 		for id in ["naomi","lodging","wounds"]: g.state.discover(id)

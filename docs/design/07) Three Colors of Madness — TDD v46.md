@@ -1,10 +1,10 @@
 # THREE COLORS OF MADNESS
 
-## Technical Design Document — v46 (revised 2026-09-24, after commit `45b54b9` and the VS Code doc-sync pass)
+## Technical Design Document — v46 (revised 2026-09-25, after commit `bcbb150` and the Tripo interior-prop intake)
 
 **Internal working document. Not for external distribution. Companion to the Design Bible (v18).**
 
-Dejunai (founder, author/producer; lead on dialogue content specifically) · Claude Sonnet (co-author, co-designer — designed and built the dialogue grammar and interpreter with the author in VS Code, and separate VS Code Claude Sonnet sessions built the object-evidence and portal authoring systems under the author's lead; a Claude session in Cowork maintains this document and the Historical Change Log, and independently verifies claims against live source before they're recorded here) · Codex (core programmer — live integration of the dialogue/object/portal systems into play, interpreter fixes and extensions, world-building, and independent review of new systems against source) · Antigravity (dependency/gate auditing and dialogue-content execution under the author's lead; bug hunting is its designated specialty, not an exclusive lane) · DeepSeek V4 Pro in Bionic (logic-gating review of `.dialogue`/`.object`/`.portal` `GATE:` clauses) · Gemini, Drive-embedded (occasional second logic-gating check) · Manus AI (independent repository audit; the one reviewer able to play the game) · Perplexity (red-team review of docs and code; research support for dialogue content) · Grok-bot-minis (red-team the conceptual commercial release) · Lumo/MetaAI (occasional outside repo assessments) · Copilot 365 (ideation support for dialogue content) · Meshy.AI (3D asset generation under the author's artistic direction). Full role definitions: `AGENTS.md`.
+Dejunai (founder, author/producer; lead on dialogue content specifically) · Claude Sonnet (co-author, co-designer — designed and built the dialogue grammar and interpreter with the author in VS Code, and separate VS Code Claude Sonnet sessions built the object-evidence and portal authoring systems under the author's lead; a Claude session in Cowork maintains this document and the Historical Change Log, and independently verifies claims against live source before they're recorded here) · Codex (core programmer — live integration of the dialogue/object/portal systems into play, interpreter fixes and extensions, world-building, and independent review of new systems against source) · Antigravity (dependency/gate auditing and dialogue-content execution under the author's lead; bug hunting is its designated specialty, not an exclusive lane) · DeepSeek V4 Pro in Bionic (logic-gating review of `.dialogue`/`.object`/`.portal` `GATE:` clauses) · Gemini, Drive-embedded (occasional second logic-gating check) · Manus AI (independent repository audit; the one reviewer able to play the game) · Perplexity (red-team review of docs and code; research support for dialogue content) · Grok-bot-minis (red-team the conceptual commercial release) · Lumo/MetaAI (occasional outside repo assessments) · Copilot 365 (ideation support for dialogue content) · Meshy.AI and Tripo (3D asset generation under the author's artistic direction: Meshy for characters, exteriors and 2D prop isolation; Tripo for interior props). Full role definitions: `AGENTS.md`.
 
 ---
 
@@ -78,7 +78,7 @@ This is a build-status list, not a lore gap. The reference novellas (`08`, `09`,
 
 ## Verification
 
-`python tests/run_all_qa.py` is the maintained aggregate runner. It had **39 suites** as of 2026-09-24 (count the `tests = [...]` entries to re-derive), and all 39 passed on a full run of the working tree after `45b54b9`, including the uncommitted VS Code doc-sync changes.
+`python tests/run_all_qa.py` is the maintained aggregate runner. It has **40 suites** as of `bcbb150` (count the `tests = [...]` entries to re-derive); the fortieth is `tests/interior_prop_dressing_flow.gd`. The last full run this document verified directly was 39/39 on the working tree after `45b54b9`. The 40-suite set has not been re-run by the TDD maintainer.
 
 Standing rule: a suite that times out under the aggregate's process contention is re-run on its own before it is either dismissed or trusted. Leftover headless Godot processes produce false timeouts (`Kill headless tests.cmd` clears them). Genuine failures have also surfaced first as timeouts. The rule exists because it has caught both.
 
@@ -333,10 +333,10 @@ See `docs/LOG_PLAYER_ASK.md` for the schema and privacy constraints. **Open defe
 
 ## Character and Environment Models
 
-All character, cast, corpse, prop and exterior-building models are Meshy-generated under the author's artistic direction. Two corrections are always needed after generation:
+All character, cast, corpse, exterior-building, landscape and waterfront models are Meshy-generated under the author's artistic direction. Interior props come from Tripo (see "Interior props" below). Two corrections are always needed after generation:
 
-- **Scale.** Meshy normalizes every export to a roughly uniform bounding box, so each model is tuned against a known reference.
-- **Texture size.** Raw exports ship with uncompressed 4K dual textures. Production assets are downsampled to 2K, or 1K where acceptable.
+- **Scale.** Both services normalize every export to a roughly uniform bounding box, so each model is tuned against a known reference, in practice Walter.
+- **Texture size.** Raw Meshy exports ship with uncompressed 4K dual textures. Production assets are downsampled to 2K, or 1K where acceptable.
 
 **Named characters**, each with a bespoke model and its own tuned `SCALE_FACTOR`:
 
@@ -365,6 +365,55 @@ All character, cast, corpse, prop and exterior-building models are Meshy-generat
 - The estate's authored gate, rose garden and hedges are unchanged; only two tree/bush clusters were added, at the outer walls.
 - The pass-by-pass records are in `docs/qa/*_MODEL_PASS.md`.
 
+**Interior props (Tripo, 2026-09-24/25):**
+
+- **Pipeline:**
+  1. Grok-bot-mini concept renders of period interiors (`docs/art_reference/renders/`, indexed in `docs/art_reference/PROP_LIST.md`).
+  2. Individual props isolated as clean 2D images in Meshy.
+  3. Image-to-3D in Tripo, using its HD agent tuned to low poly. The author reports this mode is faster, textures in the same pass, gives better results and costs about a quarter as much as the earlier Tripo path. These are the author's figures, not measured here.
+- **Review before import:**
+  - The author selects every candidate.
+  - The TDD maintainer renders each GLB (front, back, untextured) and reads its mesh and texture data.
+  - Codex approves before import.
+- **Where the files live:**
+  - Raw exports stay in `archive/` (behind `.gdignore`) for provenance.
+  - Codex renames imports to stable names under `assets/models/props/{civic,common,domestic,estate}/`.
+  - Intake records: `docs/qa/TRIPO_PROP_ASSET_INTAKE_2026-09-24.md` and `docs/qa/TRIPO_HD_PROP_ASSET_INTAKE_2026-09-24.md`.
+- **Library:** 46 GLBs across the four folders, plus two pantry-door state scenes.
+  - Each prop is one mesh with one material and roughly 1,600–2,400 triangles.
+  - No normal maps; metallic 0, roughness 0.9. Grounded at Y = 0 and normalized to one unit.
+  - Scale is therefore set per placement.
+  - Textures: 26 at 2K and 20 at 1K, about 21 MB of GLB in total. See Part Six.
+- **Placement so far:** commit `bcbb150` dressed four interiors: Corwin's room, precinct intake, the post office and the smoking lounge.
+  - Primitive shells remain the collision and interaction authority.
+  - `tests/interior_prop_dressing_flow.gd` (in the aggregate) asserts both the rendered prop nodes and the preserved interaction targets.
+- **Morgue tables:** imported but not yet placed; the morgue still draws primitives.
+  - Two models, `morgue_table_clean` (×4) and `morgue_table_aged` (×2).
+  - They generated as slightly different shapes. That's kept deliberately: two purchase batches, which fits the examine text's "Four newer than the others."
+- **Pantry door:** two candidate sets are retained until placement testing picks one.
+  - The HD self-contained states (`pantry_door_states_hd.tscn`).
+  - The earlier modular set: boarded frame, damaged leaf, and cleared state.
+  - The lounge still shows the primitive door.
+  - The visible state must follow the same flag as `sync_pantry()`'s hotspot label. The early-exit route (tunnel → precinct → lounge) makes the unboarded state visible in play, so it must never re-board.
+  - The cleared state shows impact damage on the door that the boards had hidden. That's a strong glimpse, and whether it stays is an **author call** (Law 5). If it stays, no line may explain it.
+- **First in-game test (author, 2026-09-25):** runs smoothly and loads cleanly. The placement fixes it surfaced are with Codex in `docs/qa/CODEX_PROMPT_interior_dressing_pass2.md`:
+  - non-uniform stretching;
+  - chair facing;
+  - clipping (the post office clerk inside the counter, a precinct NPC inside a cabinet, the bed against the radiator);
+  - the dresser too large and lifted;
+  - the pantry GLBs not yet wired;
+  - lamp-shade shadows;
+  - lever-arch binders.
+- **Set-dressing rules** (from the reviews, author-approved):
+  - **Text:** no baked text on props; lettering is added in-engine.
+  - **Period:** no lever-arch binders (a mid-century design). Use ledgers, docket books and string-tied folders.
+  - **Heating:** radiators only in the upper quarter and public buildings; the lower quarter is heated by stoves.
+  - **Smoking lounge:** it's a gentleman's club. The rustic plank tables and slatted armchairs are stand-ins until club leather, a small round table and a bar back exist.
+  - **Morgue:** clean enamel, with staining only at the drains. No splatter (Law 8: blood-splatter reads as genre iconography).
+  - **Flat items:** pictures, clock faces, signs and glass are Codex-built from primitives and textures, not generated. A clock face with separate hands can follow the game clock.
+  - **Scale:** scale uniformly. Fill long runs by repeating a prop, never by stretching it.
+  - **Consistency:** keep one generation recipe. The fourth batch drifted toward a chunkier game-asset style (carved edges, puffy cushions), which suits the lower quarter and speakeasy but not civic rooms.
+
 # Part Four — Build vs. Bible v18: Alignment Work
 
 **Landed and verified** (commit `120a488`; all 38 suites passing):
@@ -376,20 +425,19 @@ All character, cast, corpse, prop and exterior-building models are Meshy-generat
 - **The sixth man is investigable but unanswered.** Krebs now cut all six coats; the sixth was paid in cash to paper measurements, with no name and no fitting. `the_sixth_jacket` (the "grandfather's winter" line) stays `GATE: never`.
 - **Offshore scenery** reads as buried (Part Two).
 
+**Landed since** (verified against source 2026-09-25):
+
+- **Harbor-mason Law 5 lines** (commit `c907b88`, Antigravity's observer/Behan pass). `drowned_island` is now a flat refusal ("We leave the mud where it settled"), and Walter's line fits the buried station (a chimney standing out of the mud). `the_ring` no longer explains the tell ("It's for wearing, Officer."). The notebook lines name Manuel Silva. `harbor_observer.dialogue` has no remaining hits for "remind the eye", "try-works" or "Mason".
+- **Abel's tell** is a ring in dialogue (`c907b88`: "the dull copper ring on his hand"), matching the Bible and the novellas. By the author's decision, the rendered placeholder model keeps its deliberately over-visible wrist bands, brooch and necklace; dialogue must not describe the placeholder.
+- **Father Behan's** `behan_repeat_plain_graves` closes on "how many graves it's going to count" (`c907b88`).
+- **The coroner's assistant is female throughout.** `story.gd`'s `testimony` fact now reads "She was told… Her observations…" (2026-09-25, by this session at the author's instruction). Neither assistant dialogue file uses a male pronoun for her.
+- **The second morgue coroner is gone** (`bcbb150`). `town_expansion.gd::_morgue()` no longer draws the primitive coroner or sets the stale `morgue_coroner` talk point. The only coroner is the rendered `FIXED_STAFF` figure at `(-1.6,0,-1.0)`.
+
 **Still open:**
 
-1. **Law 5: two harbor-mason lines explain what the Bible allows only as a glimpse.**
-   - `harbor_observer` `drowned_island`: "Our grandfathers learned in a single night what looking at that water costs… The insurance paid the big houses on the hill; the sea kept the men." This states the Observers' origin and the two inheritances outright.
-   - `the_ring`: "To remind the eye what belongs to the daylight." This explains the color tell, which the Bible says only the tell itself may carry.
-   - Rewrite both as refusals or glimpses. **(author call)**
-2. **Scenery line out of date:** in `harbor_observer` `drowned_island`, Walter still says "The try-works buildings are still standing above the mud." The station now reads as buried.
-3. **Abel's tell:** there are now three versions. The Bible and the novellas have a colored **ring**, his dialogue has "the dull copper band on his wrist," and his rendered model (`estate.gd`) carries a small chest-height red accent, called a "brooch" in the code comment. Pick one and align the others. **(author call)**
-4. **The retreat card** (`tunnel_story.gd` `RETREAT`) says "The badge tears loose from its pin" even when the badge was pocketed under the plain coat. It needs coat-aware wording.
-5. **Pronoun:** `story.gd`'s `testimony` fact still calls the coroner's assistant "He." The model is now female.
-6. **Notebook labels:** two `harbor_observer` notebook lines (`observer_island_1`, `observer_pantry_refusal`) still call Manuel Silva "Mason"/"Harbor mason."
-7. **Two coroners in the morgue.** `town_expansion.gd::_morgue()` still draws the old primitive coroner figure (`person(Vector3(0,0,-5.5)…)`) and still sets a `morgue_coroner` talk point at `(0,0,-4.5)`, in addition to the rendered coroner that `FIXED_STAFF` places at `(-1.6,0,-1.0)`. Remove the primitive and the stale talk point, as was done for the intake clerk in `town.gd`.
-8. **Morgue coroner line:** `morgue_coroner.dialogue` puts stage directions ("The coroner spreads his hands…") in `THE CORONER`'s mouth, with a violin voice cue. It should be a bracketed stage direction or narration line, and silent.
-9. **Birch victims and geography:** no change needed. Covered-body and case-file wording must never attribute the mother and son's deaths to the no-exit-wound method, and player-facing place references must fit Miskatonic County, Massachusetts, north of Boston.
+1. **The retreat card** (`tunnel_story.gd` `RETREAT`) says "The badge tears loose from its pin" even when the badge was pocketed under the plain coat. It needs coat-aware wording.
+2. **Morgue coroner line:** `morgue_coroner.dialogue` puts a stage direction ("The coroner spreads his hands over the row of sheeted tables…") in `THE CORONER`'s mouth, with a violin voice cue. It should be a bracketed stage direction or a narration line, and silent.
+3. **Birch victims and geography:** no change needed. Covered-body and case-file wording must never attribute the mother and son's deaths to the no-exit-wound method, and player-facing place references must fit Miskatonic County, Massachusetts, north of Boston.
 
 **1918: optional content** (Bible v18, Part Two, "1918"). This is texture only. It follows the Bible's guardrails: never connected to the entity, no set piece, and no character naming the cough as influenza. Candidate places, all optional and all author calls:
 
@@ -429,7 +477,7 @@ These need an author decision before build work can proceed. Nothing else in thi
 - **Publishing is dormant.** See Part Two. This blocks the cold playtest.
 - **Telemetry timestamps.** Client-side timestamps from the Web export have been observed roughly a day off. `playthrough_log.gd` stamps with `Time.get_datetime_string_from_system(true)`, and the Worker stores the value verbatim. Root cause unconfirmed. Until it's fixed, telemetry dates can't be cross-checked against itch.io counts.
 - **Backup routes.** `tests/backup_route_flow.gd` verifies that all 13 redundant-carrier backup topics are reachable, gate against the primary evidence being absent, and grant the intended evidence. A scripted check that the three investigative threads have no content-level soft locks is still open.
-- **Gate-function parity.** The dialogue, object and portal runtimes now expose nearly the same GATE functions and fields (`visit_count`, `topic_count`, `visited`, `attempt_count`, `object_done`/`object_count`, `intake_done`), all three accept single- or double-quoted strings, and all three warn on `phase = midday` (the runtime phase is `noon`). One gap remains: `examine_count` exists in dialogue and object contexts but not portal. Text comparison also still differs: dialogue `=` is fuzzy (contains-match), while object and portal `=` are exact.
+- **Gate-function parity.** The dialogue, object and portal runtimes now expose nearly the same GATE functions and fields (`visit_count`, `topic_count`, `visited`, `attempt_count`, `object_done`/`object_count`, `intake_done`), all three accept single- or double-quoted strings, and all three warn on `phase = midday` (the runtime phase is `noon`). **`examine_count` in portal gates is present but broken.** Commit `b471e8f` added it to `portal_runtime.gd::make_context()` as `state.examine_count(args[0])`. But `CaseState` has no `examine_count` method. The real one is `state.object_state.examine_count(location, object_id)`, which takes two arguments, as the dialogue and object runtimes call it. No `.portal` file uses it yet, and `tests/portal_lang_flow.gd` doesn't exercise it, so nothing fails today. The first portal `GATE:` that uses it will error at runtime. Fix: mirror the object runtime's two-argument call and add one assertion. Text comparison also still differs: dialogue `=` is fuzzy (contains-match), while object and portal `=` are exact.
 - **Conversation/travel time scale.**
   - `DEFAULT_MINUTES` is 5.0, and every corpus `TIME:` carries a +2 adjustment.
   - `TRAVEL_MINUTES` is 30.0. `day_clock.gd`'s `CONVERSATION_MINUTES = 30.0` applies only to a small enumerated list of legacy story scenes.
@@ -446,7 +494,9 @@ These need an author decision before build work can proceed. Nothing else in thi
   - uncached procedural meshes in `estate.gd`;
   - a travel-teardown-ordering runtime test;
 - **Test harness isolation.** Some focused tests read and write a real `user://` save path, so state can leak between back-to-back runs. The aggregate sets `APPDATA` to `.runtime-data`; focused runs don't.
-- **`docs/qa/` and repo-root housekeeping.** There are 30+ dated pass reports plus fifteen or more `qa_*.png` captures at the repo root, which Godot imports. Triage them into a keep/archive split.
+- **`docs/qa/` and repo-root housekeeping.** There are 30+ dated pass reports plus fifteen or more `qa_*.png` captures at the repo root, which Godot imports. Triage them into a keep/archive split. The TDD maintainer's review sheets were landing in a repo-root `Claude outputs/` folder, which Godot imported (`85efb55` committed their `.import` files). **Resolved 2026-09-25.** The sheets moved to the HCL repository's `Claude outputs/` folder, which is where the TDD maintainer's generated files go from now on. The repo-root folder keeps only a `.gdignore`, and `.gitignore` now excludes `Claude outputs/`.
+- **Interior-prop texture budget.** 26 of the 46 prop textures are 2K. The props add about 21 MB of GLB to the project, and the four dressed rooms are the first interiors to load them. At the scale props appear on screen through the film shader, most could drop to 1K on import. Fold this into the web-profile comparison (Part Eight).
+- **Interior-prop placement has no uniform-scale or facing guard.** The first in-game test found stretched props and chairs facing away from their tables (Part Three, "Interior props"). A shared placement helper that enforces uniform scale and one import facing correction would stop this recurring as more rooms are dressed.
 - **`walter_certainty` engine placement is unverified** (see Part Five).
 
 # Part Seven — Narrative Canon (Settled)
@@ -488,10 +538,10 @@ In priority order:
 3. **A cold playthrough of the development build by someone confirmed not to be the author.** Focus it on whether the opening 30 minutes' three investigative threads land.
    - The placeholder-model deterrent that blocked a known candidate playtester is largely addressed on this branch.
    - Whether it changes that playtester's answer hasn't been re-tested.
-4. **Remaining Bible v18 alignment** (Part Four, "Still open"), items 1–2 first, since the harbor mason is reachable in the opening.
+4. **Remaining Bible v18 alignment** (Part Four, "Still open"): the coat-aware retreat card and the coroner's stage direction.
 5. **Address whatever the cold playthrough surfaces** in the opening 30 minutes before touching anything past it.
 6. **Telemetry timestamp defect** (Part Six). Fix it before relying on telemetry dates from outside players.
-7. **Web-profile comparison** of the district texture pass against the pre-texture baseline (load time and memory), on a published build.
+7. **Web-profile comparison** of the district texture pass and the interior props against the pre-texture baseline (load time and memory), on a published build.
 8. **Validate the time scale** with a full playthrough, then decide on `WANDER_RATE`.
 9. **Playtest the ElevenLabs cue library in context.** Hand-tune individual `VOICE:` assignments only where delivery clashes with the line.
 10. **"More life" stages.**
@@ -500,7 +550,12 @@ In priority order:
     - Stage 3, backup routes: authored.
     - Stage 4, ambient eavesdropping: deferred.
     - Stage 5, the pocket watch: shipped.
-11. **Housekeeping:** the second morgue coroner, the portal `examine_count` gap, the bridge cooldown test, `docs/qa/` and repo-root triage.
+11. **Interior props:**
+    - Finish the interior dressing pass (`docs/qa/CODEX_PROMPT_interior_dressing_pass2.md`).
+    - Pick and wire a pantry-door set.
+    - Place the morgue tables.
+    - Then dress the remaining interiors, following Part Three's set-dressing rules.
+12. **Housekeeping:** the broken portal `examine_count`, the bridge cooldown test, `docs/qa/` and repo-root triage.
 
 **Explicitly not current priorities:**
 

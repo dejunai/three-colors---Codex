@@ -198,14 +198,27 @@ func _dress(kind:String) -> void:
 
 func _post_office() -> void:
 	lettering("POST OFFICE",Vector3(0,3.3,-7.5),38)
-	_place_prop(PROP_POST_COUNTER,"PostOfficeCounter",Vector3(0,0,-2),Vector3(8.5,2.6,5.0),0.0,Vector3(1,0.43,0.26))
-	_place_prop(PROP_POST_PIGEONHOLES,"PostOfficePigeonholes",Vector3(0,0,-7.35),Vector3(12,5.3,3.0),0.0,Vector3(1,0.55,0.20))
-	_place_prop(PROP_CHAIR,"PostOfficeChairLeft",Vector3(-6,0,3),Vector3.ONE*1.15,PI/2,Vector3(0.59,1,0.51))
-	_place_prop(PROP_CHAIR,"PostOfficeChairRight",Vector3(6,0,3),Vector3.ONE*1.15,-PI/2,Vector3(0.59,1,0.51))
-	_place_prop(PROP_CRATE,"PostOfficeCrate",Vector3(-7.1,0,4.6),Vector3.ONE*1.3,0.0,Vector3(1,0.66,0.65))
-	_place_prop(PROP_OPEN_CRATE,"PostOfficeOpenCrate",Vector3(7.0,0,4.7),Vector3.ONE*1.15,0.0,Vector3(1,0.61,0.72))
-	_place_prop(PROP_BARREL,"PostOfficeBarrel",Vector3(7.4,0,0.4),Vector3.ONE*1.1,0.0,Vector3(0.70,1,0.71))
-	lettering("COLLECTIONS  ·  ENQUIRIES",Vector3(0,2.3,-7.15),26)
+	for spec in [["Left",-2.15],["Right",2.15]]:
+		_place_prop(PROP_POST_COUNTER,"PostOfficeCounter"+spec[0],Vector3(spec[1],0,-2.25),4.0,0.0,Vector3(1,0.43,0.26))
+	for spec in [["Left",-2.65],["Right",2.65]]:
+		_place_prop(PROP_POST_PIGEONHOLES,"PostOfficePigeonholes"+spec[0],Vector3(spec[1],0,-7.25),5.3,0.0,Vector3(1,0.55,0.20))
+	# A few uneven bundles keep the sorting wall from reading as an unused display.
+	for spec in [
+		[Vector3(-4.4,0.65,-6.66),Vector3(0.46,0.10,0.05),-0.03],
+		[Vector3(-2.0,1.22,-6.66),Vector3(0.62,0.12,0.05),0.02],
+		[Vector3(0.1,0.72,-6.66),Vector3(0.52,0.11,0.05),-0.015],
+		[Vector3(2.2,1.72,-6.66),Vector3(0.58,0.13,0.05),0.025],
+		[Vector3(4.25,2.28,-6.66),Vector3(0.43,0.10,0.05),-0.02],
+	]:
+		var letters := box(self,spec[0],spec[1],"c3bfa3")
+		letters.name = "PostOfficeLetterBundle"
+		letters.rotation.z = spec[2]
+	_place_chair("PostOfficeChairLeft",Vector3(-6,0,3),1.15,PI/2)
+	_place_chair("PostOfficeChairRight",Vector3(6,0,3),1.15,-PI/2)
+	_place_prop(PROP_CRATE,"PostOfficeCrate",Vector3(-7.1,0,4.6),1.3,0.0,Vector3(1,0.66,0.65))
+	_place_prop(PROP_OPEN_CRATE,"PostOfficeOpenCrate",Vector3(7.0,0,4.7),1.15,0.0,Vector3(1,0.61,0.72))
+	_place_prop(PROP_BARREL,"PostOfficeBarrel",Vector3(7.4,0,0.4),1.1,0.0,Vector3(0.70,1,0.71))
+	lettering("COLLECTIONS  ·  ENQUIRIES",Vector3(0,3.18,-6.64),26)
 
 func _morgue() -> void:
 	lettering("MORGUE",Vector3(0,3.3,-7.5),36)
