@@ -164,12 +164,16 @@ func _dress(kind:String) -> void:
 			box(self,Vector3(6,1.5,-7.6),Vector3(1.7,3,0.1),"425b3f")
 			lettering("PRIVATE · ROOMS ABOVE",Vector3(5.2,3.3,-7.4),22)
 		"parlor":
-			box(self,Vector3(0,0.03,0),Vector3(7,0.04,6),"64775b")
-			for x in [-5,5]:
-				box(self,Vector3(x,0.55,-2),Vector3(1.8,0.8,1.8),"576f4e",true)
-				box(self,Vector3(x,1.2,-2.7),Vector3(1.8,1.3,0.25),"4b6646")
-			_desk(Vector3(0,0,-5))
-			box(self,Vector3(0,2.4,-7.5),Vector3(2.8,1.4,0.1),"8e9c80")
+			_place_prop(PROP_RUG_PATTERNED,"ParlorRug",Vector3(0,0.006,0),5.8,0.0)
+			_place_prop(PROP_STONE_FIREPLACE,"ParlorFireplace",Vector3(0,0,-7.2),3.4,PI/2,Vector3(0.392,0.675,1.0))
+			_place_prop(PROP_CLUB_SOFA,"ParlorClubSofa",Vector3(-5.6,0,-0.5),3.8,-PI/2,Vector3(0.39,0.393,1.0))
+			_place_prop(PROP_PILLOW_BURGUNDY,"ParlorPillowBurgundy",Vector3(-5.0,0.62,-1.2),0.62,-PI/2)
+			_place_prop(PROP_PILLOW_GREEN,"ParlorPillowGreen",Vector3(-5.0,0.62,0.5),0.62,-PI/2)
+			_place_prop(PROP_CLUB_ARMCHAIR,"ParlorClubChairNorth",Vector3(4.8,0,-1.7),1.35,PI/2,Vector3(0.862,0.893,1.0))
+			_place_prop(PROP_CLUB_ARMCHAIR,"ParlorClubChairSouth",Vector3(4.8,0,1.7),1.35,PI/2,Vector3(0.862,0.893,1.0))
+			_place_prop(PROP_LOW_TABLE,"ParlorLowTable",Vector3(0,0,0),2.35,0.0,Vector3(0.609,0.339,1.0))
+			_place_prop(PROP_SIDEBOARD,"ParlorSideboard",Vector3(5.5,0,-5.7),3.0,PI/2,Vector3(0.324,0.502,1.0))
+			_place_prop(PROP_TABLE_LAMP_B,"ParlorTableLamp",Vector3(4.55,1.51,-5.7),0.58,0.0)
 		"home":
 			box(self,Vector3(-5,0.45,-3),Vector3(2.3,0.8,4),"657953",true)
 			box(self,Vector3(-5,0.9,-3),Vector3(2.2,0.12,3.9),"a4b193")

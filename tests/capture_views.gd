@@ -88,7 +88,7 @@ func run(g:Node) -> void:
 		g.camera.global_position = Vector3(0, 8.0, 8.0)
 		g.camera.look_at(Vector3(0, 2.0, 37.0))
 		g.set_process(false)
-	if g.capture_mode in ["town","town_pickman","town_business","town_schoolhouse","town_upper","town_upper_residence","town_lower","town_waterfront","town_waterfront_frontage","town_waterfront_seaward","town_waterfront_workyard","precinct","post_office","boardinghouse","room","board","witness"]:
+	if g.capture_mode in ["town","town_pickman","town_business","town_schoolhouse","town_upper","town_upper_residence","town_lower","town_waterfront","town_waterfront_frontage","town_waterfront_seaward","town_waterfront_workyard","precinct","post_office","boardinghouse","room","upper_parlor","board","witness"]:
 		for id in ["eight","wounds","gas"]: g.state.discover(id)
 		g.state.complete_report("Full inquest requested")
 		g.state.receive_report()
@@ -97,6 +97,7 @@ func run(g:Node) -> void:
 		var scene="town" if g.capture_mode.begins_with("town_") else g.capture_mode
 		if g.capture_mode=="board": scene="room"
 		if g.capture_mode=="witness": scene="boardinghouse"
+		if g.capture_mode=="upper_parlor": scene="upper_house_1"
 		g._travel(scene,Vector3(0,0.1,17) if scene=="town" else Vector3(0,0.1,4))
 		if g.capture_mode == "town_pickman":
 			g.page = "capture"

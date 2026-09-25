@@ -4,9 +4,10 @@ const Town = preload("res://town.gd")
 const TownExpansion = preload("res://town_expansion.gd")
 
 const EXPECTED := {
-	"room": ["CorwinBed", "CorwinDesk", "CorwinDresser", "CorwinRadiator", "CorwinWashstand", "CorwinWashBasin", "CorwinWashPitcher"],
+	"room": ["CorwinBed", "CorwinRug", "CorwinDesk", "CorwinDresser", "CorwinRadiator", "CorwinWashstand", "CorwinWashBasin", "CorwinWashPitcher"],
 	"precinct": ["PrecinctIntakeCounterLeft", "PrecinctIntakeCounterRight", "PrecinctFilesSingle", "PrecinctFilesWide", "PrecinctSideDesk", "PrecinctDeskLamp"],
-	"lounge": ["LoungeBookshelf", "LoungeDisplaySloped", "LoungeDisplayRectangular", "LoungeWallClock", "PantryDoorStates"],
+	"lounge": ["LoungeBookshelf", "LoungeSideboard", "LoungeTableLamp", "LoungeDisplaySloped", "LoungeDisplayRectangular", "LoungeWallClock", "LoungeRug", "LoungeBarCounter", "LoungeFireplace", "LoungeClubSofa", "LoungePillowBurgundy", "LoungePillowGreen", "LoungeClubChairNorth", "LoungeClubChairSouth", "LoungeRoundTable", "LoungeAshtray", "PantryDoorStates"],
+	"upper_house_1": ["ParlorRug", "ParlorFireplace", "ParlorClubSofa", "ParlorPillowBurgundy", "ParlorPillowGreen", "ParlorClubChairNorth", "ParlorClubChairSouth", "ParlorLowTable", "ParlorSideboard", "ParlorTableLamp"],
 	"post_office": ["PostOfficeCounterLeft", "PostOfficeCounterRight", "PostOfficePigeonholesLeft", "PostOfficePigeonholesRight", "PostOfficeCrate", "PostOfficeOpenCrate", "PostOfficeBarrel"],
 }
 
@@ -15,11 +16,12 @@ const TARGETS := {
 	"precinct": ["intake_clerk", "intake", "supplement", "survey_drawer", "route_morgue", "interior_exit"],
 	"lounge": ["barman", "pantry_door", "lounge_exit"],
 	"post_office": ["route_return"],
+	"upper_house_1": ["local_resident", "route_return"],
 }
 
 func _initialize() -> void:
 	for location in EXPECTED:
-		var world = TownExpansion.new() if location == "post_office" else Town.new()
+		var world = TownExpansion.new() if location in ["post_office", "upper_house_1"] else Town.new()
 		world.location = location
 		root.add_child(world)
 		await process_frame
@@ -34,7 +36,9 @@ func _initialize() -> void:
 		if location == "precinct": assert(world.has_node("PrecinctBookStack"), "Precinct must use period book clutter instead of lever-arch binders")
 		if location == "post_office": assert(world.find_children("PostOfficeLetterBundle*", "MeshInstance3D", true, false).size() >= 5, "Post-office sorting wall needs visible mail bundles")
 		if location == "lounge":
-			assert(not world.has_node("LoungeTableLeft") and not world.has_node("LoungeArmchairLeftA"), "Rustic furniture must be removed from the club lounge")
+			assert(world.has_node("LoungeBarCounter") and world.has_node("LoungeClubSofa"), "Purpose-built club furniture must replace the provisional lounge primitives")
+			assert(world.steward_actor.position.is_equal_approx(Vector3(0,0,-7.0)), "Steward must remain behind the rendered bar")
+			assert(world.points.barman.pos.is_equal_approx(Vector3(0,0,-4.45)), "Steward talk point must remain on the public side of the bar")
 			var states := world.get_node("PantryDoorStates")
 			assert(states.get_node("Boarded").visible and not states.get_node("Cleared").visible, "Pantry begins visibly boarded")
 			world.sync_pantry(true, true)
