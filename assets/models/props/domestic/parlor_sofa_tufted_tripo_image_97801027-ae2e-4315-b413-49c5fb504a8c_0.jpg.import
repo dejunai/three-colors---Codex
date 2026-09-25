@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3nciy362dxp6"
-path="res://.godot/imported/stone_fireplace_tripo_image_fe8d4cef-dd06-4a1b-a9cd-b307b4e6e259_0.jpg-26a1586cf0e607ee4bf3e7251818bb83.ctex"
+uid="uid://cupdsikfo63n2"
+path="res://.godot/imported/parlor_sofa_tufted_tripo_image_97801027-ae2e-4315-b413-49c5fb504a8c_0.jpg-b782bd95a574cc7bfcc1ea9b8ae7af19.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "65394082c996d7e278cf35e296cf7f4d"
+"md5": "be0b6f2f7c5f419d039ea6c06441b097"
 }
 
 [deps]
 
-source_file="res://assets/models/props/domestic/stone_fireplace_tripo_image_fe8d4cef-dd06-4a1b-a9cd-b307b4e6e259_0.jpg"
-dest_files=["res://.godot/imported/stone_fireplace_tripo_image_fe8d4cef-dd06-4a1b-a9cd-b307b4e6e259_0.jpg-26a1586cf0e607ee4bf3e7251818bb83.ctex"]
+source_file="res://assets/models/props/domestic/parlor_sofa_tufted_tripo_image_97801027-ae2e-4315-b413-49c5fb504a8c_0.jpg"
+dest_files=["res://.godot/imported/parlor_sofa_tufted_tripo_image_97801027-ae2e-4315-b413-49c5fb504a8c_0.jpg-b782bd95a574cc7bfcc1ea9b8ae7af19.ctex"]
 
 [params]
 

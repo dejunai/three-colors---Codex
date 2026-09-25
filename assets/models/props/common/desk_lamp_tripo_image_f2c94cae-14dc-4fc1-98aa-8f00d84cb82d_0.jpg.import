@@ -2,23 +2,23 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b6dut41agxv21"
-path="res://.godot/imported/desk_lamp_tripo_image_83e921b2-e610-4257-8b3d-60d17f23ca02_0.jpg-b664d5046e7144501fa120d05b5eb1fa.ctex"
+uid="uid://dv1523y5nn1ov"
+path="res://.godot/imported/desk_lamp_tripo_image_f2c94cae-14dc-4fc1-98aa-8f00d84cb82d_0.jpg-530866c9f33d7cda2a5dfe89a29c765d.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "4bd558269dd87fc251bc8d4314a62774"
+"md5": "1ce9a53cc4eee6af565d26f4478776b5"
 }
 
 [deps]
 
-source_file="res://assets/models/props/common/desk_lamp_tripo_image_83e921b2-e610-4257-8b3d-60d17f23ca02_0.jpg"
-dest_files=["res://.godot/imported/desk_lamp_tripo_image_83e921b2-e610-4257-8b3d-60d17f23ca02_0.jpg-b664d5046e7144501fa120d05b5eb1fa.ctex"]
+source_file="res://assets/models/props/common/desk_lamp_tripo_image_f2c94cae-14dc-4fc1-98aa-8f00d84cb82d_0.jpg"
+dest_files=["res://.godot/imported/desk_lamp_tripo_image_f2c94cae-14dc-4fc1-98aa-8f00d84cb82d_0.jpg-530866c9f33d7cda2a5dfe89a29c765d.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +40,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=1

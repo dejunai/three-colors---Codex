@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://coh82y4s3fko5"
-path="res://.godot/imported/table_lamp_a_tripo_image_ef2da29a-9bb9-42c8-a9ba-99d57d521f59_0.jpg-b9fd719be5c471f9bd2f34fc63edb761.ctex"
+uid="uid://b1jvtqk3wbcxc"
+path="res://.godot/imported/post_office_pendant_b_tripo_image_650c5f26-72f9-46cb-b829-eb87ae304d54_0.jpg-53dbb5e0027651cd605b20294538eb17.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "278a46f6108b706019f0c7d0e3293728"
+"md5": "0cf9e1c019debbde4a4ec59493fcae9d"
 }
 
 [deps]
 
-source_file="res://assets/models/props/common/table_lamp_a_tripo_image_ef2da29a-9bb9-42c8-a9ba-99d57d521f59_0.jpg"
-dest_files=["res://.godot/imported/table_lamp_a_tripo_image_ef2da29a-9bb9-42c8-a9ba-99d57d521f59_0.jpg-b9fd719be5c471f9bd2f34fc63edb761.ctex"]
+source_file="res://assets/models/props/civic/post_office_pendant_b_tripo_image_650c5f26-72f9-46cb-b829-eb87ae304d54_0.jpg"
+dest_files=["res://.godot/imported/post_office_pendant_b_tripo_image_650c5f26-72f9-46cb-b829-eb87ae304d54_0.jpg-53dbb5e0027651cd605b20294538eb17.ctex"]
 
 [params]
 

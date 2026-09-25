@@ -7,8 +7,8 @@ const EXPECTED := {
 	"room": ["CorwinBed", "CorwinRug", "CorwinDesk", "CorwinDresser", "CorwinRadiator", "CorwinWashstand", "CorwinWashBasin", "CorwinWashPitcher"],
 	"precinct": ["PrecinctIntakeCounterLeft", "PrecinctIntakeCounterRight", "PrecinctFilesSingle", "PrecinctFilesWide", "PrecinctSideDesk", "PrecinctDeskLamp"],
 	"lounge": ["LoungeBookshelf", "LoungeSideboard", "LoungeTableLamp", "LoungeDisplaySloped", "LoungeDisplayRectangular", "LoungeWallClock", "LoungeRug", "LoungeBarCounter", "LoungeFireplace", "LoungeClubSofa", "LoungePillowBurgundy", "LoungePillowGreen", "LoungeClubChairNorth", "LoungeClubChairSouth", "LoungeRoundTable", "LoungeAshtray", "PantryDoorStates"],
-	"upper_house_1": ["ParlorRug", "ParlorFireplace", "ParlorClubSofa", "ParlorPillowBurgundy", "ParlorPillowGreen", "ParlorClubChairNorth", "ParlorClubChairSouth", "ParlorLowTable", "ParlorSideboard", "ParlorTableLamp"],
-	"post_office": ["PostOfficeCounterLeft", "PostOfficeCounterRight", "PostOfficePigeonholesLeft", "PostOfficePigeonholesRight", "PostOfficeCrate", "PostOfficeOpenCrate", "PostOfficeBarrel"],
+	"upper_house_1": ["ParlorRug", "ParlorFireplace", "ParlorTuftedSofa", "ParlorPillowBurgundy", "ParlorPillowGreen", "ParlorArmchairNorth", "ParlorArmchairSouth", "ParlorLowTable", "ParlorDecorativeBowl", "ParlorSideboard", "ParlorTableLamp", "ParlorRoundVase"],
+	"post_office": ["PostOfficeCounterLeft", "PostOfficeCounterRight", "PostOfficePigeonholesLeft", "PostOfficePigeonholesRight", "PostOfficeBalanceScale", "PostOfficeEnvelopeStack", "PostOfficeParcelSquare", "PostOfficeParcelLarge", "PostOfficeParcelLong", "PostOfficePendantLeft", "PostOfficePendantRight", "PostOfficeCorkboard", "PostOfficeFrostedWindow", "PostOfficeHangingSign", "PostOfficeCrate", "PostOfficeOpenCrate", "PostOfficeBarrel"],
 }
 
 const TARGETS := {
