@@ -88,7 +88,7 @@ func run(g:Node) -> void:
 		g.camera.global_position = Vector3(0, 8.0, 8.0)
 		g.camera.look_at(Vector3(0, 2.0, 37.0))
 		g.set_process(false)
-	if g.capture_mode in ["town","town_pickman","town_business","town_schoolhouse","town_upper","town_upper_residence","town_lower","town_waterfront","town_waterfront_frontage","town_waterfront_seaward","town_waterfront_workyard","precinct","boardinghouse","room","board","witness"]:
+	if g.capture_mode in ["town","town_pickman","town_business","town_schoolhouse","town_upper","town_upper_residence","town_lower","town_waterfront","town_waterfront_frontage","town_waterfront_seaward","town_waterfront_workyard","precinct","post_office","boardinghouse","room","board","witness"]:
 		for id in ["eight","wounds","gas"]: g.state.discover(id)
 		g.state.complete_report("Full inquest requested")
 		g.state.receive_report()

@@ -198,13 +198,14 @@ func _dress(kind:String) -> void:
 
 func _post_office() -> void:
 	lettering("POST OFFICE",Vector3(0,3.3,-7.5),38)
-	_desk(Vector3(0,0,-2),Vector3(9,0.16,1.5))
-	for x in range(-6,7,2):
-		for y in [0.6,1.25,1.9,2.55]:
-			box(self,Vector3(x,y,-7.5),Vector3(1.6,0.5,0.25),"455e42")
-			box(self,Vector3(x,y,-7.32),Vector3(0.4,0.07,0.05),"b5bd9e")
-	for x in [-6,6]: _chair(Vector3(x,0,3),PI/2)
-	lettering("COLLECTIONS  ·  ENQUIRIES",Vector3(0,2.3,-7.3),26)
+	_place_prop(PROP_POST_COUNTER,"PostOfficeCounter",Vector3(0,0,-2),Vector3(8.5,2.6,5.0),0.0,Vector3(1,0.43,0.26))
+	_place_prop(PROP_POST_PIGEONHOLES,"PostOfficePigeonholes",Vector3(0,0,-7.35),Vector3(12,5.3,3.0),0.0,Vector3(1,0.55,0.20))
+	_place_prop(PROP_CHAIR,"PostOfficeChairLeft",Vector3(-6,0,3),Vector3.ONE*1.15,PI/2,Vector3(0.59,1,0.51))
+	_place_prop(PROP_CHAIR,"PostOfficeChairRight",Vector3(6,0,3),Vector3.ONE*1.15,-PI/2,Vector3(0.59,1,0.51))
+	_place_prop(PROP_CRATE,"PostOfficeCrate",Vector3(-7.1,0,4.6),Vector3.ONE*1.3,0.0,Vector3(1,0.66,0.65))
+	_place_prop(PROP_OPEN_CRATE,"PostOfficeOpenCrate",Vector3(7.0,0,4.7),Vector3.ONE*1.15,0.0,Vector3(1,0.61,0.72))
+	_place_prop(PROP_BARREL,"PostOfficeBarrel",Vector3(7.4,0,0.4),Vector3.ONE*1.1,0.0,Vector3(0.70,1,0.71))
+	lettering("COLLECTIONS  ·  ENQUIRIES",Vector3(0,2.3,-7.15),26)
 
 func _morgue() -> void:
 	lettering("MORGUE",Vector3(0,3.3,-7.5),36)
@@ -215,8 +216,6 @@ func _morgue() -> void:
 			box(self,Vector3(x,0.72,z),Vector3(1.7,0.2,2.8),"89998c",true)
 			for dx in [-0.65,0.65]: box(self,Vector3(x+dx,0.35,z),Vector3(0.12,0.7,2),"5d7566",true)
 			body(Vector3(x,0.83,z),0,true,false,"morgue")
-	person(Vector3(0,0,-5.5),"a1ae98",false)
-	target("morgue_coroner","Speak with the coroner",Vector3(0,0,-4.5))
 	# Kept clear of the coroner/assistant work station at x=+-1.6,z=-1.0 (dialogue_catalog.gd
 	# FIXED_STAFF/RETURNING_STAFF) so the two hotspots never compete for focus.
 	target("morgue_tables","Examine the tables",Vector3(-2.4,0,3.0))
