@@ -60,12 +60,16 @@ static func make_context(state) -> Dictionary:
 			"outcome": func(args): return state.dialogue_state.has_outcome(args[0]) if args.size() > 0 else false,
 			"outcome_is": func(args): return state.dialogue_state.outcome_is(args[0], args[1]) if args.size() > 1 else false,
 			"spoken_to": func(args): return state.dialogue_state.visit_count(args[0]) > 0 if args.size() > 0 else false,
+			"visit_count": func(args): return state.dialogue_state.visit_count(args[0]) if args.size() > 0 else 0,
 			"topic_done": func(args): return state.dialogue_state.topic_done(args[0], args[1]) if args.size() > 1 else false,
+			"topic_count": func(args): return state.dialogue_state.topic_count(args[0]) if args.size() > 0 else 0,
 			"npc_done": func(args): return state.dialogue_state.topic_done(args[0], "default") if args.size() > 0 else false,
+			"visited": func(args): return state.visited.has(args[0]) if args.size() > 0 else false,
 			# Symmetric with portal_runtime.gd's make_context(): lets an OBJECT GATE
 			# react to travel (e.g. an item that only appears once a place is reached).
 			"portal_done": func(args): return state.portal_state.portal_done(args[0], args[1]) if args.size() > 1 else false,
 			"portal_count": func(args): return state.portal_state.portal_count(args[0]) if args.size() > 0 else 0,
+			"attempt_count": func(args): return state.portal_state.attempt_count(args[0], args[1]) if args.size() > 1 else 0,
 		},
 		"fields": {
 			"coat": func(): return state.coat,
@@ -78,6 +82,7 @@ static func make_context(state) -> Dictionary:
 			"lounge_exited": func(): return state.lounge_exited,
 			"report": func(): return state.report,
 			"report_filed": func(): return not state.report.is_empty(),
+			"intake_done": func(): return bool(state.intake_done),
 		}
 	}
 

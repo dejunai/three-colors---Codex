@@ -12,7 +12,7 @@ const SLOTS = {
 	"printer":["business",Vector3(3,0,18)], "repairer":["business",Vector3(22,0,18)],
 	"apothecary":["business",Vector3(-26,0,8)], "registrar":["precinct",Vector3(5,0,-3)],
 	"post_office":["post_office",Vector3(4,0,-2)],
-	"kessler_shop":["town",Vector3(9,0,-2)], "kessler_parlor":["town",Vector3(12,0,-2)],
+	"kessler_shop":["town",Vector3(-19.2,0,11.2)], "kessler_parlor":["town",Vector3(-21.0,0,11.2)],
 	"pickman_precinct_walk":["town",Vector3(-13,0,-1)], "pickman_boarding_walk":["town",Vector3(5,0,-1)],
 	"pickman_shop_walk":["town",Vector3(18,0,-1)], "pickman_west_bench":["town",Vector3(-14,0,14)],
 	"pickman_center_bench":["town",Vector3(0,0,14)], "pickman_east_bench":["town",Vector3(19,0,14)],
@@ -55,6 +55,7 @@ const SLOTS = {
 	"speakeasy_table_two":["speakeasy",Vector3(5,0,-2.5)]
 }
 const RETURNING_STAFF = {"odell_precinct":["precinct",Vector3(3.8,0,1)], "coroners_assistant_morgue":["morgue",Vector3(1.6,0,-1)]}
+const FIXED_STAFF = {"intake_clerk":["precinct",Vector3(0.4,0,-4.0)], "morgue_coroner":["morgue",Vector3(-1.6,0,-1.0)]}
 const NIGHT_ACTIVE = ["speakeasy_bartender", "night_owl_one", "night_owl_two", "lamplighter"]
 var definitions: Dictionary = {}
 var paths: Dictionary = {}
@@ -92,6 +93,7 @@ func _collect(steps: Array, facts: Dictionary, source: String, previous: String)
 
 func slot(npc: String, state) -> Array:
 	if RETURNING_STAFF.has(npc) and (state.day < 2 or not state.estate_complete): return []
+	if FIXED_STAFF.has(npc): return FIXED_STAFF[npc]
 	var def = definitions[npc]
 	var phase = Runtime.DayClock.phase(state.clock_minutes)
 	if phase == "night" and not NIGHT_ACTIVE.has(npc): return []

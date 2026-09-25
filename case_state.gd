@@ -18,6 +18,8 @@ var flask = 3
 var coat = "Police coat"
 var minutes = 0.0 # Real walking minutes retained for existing pacing probes.
 var clock_minutes = 360.0
+var pending_dialogue_minutes = 0.0
+var defer_dialogue_clock = false
 var timed_conversations: Array[String] = []
 var position = Vector3(0, 0.1, 36)
 var yaw = 0.0
@@ -40,6 +42,9 @@ var ammo = 6
 var flask_spilled = false
 var flask_spill_amount = 0
 var drowned_dead = false
+var tunnel_spur_seen: bool:
+	get: return dialogue_state.flag("tunnel_spur_seen")
+	set(v): dialogue_state.set_flag("tunnel_spur_seen", v)
 # Staging milestones are explicit; re-entering a room never advances a day.
 var rose_bodies_removed = false
 var birch_bodies_removed = false
@@ -113,7 +118,7 @@ func file_supplement(send_county: bool, sources:Dictionary={}) -> void:
 		if not copies.has("County registrar — dated supplement"): copies.append("County registrar — dated supplement")
 
 func pack() -> Dictionary:
-	return {"version":VERSION,"dialogue_state":dialogue_state.pack(),"object_state":object_state.pack(),"portal_state":portal_state.pack(),"inventory":inventory,"clock_minutes":clock_minutes,"timed_conversations":timed_conversations,"rose_bodies_removed":rose_bodies_removed,"birch_bodies_removed":birch_bodies_removed,"estate_visits_completed":estate_visits_completed,"day":day,"steward_visits":steward_visits,"lounge_exited":lounge_exited,"montage_index":montage_index,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
+	return {"version":VERSION,"dialogue_state":dialogue_state.pack(),"object_state":object_state.pack(),"portal_state":portal_state.pack(),"inventory":inventory,"clock_minutes":clock_minutes,"pending_dialogue_minutes":pending_dialogue_minutes,"timed_conversations":timed_conversations,"rose_bodies_removed":rose_bodies_removed,"birch_bodies_removed":birch_bodies_removed,"estate_visits_completed":estate_visits_completed,"day":day,"steward_visits":steward_visits,"lounge_exited":lounge_exited,"montage_index":montage_index,"report_sources":report_sources,"county_sources":county_sources,"tunnel_complete":tunnel_complete,"county_statements":county_statements,"evidence":evidence,"links":links,"statements":statements,"visited":visited,
 		"report":report,"copies":copies,"report_evidence":report_evidence,"report_statements":report_statements,"flask":flask,"coat":coat,"minutes":minutes,
 		"position":[position.x,position.y,position.z],"yaw":yaw,"started":started,"finished":finished,
 		"world":world,"estate_complete":estate_complete,"intake_done":intake_done,
@@ -211,6 +216,8 @@ func restore(d: Dictionary) -> bool:
 	var clock_value=d.get("clock_minutes",360.0)
 	if not (clock_value is float or clock_value is int) or not is_finite(float(clock_value)): return false
 	clock_minutes=clampf(float(clock_value),360.0,DayClock.MIDNIGHT)
+	pending_dialogue_minutes=maxf(0.0, float(d.get("pending_dialogue_minutes", 0.0)))
+	defer_dialogue_clock=false
 	timed_conversations.assign(d.get("timed_conversations",[]))
 	if int(d.version)<7: preload("res://scripts/shared/day_clock.gd").migrate(self)
 	var dialogue_payload=d.get("dialogue_state", {})

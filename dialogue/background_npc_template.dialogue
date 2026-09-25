@@ -52,8 +52,12 @@ TOPIC: default
 # Normal menu topic. LABEL is optional; the topic id supplies a fallback label.
 # NOTEBOOK writes prose; EVIDENCE creates a separately linkable observation.
 # New evidence does not automatically create valid links to other evidence.
+# Topics stay in the menu after completion (marked " · recorded") rather than
+# disappearing — do not gate a topic behind NOT topic_done(this_npc, this_topic)
+# to make it a once-only ask. Effects (NOTEBOOK/EVIDENCE) are idempotent and
+# TIME is only charged on first completion, so a revisit is always safe.
 TOPIC: example_account
-  GATE: NOT topic_done(example_witness, example_account)
+  GATE: always
   LABEL: "Ask what the witness actually saw"
   TAG: example_witness_account
   TIME: 12.5
@@ -66,12 +70,13 @@ TOPIC: example_account
     EVIDENCE: example_door_account
 
 # CHOICE above is linear speech. Only a FORK makes selectable alternatives.
-# This example closes through its explicit topic_done gate. For a consequential
+# Plain CHOICE branches (no OUTCOME) replay in full on revisit -- that is fine
+# for a non-consequential exchange like this one. For a consequential
 # branch, put OUTCOME: decision_id = value_id in each choice instead; completion
 # records the chosen value and future visits show only that committed branch.
 # Nested FORKs work. The parent tail always resumes.
 TOPIC: example_approach
-  GATE: evidence(example_door_account) AND NOT topic_done(example_witness, example_approach)
+  GATE: evidence(example_door_account)
   LABEL: "Press for a clearer account"
   TAG: example_witness_approach
   TIME: 15
@@ -119,7 +124,7 @@ TOPIC: example_shared_question
   EXAMPLE WITNESS: "I can't help you with that."
 
 TOPIC: example_word_spreads
-  GATE: topic_count(example_shared_question) >= 4 AND NOT topic_done(example_witness, example_word_spreads)
+  GATE: topic_count(example_shared_question) >= 4
   LABEL: "Return to the missing entry"
   TAG: example_witness_word_spreads
   TIME: 10

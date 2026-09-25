@@ -5,3 +5,9 @@ The original handwritten witness menus appended `  · recorded` to completed que
 The generalized menu now appends the same marker when either the topic ID or its optional TAG has been completed for that NPC. Completion state is authoritative rather than evidence possession, because a valid conversation may record notebook prose without granting separate evidence. Topics whose GATE deliberately hides them after completion remain hidden.
 
 `tests/dialogue_lang_flow.gd` covers a repeatable completed topic and tag-only completion. Live dialogue, the 35-NPC catalog, timing, saves, and old-save compatibility also pass.
+
+## Visual and ordering follow-up — 2026-09-23
+
+Completed topics now sort beneath every currently available fresh topic while preserving authored file order inside each group. The runtime also exposes an explicit `recorded` boolean on each menu entry, allowing the dialogue UI to render state without parsing the label.
+
+Recorded rows retain the `· recorded` text marker and remain fully clickable. Their paper fill, border, and ink are darker than fresh questions, with separate hover, pressed, and keyboard-focus states. The marker remains present so completion is never communicated by color alone.

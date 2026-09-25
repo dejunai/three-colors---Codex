@@ -44,7 +44,7 @@ TOPIC: naomi_letters
   EVIDENCE: new_bedford_letters
 
 TOPIC: ophion_club_mail
-  GATE: always
+  GATE: evidence(club_talk)
   TAG: postal_club_mail
   LABEL: "Ask about correspondence received by the Ophion Club"
   TIME: 8
@@ -67,7 +67,7 @@ TOPIC: ophion_club_mail
       OUTCOME: club_mail_response = bank_drafts
 
 TOPIC: holding_the_letters
-  GATE: evidence(new_bedford_letters) AND NOT topic_done(post_office_clerk, holding_the_letters)
+  GATE: evidence(new_bedford_letters)
   TAG: postal_release
   LABEL: "Attempt to take custody of the family letters"
   TIME: 7
@@ -99,7 +99,7 @@ TOPIC: correction_requirements
 
 # Shared inquiry: four different completed refusals make the question travel.
 TOPIC: crew_omission
-  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(post_office_clerk, crew_omission)
+  GATE: topic_done(local_historian, crew_omission_official)
   TAG: post_office_clerk_crew_omission
   LABEL: "Ask why the Historical Society's circulars never name the crew"
   TIME: 5

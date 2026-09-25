@@ -18,10 +18,18 @@ const WALK_ACCEL = 13.0
 const BRISK_ACCEL = 18.0
 const DEVELOPER_BRISK_ACCEL = 39.0
 var developer_brisk = false
+var developer_brisk_used = false
 var _model_left_leg: Node3D
 var _model_right_leg: Node3D
 var _model_left_arm: Node3D
 var _model_right_arm: Node3D
+var _model_animation: AnimationPlayer
+var _model_animations: Dictionary = {}
+var _model_animation_players: Array[AnimationPlayer] = []
+var _model_animation_maps: Array[Dictionary] = []
+var _model_animation_base := ""
+const PICKUP_PLAYBACK_SPEED := 1.6
+var _animation_lock := false
 # Guarantees a keydown/keyup pair resolves as movement even if it completes within one physics frame (synthetic/automated input).
 const MOVE_LATCH_MIN = 0.15
 var move_latch_timer = {"walk_forward":0.0,"walk_back":0.0,"walk_left":0.0,"walk_right":0.0}
@@ -78,6 +86,20 @@ func build_player(avatar:Node3D,spawn:Vector3) -> void:
 	_model_right_leg = model.get_node_or_null("RightLeg")
 	_model_left_arm = model.get_node_or_null("LeftArm")
 	_model_right_arm = model.get_node_or_null("RightArm")
+	var walter_model = preload("res://scripts/shared/walter_model.gd")
+	_model_animation_players = walter_model.animation_players(model)
+	_model_animation_maps.clear()
+	for player in _model_animation_players:
+		var animation_map: Dictionary = walter_model.animation_map(player)
+		_model_animation_maps.append(animation_map)
+		for loop_name in ["Idle", "Walk", "Brisk"]:
+			if not animation_map.has(loop_name): continue
+			var clip := player.get_animation(animation_map[loop_name])
+			if clip != null: clip.loop_mode = Animation.LOOP_LINEAR
+	_model_animation = _model_animation_players[0] if not _model_animation_players.is_empty() else null
+	_model_animations = _model_animation_maps[0] if not _model_animation_maps.is_empty() else {}
+	if is_instance_valid(_model_animation):
+		_play_model_animation("Idle", 0.0)
 	player.position = spawn
 	camera = Camera3D.new()
 	camera.name = "ThirdPersonCamera"
@@ -130,6 +152,15 @@ func _physics_process(delta:float) -> void:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			_arm_mouse_motion_guard()
 		_prev_mouse_mode = Input.mouse_mode
+	if _animation_lock:
+		player.velocity.x = move_toward(player.velocity.x,0.0,delta*WALK_ACCEL)
+		player.velocity.z = move_toward(player.velocity.z,0.0,delta*WALK_ACCEL)
+		if not player.is_on_floor(): player.velocity.y -= 18*delta
+		else: player.velocity.y = -0.2
+		player.move_and_slide()
+		_update_camera(delta)
+		chapter.tick_world(delta)
+		return
 	for action in move_latch_timer.keys(): move_latch_timer[action] = maxf(0.0,move_latch_timer[action]-delta)
 	var axis = Vector2(
 		(1.0 if _dir_pressed("walk_right") else 0.0)-(1.0 if _dir_pressed("walk_left") else 0.0),
@@ -164,11 +195,14 @@ func _physics_process(delta:float) -> void:
 	if movement.length() > 0.1:
 		model.rotation.y = lerp_angle(model.rotation.y,atan2(-movement.x,-movement.z),delta*10)
 		animation_time += delta*speed*3
-	var swing = sin(animation_time)*0.34*movement.length()
-	if _model_left_leg != null: _model_left_leg.rotation.x = swing
-	if _model_right_leg != null: _model_right_leg.rotation.x = -swing
-	if _model_left_arm != null: _model_left_arm.rotation.x = -swing*0.8
-	if _model_right_arm != null: _model_right_arm.rotation.x = swing*0.8
+	if is_instance_valid(_model_animation):
+		_play_model_animation(("Brisk" if brisk else "Walk") if movement.length() > 0.1 else "Idle", 0.16, 1.0)
+	else:
+		var swing = sin(animation_time)*0.34*movement.length()
+		if _model_left_leg != null: _model_left_leg.rotation.x = swing
+		if _model_right_leg != null: _model_right_leg.rotation.x = -swing
+		if _model_left_arm != null: _model_left_arm.rotation.x = -swing*0.8
+		if _model_right_arm != null: _model_right_arm.rotation.x = swing*0.8
 	var orbit = Input.get_axis("camera_left","camera_right")
 	yaw -= orbit*delta*1.5
 	_update_camera(delta)
@@ -209,6 +243,7 @@ func _apply_mouse_look(relative: Vector2) -> bool:
 	return true
 
 func _unhandled_input(event:InputEvent) -> void:
+	if _animation_lock: return
 	for action in move_latch_timer.keys():
 		if event.is_action_pressed(action): move_latch_timer[action] = MOVE_LATCH_MIN
 	if event is InputEventKey and event.pressed and event.keycode == KEY_F11:
@@ -216,6 +251,9 @@ func _unhandled_input(event:InputEvent) -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if mode == DisplayServer.WINDOW_MODE_FULLSCREEN else DisplayServer.WINDOW_MODE_FULLSCREEN)
 	if event is InputEventKey and event.pressed and not event.echo and (event.keycode == KEY_F3 or event.physical_keycode == KEY_F3):
 		developer_brisk = not developer_brisk
+		if developer_brisk:
+			developer_brisk_used = true
+			chapter.note_developer_brisk_used()
 		print("[movement] Shift pace: ", "DEVELOPER (10.5)" if developer_brisk else "PLAYER BRISK (4.0)")
 	if chapter.page == "play":
 		if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -236,3 +274,56 @@ func _unhandled_input(event:InputEvent) -> void:
 						clampf(hit.position.z,movement_bounds.position.y,movement_bounds.end.y)
 					)
 	chapter.handle_input(event)
+
+func _play_model_animation(base_name: String, blend: float = 0.16, speed: float = 1.0) -> void:
+	if _model_animation_players.is_empty(): return
+	var all_playing := _model_animation_base == base_name
+	for i in range(_model_animation_players.size()):
+		var player := _model_animation_players[i]
+		var animation_map := _model_animation_maps[i]
+		if not is_instance_valid(player) or not animation_map.has(base_name):
+			all_playing = false
+			continue
+		if not player.is_playing() or player.current_animation != animation_map[base_name]:
+			all_playing = false
+	if all_playing: return
+	_model_animation_base = base_name
+	for i in range(_model_animation_players.size()):
+		var player := _model_animation_players[i]
+		var animation_map := _model_animation_maps[i]
+		if not is_instance_valid(player) or not animation_map.has(base_name): continue
+		player.speed_scale = 1.0
+		player.play(animation_map[base_name], blend, speed)
+
+func play_ground_pickup(target_position: Vector3, on_reach: Callable, on_complete: Callable) -> void:
+	_play_ground_pickup(target_position, on_reach, on_complete)
+
+func play_examine() -> void:
+	_play_model_animation("Examine", 0.18)
+
+func play_surprise() -> void:
+	_play_model_animation("Surprise", 0.08)
+
+func finish_context_animation() -> void:
+	_play_model_animation("Idle", 0.18)
+
+func _play_ground_pickup(target_position: Vector3, on_reach: Callable, on_complete: Callable) -> void:
+	if _animation_lock: return
+	var direction := target_position - player.global_position
+	direction.y = 0.0
+	if direction.length() > 0.01:
+		model.rotation.y = atan2(-direction.x,-direction.z)
+	if not is_instance_valid(_model_animation) or not _model_animations.has("Pickup_Ground"):
+		if on_reach.is_valid(): on_reach.call()
+		if on_complete.is_valid(): on_complete.call()
+		return
+	_animation_lock = true
+	_play_model_animation("Pickup_Ground", 0.12, PICKUP_PLAYBACK_SPEED)
+	var clip := _model_animation.get_animation(_model_animations["Pickup_Ground"])
+	var duration := (clip.length if clip != null else 1.8) / PICKUP_PLAYBACK_SPEED
+	await get_tree().create_timer(maxf(0.2,duration*0.46)).timeout
+	if on_reach.is_valid(): on_reach.call()
+	await get_tree().create_timer(maxf(0.2,duration*0.54)).timeout
+	_animation_lock = false
+	_play_model_animation("Idle", 0.12)
+	if on_complete.is_valid(): on_complete.call()

@@ -93,7 +93,7 @@ TOPIC: naomi_and_the_boy
   EVIDENCE: boy_pebble_survey
 
 TOPIC: crew_omission
-  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(salt_mender, crew_omission)
+  GATE: topic_done(local_historian, crew_omission_official)
   TAG: salt_mender_crew_omission
   LABEL: "Ask why the town's history leaves out the crew's names"
   TIME: 7

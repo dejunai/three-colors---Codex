@@ -60,7 +60,7 @@ TOPIC: default
   ROPEWALK FOREMAN: "Precinct business stays outside the tar-house, Corwin."
 
 TOPIC: island_supply
-  GATE: evidence(naomi) AND NOT topic_done(ropewalk_foreman, island_supply)
+  GATE: evidence(naomi)
   TAG: ropewalk_foreman_island_supply
   LABEL: "Ask about supply runs to the offshore island"
   TIME: 7
@@ -74,7 +74,7 @@ TOPIC: island_supply
   NOTEBOOK: foreman_island_supply | "The rope-walk foreman confirmed no supply run to the island appears in his ledger. He acknowledged that a private boat would leave no record. He did not say one had gone."
 
 TOPIC: cellar_salt
-  GATE: (evidence(gray_salt_cakes) OR evidence(kelp_salt_preservative)) AND NOT topic_done(ropewalk_foreman, cellar_salt)
+  GATE: (evidence(gray_salt_cakes) OR evidence(kelp_salt_preservative))
   TAG: ropewalk_salt
   LABEL: "Ask why someone would carry harbor curing salt inland"
   TIME: 7
@@ -91,7 +91,7 @@ TOPIC: cellar_salt
   EVIDENCE: cellar_desiccation_practice
 
 TOPIC: estate_mooring_cable
-  GATE: evidence(estate_conduit_map) AND NOT topic_done(ropewalk_foreman, estate_mooring_cable)
+  GATE: evidence(estate_conduit_map)
   TAG: ropewalk_cable
   LABEL: "Ask about heavy hawser supplied to the estate bluff"
   TIME: 8
@@ -105,7 +105,7 @@ TOPIC: estate_mooring_cable
   EVIDENCE: heavy_subterranean_tackle
   
 TOPIC: island_confirmed
-  GATE: evidence(chandlery_island_delivery) AND evidence(naomi_quay_inquiry) AND NOT topic_done(ropewalk_foreman, island_confirmed)
+  GATE: evidence(chandlery_island_delivery) AND evidence(naomi_quay_inquiry)
   TAG: ropewalk_foreman_island_confirmed
   LABEL: "Tell him about the chandlery sale"
   TIME: 8

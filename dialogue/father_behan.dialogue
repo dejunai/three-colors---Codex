@@ -29,6 +29,13 @@ TOPIC: default
   VOICE: trombone_weary_short_v1
   FATHER BEHAN: "The sanctuary is open if you need stillness. Lord knows this town has little enough of it to spare."
 
+TOPIC: default
+  GATE: topic_done(father_behan, default) AND coat = plain
+  TAG: behan_repeat_plain_graves
+  WEIGHT: 2
+  VOICE: trombone_weary_long_v1
+  FATHER BEHAN: "The ground settled uneven on the east side of the wall. That whole row went down in three weeks back in eighteen.\nI wore through two spade helves before the frost broke. Since then I've learned what it looks like when a town decides how many graves it's going to count."
+
 # Police coat / badge defaults: civil vs spiritual authority, skepticism of the badge, Odell
 TOPIC: default
   GATE: topic_done(father_behan, default) AND coat != plain
@@ -46,7 +53,7 @@ TOPIC: default
   FATHER BEHAN: "Be careful what you demand of this town in the name of the badge, Corwin. Some doors were shut for reasons your regulations don't contemplate."
 
 TOPIC: club_invitation
-  GATE: topic_done(father_behan, default) AND topic_done(steward, club_talk) AND NOT topic_done(father_behan, club_invitation)
+  GATE: topic_done(father_behan, default) AND topic_done(steward, club_talk)
   TAG: behan_invitation
   LABEL: "Ask why he declined the club's invitations"
   TIME: 7

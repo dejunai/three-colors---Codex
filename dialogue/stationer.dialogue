@@ -103,7 +103,7 @@ TOPIC: fenn_conduit_tracing
   EVIDENCE: estate_conduit_map
 
 TOPIC: naomi_supplies
-  GATE: evidence(naomi) AND NOT topic_done(stationer, naomi_supplies)
+  GATE: evidence(naomi)
   TAG: stationer_naomi
   LABEL: "Ask if Naomi Freeman purchased writing materials"
   TIME: 7
@@ -137,7 +137,7 @@ TOPIC: halleck_arithmetic
 
 # Shared inquiry: four different completed refusals make the question travel.
 TOPIC: crew_omission
-  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(stationer, crew_omission)
+  GATE: topic_done(local_historian, crew_omission_official)
   TAG: stationer_crew_omission
   LABEL: "Ask why the school reader never names the crew"
   TIME: 5

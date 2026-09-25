@@ -6,8 +6,12 @@ const Runtime = preload("res://scripts/shared/dialogue_runtime.gd")
 const DialogueState = preload("res://scripts/shared/dialogue_state.gd")
 const ContiguousTown = preload("res://scripts/chapters/contiguous_town_phase_one.gd")
 const ContiguousTownTwo = preload("res://scripts/chapters/contiguous_town_phase_two.gd")
-var FILES = {"boy":"gatehouse_boy", "assistant":"coroners_assistant", "crew":"groundskeeper", "gardener":"gardener", "odell":"odell", "almy":"mrs_almy", "behan":"father_behan", "barman":"steward", "old_woman":"old_woman"}
-var TITLES = {"boy":"The gatehouse boys", "assistant":"The coroner's assistant", "crew":"The groundskeeper", "gardener":"The gardener", "odell":"Captain Odell", "almy":"Mrs. Almy", "behan":"Father Behan", "barman":"The club's steward", "old_woman":"The woman outside Kessler's shop"}
+const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
+const CoronerModel = preload("res://scripts/shared/coroner_model.gd")
+const CoronersAssistantModel = preload("res://scripts/shared/coroners_assistant_model.gd")
+const CastModel = preload("res://scripts/shared/cast_model.gd")
+var FILES = {"boy":"gatehouse_boy", "assistant":"coroners_assistant", "crew":"groundskeeper", "gardener":"gardener", "odell":"odell", "almy":"mrs_almy", "behan":"father_behan", "barman":"steward", "old_woman":"old_woman", "morgue_coroner":"morgue_coroner", "intake_clerk":"intake_clerk"}
+var TITLES = {"boy":"The gatehouse boys", "assistant":"The coroner's assistant", "crew":"Abel Tavares", "gardener":"The gardener", "odell":"Captain Odell", "almy":"Mrs. Almy", "behan":"Father Behan", "barman":"The club's steward", "old_woman":"The woman outside Kessler's shop", "morgue_coroner":"The coroner", "intake_clerk":"The intake clerk"}
 var catalog = preload("res://scripts/chapters/dialogue_catalog.gd").new()
 var extra_actors: Array[String] = []
 var figures: Dictionary = {}
@@ -17,6 +21,7 @@ var population_story = ""
 var active: Dictionary = {}
 var segment: Dictionary = {}
 var offset = 0
+var session_actor: String = ""
 
 func setup(g: Node) -> void:
 	catalog.scan()
@@ -25,6 +30,11 @@ func setup(g: Node) -> void:
 		FILES[npc] = catalog.paths[npc]
 		TITLES[npc] = catalog.titles[npc]
 		extra_actors.append(npc)
+	# These room actors predate the scheduled catalog, so their files are already
+	# in FILES and the scan above intentionally skips them. They still need to
+	# participate in population now that they have rendered figures.
+	for actor in ["intake_clerk", "morgue_coroner"]:
+		if not extra_actors.has(actor): extra_actors.append(actor)
 	catalog.add_facts(g.facts)
 
 func populate(g: Node) -> void:
@@ -41,10 +51,53 @@ func populate(g: Node) -> void:
 		g.estate.points.erase(actor)
 		var spot = _slot(g,actor)
 		if spot.is_empty() or spot[0] != g.state.world: continue
-		var figure = g.estate.person(spot[1], "55624f", true, "b8743a" if actor=="harbor_observer" else "")
+		var figure: Node3D
+		if actor == "odell_precinct":
+			figure = CaptainOdellModel.create()
+			figure.position = spot[1]
+			figure.rotation.y = PI
+			g.estate.add_child(figure)
+		elif actor == "coroners_assistant_morgue":
+			figure = CoronersAssistantModel.create()
+			figure.position = spot[1]
+			figure.rotation.y = PI
+			g.estate.add_child(figure)
+		elif actor == "morgue_coroner":
+			figure = CoronerModel.create()
+			figure.position = spot[1]
+			figure.rotation.y = PI
+			g.estate.add_child(figure)
+		elif actor == "intake_clerk":
+			figure = CastModel.create(CastModel.UPPER_MAN)
+			figure.position = spot[1]
+			figure.rotation.y = PI
+			g.estate.add_child(figure)
+		else:
+			figure = CastModel.create_for_npc(actor, spot[0])
+			figure.position = spot[1]
+			figure.rotation.y = _default_facing(spot[0], spot[1])
+			g.estate.add_child(figure)
 		figures[actor] = figure
-		g.estate.target(actor,"Speak with " + TITLES[actor],spot[1])
+		var interaction_position: Vector3 = Vector3(0.4,0,-2.5) if actor == "intake_clerk" else spot[1]
+		g.estate.target(actor,"Speak with " + TITLES[actor],interaction_position)
 		if g.state.world == "stationer": g.estate.points.erase("local_resident")
+
+func _default_facing(world: String, position: Vector3) -> float:
+	# Rendered children already correct Meshy's +Z front to Godot's -Z. This
+	# wrapper yaw turns street residents toward the usable pavement and interior
+	# staff toward the room entrance instead of leaving every model facing north.
+	if world == "waterfront": return PI if position.z < 0.0 else 0.0
+	if world in ["town", "business", "upper", "lower"]:
+		return PI if position.z < 5.0 else 0.0
+	return PI
+
+func face_actor(actor: String, world_position: Vector3) -> void:
+	if not figures.has(actor) or not is_instance_valid(figures[actor]): return
+	var figure := figures[actor] as Node3D
+	var local_target := figure.get_parent_node_3d().to_local(world_position)
+	local_target.y = figure.position.y
+	if figure.position.distance_squared_to(local_target) > 0.01:
+		figure.look_at(local_target, Vector3.UP)
 
 func definition(actor: String) -> Dictionary:
 	return Runtime.load_npc("res://dialogue/" + FILES[actor] + ".dialogue")
@@ -53,15 +106,68 @@ func clear() -> void:
 	active = {}
 	segment = {}
 
+func _set_behan_listening(g: Node, listening: bool) -> void:
+	if g != null and is_instance_valid(g) and is_instance_valid(g.estate) and g.estate.get("behan_actor") != null:
+		preload("res://scripts/shared/father_behan_model.gd").set_listening(g.estate.behan_actor, listening)
+
+func _set_boy_listening(g: Node, listening: bool) -> void:
+	if g != null and is_instance_valid(g) and is_instance_valid(g.estate) and g.estate.get("boy_actor") != null:
+		preload("res://scripts/shared/gatekeeper_boy_model.gd").set_listening(g.estate.boy_actor, listening)
+
+func _set_odell_conversing(g: Node, actor: String, conversing: bool) -> void:
+	var model: Node3D
+	if actor == "odell" and g != null and is_instance_valid(g) and is_instance_valid(g.estate):
+		model = g.estate.get("odell_actor") as Node3D
+	elif actor == "odell_precinct" and figures.has(actor):
+		model = figures[actor] as Node3D
+	if is_instance_valid(model): CaptainOdellModel.set_conversing(model, conversing)
+
+func _set_assistant_conversing(g: Node, actor: String, conversing: bool) -> void:
+	var model: Node3D
+	if actor == "assistant" and g != null and is_instance_valid(g) and is_instance_valid(g.estate):
+		model = g.estate.get("assistant_actor") as Node3D
+	elif actor == "coroners_assistant_morgue" and figures.has(actor):
+		model = figures[actor] as Node3D
+	if not is_instance_valid(model): return
+	CoronersAssistantModel.set_conversing(model, conversing)
+
+func _set_steward_conversing(g: Node, conversing: bool) -> void:
+	if g != null and is_instance_valid(g) and is_instance_valid(g.estate) and g.estate.get("steward_actor") != null:
+		preload("res://scripts/shared/steward_model.gd").set_conversing(g.estate.steward_actor, conversing)
+
+func end_session(g: Node = null) -> void:
+	_set_behan_listening(g, false)
+	_set_boy_listening(g, false)
+	if session_actor == "barman": _set_steward_conversing(g, false)
+	if session_actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, session_actor, false)
+	if session_actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, session_actor, false)
+	clear()
+	session_actor = ""
+	if g != null and is_instance_valid(g) and is_instance_valid(g.state):
+		g.state.defer_dialogue_clock = false
+		var pending = float(g.state.pending_dialogue_minutes) if ("pending_dialogue_minutes" in g.state) else 0.0
+		g.state.pending_dialogue_minutes = 0.0
+		if pending > 0.0:
+			Runtime.DayClock.advance(g.state, pending)
+			if is_instance_valid(g.daylight):
+				g.daylight.update_clock(g.state.clock_minutes, g.player.position)
+		populate(g)
+
 func allowed(g: Node, actor: String) -> bool:
 	if not FILES.has(actor): return false
+	if not session_actor.is_empty() and session_actor == actor: return true
 	if extra_actors.has(actor):
 		var spot = _slot(g,actor)
 		return not spot.is_empty() and spot[0] == g.state.world
 	if actor == "barman": return g.state.world == "lounge" and g.state.visited.has("almy")
 	if actor in ["odell", "assistant"]: return g.state.world == "estate" and not g.state.estate_complete
 	if actor == "crew": return g.state.world == "estate" and g.state.lounge_exited
-	if actor == "old_woman": return g.state.world == "town" and not g.state.evidence.has("old_woman")
+	if actor == "old_woman":
+		return g.state.world == "town" and not g.state.evidence.has("old_woman") and bool(g.state.intake_done) and (
+			g.state.evidence.has("behan_name") or
+			g.state.evidence.has("quay_inquiry") or
+			("dialogue_state" in g.state and g.state.dialogue_state.topic_done("local_historian", "ship_origin"))
+		)
 	return definition(actor).location == g.state.world
 
 func _slot(g: Node, actor: String) -> Array:
@@ -73,6 +179,13 @@ func interact(g: Node, actor: String) -> bool:
 	if not FILES.has(actor): return false
 	if not allowed(g, actor): return true
 	if not active.is_empty(): return true
+	session_actor = actor
+	g.state.defer_dialogue_clock = true
+	if actor == "behan": _set_behan_listening(g, true)
+	if actor == "boy": _set_boy_listening(g, true)
+	if actor == "barman": _set_steward_conversing(g, true)
+	if actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, actor, true)
+	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
 	# Steward visit_count reflects staged days, not repeated attempts at the bar.
 	if actor == "barman": g.state.dialogue_state.visit_counts[def.npc] = g.state.steward_visits
@@ -101,18 +214,33 @@ func interact(g: Node, actor: String) -> bool:
 
 func show_menu(g: Node, actor: String) -> void:
 	if not allowed(g, actor): g._close(); return
+	if session_actor.is_empty():
+		session_actor = actor
+		g.state.defer_dialogue_clock = true
+	if actor == "behan": _set_behan_listening(g, true)
+	if actor == "boy": _set_boy_listening(g, true)
+	if actor == "barman": _set_steward_conversing(g, true)
+	if actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, actor, true)
+	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
 	var entries = Runtime.menu(def, Runtime.make_context(g.state, g.state.dialogue_state)).entries
 	if entries.is_empty() and actor != "odell": g._close(); return
 	g._panel("witness", TITLES[actor], "ASK, LISTEN, RECORD", false, "dialogue")
 	if actor == "odell": g._paragraph("Walter's answer is already in his notebook. Odell has nothing further to add.")
 	for entry in entries:
-		g._button(entry.label, func(): play_topic(g, actor, entry.id))
+		var button = g._button(entry.label, func(): play_topic(g, actor, entry.id))
+		if bool(entry.get("recorded", false)): g._style_recorded_topic_button(button)
 	g._button("Leave the conversation", g._close)
 	g._focus_first()
 
 func play_topic(g: Node, actor: String, topic_id: String) -> void:
 	if not allowed(g, actor) or not active.is_empty(): return
+	if session_actor.is_empty():
+		session_actor = actor
+		g.state.defer_dialogue_clock = true
+	if actor == "barman": _set_steward_conversing(g, true)
+	if actor in ["assistant", "coroners_assistant_morgue"]: _set_assistant_conversing(g, actor, true)
+	if actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, actor, true)
 	var def = definition(actor)
 	var ctx = Runtime.make_context(g.state, g.state.dialogue_state)
 	for index in def.topics.size():
@@ -189,11 +317,10 @@ func _segment_done(g: Node) -> void:
 		g.state.dialogue_state.visit_counts["steward"] = g.state.steward_visits
 	if tag in ["almy_trust", "behan_invitation", "lay_lead", "service_work", "behan_name", "old_woman", "club_talk", "club_devotion", "pantry_lead"]:
 		if not g.state.inquiry_topics.has(tag): g.state.inquiry_topics.append(tag)
-	if is_instance_valid(g.daylight): g.daylight.update_clock(g.state.clock_minutes, g.player.position)
 	clear()
 	_sync(g)
-	populate(g)
-	if (actor in ["almy", "behan", "barman"] or extra_actors.has(actor)) and tag != "almy_ledger": show_menu(g, actor)
+	var should_close_for_ledger = (tag == "almy_ledger" and g.state.evidence.has("service_work"))
+	if (actor in ["almy", "behan", "barman"] or extra_actors.has(actor)) and not should_close_for_ledger: show_menu(g, actor)
 	else: g._close()
 	if tag == "almy_ledger": g._toast("The meal ledger is on the sideboard to your right.",5)
 	g._save_game()
@@ -239,5 +366,8 @@ func restore(g: Node, data: Variant) -> bool:
 	if int(data.consumed) < 0 or int(data.consumed) > result.cards.size(): return false
 	active = data.duplicate(true)
 	segment = result
+	session_actor = String(data.actor)
+	g.state.defer_dialogue_clock = true
+	if session_actor in ["odell", "odell_precinct"]: _set_odell_conversing(g, session_actor, true)
 	_display(g)
 	return true

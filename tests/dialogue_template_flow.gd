@@ -57,11 +57,14 @@ func _run() -> void:
 	assert(is_equal_approx(state.clock_minutes - before, 12.5), "Decimal TIME must work")
 	assert(ds.facts.has("example_witness.example_account_note"))
 	assert(ds.evidence.has("example_door_account"))
-	for entry in Runtime.menu(def, ctx).entries:
-		assert(entry.id != "example_account" and entry.id != "example_disabled" and entry.id != "example_unwritten")
+	var menu_after_account = Runtime.menu(def, ctx)
+	for entry in menu_after_account.entries:
+		assert(entry.id != "example_disabled" and entry.id != "example_unwritten")
+	assert(menu_after_account.entries.any(func(entry): return entry.id == "example_account" and entry.label.ends_with("· recorded")), "A completed topic without a self-guard stays in the menu, marked recorded, rather than disappearing")
 	var repeated = Runtime.play_topic(def, ds, "example_account")
 	Runtime.commit_through(repeated, state, ds, repeated.cards.size())
 	assert(is_equal_approx(state.clock_minutes - before, 12.5), "Replay must not charge again")
+	assert(ds.facts.keys().count("example_witness.example_account_note") == 1, "Replay must not duplicate the recorded fact")
 	var decision = Runtime.play_topic(def, ds, "example_decision")
 	Runtime.commit_through(decision, state, ds, decision.cards.size())
 	decision = Runtime.resume(decision, 0)

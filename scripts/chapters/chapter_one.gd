@@ -7,6 +7,7 @@ const Town = preload("res://town.gd")
 const TownStory = preload("res://town_story.gd")
 const Tunnel = preload("res://tunnel.gd")
 const TunnelStory = preload("res://tunnel_story.gd")
+const WalterModel = preload("res://scripts/shared/walter_model.gd")
 const INK = Color("111615")
 const PAPER = Color("d6d2bd")
 const MUTED = Color("a6aa9b")
@@ -130,9 +131,8 @@ func start(player_rig:Node3D) -> void:
 
 
 func _build_player() -> void:
-	var avatar=estate.person(Vector3.ZERO,"424b43")
-	var badge=estate.box(avatar,Vector3(-0.16,1.48,-0.18),Vector3(0.07,0.10,0.025),"c3c4b3")
-	badge.name="Badge"
+	var avatar=WalterModel.create()
+	estate.add_child(avatar)
 	rig.build_player(avatar,state.position)
 	marker = MeshInstance3D.new()
 	var mesh = TorusMesh.new()
@@ -171,6 +171,9 @@ func _style(bg:Color,border:Color=Color("626d5b")) -> StyleBoxFlat:
 func _button(text:String,callback:Callable,parent:Node=null) -> Button:
 	return interface._button(text,callback,parent)
 
+func _style_recorded_topic_button(button:Button) -> void:
+	interface.style_recorded_topic_button(button)
+
 func _panel(kind:String,heading:String,kicker:String="",wide:bool=false,visual_kind:String="") -> void:
 	page=kind
 	Input.mouse_mode=Input.MOUSE_MODE_VISIBLE
@@ -189,7 +192,7 @@ func _close() -> void:
 		_case_file()
 		return
 	_stop_instrument_voice()
-	scripted_dialogue.clear()
+	scripted_dialogue.end_session(self)
 	interface.close()
 	_sync_lounge()
 	page="play"
@@ -239,7 +242,11 @@ func _new_game() -> void:
 	tunnel_dead = false
 	comfort_time = 0
 	state = CaseState.new()
+	# F3 may already be active at the title screen. Start each playthrough's
+	# sticky usage flag from the current pace rather than a prior playthrough.
+	rig.developer_brisk_used = rig.developer_brisk
 	playthrough_log.begin(state,scripted_dialogue.FILES.keys())
+	if rig.developer_brisk_used: playthrough_log.note_developer_brisk_used()
 	_travel("estate",state.position,0,false)
 	player.position = state.position
 	yaw = 0
@@ -396,6 +403,7 @@ func _find_focus() -> void:
 	var best = 3.0
 	for id in estate.points:
 		if id == "report" and not state.visited.has("odell"): continue
+		if id == "intake" and not state.visited.has("intake_clerk") and not state.intake_done: continue
 		var p:Vector3 = estate.points[id].pos
 		var d = Vector2(p.x-player.position.x,p.z-player.position.z).length()
 		if d < best:
@@ -407,6 +415,7 @@ func _find_focus() -> void:
 	prompt.text = "" if focused.is_empty() else "[ E ]  "+str(estate.points[focused].title)
 	marker.visible = not focused.is_empty() and bool(settings.hints)
 	if marker.visible: marker.position = estate.points[focused].get("marker",estate.points[focused].pos)+Vector3(0,0.06,0)
+	if not focused.is_empty(): scripted_dialogue.face_actor(focused, player.global_position)
 
 func _interact(id:String) -> void:
 	if staging.interact(self,id): return
@@ -516,6 +525,9 @@ func _open_from_personal_effects(callback:Callable) -> void:
 func _flask() -> void:
 	archive._flask(self)
 
+func _badge() -> void:
+	archive._badge(self)
+
 func _pocket_watch() -> void:
 	archive._pocket_watch(self)
 
@@ -552,9 +564,32 @@ func _pause() -> void:
 	_button("Return to the grounds",_close)
 	_button("Case file",_journal)
 	_button("Accessibility & controls",func(): return_page="pause"; _settings())
-	_button("Save and return to title",_title)
-	_button("Save and quit",func(): _save_game(); get_tree().quit())
+	_button("Save and return to title",_save_and_return_to_title)
+	_button("Save and quit",_save_and_quit)
 	_focus_first()
+
+func _save_and_return_to_title() -> void:
+	staging.exit_debrief(self,"return to title",_return_to_title_after_debrief)
+
+func _save_and_quit() -> void:
+	staging.exit_debrief(self,"quit",_quit_after_debrief)
+
+func _finish_exit_debrief(town_feel:String,time_natural:String,continuation:Callable) -> void:
+	state.dialogue_state.set_flag("exit_debrief_completed",true)
+	_save_game()
+	playthrough_log.close_with_debrief(state,town_feel,time_natural)
+	continuation.call()
+
+func _continue_exit_without_debrief(continuation:Callable) -> void:
+	playthrough_log.end(state,"closed")
+	_save_game()
+	continuation.call()
+
+func _return_to_title_after_debrief() -> void:
+	_title()
+
+func _quit_after_debrief() -> void:
+	get_tree().quit()
 
 func _settings() -> void:
 	_panel("settings","Accessibility & controls","AVAILABLE BEFORE PLAY",true)
@@ -626,6 +661,7 @@ func _load_game() -> void:
 	tunnel_dead=bool(d.get("tunnel_dead",false))
 	if tunnel_dead: _show_tunnel_death(false)
 	elif state.montage_index >= 0: staging.draw_montage(self)
+	elif state.finished and state.world != "tunnel" and state.dialogue_state.flag("glass_broken") and not state.dialogue_state.flag("debrief_completed"): staging.debrief(self)
 	elif state.finished and state.world != "tunnel": _town_complete()
 	else:
 		_close()
@@ -645,6 +681,9 @@ func _load_settings() -> void:
 func _toast(text:String,duration:float = 4) -> void:
 	toast_label.text=text
 	toast_time=duration
+
+func note_developer_brisk_used() -> void:
+	playthrough_log.note_developer_brisk_used()
 
 func _notification(what:int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
@@ -701,7 +740,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 		estate.sync_pantry(state.evidence.has("pantry_lead"))
 		portals.sync_points(self, "lounge", ["lounge_exit", "pantry_door"])
 	else:
-		objects.sync_points(self, "town", ["gazette","lodging","exemption"])
+		objects.sync_points(self, "town", ["gazette","lodging","exemption","morgue_tables"])
 		if destination == "town": portals.sync_points(self, "town", ["street_precinct", "street_almy", "street_room", "street_estate", "route_post"])
 		if destination == "lower": portals.sync_points(self, "lower", ["route_speakeasy"])
 	if estate and estate.has_method("sync_actors"):
@@ -723,7 +762,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 	distance=6.3 if destination in ["estate","town"] else 4.8
 	# Pickman and the business street now share one exterior, extending north
 	# through the climb and the full business block.
-	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-75,153,243) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
+	movement_bounds=Rect2(-31,-18.4,62,60.4) if destination=="estate" else (Rect2(-29,-75,164,243) if destination=="town" else Rect2(-8.45,-7.4,16.9,15.1))
 	if destination in ["upper","business","lower","waterfront"]:
 		movement_bounds=Rect2(-29,-7,58,36)
 		distance=6.3
@@ -794,9 +833,6 @@ func _town_interaction(id:String) -> bool:
 	if id == "local_resident" and estate.points.has(id):
 		_cards([["A RESIDENT","I've got nothing to say about it."]],_close)
 		return true
-	if id == "morgue_coroner" and state.world == "morgue":
-		_cards([["THE CORONER","The coroner spreads his hands over the row of sheeted tables. He has no answer to offer."]],_close)
-		return true
 	match id:
 		"interior_exit":
 			if breaker.pending(self):
@@ -810,7 +846,15 @@ func _town_interaction(id:String) -> bool:
 			var exterior_return = lower_return if lower_return != null else (upper_return if upper_return != null else business_return)
 			_travel("town",exterior_return if exterior_return != null else exits.get(state.world,Vector3(0,0.1,17)),0)
 			return true
-		"intake": _intake(); return true
+		"intake":
+			if not state.visited.has("intake_clerk") and not state.intake_done:
+				_panel("case","The intake counter","PRECINCT 4  /  INCOMING REPORT")
+				_paragraph("Speak with the intake clerk before submitting the estate report.")
+				_button("Step back",_close)
+				_focus_first()
+				return true
+			_intake()
+			return true
 		"supplement": _supplement(); return true
 		"survey_drawer": _survey_drawer(); return true
 		"board": _board(); return true
@@ -886,10 +930,14 @@ func _intake() -> void:
 		_button("Leave the counter",_close)
 		_focus_first()
 		return
-	var cards=TownStory.SCENES.intake.duplicate(true)
+	var cards: Array = []
+	if not state.visited.has("intake_clerk"):
+		cards.append_array(TownStory.SCENES.intake)
 	if state.report_evidence.has("wounds") and state.report_evidence.has("gas"): cards.append_array(TownStory.SCENES.intake_rich)
 	elif state.report_evidence.size()<=1: cards.append_array(TownStory.SCENES.intake_thin)
 	if state.report=="Full inquest requested": cards.append_array(TownStory.SCENES.intake_county)
+	if cards.is_empty():
+		cards.append(["PRECINCT 4  ·  INTAKE", "Walter places his report in the intake tray.\nThe clerk stamps the heading and files the sheet into the precinct drawer."])
 	_cards(cards,func():
 		state.receive_report()
 		state.discover("intake")
@@ -940,8 +988,7 @@ func _refresh_outfit() -> void:
 	if state.world == "estate":
 		estate.sync_staging(state)
 		objects.sync_points(self, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
-	if model.has_node("Coat"): model.get_node("Coat").material_override=estate.mat("5f6559" if state.coat=="Plain wool coat" else "424b43")
-	if model.has_node("Badge"): model.get_node("Badge").visible=state.coat=="Police coat" and not state.dialogue_state.flag("badge_lost")
+	WalterModel.set_outfit(model, state.coat == "Plain wool coat", state.coat == "Police coat" and not state.dialogue_state.flag("badge_lost"))
 
 func _source_for(id:String) -> String:
 	if id=="eight":
@@ -1004,38 +1051,38 @@ func _tunnel_interaction(id:String) -> bool:
 	return true
 
 func _tunnel_descent() -> void:
-	if not state.flask_spilled:
-		state.flask_spill_amount = state.flask
-		state.flask_spilled = true
-		state.flask = 0
-		_cards(TunnelStory.FLASK_SPILL,func():
-			state.discover("flask_spill")
-			state.record("A rock spur tore Walter's flask loose on the descent. What remained inside was lost.")
+	if not state.dialogue_state.flag("tunnel_spur_seen"):
+		state.dialogue_state.set_flag("tunnel_spur_seen", true)
+		_cards(TunnelStory.ROCK_SPUR, func():
 			_save_game()
-			_toast("The flask was torn loose and lost in the dark.",5)
+			_toast("The stair narrows past the foundation support.", 5)
 		)
 	else:
-		_panel("descent","The Deep Corridor","BEYOND THE FOUNDATION")
-		_paragraph("The worked masonry gives way to rough-hewn stone descending beneath the seabed. Water seeps through the joints.\n\nCold air carries the faint rhythm of the tide miles overhead.",24)
+		_panel("descent", "The Deep Corridor", "BEYOND THE FOUNDATION")
+		_paragraph("The worked masonry gives way to rough-hewn stone descending beneath the seabed. Water seeps through the joints.\n\nCold air carries the faint rhythm of the tide miles overhead.", 24)
 		if state.ammo > 0:
-			_paragraph("Revolver: %d rounds in the cylinder." % state.ammo,18)
-		_button("Go on into the dark",_tunnel_go_on)
-		_button("Step back to the foundation support",_close)
+			_paragraph("Revolver: %d rounds in the cylinder." % state.ammo, 18)
+		_button("Go on into the dark", _tunnel_go_on)
+		_button("Step back to the foundation support", _close)
 		_focus_first()
 
 # The one step past the spur. The player chooses it; the passage answers by turning
 # him back (Bible Part Three, The Descent: he goes some distance and is physically
 # turned back, not killed). Nothing here can be won or lost by stats or ammunition.
 func _tunnel_go_on() -> void:
-	_cards(TunnelStory.PRESSURE,func(): _cards(TunnelStory.RETREAT,func(): _tunnel_turn_back(),"dialogue"),"dialogue")
+	_cards(TunnelStory.PRESSURE, func(): _cards(TunnelStory.RETREAT, func(): _tunnel_turn_back(), "dialogue"), "dialogue")
 
 func _tunnel_turn_back() -> void:
-	state.dialogue_state.set_flag("tunnel_retreated",true)
-	state.dialogue_state.set_flag("badge_lost",true)
-	state.record("The badge and the whistle were lost on the retreat, with the flask already gone. The passage turned him back.")
-	state.clock_minutes=maxf(state.clock_minutes,DayClock.NIGHT)
-	tunnel_dead=false
-	_travel("room",Vector3(7.0,0.1,-1.4),0.55,false)
+	state.flask_spill_amount = state.flask
+	state.flask_spilled = true
+	state.flask = 0
+	state.dialogue_state.set_flag("tunnel_retreated", true)
+	state.dialogue_state.set_flag("badge_lost", true)
+	state.discover("flask_spill")
+	state.record("The badge and the whistle were lost on the retreat, with the flask torn away in the fall. The passage turned him back.")
+	state.clock_minutes = maxf(state.clock_minutes, DayClock.NIGHT)
+	tunnel_dead = false
+	_travel("room", Vector3(7.0, 0.1, -1.4), 0.55, false)
 	_refresh_outfit()
 	_save_game()
 

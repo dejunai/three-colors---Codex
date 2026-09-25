@@ -8,6 +8,17 @@ var desk_glass: Node3D
 var whiskey: MeshInstance3D
 var board_threads: Array[MeshInstance3D] = []
 var glass_shattered := false
+var behan_actor: Node3D
+var steward_actor: Node3D
+const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
+const FatherBehanModel = preload("res://scripts/shared/father_behan_model.gd")
+const StewardModel = preload("res://scripts/shared/steward_model.gd")
+const PRECINCT_EXTERIOR = preload("res://assets/models/exteriors/police_precinct.glb")
+const PICKMAN_HOUSE_1 = preload("res://assets/models/exteriors/pickman_house_1.glb")
+const PICKMAN_HOUSE_3 = preload("res://assets/models/exteriors/pickman_house_3.glb")
+
+func district_box(parent: Node3D, position: Vector3, size: Vector3, tint: String, solid: bool = false, kind: String = "soot_brick") -> MeshInstance3D:
+	return DistrictSurfaces.apply(box(parent, position, size, tint, solid), kind, tint)
 
 func _ready() -> void:
 	rng.seed = 1924
@@ -49,51 +60,73 @@ func _lighting(inside:bool) -> void:
 			add_child(light)
 			cylinder(self,Vector3(x,3.3,-2),0.4,0.2,"b3b29f",0.22)
 
-func _door(x:float, title:String, id:String) -> void:
-	box(self,Vector3(x,1.55,-7.0),Vector3(1.7,3.1,0.12),"242d2a")
-	for dx in [-1,1]: box(self,Vector3(x+dx,1.7,-6.8),Vector3(0.14,3.4,0.25),"b1b09d")
-	box(self,Vector3(x,3.5,-6.7),Vector3(2.3,0.23,0.4),"b4b19e")
-	sphere(self,Vector3(x+0.57,1.2,-6.82),0.06,"b8b29a")
+func _door(x:float, title:String, id:String, visual_parent:Node3D = null) -> void:
+	if visual_parent == null:
+		visual_parent = self
+	district_box(visual_parent,Vector3(x,1.55,-7.0),Vector3(1.7,3.1,0.12),"242d2a",false,"wood")
+	for dx in [-1,1]: district_box(visual_parent,Vector3(x+dx,1.7,-6.8),Vector3(0.14,3.4,0.25),"a0a18e",false,"cut_stone")
+	district_box(visual_parent,Vector3(x,3.5,-6.7),Vector3(2.3,0.23,0.4),"a4a28f",false,"cut_stone")
+	sphere(visual_parent,Vector3(x+0.57,1.2,-6.82),0.06,"b8b29a")
 	lettering(title,Vector3(x,4.25,-6.6),42)
 	target(id,"Enter "+title.to_lower(),Vector3(x,0,-5.6))
 
+func _place_pickman_exterior(parent:Node3D, packed:PackedScene, model_name:String, position:Vector3, model_scale:Vector3) -> Node3D:
+	var model := packed.instantiate() as Node3D
+	model.name = model_name
+	model.position = position
+	model.scale = model_scale
+	parent.add_child(model)
+	return model
+
 func _street() -> void:
-	box(self,Vector3(0,-0.3,7),Vector3(100,0.5,75),"4b554d",true)
-	box(self,Vector3(0,-0.035,8),Vector3(67,0.06,15),"6c766c")
-	box(self,Vector3(0,0,-3),Vector3(67,0.1,6.5),"939889")
-	box(self,Vector3(0,0,19),Vector3(67,0.1,6),"878e80")
-	for z in [0.4,16]: box(self,Vector3(0,0.065,z),Vector3(66,0.13,0.18),"b2b3a1")
+	district_box(self,Vector3(0,-0.3,7),Vector3(100,0.5,75),"4b554d",true,"stone")
+	district_box(self,Vector3(0,-0.035,8),Vector3(67,0.06,15),"646e66",false,"cobble")
+	district_box(self,Vector3(0,0,-3),Vector3(67,0.1,6.5),"8a9083",false,"cut_stone")
+	district_box(self,Vector3(0,0,19),Vector3(67,0.1,6),"7c8579",false,"cut_stone")
+	for z in [0.4,16]: district_box(self,Vector3(0,0.065,z),Vector3(66,0.13,0.18),"a0a28f",false,"cut_stone")
 	for x in range(-30,32,2): box(self,Vector3(x,0.06,-3),Vector3(0.026,0.015,6),"636f63")
 	for i in 370:
 		box(self,Vector3(rng.randf_range(-32,32),0.01,rng.randf_range(1,15)),Vector3(0.08,0.02,rng.randf_range(0.1,0.32)),"838c7d")
+	var legacy_pickman := Node3D.new()
+	legacy_pickman.name = "LegacyPickmanCollisionVisuals"
+	add_child(legacy_pickman)
 	# The north side of Pickman Street: ordinary institutions rather than a monumental hub.
 	for spec in [[-18,14,8.8,"677568"],[-2,15,10.7,"828c79"],[16,16,9.5,"596b5d"]]:
 		var x:float=spec[0]
 		var width:float=spec[1]
 		var h:float=spec[2]
-		box(self,Vector3(x,h/2,-11),Vector3(width,h,7),spec[3],true)
-		box(self,Vector3(x,h+0.2,-11),Vector3(width+0.5,0.4,7.5),"333f38")
-		for y in [0.4,3.9,h-0.3]: box(self,Vector3(x,y,-7.44),Vector3(width,0.15,0.24),"adb29d")
+		var wall_kind := "soot_brick" if x in [-18,16] else "cracked_plaster"
+		district_box(legacy_pickman,Vector3(x,h/2,-11),Vector3(width,h,7),spec[3],true,wall_kind)
+		district_box(legacy_pickman,Vector3(x,h+0.2,-11),Vector3(width+0.5,0.4,7.5),"333f38",false,"slate")
+		for y in [0.4,3.9,h-0.3]: district_box(legacy_pickman,Vector3(x,y,-7.44),Vector3(width,0.15,0.24),"949984",false,"cut_stone")
 		for dx in [-4.5,0,4.5]:
 			for y in [5.6,8.1]:
 				if y>h-1: continue
-				box(self,Vector3(x+dx,y,-7.42),Vector3(1.4,1.7,0.12),"2b3933")
-				for dy in [-0.92,0,0.92]: box(self,Vector3(x+dx,y+dy,-7.25),Vector3(1.7,0.09,0.17),"b7b7a2")
-				for edge in [-0.78,0.78]: box(self,Vector3(x+dx+edge,y,-7.25),Vector3(0.1,1.9,0.17),"a7ae99")
-	_door(-18,"PRECINCT 4","street_precinct")
-	_door(-1,"ALMY'S BOARDINGHOUSE","street_almy")
-	_door(18,"ROOMS ABOVE","street_room")
+				district_box(legacy_pickman,Vector3(x+dx,y,-7.42),Vector3(1.4,1.7,0.12),"2b3933",false,"wood")
+				for dy in [-0.92,0,0.92]: district_box(legacy_pickman,Vector3(x+dx,y+dy,-7.25),Vector3(1.7,0.09,0.17),"a2a38f",false,"wood")
+				for edge in [-0.78,0.78]: district_box(legacy_pickman,Vector3(x+dx+edge,y,-7.25),Vector3(0.1,1.9,0.17),"969b87",false,"wood")
+	_door(-18,"PRECINCT 4","street_precinct",legacy_pickman)
+	_door(-1,"ALMY'S BOARDINGHOUSE","street_almy",legacy_pickman)
+	_door(18,"ROOMS ABOVE","street_room",legacy_pickman)
+	var rendered_pickman := Node3D.new()
+	rendered_pickman.name = "RenderedPickmanFrontage"
+	add_child(rendered_pickman)
+	_place_pickman_exterior(rendered_pickman,PRECINCT_EXTERIOR,"PolicePrecinctExterior",Vector3(-18,0,-11),Vector3(8.5,4.4,3.5))
+	_place_pickman_exterior(rendered_pickman,PICKMAN_HOUSE_1,"AlmyBoardinghouseExterior",Vector3(-2,0,-11),Vector3(7.7,5.35,3.5))
+	_place_pickman_exterior(rendered_pickman,PICKMAN_HOUSE_3,"RoomsAboveExterior",Vector3(17,0,-11),Vector3(8.5,6.38,3.5))
+	# The established solid shells remain authoritative for traversal and routing.
+	legacy_pickman.visible = false
 	lettering("P I C K M A N   S T R E E T",Vector3(-11,1.4,19),35).rotation.y = PI
 	# Cobbler's display with a bench and modest shop window.
-	box(self,Vector3(23,1.7,-7.2),Vector3(3.8,2.0,0.14),"364a3d")
+	district_box(self,Vector3(23,1.7,-7.2),Vector3(3.8,2.0,0.14),"364a3d",false,"wood")
 	lettering("SHOE REPAIRS",Vector3(23,3,-7.0),32)
 	for x in [21.8,22.6,23.4,24.2]:
 		box(self,Vector3(x,0.8,-6.9),Vector3(0.24,0.22,0.5),"8d977f")
 	# Far-side warehouses frame the street but do not imply explorable doors.
 	# The center warehouse footprint is now the western descent's opening.
 	for x in [-24,25]:
-		box(self,Vector3(x,4.0,28),Vector3(12,8,7),"536156",true)
-		box(self,Vector3(x,8.2,28),Vector3(12.6,0.4,7.5),"303f35")
+		district_box(self,Vector3(x,4.0,28),Vector3(12,8,7),"536156",true,"soot_brick")
+		district_box(self,Vector3(x,8.2,28),Vector3(12.6,0.4,7.5),"303f35",false,"slate")
 	for x in [-25,-10,7,25]: lamp(Vector3(x,0,0))
 	for x in [-20,9]:
 		box(self,Vector3(x,0.55,18.2),Vector3(3,0.15,0.7),"6f7e66",true)
@@ -106,21 +139,25 @@ func _street() -> void:
 	# A rectory marker behind which Father Behan will speak plainly, if asked.
 	box(self,Vector3(-8.6,0.55,-1.6),Vector3(0.06,1.1,0.06),"3a443a")
 	box(self,Vector3(-8.6,0.85,-1.6),Vector3(0.5,0.06,0.06),"3a443a")
-	person(Vector3(-8,0,-1),"242423",false).rotation.y=1.8
+	behan_actor = FatherBehanModel.create()
+	behan_actor.position = Vector3(-8,0,-1)
+	behan_actor.rotation.y = 1.8
+	add_child(behan_actor)
 	target("behan","Speak with Father Behan",Vector3(-8,0,-1))
 	# Kessler's shop, shuttered since his death, and a woman who won't give her name.
 	box(self,Vector3(-20,1.1,12),Vector3(3.2,2.2,0.3),"333a2f",true)
 	lettering("KESSLER",Vector3(-20,2.5,11.85),26)
 	for y in [0.6,1.1,1.6]: box(self,Vector3(-20,y,11.83),Vector3(2.6,0.16,0.1),"241f1a")
-	var old_woman = person(Vector3(-19.2,0,11.2),"3c3a34")
-	departing_woman=old_woman
+	var old_woman = CastModel.create(CastModel.LOWER_WOMAN)
+	old_woman.position = Vector3(-17.5, 0, 8.8)
 	old_woman.rotation.y = -2.0
-	target("old_woman","Speak with the woman outside the shop",Vector3(-19.2,0,11.2))
-	register_actor("old_woman", old_woman, "old_woman", func(st): return not st.evidence.has("old_woman"))
+	old_woman.visible = false
+	add_child(old_woman)
+	departing_woman = old_woman
 	for x in [-28,28]: tree(Vector3(x,0,20))
 	# District portals have been replaced by physical streets. Interior doors
 	# retain their stable route IDs in the shared exterior.
-	box(self,Vector3(-24,1.6,24.3),Vector3(1.7,3.2,0.16),"283c32")
+	district_box(self,Vector3(-24,1.6,24.3),Vector3(1.7,3.2,0.16),"283c32",false,"wood")
 	lettering("POST OFFICE",Vector3(-24,3.7,24.05),32).rotation.y=PI
 	target("route_post","Enter the post office",Vector3(-24,0,22))
 	routes["route_post"]=["post_office",Vector3(0,0.1,6),0.0]
@@ -172,7 +209,6 @@ func _chair(pos:Vector3,angle:float=0) -> void:
 func _precinct() -> void:
 	lettering("PRECINCT 4  ·  INTAKE",Vector3(0,3.3,-7.6),46)
 	_desk(Vector3(0,0,-2.5),Vector3(6.2,0.16,1.4))
-	person(Vector3(0.4,0,-4),"78896b",false)
 	_chair(Vector3(0,0,-4.2),PI)
 	for x in [-7,7]:
 		box(self,Vector3(x,1.5,-6),Vector3(1.5,3,2),"4d654b",true)
@@ -183,6 +219,7 @@ func _precinct() -> void:
 	_chair(Vector3(-5,0,2.2))
 	for z in [0,2,4]: _chair(Vector3(7,0,z),PI/2)
 	box(self,Vector3(6.8,2.3,7.78),Vector3(2.2,1.5,0.1),"374d37")
+	target("intake_clerk","Speak with the intake clerk",Vector3(0.4,0,-2.5))
 	target("intake","Submit the estate report",Vector3(0,0,-1.3))
 	target("supplement","File additional observations",Vector3(-5,0,2.1))
 	lettering("SURVEYS",Vector3(7,3.25,-4.85),28)
@@ -196,7 +233,10 @@ func _boardinghouse() -> void:
 	box(self,Vector3(-5.8,0.6,-2.3),Vector3(3,0.65,1.2),"5c7853",true)
 	box(self,Vector3(-5.8,1.2,-2.8),Vector3(3,0.9,0.35),"5c7853")
 	_desk(Vector3(1.5,0,-2.3),Vector3(2.8,0.16,1.5))
-	person(Vector3(1.7,0,-4.2),"6e865d",false)
+	var almy = CastModel.create(CastModel.UPPER_WOMAN)
+	almy.position = Vector3(1.7, 0, -4.2)
+	almy.rotation.y = PI
+	add_child(almy)
 	_chair(Vector3(1.5,0,-4.3),PI)
 	_chair(Vector3(1.5,0,0))
 	for x in [0.9,1.9]:
@@ -291,7 +331,26 @@ func update_board(evidence:Array) -> void:
 		var card=get_node_or_null("BoardCard"+str(i))
 		if card: card.visible=i<evidence.size()
 
+func sync_actors(state_obj: RefCounted) -> void:
+	super.sync_actors(state_obj)
+	if state_obj == null: return
+	if state_obj.evidence.has("old_woman"):
+		dismiss_old_woman()
+		return
+	var ready: bool = bool(state_obj.get("intake_done")) and (
+		state_obj.evidence.has("behan_name") or
+		state_obj.evidence.has("quay_inquiry") or
+		("dialogue_state" in state_obj and state_obj.dialogue_state.topic_done("local_historian", "ship_origin"))
+	)
+	if is_instance_valid(departing_woman):
+		departing_woman.visible = ready
+	if ready:
+		target("old_woman", "Speak with the woman outside the shop", Vector3(-17.5, 0, 8.8))
+	else:
+		points.erase("old_woman")
+
 func dismiss_old_woman() -> void:
+	points.erase("old_woman")
 	dismiss_actor("old_woman")
 	if is_instance_valid(departing_woman):
 		departing_woman.hide()
@@ -313,7 +372,10 @@ func _smoking_lounge() -> void:
 			for arm in [-0.48,0.48]: box(self,seat+Vector3(arm,0.75,0),Vector3(0.22,0.35,1.05),"3b4735")
 	box(self,Vector3(0,0.03,-1),Vector3(4.4,0.03,6),"626957")
 	box(self,Vector3(0,1,-5.8),Vector3(3,2,0.8),"394638",true)
-	person(Vector3(0,0,-4.4),"3f4540",false)
+	steward_actor = StewardModel.create()
+	steward_actor.position = Vector3(0,0,-4.4)
+	steward_actor.rotation.y = PI
+	add_child(steward_actor)
 	target("barman","Speak with the club's steward",Vector3(0,0,-3.6))
 	# The steward's boarded pantry door. Only offered once he has pointed to it;
 	# see sync_pantry() and portals/lounge.portal.
@@ -321,11 +383,11 @@ func _smoking_lounge() -> void:
 	for y in [0.7,1.55,2.4]:
 		var board=box(self,Vector3(-8.62,y,-3.0),Vector3(0.1,0.22,2.0),"5b5f52")
 		if y > 2.0: board.rotation.z=0.11
+	target("pantry_door","Examine the boarded pantry door",Vector3(-7.4,0,-3.0))
 
-# The old pantry door exists in the wall from the start; the way to it is not
-# offered until the steward has named it. Portal sync only ever erases a hotspot,
-# so the chapter re-offers it here whenever the lounge's conversation closes.
+# The old pantry door exists in the wall from the start. Before the steward
+# names it, curious players can examine the boarded door. Once named, it can be opened.
 func sync_pantry(open:bool) -> void:
 	if location != "lounge": return
 	if open: target("pantry_door","Open the boarded pantry door",Vector3(-7.4,0,-3.0))
-	else: points.erase("pantry_door")
+	else: target("pantry_door","Examine the boarded pantry door",Vector3(-7.4,0,-3.0))

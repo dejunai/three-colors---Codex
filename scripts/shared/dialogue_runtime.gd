@@ -130,10 +130,11 @@ static func make_context(state, dstate) -> Dictionary:
 			"object_done": func(args): return state.object_state.object_done(args[0], args[1]) if args.size() > 1 else false,
 			"object_count": func(args): return state.object_state.object_count(args[0]) if args.size() > 0 else 0,
 			"taken": func(args): return state.has_item(args[0]) if args.size() > 0 else false,
-			# Symmetric with portal_runtime.gd's make_context(): lets a dialogue GATE
-			# react to travel (e.g. an NPC who only appears once a place is reached).
 			"portal_done": func(args): return state.portal_state.portal_done(args[0], args[1]) if args.size() > 1 else false,
 			"portal_count": func(args): return state.portal_state.portal_count(args[0]) if args.size() > 0 else 0,
+			"attempt_count": func(args): return state.portal_state.attempt_count(args[0], args[1]) if args.size() > 1 else 0,
+			"examine_count": func(args): return state.object_state.examine_count(args[0], args[1]) if args.size() > 1 else 0,
+			"visited": func(args): return state.visited.has(args[0]) if args.size() > 0 else false,
 		},
 		"fields": {
 			"coat": func(): return state.coat,
@@ -146,6 +147,7 @@ static func make_context(state, dstate) -> Dictionary:
 			"lounge_exited": func(): return state.lounge_exited,
 			"report": func(): return state.report,
 			"report_filed": func(): return not state.report.is_empty(),
+			"intake_done": func(): return bool(state.intake_done),
 		}
 	}
 
@@ -178,7 +180,7 @@ static func has_filed_evidence(state, id: String) -> bool:
 
 static func has_evidence(state, id: String) -> bool:
 	if state.evidence.has(id): return true
-	var aliases = {"ophion_name":["behan_name","ophion_myth_classical"], "kessler_standing":["kessler_carriages"]}
+	var aliases = {"ophion_name":["behan_name","ophion_myth_classical"], "kessler_standing":["kessler_carriages"], "pocketwatch":["watch"], "watch":["pocketwatch"]}
 	for source in aliases.get(id, []):
 		if state.evidence.has(source): return true
 	return false
@@ -189,7 +191,8 @@ static func has_evidence(state, id: String) -> bool:
 static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 	var default_topic = null
 	var eligible_defaults: Array = []
-	var entries: Array = []
+	var new_entries: Array = []
+	var recorded_entries: Array = []
 	for topic in def.topics:
 		if topic.steps.is_empty(): continue
 		if not topic_available(topic, ctx): continue
@@ -198,9 +201,16 @@ static func menu(def: Dictionary, ctx: Dictionary) -> Dictionary:
 			if default_topic == null: default_topic = topic
 		else:
 			var label = topic.label if not topic.label.is_empty() else topic.id.capitalize()
-			if _menu_topic_recorded(def, topic, ctx): label += "  · recorded"
-			entries.append({"id": topic.id, "label": label})
-	return {"default_topic": default_topic, "default_topics": eligible_defaults, "entries": entries}
+			var recorded = _menu_topic_recorded(def, topic, ctx)
+			if recorded: label += "  · recorded"
+			var entry = {"id": topic.id, "label": label, "recorded": recorded}
+			# Recorded (previously completed) topics sink to the bottom of the
+			# menu, keeping active/new topics on top, so revisitable topics
+			# don't bury fresh leads as the list grows. File order is preserved
+			# within each group.
+			if recorded: recorded_entries.append(entry)
+			else: new_entries.append(entry)
+	return {"default_topic": default_topic, "default_topics": eligible_defaults, "entries": new_entries + recorded_entries}
 
 static func topic_available(topic: Dictionary, ctx: Dictionary) -> bool:
 	return Lang.evaluate(topic.gate, ctx)
@@ -367,7 +377,10 @@ static func commit_through(result: Dictionary, state, dstate, count: int) -> boo
 		if first_completion and state != null:
 			var raw_minutes = String(result.session.timing)
 			var minutes = float(raw_minutes) if raw_minutes.is_valid_float() else (0.0 if result.session.topic == "default" else DEFAULT_MINUTES)
-			DayClock.advance(state, minutes)
+			if ("defer_dialogue_clock" in state) and bool(state.defer_dialogue_clock):
+				state.pending_dialogue_minutes = float(state.pending_dialogue_minutes) + minutes
+			else:
+				DayClock.advance(state, minutes)
 			if not result.session.tag.is_empty() and not state.timed_conversations.has(time_key): state.timed_conversations.append(time_key)
 		result.finished = true
 		return true

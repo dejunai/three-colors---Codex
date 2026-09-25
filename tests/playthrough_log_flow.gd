@@ -57,24 +57,71 @@ func run() -> void:
 	assert(_events(logger,"day3_bed_reached").size() == 1)
 	assert(_events(logger,"day3_bed_reached")[0].real_seconds_since_day3_start >= 0.0)
 	assert(_events(logger,"day3_bed_reached")[0].real_seconds_since_day3_start is int)
-	logger.debrief("alive","yes")
-	logger.debrief("confusing","no")
-	assert(_events(logger,"debrief").size() == 1)
-	assert(_events(logger,"debrief")[0].town_feel == "alive")
-	assert(_events(logger,"debrief")[0].time_natural == "yes")
+	var teardown_batch := logger._with_recent_pending([logger._event("session_end")])
+	assert(teardown_batch.size() <= 25, "Beacon backlog must remain under the Worker's 32-event limit")
+	assert(teardown_batch.any(func(item): return item.event == "day3_bed_reached"), "final Beacon must recover a pending glass marker")
+	assert(teardown_batch[-1].event == "session_end")
+	logger.note_developer_brisk_used()
+	logger.note_developer_brisk_used()
+	assert(logger.dev_brisk_used)
+	var resumed_logger = PlaythroughLog.new()
+	resumed_logger.endpoint_url = ""
+	root.add_child(resumed_logger)
+	resumed_logger.resume(state,npcs)
+	assert(resumed_logger.session_id == first_id and resumed_logger.dev_brisk_used, "developer pace usage must survive process restart/save load")
 
 	# Loading during this runtime keeps the same opaque id and emits no second start.
 	logger.resume(state,npcs)
 	assert(logger.session_id == first_id)
 	assert(_events(logger,"session_start").size() == 1)
-	logger.end(state,"completed")
+	logger.complete(state,"alive","yes")
+	logger.complete(state,"confusing","no")
+	assert(_events(logger,"debrief").size() == 1)
+	assert(_events(logger,"debrief")[0].town_feel == "alive" and _events(logger,"debrief")[0].time_natural == "yes")
+	assert(_events(logger,"session_end").size() == 1, "completion must queue debrief and session_end atomically")
 	assert(_events(logger,"session_end")[0].ended_via == "completed")
 	assert(_events(logger,"session_end")[0].total_real_seconds is int)
+	assert(_events(logger,"session_end")[0].dev_brisk_used == true)
 	assert(_payload_is_private(logger.buffer))
 
-	logger.begin(CaseState.new(),npcs)
+	# The Worker accepts at most 32 events. A long or temporarily offline session
+	# must never create an oversized request that can poison all later delivery.
+	logger.buffer.clear()
+	for _index in 40: logger.buffer.append(logger._event("session_start"))
+	assert(logger._request_batch().size() == 32)
+	logger.endpoint_url = ""
+	logger.request_busy = true
+	logger.in_flight_count = 32
+	logger._request_completed(HTTPRequest.RESULT_SUCCESS, 200, PackedStringArray(), PackedByteArray())
+	assert(logger.buffer.size() == 8, "a successful acknowledgement must remove only its capped in-flight batch")
+	var pending_after_success:int = logger.buffer.size()
+	logger.request_busy = true
+	logger.in_flight_count = pending_after_success
+	logger._request_completed(HTTPRequest.RESULT_CANT_CONNECT, 0, PackedStringArray(), PackedByteArray())
+	assert(logger.buffer.size() == pending_after_success, "transport failure must retain pending events")
+	logger.buffer.clear()
+
+	var fresh_state = CaseState.new()
+	logger.begin(fresh_state,npcs)
 	assert(logger.session_id != first_id)
-	print("PLAYTHROUGH LOG PASS: UUID lifecycle, objective, phase, transition, conversation context, Day 3 and privacy payload")
+	assert(not logger.dev_brisk_used)
+	logger.note_developer_brisk_used()
+	logger.end(fresh_state,"closed")
+	assert(_events(logger,"session_end")[0].dev_brisk_used == true)
+	logger.resume(fresh_state,npcs)
+	assert(not logger.ended and logger.dev_brisk_used, "same-process save/load must reactivate logging without clearing sticky developer pace")
+	assert(logger.request != null and logger.request.timeout == 5.0)
+
+	# Verify stuck request recovery on timeout threshold
+	logger.endpoint_url = "http://127.0.0.1:9999/dummy"
+	logger.request_busy = true
+	logger.request_sent_ms = Time.get_ticks_msec() - 8000
+	logger.buffer.append({"session_id": logger.session_id, "event": "test_stale"})
+	logger._flush()
+	# The stale lock must be broken (request.request to dummy port will fail or connect, but request_busy will not stay hung from the prior 8s-old request)
+	logger.endpoint_url = ""
+
+	print("PLAYTHROUGH LOG PASS: UUID lifecycle, objective, phase, transition, conversation context, Day 3, capped acknowledgement delivery, timeout recovery, and privacy payload")
 	quit(0)
 
 func _events(logger,event_name:String) -> Array:
@@ -86,7 +133,7 @@ func _valid_uuid_v4(value:String) -> bool:
 	return regex.search(value) != null
 
 func _payload_is_private(events:Array) -> bool:
-	var allowed = ["session_id","event","timestamp","from_world","to_world","real_seconds_elapsed","game_minutes_elapsed","day","new_phase","npcs_spoken_to_this_phase","real_seconds_since_day3_start","town_feel","time_natural","total_real_seconds","final_day","ended_via","npc_id","topic_id","coat_state","world","phase"]
+	var allowed = ["session_id","event","timestamp","from_world","to_world","real_seconds_elapsed","game_minutes_elapsed","day","new_phase","npcs_spoken_to_this_phase","real_seconds_since_day3_start","town_feel","time_natural","total_real_seconds","final_day","ended_via","dev_brisk_used","npc_id","topic_id","coat_state","world","phase"]
 	for event in events:
 		for key in event:
 			if not allowed.has(key): return false

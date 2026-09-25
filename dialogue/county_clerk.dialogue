@@ -69,6 +69,13 @@ TOPIC: default
   VOICE: trombone_dismissive_medium_v1
   MR. PENCE: "I have seventy probate entries to verify before the evening packet leaves. Move along unless you have official papers to tender."
 
+TOPIC: default
+  GATE: topic_done(county_clerk, default) AND coat != plain
+  TAG: clerk_repeat_badge_ledgers
+  WEIGHT: 2
+  VOICE: trombone_bureaucratic_long_v1
+  MR. PENCE: "We filled three ledgers in October five years back, Officer. Forty names before lunch, cause of death scribbled in pencil when the ink ran dry.\nWhen you've stamped that many dockets in a single month, you learn not to argue with whatever the doctor writes down."
+
 
 TOPIC: wage_claim_inquiry
   GATE: evidence(lay_lead) AND evidence(new_bedford_letters) AND evidence(postal_bureaucracy_refusal)
@@ -108,7 +115,7 @@ TOPIC: wage_claim_inquiry
 
       OUTCOME: wage_claim_response = triplicate_filing
 TOPIC: ophion_settlement
-  GATE: evidence(behan_name) OR evidence(ophion_myth_classical)
+  GATE: (evidence(behan_name) OR evidence(ophion_myth_classical)) AND evidence(lay_lead)
   TAG: clerk_ophion_records
   LABEL: "Request the 1820s Ophion insurance and probate filings"
   TIME: 7
@@ -149,7 +156,7 @@ TOPIC: sixth_member_deed
 
 # Shared inquiry: four different completed refusals make the question travel.
 TOPIC: crew_omission
-  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(county_clerk, crew_omission)
+  GATE: topic_done(local_historian, crew_omission_official)
   TAG: county_clerk_crew_omission
   LABEL: "Ask why no county record names the drowned crew"
   TIME: 5

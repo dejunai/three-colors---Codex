@@ -7,6 +7,7 @@ const FACTS = {
 	"eight": ["EIGHT PEOPLE", "Six men in the rose garden. A woman and a boy beyond the birches. Eight dead at two adjacent scenes. Their relationship and identities remain unconfirmed.", "Birch grove · direct observation; assistant's count"],
 	"knife": ["KESSLER'S KNIFE", "A butcher's knife beneath a hedge root. The blade has been wiped. Its presence is recorded; its use has not been established.", "Hedge root · bagged physical evidence"],
 	"watch": ["03:17", "The unidentified man's watch is stopped at seventeen minutes past three. The maker's plate has been filed smooth. This alone does not establish the time of death.", "Sixth man · pocket watch"],
+	"pocketwatch": ["03:17", "The unidentified man's watch is stopped at seventeen minutes past three. The maker's plate has been filed smooth. This alone does not establish the time of death.", "Sixth man · pocket watch"],
 	"gas": ["NO BLAST DAMAGE", "Windows facing the garden remain intact. Neither the nearby stone nor the clothing shows scorching. The proposed gas accident is unsupported by the visible scene.", "Terrace windows · assistant's examination"],
 	"register": ["FIVE NAMES", "The steward's seating list names Wexford, Fenn, Corliss, Kessler, and Pruitt. A sixth place is set without a name. A missing name is a missing fact, not an explanation.", "Club terrace · seating list"],
 	"shoes": ["EXPECTED TO GO ON", "The boy's shoes have been resoled. The woman's coat is too light for the season. A boardinghouse inquiry may identify them; clothing cannot establish that nobody will miss them.", "Birch grove · belongings inspection"],
@@ -37,6 +38,7 @@ const SCENES = {
 	"wounds": [
 		["THE ROSE GARDEN", "Six men in evening dress, arranged in a half-circle.\n\nWalter knows five of the faces. Judge Wexford. Dr. Fenn. Corliss, the district attorney. Pruitt. Kessler.\n\nThe sixth means nothing to him."],
 		["EXAMINE · JUDGE WEXFORD", "A wound above the bridge of the nose.\nNo powder scorching.\n\nWalter turns the head.\nThere is no exit wound."],
+		["EXAMINE · DR. FENN", "Dr. Aldous Fenn. In his inside breast pocket, past the silk handkerchief: a brass fountain pen and two folded death certificates, blank on the line for the cause.\nFenn signed Constance Corwin's death certificate eleven months back with that same pen, without once looking up from the counter."],
 		["WALTER'S NOTEBOOK", "The other five present the same condition.\n\nNo weapon in any visible hand.\nCause and sequence unestablished.\n\nThe observation is exact. It is the explanation that is missing."]],
 	"eight": [
 		["BEYOND THE BIRCHES", "A woman and a boy lie apart from the club members.\n\nSomeone has brought two more sheets. These deaths were not clean. Walter leaves the coverings in place."],
@@ -50,8 +52,9 @@ const SCENES = {
 		["BENEATH THE HEDGE", "A knife with a butcher's grip. Walter has seen its like in Kessler's shop.\n\nThe blade is too clean for the earth around it."],
 		["EVIDENCE ENVELOPE", "He wraps the handle before lifting it.\n\nLocation recorded. Blade preserved for examination.\nAn object can be useful before it has agreed to explain itself."]],
 	"watch": [
-		["THE SIXTH MAN", "No calling card. No monogram. No wallet.\n\nA watch, stopped at 03:17. Its maker's plate has been filed smooth."],
-		["WALTER'S NOTEBOOK", "Unknown male, approximately fifty to sixty.\nClub dress. Identity unrecovered.\n\nAsk the steward. Then the tailor. A blank is still something to investigate."]],
+		["THE SIXTH BODY", "Walter kneels beside the sixth body in the grass. Tailored wool, fifty to sixty years of age.\n\nHe goes through the pockets with the same flat method used on the other five: no calling card, no monogrammed cuff, no wallet, nothing sewn into the lining."],
+		["THE STOPPED WATCH", "From the inside coat pocket: a gold watch, stopped at 03:17. Its maker's plate has been filed smooth.\n\nWalter winds the stem once; it does not catch. He slips the watch into his pocket to have the movement examined in town."],
+		["WALTER'S NOTEBOOK", "Unknown male, approximately fifty to sixty.\nClub dress. Identity unrecovered. Watch retained as evidence.\n\nAsk the steward. Then the tailor. A blank is still something to investigate."]],
 	"gas": [
 		["THE TERRACE WINDOWS", "The panes facing the garden are intact.\nWalter runs a finger along the sill. Dust, damp, no soot."],
 		["WALTER'S NOTEBOOK", "No blast damage visible.\nNo burns on the nearest bodies.\n\nIf this was a gas accident, the scene has kept remarkably little of it."]],

@@ -120,7 +120,7 @@ TOPIC: default
   THE STEWARD: "Come back tomorrow, and don't bring your badge."
 
 TOPIC: day_book
-  GATE: steward_ready AND evidence(service_work) AND NOT topic_done(steward, day_book)
+  GATE: steward_ready AND evidence(service_work)
   TAG: steward_day_book
   LABEL: "Ask for the staff day book he mentioned"
   TIME: 6

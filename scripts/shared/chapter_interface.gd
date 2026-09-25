@@ -98,6 +98,20 @@ func _button(text:String, callback:Callable, parent:Node = null) -> Button:
 	else: parent.add_child(b)
 	return b
 
+func style_recorded_topic_button(button:Button) -> void:
+	# Recorded questions remain usable, but read as older, handled material.
+	# The text marker stays authoritative for players who cannot distinguish color.
+	button.set_meta("recorded_topic", true)
+	button.tooltip_text = "Previously recorded; select to review."
+	button.add_theme_color_override("font_color", Color("4d3a27"))
+	button.add_theme_color_override("font_hover_color", Color("302217"))
+	button.add_theme_color_override("font_pressed_color", Color("302217"))
+	button.add_theme_color_override("font_focus_color", Color("302217"))
+	button.add_theme_stylebox_override("normal", _style(Color("c2aa79"), Color("735737")))
+	button.add_theme_stylebox_override("hover", _style(Color("d5be8d"), Color("824536")))
+	button.add_theme_stylebox_override("pressed", _style(Color("ad9364"), Color("68372e")))
+	button.add_theme_stylebox_override("focus", _style(Color(0,0,0,0), Color("824536")))
+
 func _panel(kind:String,heading:String,kicker:String = "",wide:bool = false) -> void:
 	if is_instance_valid(modal):
 		ui.remove_child(modal)

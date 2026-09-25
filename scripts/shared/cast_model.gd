@@ -1,0 +1,112 @@
+extends RefCounted
+
+# Static 3D placeholder models for ambient and cast NPCs across Ophion and districts.
+# Models are unrigged and non-animated, replacing primitive placeholder geometry.
+
+const UPPER_MAN = "UPPER_MAN"
+const UPPER_WOMAN = "UPPER_WOMAN"
+const LOWER_MAN = "LOWER_MAN"
+const LOWER_WOMAN = "LOWER_WOMAN"
+const OBSERVER_MAN = "OBSERVER_MAN"
+const OBSERVER_WOMAN = "OBSERVER_WOMAN"
+
+const SCENES: Dictionary = {
+	UPPER_MAN: preload("res://assets/models/cast_upper_man.glb"),
+	UPPER_WOMAN: preload("res://assets/models/cast_upper_woman.glb"),
+	LOWER_MAN: preload("res://assets/models/cast_lower_man.glb"),
+	LOWER_WOMAN: preload("res://assets/models/cast_lower_woman.glb"),
+	OBSERVER_MAN: preload("res://assets/models/cast_observer_man.glb"),
+	OBSERVER_WOMAN: preload("res://assets/models/cast_observer_woman.glb"),
+}
+
+# Tuned against Walter and Odell: at 1.05 scale, townsfolk archetypes stand at natural
+# civilian stature below Walter and Odell, while remaining clearly taller than the gatekeeper boy.
+const SCALE_FACTOR: float = 1.05
+
+static func create(archetype: String) -> Node3D:
+	var key := archetype if SCENES.has(archetype) else LOWER_MAN
+	var wrapper := Node3D.new()
+	wrapper.name = "CastModel_" + key
+	wrapper.set_meta("archetype", key)
+	var scene: PackedScene = SCENES[key]
+	var rendered := scene.instantiate()
+	rendered.name = "RenderedCast"
+	rendered.scale = Vector3.ONE * SCALE_FACTOR
+	# Meshy authors face toward +Z; rotate PI to align with Godot's forward (-Z)
+	rendered.rotation.y = PI
+	wrapper.add_child(rendered)
+	return wrapper
+
+static func archetype_for_npc(actor_id: String, location: String = "") -> String:
+	var id := actor_id.to_lower()
+	var loc := location.to_lower()
+
+	# 1. Observers
+	if id.contains("observer") or id == "waterfront_sail_mender" or id == "crew":
+		if id.contains("woman") or id.contains("female"):
+			return OBSERVER_WOMAN
+		return OBSERVER_MAN
+
+	# 2. Known female characters
+	var upper_women := [
+		"almy", "mrs_almy", "mrs_pell", "mrs_ashcroft", "mrs_whitlock",
+		"miriam_ashcroft", "eleanor_whitlock", "miss_wexley", "upper_companion",
+		"upper_housemaid", "school_parent", "schoolteacher"
+	]
+	if id in upper_women:
+		return UPPER_WOMAN
+
+	var lower_women := [
+		"old_woman", "widow_kessler", "sarah_munn", "lower_laundress", "salt_mender"
+	]
+	if id in lower_women:
+		return LOWER_WOMAN
+
+	var is_female := (
+		id.contains("woman") or id.begins_with("mrs_") or id.begins_with("miss_")
+		or id.begins_with("widow_") or id.contains("laundress") or id.contains("housemaid")
+		or id.contains("companion") or id.contains("sarah") or id.contains("girl")
+	)
+	if is_female:
+		if loc in ["upper", "upper_residential_ridge", "business", "business_district", "boardinghouse"]:
+			return UPPER_WOMAN
+		return LOWER_WOMAN
+
+	# 3. Known upper / business men
+	var upper_men := [
+		"mr_whitehouse", "mr_wick", "upper_driver", "upper_gardener", "upper_delivery_boy",
+		"clockmaker", "apothecary", "tailor", "stationer", "gazette_editor",
+		"schoolteacher", "local_historian", "county_clerk", "post_office_clerk"
+	]
+	if id in upper_men or id.begins_with("business_"):
+		return UPPER_MAN
+
+	if loc in ["upper", "upper_residential_ridge", "business", "business_district", "town_hall", "post_office"]:
+		return UPPER_MAN
+
+	# 4. Default to Lower Class Man
+	return LOWER_MAN
+
+static func attach_accent(figure: Node3D, hex: String = "b8743a") -> MeshInstance3D:
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(hex)
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat.disable_fog = true
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3(0.12, 0.15, 0.04)
+	var accent := MeshInstance3D.new()
+	accent.name = "Accent"
+	accent.mesh = mesh
+	accent.material_override = mat
+	accent.position = Vector3(0.18, 1.5, -0.24)
+	accent.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	figure.add_child(accent)
+	return accent
+
+static func create_for_npc(actor_id: String, location: String = "") -> Node3D:
+	var arch := archetype_for_npc(actor_id, location)
+	var figure := create(arch)
+	if arch in [OBSERVER_MAN, OBSERVER_WOMAN]:
+		attach_accent(figure, "b8743a")
+	return figure
+

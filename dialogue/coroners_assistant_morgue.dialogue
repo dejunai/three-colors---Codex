@@ -35,7 +35,7 @@ TOPIC: default
   THE CORONER'S ASSISTANT: "Official business only down here, Corwin. The coroner does not care for patrolmen idling beside the cold tables."
 
 TOPIC: day_two_table
-  GATE: day >= 2 AND NOT topic_done(coroners_assistant_morgue, day_two_table)
+  GATE: day >= 2
   TAG: assistant_day_two
   LABEL: "Return to the morgue"
   TIME: 7
@@ -55,7 +55,7 @@ TOPIC: day_two_table
   EVIDENCE: no_water_lungs
 
 TOPIC: day_three_table
-  GATE: day >= 3 AND evidence(no_water_lungs) AND NOT topic_done(coroners_assistant_morgue, day_three_table)
+  GATE: day >= 3 AND evidence(no_water_lungs)
   TAG: assistant_day_three
   LABEL: "Ask what the registrar's disposition found"
   TIME: 6

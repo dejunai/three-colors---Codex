@@ -105,7 +105,7 @@ func _run() -> void:
 	_play(gardener_after, state, dstate)
 	assert(gardener_after.cards[0][1] == "You took the badge off.", "estate_complete + plain coat must unlock the later gardener scene")
 
-	# --- Mrs. Almy: coat-gated intro, evidence-gated menu, disappearing topic ---
+	# --- Mrs. Almy: coat-gated intro, evidence-gated menu, revisitable topic ---
 	state.coat = "Police coat" # undo the gardener section's coat change above
 	var almy_badge_intro = Runtime.enter(defs.almy, ctx, dstate)
 	_play(almy_badge_intro, state, dstate)
@@ -119,8 +119,14 @@ func _run() -> void:
 	var almy_menu_with_naomi = Runtime.menu(defs.almy, ctx)
 	var almy_ids_with_naomi = []
 	for entry in almy_menu_with_naomi.entries: almy_ids_with_naomi.append(entry.id)
-	assert(almy_ids_with_naomi.has("lay_lead") and almy_ids_with_naomi.has("service_work") and almy_ids_with_naomi.has("almy_ledger"), "naomi known must unlock the three follow-up topics")
+	assert(almy_ids_with_naomi.has("lay_lead") and almy_ids_with_naomi.has("service_work") and not almy_ids_with_naomi.has("almy_ledger"), "naomi known unlocks lay_lead and service_work; almy_ledger requires service_work")
 	assert(not almy_ids_with_naomi.has("almy_trust"), "almy_trust still needs the plain coat")
+	_play(Runtime.play_topic(defs.almy, dstate, "service_work"), state, dstate)
+	state.discover("service_work")
+	var almy_menu_with_service = Runtime.menu(defs.almy, ctx)
+	var almy_ids_with_service = []
+	for entry in almy_menu_with_service.entries: almy_ids_with_service.append(entry.id)
+	assert(almy_ids_with_service.has("almy_ledger"), "service_work known must unlock almy_ledger")
 	state.coat = "Plain wool coat"
 	var almy_menu_plain = Runtime.menu(defs.almy, ctx)
 	var almy_ids_plain = []
@@ -130,11 +136,17 @@ func _run() -> void:
 	var almy_menu_after_trust = Runtime.menu(defs.almy, ctx)
 	var almy_ids_after_trust = []
 	for entry in almy_menu_after_trust.entries: almy_ids_after_trust.append(entry.id)
-	assert(not almy_ids_after_trust.has("almy_trust"), "answering almy_trust once must remove it from the menu, via topic_done")
+	assert(almy_ids_after_trust.has("almy_trust"), "topics stay revisitable — answering almy_trust once must not remove it from the menu")
+	assert(almy_menu_after_trust.entries[almy_ids_after_trust.find("almy_trust")].label.ends_with("· recorded"), "a completed topic must carry the recorded marker")
+	var facts_after_first_trust = dstate.facts.size()
+	_play(Runtime.play_topic(defs.almy, dstate, "almy_trust"), state, dstate)
+	assert(dstate.facts.size() == facts_after_first_trust, "replaying a self-guard-free topic must not duplicate its recorded fact")
 
-	# --- old woman: one-shot, gated on evidence(naomi) (known via almy above) plus the scene's own evidence() ---
+	# --- old woman: one-shot, gated on intake_done + harbor bridge (behan_name/ship_origin/quay_inquiry) ---
+	state.intake_done = true
+	state.discover("behan_name")
 	var woman_menu_before = Runtime.menu(defs.old_woman, ctx)
-	assert(woman_menu_before.default_topic != null, "the scene must be available once naomi is known, before it has ever been recorded")
+	assert(woman_menu_before.default_topic != null, "the scene must be available once harbor bridge is known, before it has ever been recorded")
 	_play(Runtime.enter(defs.old_woman, ctx, dstate), state, dstate)
 	state.discover("old_woman")
 	var woman_menu_after = Runtime.menu(defs.old_woman, ctx)
@@ -158,7 +170,7 @@ func _run() -> void:
 	_play(odell_replay, state, dstate)
 	assert(odell_replay.cards.is_empty(), "once answered, topic_done(odell, default) must keep the scene from replaying")
 
-	# --- Father Behan: the real behan_name topic, mutually exclusive with club_invitation ---
+	# --- Father Behan: the real behan_name topic, unlocked by (not exclusive with) club_invitation ---
 	dstate.complete_topic("steward", "club_talk")
 	var behan_ctx_intro = Runtime.make_context(state, dstate)
 	var behan_intro = Runtime.enter(defs.father_behan, behan_ctx_intro, dstate)
@@ -172,7 +184,7 @@ func _run() -> void:
 	var behan_menu_after = Runtime.menu(defs.father_behan, behan_ctx)
 	var behan_ids_after = []
 	for entry in behan_menu_after.entries: behan_ids_after.append(entry.id)
-	assert(behan_ids_after.has("behan_name") and not behan_ids_after.has("club_invitation"), "behan_name must replace club_invitation, never both at once")
+	assert(behan_ids_after.has("behan_name") and behan_ids_after.has("club_invitation"), "behan_name must unlock alongside club_invitation, which stays revisitable rather than disappearing")
 	_play(Runtime.play_topic(defs.father_behan, dstate, "behan_name"), state, dstate)
 	assert(dstate.evidence.has("behan_name"), "the real ship-naming fact must be recorded")
 
@@ -202,7 +214,7 @@ func _run() -> void:
 	assert(clerk_first.session.tag == "clerk_badge", "initial encounter with badge must deliver the six-deceased notice")
 	var clerk_repeat_badge = Runtime.enter(defs.county_clerk, clerk_badge_ctx, dstate)
 	assert(not clerk_repeat_badge.cards.is_empty(), "Mr. Pence must not become a totem pole after the initial notice")
-	assert(clerk_repeat_badge.session.tag in ["clerk_repeat_badge_notices", "clerk_repeat_badge_requisition", "clerk_repeat_badge_entries"], "repeat encounter with badge must play a badge repeat default")
+	assert(clerk_repeat_badge.session.tag in ["clerk_repeat_badge_notices", "clerk_repeat_badge_requisition", "clerk_repeat_badge_entries", "clerk_repeat_badge_ledgers"], "repeat encounter with badge must play a badge repeat default")
 	state.coat = "Plain wool coat"
 	var clerk_repeat_plain = Runtime.enter(defs.county_clerk, Runtime.make_context(state, dstate), dstate)
 	assert(not clerk_repeat_plain.cards.is_empty(), "Mr. Pence must speak to plain-coated Walter on repeat visits")

@@ -43,7 +43,11 @@ func run() -> void:
 	# handoff most likely to strand a real playthrough while isolated tests pass.
 	g._travel("lounge", Vector3(0, 0.1, 6), 0, false)
 	await _settle(g)
-	assert(not g.estate.points.has("pantry_door"), "The pantry door must not be offered before the steward names it")
+	assert(g.estate.points.has("pantry_door") and g.estate.points["pantry_door"]["title"] == "Examine the boarded pantry door", "The pantry door must be offered for curious inspection before the steward names it")
+	g._interact("pantry_door")
+	assert(g.page == "dialogue", "Examining the boarded door shows its flavor card")
+	_drain(g)
+	assert(g.state.world == "lounge", "Examining the boarded door must not travel to the tunnel")
 	assert(g._objective().contains("leave your badge behind"), "Day 3 before the third visit must point back to the steward")
 	g._interact("barman")
 	_drain(g)
@@ -63,7 +67,7 @@ func run() -> void:
 	assert(g.page == "witness" and _button(g, "Leave the conversation") != null)
 	_button(g, "Leave the conversation").pressed.emit()
 	assert(g.page == "play")
-	assert(g.estate.points.has("pantry_door"), "The door must be offered as soon as the lead is recorded, without leaving the lounge")
+	assert(g.estate.points.has("pantry_door") and g.estate.points["pantry_door"]["title"] == "Open the boarded pantry door", "The door must offer to open as soon as the lead is recorded, without leaving the lounge")
 	assert(g._objective().contains("old pantry door"))
 	g.player.position = Vector3(-6.4, 0.1, -3.0)
 	await _settle(g)
@@ -78,25 +82,65 @@ func run() -> void:
 	assert(not g.tunnel_checkpoint.is_empty(), "Entering by the pantry door must take the service-stair checkpoint")
 	assert(g.state.portal_state.portal_done("lounge", "pantry_door"))
 
-	# --- The spur, then the choice to go on.
+	# --- Assertion 1: Flask intact on tunnel entry.
+	assert(g.state.flask == 3 and not g.state.flask_spilled, "Flask must remain intact on tunnel entry")
+	assert(not g.state.dialogue_state.flag("badge_lost"), "Badge must remain intact on tunnel entry")
+
+	# --- The spur (Assertion 2: Flask intact after observing the spur).
 	g._interact("tunnel_descent")
 	_drain(g)
-	assert(g.state.flask_spilled and g.state.flask == 0)
+	assert(g.state.flask == 3 and not g.state.flask_spilled, "Flask must remain intact after observing the spur")
+	assert(not g.state.dialogue_state.flag("badge_lost"), "Badge must remain intact after observing the spur")
+	assert(g.state.dialogue_state.flag("tunnel_spur_seen"), "Spur observation must be marked seen")
+
+	# --- Assertion 3: All three effects intact after choosing to step back.
 	g._interact("tunnel_descent")
 	assert(_button(g, "Go on into the dark") != null and _button(g, "Step back to the foundation support") != null, "After the spur the player chooses; stepping back must stay available (Law 11)")
 	_button(g, "Step back to the foundation support").pressed.emit()
 	assert(g.state.world == "tunnel" and not g.state.dialogue_state.flag("tunnel_retreated"), "Stepping back must not trigger the retreat")
+	assert(g.state.flask == 3 and not g.state.flask_spilled, "Flask must remain intact after choosing to step back")
+	assert(not g.state.dialogue_state.flag("badge_lost"), "Badge must remain intact after choosing to step back")
+
+	# --- Assertion 5 (part 1): Plain-coat badge inspection says pocketed before retreat.
+	g._case_file()
+	g._badge()
+	var badge_text_before = ""
+	for child in g.content.find_children("*", "Label", true, false): badge_text_before += child.text + "\n"
+	assert(badge_text_before.contains("pocketed") and badge_text_before.contains("inside"), "Plain-coat badge inspection must say it is pocketed inside the coat before retreat")
+	g._close()
+
+	# --- Assertion 4: All three lost together after continuing and completing the retreat.
 	g._interact("tunnel_descent")
 	var evidence_before = g.state.evidence.duplicate()
 	_button(g, "Go on into the dark").pressed.emit()
 	_drain(g)
 	assert(g.state.world == "room", "The retreat must end at home")
 	assert(g.state.dialogue_state.flag("tunnel_retreated") and g.state.dialogue_state.flag("badge_lost"))
+	assert(g.state.flask_spilled and g.state.flask == 0 and g.state.flask_spill_amount == 3, "Flask must be lost at retreat fall")
+	assert(g.state.evidence.has("flask_spill"), "flask_spill evidence granted on retreat")
 	assert(g.state.statements.any(func(t): return t.contains("badge and the whistle")), "The loss must be recorded in the case file, not only shown once (Law 4)")
 	assert(not g.model.get_node("Badge").visible, "The badge must actually be gone")
 	assert(g._objective() == "Home. The board is on the wall.")
 
+	# --- Assertion 5 (part 2): Plain-coat badge inspection says lost afterward.
+	g._case_file()
+	g._badge()
+	var badge_text_after = ""
+	for child in g.content.find_children("*", "Label", true, false): badge_text_after += child.text + "\n"
+	assert(badge_text_after.contains("Lost below the estate"), "Badge inspection must say it was lost below the estate after retreat")
+	g._close()
+
+	# --- Assertion 6: Save/load preserves the resulting loss state.
+	var saved_dict = g.state.pack()
+	var loaded_state = g.CaseState.new()
+	assert(loaded_state.restore(saved_dict), "State must restore cleanly")
+	assert(loaded_state.flask_spilled and loaded_state.flask == 0 and loaded_state.flask_spill_amount == 3, "Save/load must preserve flask loss state")
+	assert(loaded_state.dialogue_state.flag("badge_lost"), "Save/load must preserve badge_lost flag")
+	assert(loaded_state.dialogue_state.flag("tunnel_retreated"), "Save/load must preserve tunnel_retreated flag")
+	assert(loaded_state.dialogue_state.flag("tunnel_spur_seen"), "Save/load must preserve tunnel_spur_seen flag")
+
 	# --- The world stays shut and silent until the beat.
+	evidence_before = g.state.evidence.duplicate()
 	g._interact("sleep")
 	assert(g.page == "case" and not g.state.finished, "Sleeping must not end the slice before the break")
 	g._close()
@@ -124,6 +168,7 @@ func run() -> void:
 		await process_frame
 		frames += 1
 	assert(g.state.dialogue_state.flag("glass_broken"), "The glass must break")
+	assert(g.rig._model_animation_base == "Surprise", "The glass must trigger Walter's custom Surprise action")
 	assert(g.hazard_caption.text == "[Glass breaking.]" and g.hazard_caption.visible, "The sound needs a protected caption (Law 9)")
 	assert(g.estate.glass_shattered)
 	assert(g.state.finished, "Breaking the glass is the point of no return: a save from here resumes at the ending")
@@ -137,7 +182,8 @@ func run() -> void:
 	assert(g.page == "case" and _button(g, "Skip") != null, "The glass must cut directly to the out-of-fiction tester questions")
 	assert(g.presentation.frame_edge == 0.0, "The frame must finish fully wide")
 	assert(g.state.evidence == evidence_before, "The beat must not add or remove evidence (Law 4)")
-	assert(g.breaker.build_glass_stream().data.size() > 44100, "The glass must have a real sound")
+	assert(g.breaker.glass_player.stream == load("res://glass_shatter.ogg"), "The ending must use the authored glass-shatter recording")
+	assert(g.breaker.glass_player.stream.get_length() > 0.1, "The authored glass-shatter recording must contain audio")
 
 	# --- Save after the glass resumes at the ending, never inside the beat.
 	var resumed = g.CaseState.new()
@@ -156,6 +202,8 @@ func run() -> void:
 	assert(_button(g, "Review the board") != null)
 	var debriefs = g.playthrough_log.buffer.filter(func(item): return item.event == "debrief")
 	assert(debriefs.size() == 1, "Exactly one debrief event")
+	assert(g.playthrough_log.buffer.filter(func(item): return item.event == "session_end").size() == 1, "Debrief and completion must be queued together")
+	assert(g.state.dialogue_state.flag("debrief_completed"))
 	assert(g.playthrough_log.buffer.filter(func(item): return item.event == "day3_bed_reached").size() == 1)
 
 	# --- Loading the finished save returns to the ending, and the break cannot replay.

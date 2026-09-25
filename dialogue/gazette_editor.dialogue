@@ -22,6 +22,70 @@ TOPIC: default
   VOICE: trombone_bureaucratic_medium_v1
   MR. HALLECK: "Captain Odell doesn't edit this paper, Officer.\nHe merely provides the facts the municipality is prepared to vouch for."
 
+# Plain coat defaults (mid-investigation): mechanical routine, deadline pressure
+TOPIC: default
+  GATE: topic_done(gazette_editor, default) AND NOT topic_done(gazette_editor, print_correction) AND coat = plain
+  TAG: editor_repeat_plain_slugs
+  WEIGHT: 3
+  [Halleck drops lead types into a composing stick with rhythmic metallic clicks.]
+  VOICE: trombone_neutral_medium_v2
+  MR. HALLECK: "Keep your elbows off the proof stone, Walter. Ink doesn't wash out of twill."
+
+TOPIC: default
+  GATE: topic_done(gazette_editor, default) AND NOT topic_done(gazette_editor, print_correction) AND coat = plain
+  TAG: editor_repeat_plain_deadline
+  WEIGHT: 2
+  VOICE: trombone_weary_short_v1
+  MR. HALLECK: "If you don't have town copy, don't stand in the light. The afternoon train brings the wire dispatches."
+
+# Police coat / badge defaults (mid-investigation): bureaucratic detachment, official notices
+TOPIC: default
+  GATE: topic_done(gazette_editor, default) AND NOT topic_done(gazette_editor, print_correction) AND coat != plain
+  TAG: editor_repeat_badge_presses
+  WEIGHT: 3
+  [The editor does not look up from a proof sheet marked with blue pencil.]
+  VOICE: trombone_bureaucratic_medium_v1
+  MR. HALLECK: "Official statements go on the spike by the door, Officer Corwin. I don't stop the cylinder press for rumors."
+
+TOPIC: default
+  GATE: topic_done(gazette_editor, default) AND NOT topic_done(gazette_editor, print_correction) AND coat != plain
+  TAG: editor_repeat_badge_odell
+  WEIGHT: 2
+  VOICE: trombone_bureaucratic_short_v2
+  MR. HALLECK: "If Captain Odell wants column inches, he can buy space in the legal notices like every other municipal clerk."
+
+# Plain coat defaults (post-correction): slip distribution, next day's run
+TOPIC: default
+  GATE: topic_done(gazette_editor, print_correction) AND coat = plain
+  TAG: editor_repeat_printed_slips_plain
+  WEIGHT: 3
+  [A neat stack of narrow printed slips rests beside the counter register.]
+  VOICE: trombone_neutral_medium_v1
+  MR. HALLECK: "The correction is on the counter, Walter. Anyone who buys today's edition gets Naomi Freeman's name alongside the count. That was the bargain."
+
+TOPIC: default
+  GATE: topic_done(gazette_editor, print_correction) AND coat = plain
+  TAG: editor_repeat_printed_presses_plain
+  WEIGHT: 2
+  VOICE: trombone_weary_short_v1
+  MR. HALLECK: "We're setting tomorrow's galleys now. Unless you have another official precinct receipt signed by the captain, let the press run."
+
+# Police coat / badge defaults (post-correction): obligation discharged, press running
+TOPIC: default
+  GATE: topic_done(gazette_editor, print_correction) AND coat != plain
+  TAG: editor_repeat_printed_slips_badge
+  WEIGHT: 3
+  [Halleck gestures toward the fresh stack of correction slips on the front counter.]
+  VOICE: trombone_bureaucratic_medium_v1
+  MR. HALLECK: "Your paperwork was honored, Officer. The slip accompanies every copy leaving the office. The Gazette has met its obligation."
+
+TOPIC: default
+  GATE: topic_done(gazette_editor, print_correction) AND coat != plain
+  TAG: editor_repeat_printed_presses_badge
+  WEIGHT: 2
+  VOICE: trombone_bureaucratic_short_v2
+  MR. HALLECK: "The press is running tomorrow's front page, Corwin. There is nothing further for the police department to review here."
+
 TOPIC: the_omitted_two
   GATE: evidence(eight) AND NOT evidence(gazette_correction_printed)
   TAG: editor_omitted
@@ -65,7 +129,7 @@ TOPIC: press_the_arithmetic
 
       OUTCOME: press_retraction_response = wage_claim_argument
 TOPIC: gas_main_origin
-  GATE: evidence(press_suppression) AND NOT topic_done(gazette_editor, gas_main_origin)
+  GATE: evidence(press_suppression)
   TAG: editor_gas_source
   LABEL: "Ask who suggested the 'gas-main' story"
   TIME: 6
@@ -80,7 +144,7 @@ TOPIC: gas_main_origin
 
 # Shared inquiry: four different completed refusals make the question travel.
 TOPIC: crew_omission
-  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(gazette_editor, crew_omission)
+  GATE: topic_done(local_historian, crew_omission_official)
   TAG: gazette_editor_crew_omission
   LABEL: "Ask why the commemorative column never named the crew"
   TIME: 5
@@ -94,7 +158,7 @@ TOPIC: crew_omission
 
 # An optional return inquiry: the counter's received pages change what he will print.
 TOPIC: correction_terms
-  GATE: evidence(press_suppression) AND evidence(naomi) AND NOT topic_done(gazette_editor, correction_terms)
+  GATE: evidence(press_suppression) AND evidence(naomi)
   TAG: editor_correction_terms
   LABEL: "Ask what he needs to correct the count and print Naomi's name"
   TIME: 6
@@ -111,7 +175,7 @@ TOPIC: correction_terms
   EVIDENCE: gazette_correction_terms
 
 TOPIC: correction_pending
-  GATE: evidence(gazette_correction_terms) AND NOT (filed(eight) AND filed(naomi) AND filed(lodging)) AND NOT topic_done(gazette_editor, correction_pending)
+  GATE: evidence(gazette_correction_terms) AND NOT (filed(eight) AND filed(naomi) AND filed(lodging))
   TAG: editor_correction_pending
   LABEL: "Ask whether the correction can go ahead yet"
   TIME: 0
@@ -120,7 +184,7 @@ TOPIC: correction_pending
   NOTEBOOK: correction_pending | "Halleck still requires the count and both identification sources in received paperwork. A discovery made after filing needs a dated supplement."
 
 TOPIC: print_correction
-  GATE: evidence(gazette_correction_terms) AND filed(eight) AND filed(naomi) AND filed(lodging) AND NOT topic_done(gazette_editor, print_correction)
+  GATE: evidence(gazette_correction_terms) AND filed(eight) AND filed(naomi) AND filed(lodging)
   TAG: editor_print_correction
   LABEL: "Lay out the received pages and request the correction"
   TIME: 10
@@ -138,3 +202,17 @@ TOPIC: print_correction
   MR. HALLECK: "This goes with the copies still on the counter. I can't call back the ones already sold."
   NOTEBOOK: printed_correction | "Collected a printed Gazette correction slip: eight reported deaths; Naomi Freeman identified by Almy and corroborated by her ledger; boy unnamed and cause unestablished. It accompanies unsold copies. The original six-person edition and captain's heading remain unchanged."
   EVIDENCE: gazette_correction_printed
+
+TOPIC: the_counter_slips
+  GATE: evidence(gazette_correction_printed)
+  TAG: editor_counter_slips
+  LABEL: "Ask how readers are taking the correction"
+  TIME: 5
+  WALTER CORWIN: "Are the buyers taking the slips?"
+  VOICE: trombone_neutral_medium_v2
+  MR. HALLECK: "Some tuck them into their coat pockets. Some leave them on the counter.\nPeople read what confirms what they believed at breakfast."
+  WALTER CORWIN: "And the boy?"
+  VOICE: trombone_bureaucratic_medium_v1
+  MR. HALLECK: "Until someone produces a name on a baptismal register or a school roster, he remains what the slip says: an unestablished dependent.\nBring me a county document, Walter, and I'll cut another slug."
+  NOTEBOOK: editor_counter_slips | "Halleck noted that readers mostly disregard the correction slips, and reaffirmed that the boy cannot be named without official county records."
+

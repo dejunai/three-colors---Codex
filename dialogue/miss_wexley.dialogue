@@ -52,7 +52,7 @@ TOPIC: freeman_claim
   EVIDENCE: freeman_whisper
 # Shared inquiry: four different completed refusals make the question travel.
 TOPIC: crew_omission
-  GATE: topic_done(local_historian, crew_omission_official) AND NOT topic_done(miss_wexley, crew_omission)
+  GATE: topic_done(local_historian, crew_omission_official)
   TAG: miss_wexley_crew_omission
   LABEL: "Ask why the Society's memorial omits the crew"
   TIME: 5

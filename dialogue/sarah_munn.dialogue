@@ -62,7 +62,7 @@ TOPIC: default
   SARAH MUNN: "A girl without a position can't afford to be seen too often with the police. Say what you came to say."
 
 TOPIC: sarah_the_document
-  GATE: evidence(naomi) AND NOT topic_done(sarah_munn, sarah_the_document)
+  GATE: evidence(naomi)
   TAG: sarah_document
   LABEL: "Ask why she left the position three weeks ago"
   TIME: 6
@@ -80,7 +80,7 @@ TOPIC: sarah_the_document
   EVIDENCE: sarah_wage_claim_lead
 
 TOPIC: sarah_afraid_of_the_wrong_thing
-  GATE: evidence(sarah_wage_claim_lead) AND NOT topic_done(sarah_munn, sarah_afraid_of_the_wrong_thing)
+  GATE: evidence(sarah_wage_claim_lead)
   TAG: sarah_afraid
   LABEL: "Tell her it isn't her fault"
   TIME: 4
@@ -93,7 +93,7 @@ TOPIC: sarah_afraid_of_the_wrong_thing
   NOTEBOOK: sarah_afraid_1 | "Sarah Munn on the document she returned: 'I was afraid of the wrong thing.' She has turned the decision over nightly since the murders."
 
 TOPIC: sarah_press_or_go
-  GATE: evidence(sarah_wage_claim_lead) AND NOT topic_done(sarah_munn, sarah_press_or_go)
+  GATE: evidence(sarah_wage_claim_lead)
   TAG: sarah_sequence
   LABEL: "Decide how to leave things with her"
   TIME: 3
@@ -113,7 +113,7 @@ TOPIC: sarah_press_or_go
       OUTCOME: sarah_sequence = prompt
 
 TOPIC: sarah_coat_trust
-  GATE: coat = plain AND evidence(sarah_wage_claim_lead) AND NOT topic_done(sarah_munn, sarah_coat_trust)
+  GATE: coat = plain AND evidence(sarah_wage_claim_lead)
   TAG: sarah_trust
   LABEL: "Ask why she's telling a plain coat and not a badge"
   VOICE: violin_conspiratorial_medium_v1

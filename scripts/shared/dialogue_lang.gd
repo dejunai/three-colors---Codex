@@ -378,9 +378,9 @@ static func _tokenize(src: String) -> Array:
 			tokens.append({"kind": "op", "value": c})
 			i += 1
 			continue
-		if c == "\"":
+		if c == "\"" or c == "'":
 			var j = i + 1
-			while j < n and src[j] != "\"": j += 1
+			while j < n and src[j] != c: j += 1
 			tokens.append({"kind": "ident", "value": src.substr(i + 1, j - i - 1)})
 			i = j + 1
 			continue

@@ -43,10 +43,10 @@ GROUP BY town_feel, time_natural
 ORDER BY responses DESC;
 
 -- Completion and abandonment signals.
-SELECT ended_via, final_day, COUNT(*) AS sessions,
+SELECT ended_via, final_day, dev_brisk_used, COUNT(*) AS sessions,
        ROUND(AVG(total_real_seconds) / 60.0, 1) AS avg_real_minutes
 FROM game_events
 WHERE event = 'session_end'
   AND session_id != '11111111-1111-4111-8111-111111111111'
-GROUP BY ended_via, final_day
-ORDER BY final_day, ended_via;
+GROUP BY ended_via, final_day, dev_brisk_used
+ORDER BY final_day, ended_via, dev_brisk_used;

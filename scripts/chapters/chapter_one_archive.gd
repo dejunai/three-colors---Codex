@@ -129,11 +129,11 @@ func _paper_doll_item(g:Node,item:String) -> void:
 func _badge(g:Node) -> void:
 	g._panel("case","The badge","PERSONAL EFFECTS")
 	if g.state.dialogue_state.flag("badge_lost"):
-		g._paragraph("Lost below the estate, with the whistle. The empty place on Walter's coat is easier to see than the badge ever was.",23)
+		g._paragraph("Lost below the estate, with the whistle and the flask. The empty place on Walter's coat is easier to see than the badge ever was.",23)
 	elif g.state.coat == "Police coat":
 		g._paragraph("Widow's Bight Police · Precinct 4. Pinned where a room can see it before Walter speaks.",23)
 	else:
-		g._paragraph("Left with the police coat. The plain wool changes which part of Walter enters a room first.",23)
+		g._paragraph("Carried pocketed inside the plain wool coat. The plain wool changes which part of Walter enters a room first, but the badge is carried inside the coat until lost.",23)
 	g._button("Return to personal effects",g._case_file)
 	g._focus_first()
 
@@ -155,7 +155,7 @@ func _flask(g:Node) -> void:
 	if g.state.flask_spilled:
 		g._paragraph("Lost in the dark below.",27)
 		var lost_text = "All three short pours were" if g.state.flask_spill_amount == 3 else ("Two short pours were" if g.state.flask_spill_amount == 2 else ("One short pour was" if g.state.flask_spill_amount == 1 else "The flask was already empty when it"))
-		g._paragraph("%s lost when a jagged spur of rock tore the flask from its strap on the descent.\n\nHe did not chase it into the dark. The case had only ever let the flask hold as much peace as it had use for, and had decided it needed him thirsty now." % lost_text, 22)
+		g._paragraph("%s lost when Walter went down on the stair during the retreat from the deep passage, torn loose alongside his badge and whistle.\n\nHe did not chase it into the dark. The case had only ever let the flask hold as much peace as it had use for, and had decided it needed him thirsty now." % lost_text, 22)
 		g._paragraph("The severed leather strap hangs empty at his belt.", 18)
 	else:
 		var levels = ["Empty. The metal carries no weight beyond itself.","A little left. Enough for one short pour.","Partly full. Two short pours remain.","Three short pours by Walter's reckoning."]
@@ -386,8 +386,8 @@ func _town_complete(g:Node) -> void:
 	g._paragraph("This is where the alpha slice of Three Colors of Madness ends. Thank you for playing.",22)
 	g._button("Review the board",g._board)
 	g._button("Continue exploring",g._close)
-	g._button("Save and return to title",func(): g._save_game(); g._title())
-	g._button("Save and quit",func(): g._save_game(); g.get_tree().quit())
+	g._button("Save and return to title",g._save_and_return_to_title)
+	g._button("Save and quit",g._save_and_quit)
 	g._focus_first()
 
 # The slice's ending (chapter_one_break.gd): it stops on the glass. No verdict on the
@@ -398,6 +398,6 @@ func _slice_complete(g:Node) -> void:
 	g._paragraph("Notebook: %d observations\nEstate report: %d observations, retained as submitted\nDated supplements: %d\nCounty dispatch: %s" % [g.state.evidence.size(),g.state.report_evidence.size(),g.state.supplement_history.size(),"recorded" if g.state.county_dispatched else "none"],20)
 	g._paragraph("This is where this slice of Three Colors of Madness ends. Thank you for playing.",22)
 	g._button("Review the board",g._board)
-	g._button("Save and return to title",func(): g._save_game(); g._title())
-	g._button("Save and quit",func(): g._save_game(); g.get_tree().quit())
+	g._button("Save and return to title",g._save_and_return_to_title)
+	g._button("Save and quit",g._save_and_quit)
 	g._focus_first()

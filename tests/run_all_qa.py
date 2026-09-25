@@ -37,6 +37,8 @@ tests = [
     (["--headless", "-s", "tests/dialogue_lang_flow.gd"], "dialogue_lang_flow"),
     (["--headless", "-s", "tests/dialogue_template_flow.gd"], "dialogue_template_flow"),
     (["--headless", "-s", "tests/dialogue_content_flow.gd"], "dialogue_content_flow"),
+    (["--headless", "-s", "tests/backup_route_flow.gd"], "backup_route_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/playthrough_log_flow.gd"], "playthrough_log_flow"),
     (["--headless", "-s", "tests/portal_lang_flow.gd"], "portal_lang_flow"),
     (["--headless", "-s", "tests/portal_template_flow.gd"], "portal_template_flow"),
     (["--headless", "--path", ".", "--script", "res://tests/portal_content_flow.gd"], "portal_content_flow"),
@@ -45,7 +47,38 @@ tests = [
     (["--headless", "--path", ".", "--fixed-fps", "60", "--", "--qa-loop"], "qa_loop_flow"),
     (["--headless", "--path", ".", "--fixed-fps", "60", "--", "--qa-usability"], "qa_usability"),
     (["--headless", "--path", ".", "--script", "res://tests/break_flow.gd"], "break_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/behan_model_flow.gd"], "behan_model_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/boy_model_flow.gd"], "boy_model_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/odell_model_flow.gd"], "odell_model_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/odell_model_integration_flow.gd"], "odell_model_integration_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/coroner_model_flow.gd"], "coroner_model_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/coroners_assistant_model_flow.gd"], "coroners_assistant_model_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/coroner_model_integration_flow.gd"], "coroner_model_integration_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/staff_model_integration_flow.gd"], "staff_model_integration_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/steward_model_flow.gd"], "steward_model_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/steward_model_integration_flow.gd"], "steward_model_integration_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/walter_model_flow.gd"], "walter_model_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/walter_pickup_flow.gd"], "walter_pickup_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/cast_model_flow.gd"], "cast_model_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/victim_model_flow.gd"], "victim_model_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/covered_body_model_flow.gd"], "covered_body_model_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/exterior_prop_assets_flow.gd"], "exterior_prop_assets_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/waterfront_prop_assets_flow.gd"], "waterfront_prop_assets_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/pickman_exterior_model_flow.gd"], "pickman_exterior_model_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/lower_exterior_model_flow.gd"], "lower_exterior_model_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/business_exterior_model_flow.gd"], "business_exterior_model_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/upper_exterior_model_flow.gd"], "upper_exterior_model_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/estate_landscape_model_flow.gd"], "estate_landscape_model_flow"),
+    (["--headless", "--path", ".", "--fixed-fps", "60", "--script", "res://tests/waterfront_model_flow.gd"], "waterfront_model_flow"),
+    (["--headless", "--path", ".", "--script", "res://tests/check_model_textures.gd"], "check_model_textures"),
 ]
+
+sys.path.insert(0, os.path.join(repo_root, "tools"))
+try:
+    from kill_headless_godot import kill_headless_godot
+    kill_headless_godot()
+except Exception:
+    pass
 
 print(f"Running {len(tests)} QA suites using: {godot}")
 failed = []
@@ -53,17 +86,18 @@ failed = []
 for args, name in tests:
     cmd = [godot] + args
     print(f"\n=== {name} ===")
+    proc = subprocess.Popen(cmd, cwd=repo_root, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     try:
-        res = subprocess.run(cmd, cwd=repo_root, env=env, capture_output=True, text=True, timeout=120)
-        out = res.stdout.strip()
-        err = res.stderr.strip()
+        out, err = proc.communicate(timeout=30)
+        out = out.strip()
+        err = err.strip()
         has_error = (
-            res.returncode != 0
+            proc.returncode != 0
             or "SCRIPT ERROR:" in out or "SCRIPT ERROR:" in err
             or "Assertion failed" in out or "Assertion failed" in err
             or "Parse Error:" in out or "Parse Error:" in err
         )
-        print("EXIT:", res.returncode)
+        print("EXIT:", proc.returncode)
         lines = out.splitlines()
         for l in lines[-4:]:
             print("  ", l)
@@ -73,7 +107,12 @@ for args, name in tests:
                 print("STDERR:\n" + err)
             failed.append(name)
     except subprocess.TimeoutExpired:
-        print("TIMEOUT: Suite exceeded limit")
+        print("TIMEOUT: Suite exceeded limit (30s) - terminating process tree")
+        if sys.platform == "win32":
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)], capture_output=True)
+        else:
+            proc.kill()
+        proc.communicate()
         failed.append(f"{name} (timeout)")
 
 if failed:

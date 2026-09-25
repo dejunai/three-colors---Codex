@@ -30,7 +30,7 @@ Use UTF-8 text, two spaces per nesting level, and no tabs. Keep directives upper
 | `GATE: expression` | Availability; omitted means `never`. |
 | `LABEL: "Menu/hover text"` | Optional; otherwise a capitalized version of the portal id. |
 | `TAG: estate_service_entrance` | Optional additional completion identity and timing key, same purpose as dialogue's/objects'. |
-| `TIME: 12.5` | Optional override, finite and nonnegative; `0` is valid. **Omitted defaults to 3 minutes** (matching dialogue substantive topic defaults), charged once on first completion of a traversal (`GO`). Portals without a `GO` (e.g. locked doors or paperwork refusals) do not charge clock time. |
+| `TIME: 12.5` | Optional override, finite and nonnegative; `0` is valid. Explicit `TIME` overrides automatic travel time and is charged on every completed `GO`. Omitted `TIME` delegates to `_travel()`, which charges 30 minutes when origin and destination belong to different hubs and zero within the same hub; `nosave` suppresses automatic charging unless `elapsed` is also present. Portals without a `GO` (e.g. locked doors or paperwork refusals) do not charge clock time. |
 
 | Step | Meaning |
 | --- | --- |
@@ -54,7 +54,7 @@ GO: destination | x,y,z | yaw | flags
 - `destination` — a location id, a simple identifier matching an existing `state.world` value. Required.
 - `x,y,z` — the spawn position, comma-separated numbers. Required.
 - `yaw` — optional, radians, default `0.0`.
-- `flags` — optional, comma-separated: `nosave` mirrors `_travel()`'s own `save` parameter (inverted — the transition does not persist as a real arrival), `elapsed` mirrors its `elapsed_travel` parameter (still charge DayClock time despite `nosave`). *Note:* In the current portal architecture, DayClock advancement is governed directly by `TIME:` before travel, rendering `nosave`/`elapsed` flags vestigial; omit flags entirely for an ordinary two-way door.
+- `flags` — optional, comma-separated: `nosave` mirrors `_travel()`'s own `save` parameter (inverted — the transition does not persist as a real arrival, and suppresses automatic charging unless `elapsed` is also present), `elapsed` mirrors its `elapsed_travel` parameter (still charge automatic travel time despite `nosave`). Note that an explicit `TIME:` on the portal overrides automatic travel time completely.
 
 `GO` is **not** a card and **not** a deferred effect like `EVIDENCE`/`NOTEBOOK`. Reaching it halts step processing immediately and hands control back to the caller — exactly like `FORK`, just with no choice to make. `chapter_one_portals.gd` is the only thing that actually calls `_travel()`; the runtime itself never touches the scene tree. Content authored **after** a `GO`renders once the caller has performed the travel and resumed (via `PortalRuntime.after_go()`) — arrival narration "from the new place," not before it. A block with no `GO` at all never moves the player; that is exactly how a locked door stays locked.
 
@@ -88,7 +88,7 @@ Same completion-only semantics as objects: `NOTEBOOK`/`EVIDENCE` commit once the
 
 `OUTCOME` behaves identically to dialogue's/objects': the selected value commits only when the player finishes the entire chosen path, is immutable, survives save/load, and shares the same store — do not reuse a `decision_id` across a PORTAL and a TOPIC/OBJECT unless they are genuinely the same decision.
 
-`TIME` defaults to 3 minutes when omitted (matching dialogue's substantive topic default); authored, it overrides that default with the authored amount (0 is valid). Either way the charge fires once per location+id (or TAG) on first completion of a traversal (`GO`), matching `portal_done()`'s bookkeeping, with subsequent crossings free. Non-traversing portal segments (e.g. locked doors, flavor rejections) do not charge clock time.
+`TIME` no longer has a flat default when omitted (as of September 23, 2026): an omitted `TIME` delegates entirely to `_travel()`'s own automatic charge (30 minutes crossing between hubs, free within one hub). An authored `TIME` overrides that automatic charge with the authored amount (0 is valid), and the charge fires on *every* completed traversal (`GO`) of a matching block — `portal_done()` is not consulted for charging, so repeat crossings of a timed route cost time again, same as the first; it remains useful only for gating content/labels (e.g. switching a "Pay the toll" label to "Cross again"). Non-traversing portal segments (e.g. locked doors, flavor rejections) do not charge clock time.
 
 Evidence written by a PORTAL still needs an authored entry in `chapter_one_archive.gd`'s LINKS table to become linkable, same rule as dialogue/objects.
 

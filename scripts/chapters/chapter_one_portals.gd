@@ -73,11 +73,10 @@ func _advance(g: Node, result: Dictionary) -> void:
 	g._close()
 	g._save_game()
 
-# TIME: an omitted TIME defaults to 3 minutes (matching dialogue substantive
-# topic defaults), charged once the first time this portal identity ever completes
-# (checked via portal_done(), mirroring object_runtime.gd's first_completion guard) —
-# every crossing after that is free, matching portal_done()'s own bookkeeping.
-# An explicit numeric TIME override (including 0) is respected.
+# TIME: an authored TIME on a GO portal represents travel duration (e.g. 30 min
+# for Pickman Street <-> Ophion Estate, 10 min for tunnels, 0 min for room doors)
+# and is charged on every crossing, consistent with bridge crossings.
+# If TIME is omitted, _travel() handles distance-based clock advance.
 func _perform_go(g: Node, result: Dictionary) -> void:
 	var go = result.go
 	var portal_id = String(result.session.portal)
@@ -88,11 +87,11 @@ func _perform_go(g: Node, result: Dictionary) -> void:
 	var timing = String(result.session.timing)
 	_before_travel(g, portal_id, go.destination)
 	if timing.is_valid_float():
-		var already_completed = g.state.portal_state.portal_done(location, portal_id) or (not tag.is_empty() and g.state.portal_state.portal_done(location, tag))
-		if not already_completed:
+		var minutes = float(timing)
+		if minutes > 0.0:
 			# Charge before _travel() so its telemetry reflects the real
 			# post-charge clock, matching the automatic-charge path's order.
-			Runtime.DayClock.advance(g.state, float(timing))
+			Runtime.DayClock.advance(g.state, minutes)
 		g._travel(go.destination, spawn, go.yaw, false, false)
 	else:
 		g._travel(go.destination, spawn, go.yaw, not flags.has("nosave"), flags.has("elapsed"))

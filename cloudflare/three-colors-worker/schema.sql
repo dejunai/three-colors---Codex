@@ -21,7 +21,10 @@ CREATE TABLE IF NOT EXISTS game_events (
   topic_id TEXT,
   coat_state TEXT,
   world TEXT,
-  phase TEXT
+  phase TEXT,
+  dev_brisk_used INTEGER,
+  page_origin TEXT,
+  received_at TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_game_events_session ON game_events(session_id);

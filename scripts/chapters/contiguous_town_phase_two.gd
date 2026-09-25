@@ -3,6 +3,7 @@ extends RefCounted
 const LowerStreet = preload("res://scripts/chapters/lower_street.gd")
 const Waterfront = preload("res://scripts/chapters/waterfront_district.gd")
 const Places = preload("res://scripts/chapters/town_places.gd")
+const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
 const LOWER_ORIGIN = Vector3(91, -2.3, 0)
 const WATERFRONT_ORIGIN = Vector3(100, -5.0, -60)
 
@@ -17,8 +18,8 @@ class PlacementProxy extends Node3D:
 	func box(parent: Node, p: Vector3, size: Vector3, color: String, solid: bool = false):
 		return host.box(self if parent == self or parent == host else parent, p, size, color, solid)
 
-	func cylinder(_parent: Node, p: Vector3, radius: float, height: float, color: String, top: float = -1.0):
-		return host.cylinder(self, p, radius, height, color, top)
+	func cylinder(parent: Node, p: Vector3, radius: float, height: float, color: String, top: float = -1.0):
+		return host.cylinder(self if parent == self or parent == host else parent, p, radius, height, color, top)
 
 	func lettering(text: String, p: Vector3, font_size: int = 56):
 		return host.lettering(text, position + p, font_size)
@@ -49,7 +50,7 @@ static func build_waterfront_approach(g: Node) -> void:
 	var drop = 2.7
 	var length = sqrt(run * run + drop * drop)
 	var center = Vector3(100, -3.85, -24)
-	var ramp = g.box(root, center, Vector3(5.5, 0.42, length), "59665f")
+	var ramp = DistrictSurfaces.apply(g.box(root, center, Vector3(5.5, 0.42, length), "59665f"), "patched_cobble", "59665f")
 	ramp.name = "WaterfrontDescent"
 	ramp.rotation.x = -atan2(drop, run)
 	var body = StaticBody3D.new()
@@ -65,7 +66,7 @@ static func build_waterfront_approach(g: Node) -> void:
 	_build_bridge_activator(g, root, "WaterfrontDescent", ramp.position, ramp.rotation, Vector3(5.5, 3.5, 3.0))
 	for side in [-1.0, 1.0]:
 		var rail_pos = Vector3(100 + side * 3.2, center.y + 0.6, center.z)
-		var rail = g.box(root, rail_pos, Vector3(0.5, 1.4, length), "46534c")
+		var rail = DistrictSurfaces.apply(g.box(root, rail_pos, Vector3(0.5, 1.4, length), "46534c"), "algae_stone", "46534c")
 		rail.rotation.x = ramp.rotation.x
 		var rbody = StaticBody3D.new()
 		rbody.position = rail_pos
@@ -78,14 +79,16 @@ static func build_waterfront_approach(g: Node) -> void:
 		rbody.add_child(rcol)
 	g.target("route_waterfront", "Continue downhill to the waterfront", Vector3(100, -5.0, -31))
 	g.routes["route_waterfront"] = ["waterfront", Vector3(0, 0.1, 23), 0.0]
-	# A low, unreachable preview keeps the abandoned island visible throughout
-	# the descent without turning it into a destination.
+	# A low, unreachable preview of the buried-whole whaling station (Bible v18).
 	var station = Node3D.new()
 	station.name = "DistantWhalingStation"
 	root.add_child(station)
-	g.box(station, Vector3(103, -6.8, -128), Vector3(30, 2.0, 13), "626b62")
-	g.box(station, Vector3(102, -4.8, -128), Vector3(14, 4.2, 6), "46534d")
-	g.box(station, Vector3(95, -2.7, -129), Vector3(1.8, 8.0, 1.8), "3d4b45")
+	DistrictSurfaces.apply(g.cylinder(station, Vector3(108, -4.7, -132), 16.0, 3.6, "4b544b", 9.5), "algae_stone", "4b544b")
+	DistrictSurfaces.apply(g.cylinder(station, Vector3(102, -4.1, -133), 10.5, 3.2, "444c44", 5.5), "algae_stone", "444c44")
+	DistrictSurfaces.apply(g.cylinder(station, Vector3(116, -4.4, -131), 9.5, 3.0, "485048", 5.0), "algae_stone", "485048")
+	DistrictSurfaces.apply(g.box(station, Vector3(101.5, -2.1, -133), Vector3(1.7, 2.4, 1.7), "384440"), "rust_metal", "384440")
+	DistrictSurfaces.apply(g.box(station, Vector3(109.0, -2.4, -131.5), Vector3(11.0, 0.45, 1.7), "2c3933"), "slate", "2c3933")
+	DistrictSurfaces.apply(g.box(station, Vector3(114.5, -2.7, -128.5), Vector3(5.2, 1.3, 0.45), "36423c"), "tar_wood", "36423c")
 
 static func build_waterfront(g: Node) -> void:
 	var root = g.get_node("ContiguousTownPhaseTwo")
@@ -107,7 +110,7 @@ static func _build_pickman_descent(g: Node, root: Node3D) -> void:
 	# Bury the Pickman edge below its pavement so the character controller meets
 	# a descending floor rather than the slab's vertical face.
 	var center = Vector3(54, -1.45, 8)
-	var ramp = g.box(root, center, Vector3(length, 0.42, 5.5), "687269")
+	var ramp = DistrictSurfaces.apply(g.box(root, center, Vector3(length, 0.42, 5.5), "687269"), "patched_cobble", "687269")
 	ramp.name = "LowerDistrictDescent"
 	ramp.rotation.z = -atan2(drop, run)
 	var body = StaticBody3D.new()
@@ -123,7 +126,7 @@ static func _build_pickman_descent(g: Node, root: Node3D) -> void:
 	_build_bridge_activator(g, root, "LowerDistrictDescent", ramp.position, ramp.rotation, Vector3(3.0, 3.5, 5.5))
 	for z in [4.7, 11.3]:
 		var wall_pos = Vector3(center.x, center.y + 0.6, z)
-		var wall = g.box(root, wall_pos, Vector3(length, 1.4, 0.5), "4b574e")
+		var wall = DistrictSurfaces.apply(g.box(root, wall_pos, Vector3(length, 1.4, 0.5), "4b574e"), "stone", "4b574e")
 		wall.rotation.z = ramp.rotation.z
 		var wbody = StaticBody3D.new()
 		wbody.position = wall_pos

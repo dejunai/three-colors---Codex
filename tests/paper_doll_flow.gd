@@ -40,6 +40,10 @@ func run() -> void:
 	doll = g.content.find_child("WalterPaperDoll",true,false)
 	assert(doll.coat == "Plain wool coat" and not doll.badge_visible)
 
+	_slot(g,"BadgeSlot").pressed.emit()
+	assert("pocketed" in _text(g) and "inside" in _text(g), "Plain coat badge inspection must report badge pocketed inside coat before retreat")
+	g._close()
+
 	_slot(g,"RevolverSlot").pressed.emit()
 	assert("4 of 6 rounds remain" in _text(g))
 	g._close()
@@ -52,14 +56,14 @@ func run() -> void:
 	g._close()
 	assert(g.page == "case" and g.content.find_child("WalterPaperDoll",true,false) != null, "Closing the notebook opened from the doll must return to the doll")
 
-	g.state.coat = "Police coat"
+	g.state.coat = "Plain wool coat"
 	g.state.dialogue_state.set_flag("badge_lost",true)
 	g.state.flask_spilled = true
 	g._case_file()
 	doll = g.content.find_child("WalterPaperDoll",true,false)
 	assert(doll.badge_lost and not doll.badge_visible and doll.flask_spilled)
 	_slot(g,"BadgeSlot").pressed.emit()
-	assert("Lost below the estate" in _text(g))
+	assert("Lost below the estate" in _text(g), "Plain coat badge inspection must say lost afterward")
 	g._close()
 	_slot(g,"FlaskSlot").pressed.emit()
 	assert("Lost in the dark below" in _text(g))

@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/props/estate/pantry_door_boarded_frame.glb" id="1_frame"]
+[ext_resource type="PackedScene" path="res://assets/models/props/estate/pantry_door_damaged_leaf.glb" id="2_leaf"]
+[ext_resource type="PackedScene" path="res://assets/models/props/estate/pantry_door_cleared.glb" id="3_cleared"]
+
+[node name="PantryDoorStates" type="Node3D"]
+
+[node name="Boarded" type="Node3D" parent="."]
+
+[node name="DamagedDoor" parent="Boarded" instance=ExtResource("2_leaf")]
+position = Vector3(0, 0, -0.075)
+
+[node name="BoardedFrame" parent="Boarded" instance=ExtResource("1_frame")]
+
+[node name="Cleared" type="Node3D" parent="."]
+visible = false
+
+[node name="DoorAndRemovedBoards" parent="Cleared" instance=ExtResource("3_cleared")]

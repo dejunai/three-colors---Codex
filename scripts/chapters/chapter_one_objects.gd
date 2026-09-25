@@ -51,13 +51,25 @@ func interact(g: Node, location: String, object_id: String) -> bool:
 	if not Runtime.is_available(def, object_id, ctx):
 		_fail_loud(g, location, object_id)
 		return true
+	var label = Runtime.label_for(def, object_id, ctx)
+	if not g.test_mode and location == "estate" and object_id in ["watch", "knife"] and not g.state.object_state.object_done(location, object_id) and g.estate.points.has(object_id) and g.rig.has_method("play_ground_pickup"):
+		var point: Vector3 = g.estate.points[object_id].get("pos", g.player.global_position)
+		g.rig.play_ground_pickup(point,
+			func():
+				if object_id == "knife" and is_instance_valid(g.estate.opening_knife): g.estate.opening_knife.hide(),
+			func(): _begin(g, def, object_id, label))
+		return true
+	_begin(g, def, object_id, label)
+	return true
+
+func _begin(g: Node, def: Dictionary, object_id: String, label: String) -> void:
+	var ctx = Runtime.make_context(g.state)
 	var result = Runtime.enter(def, object_id, ctx, g.state)
-	if result.session.is_empty(): return false
+	if result.session.is_empty(): return
 	g.scripted_dialogue.clear()
 	g.card_kind = "examine"
-	var label = Runtime.label_for(def, object_id, ctx)
+	if g.rig.has_method("play_examine"): g.rig.play_examine()
 	_play(g, result, object_id, label)
-	return true
 
 func _play(g: Node, result: Dictionary, object_id: String, label: String) -> void:
 	g.dialogue.start(result.cards, g._draw_card, func():
@@ -70,6 +82,7 @@ func _play(g: Node, result: Dictionary, object_id: String, label: String) -> voi
 			g.estate.sync_staging(g.state)
 		if g.state.world == "estate":
 			sync_points(g, "estate", ["wounds","watch","knife","eight","shoes","gas","register"])
+		if g.rig.has_method("finish_context_animation"): g.rig.finish_context_animation()
 		g._close()
 		g._toast("Recorded in Walter's case file.  [ Tab ]", 4)
 		g._save_game())

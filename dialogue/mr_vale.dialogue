@@ -139,7 +139,7 @@ TOPIC: missing_cart
 
       OUTCOME: missing_cart_response = named_signer
 TOPIC: records
-  GATE: evidence(quay_inquiry) AND NOT topic_done(quay_bookkeeper, records)
+  GATE: evidence(quay_inquiry)
   TAG: bookkeeper_records
   LABEL: "Ask why records disappear"
   VOICE: trombone_bureaucratic_medium_v2
@@ -152,7 +152,7 @@ TOPIC: records
   NOTEBOOK: bookkeeper_records_1 | "The quay office does not require a deliberate falsification to lose a record. Separate defensible filing decisions can make a fact practically unrecoverable."
 
 TOPIC: coat
-  GATE: coat = plain AND evidence(quay_inquiry) AND NOT topic_done(quay_bookkeeper, coat)
+  GATE: coat = plain AND evidence(quay_inquiry)
   TAG: bookkeeper_coat
   LABEL: "Ask why he answered without the badge"
   VOICE: trombone_neutral_medium_v1

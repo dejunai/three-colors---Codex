@@ -38,6 +38,13 @@ TOPIC: default
   MR. CRANE: "If you're looking for liniment, the shelf behind you hasn't moved."
 
 TOPIC: default
+  GATE: visit_count(apothecary) >= 2 AND NOT (topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies)) AND coat = plain
+  TAG: apothecary_repeat_plain_carbolic
+  WEIGHT: 2
+  VOICE: trombone_neutral_long_v1
+  MR. CRANE: "Carbolic vapor and oil of eucalyptus. I kept five glass carboys by the door that autumn and dipped it out with a soup ladle into vinegar bottles.\nNobody asked what was in it so long as the cork was tight."
+
+TOPIC: default
   GATE: visit_count(apothecary) >= 2 AND NOT (topic_done(apothecary, fenn_laudanum) AND topic_done(apothecary, the_stranger_remedies)) AND coat != plain
   TAG: apothecary_repeat_badge_carboy
   WEIGHT: 3
@@ -117,7 +124,7 @@ TOPIC: the_camphor_stranger
   EVIDENCE: chandlery_island_delivery
 
 TOPIC: the_stranger_remedies
-  GATE: evidence(naomi) AND NOT topic_done(apothecary, the_stranger_remedies)
+  GATE: evidence(naomi)
   TAG: apothecary_naomi
   LABEL: "Ask if Naomi Freeman sought medicine for her son"
   TIME: 7

@@ -18,6 +18,7 @@ extends RefCounted
 const QUIET_SECONDS = 7.0
 const FLAG_ARMED = "tunnel_retreated"
 const FLAG_DONE = "glass_broken"
+const GLASS_STREAM: AudioStream = preload("res://glass_shatter.ogg")
 
 const BOARD = [
 	["THE BOARD","The last two cards go up within the same hour. He does not choose the moment, any more than a man chooses the instant a held breath tops out.\n\nBehan's line about inherited money inventing its own reason, beside the ship's name. A cough that answers to nothing living. A passage beneath the sea that no drawing admits."],
@@ -44,6 +45,7 @@ var quiet_time := 0.0
 func setup(g: Node) -> void:
 	glass_player = AudioStreamPlayer.new()
 	glass_player.volume_db = -6
+	glass_player.stream = GLASS_STREAM
 	g.add_child(glass_player)
 
 func pending(g: Node) -> bool:
@@ -64,7 +66,6 @@ func begin(g: Node) -> void:
 	if running: return
 	running = true
 	quiet_time = 0.0
-	if glass_player.stream == null: glass_player.stream = build_glass_stream()
 	g.playthrough_log.day3_bed_reached()
 	g._cards(board_cards(g), func(): _play(g), "examine")
 
@@ -123,6 +124,7 @@ func _break_glass(g: Node, room: Node) -> void:
 	# inside the beat, so the beat can only ever be seen whole.
 	g.state.finished = true
 	_caption(g, "[Glass breaking.]")
+	if g.rig.has_method("play_surprise"): g.rig.play_surprise()
 	glass_player.play()
 	if room.has_method("shatter_glass"): room.shatter_glass()
 	g.presentation.return_color(0.75, 4.0 * _scale(g))
@@ -130,48 +132,5 @@ func _break_glass(g: Node, room: Node) -> void:
 
 func _finish(g: Node) -> void:
 	running = false
+	if g.rig.has_method("finish_context_animation"): g.rig.finish_context_animation()
 	g.staging.debrief(g)
-
-# A struck tumbler and what follows: one hard crack, the ring of a few inharmonic
-# partials, then small pieces landing and thinning out. Synthesized, like the
-# cough, so the build needs no audio asset. Deterministic: same sound every run.
-func build_glass_stream() -> AudioStreamWAV:
-	var rate = 44100
-	var length = int(rate * 1.6)
-	var rng = RandomNumberGenerator.new()
-	rng.seed = 1923
-	var buffer = PackedFloat32Array()
-	buffer.resize(length)
-	# Crack: a very short high-passed noise burst.
-	var last_noise = 0.0
-	for i in int(rate * 0.06):
-		var noise = rng.randf_range(-1.0, 1.0)
-		var t = float(i) / rate
-		buffer[i] += (noise - last_noise) * 0.5 * exp(-t / 0.011)
-		last_noise = noise
-	# Ring: frequency, gain, decay seconds.
-	for partial in [[2140.0, 0.9, 0.16], [3310.0, 0.6, 0.11], [4980.0, 0.45, 0.08], [6720.0, 0.3, 0.06]]:
-		var span = mini(length, int(rate * partial[2] * 6.0))
-		for i in span:
-			var t = float(i) / rate
-			buffer[i] += sin(TAU * partial[0] * t) * partial[1] * exp(-t / partial[2]) * 0.55
-	# Pieces landing: many small ticks, fewer as they settle.
-	for n in 22:
-		var start = int(rate * (0.045 + pow(rng.randf(), 1.7) * 0.95))
-		var frequency = rng.randf_range(2400.0, 7200.0)
-		var gain = rng.randf_range(0.10, 0.30)
-		var decay = rng.randf_range(0.004, 0.016)
-		var span = mini(length - start, int(rate * decay * 6.0))
-		for i in span:
-			var t = float(i) / rate
-			buffer[start + i] += sin(TAU * frequency * t) * gain * exp(-t / decay)
-	var peak = 0.001
-	for sample in buffer: peak = maxf(peak, absf(sample))
-	var bytes = PackedByteArray()
-	bytes.resize(length * 2)
-	for i in length: bytes.encode_s16(i * 2, int(clampf(buffer[i] / peak * 0.9, -1.0, 1.0) * 32767.0))
-	var stream = AudioStreamWAV.new()
-	stream.format = AudioStreamWAV.FORMAT_16_BITS
-	stream.mix_rate = rate
-	stream.data = bytes
-	return stream

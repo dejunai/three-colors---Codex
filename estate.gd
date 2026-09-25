@@ -16,6 +16,17 @@ var opening_report: Node3D
 var birch_belongings: Node3D
 var opening_staff: Dictionary = {}
 var departure_leaves: Array[Node3D] = []
+var boy_actor: Node3D
+var odell_actor: Node3D
+var assistant_actor: Node3D
+const GatekeeperBoyModel = preload("res://scripts/shared/gatekeeper_boy_model.gd")
+const ESTATE_TREE_BUSH_MODEL = preload("res://assets/models/props/prop_tree_bush.glb")
+const CaptainOdellModel = preload("res://scripts/shared/captain_odell_model.gd")
+const CoronerModel = preload("res://scripts/shared/coroner_model.gd")
+const CoronersAssistantModel = preload("res://scripts/shared/coroners_assistant_model.gd")
+const CastModel = preload("res://scripts/shared/cast_model.gd")
+const VictimModel = preload("res://scripts/shared/victim_model.gd")
+const CoveredBodyModel = preload("res://scripts/shared/covered_body_model.gd")
 
 func sync_staging(st) -> void:
 	for leaf in departure_leaves:
@@ -221,19 +232,13 @@ func body(pos: Vector3, angle: float, covered: bool = false, small: bool = false
 	scene_bodies.append(n)
 	if group == "birch": birch_bodies.append(n)
 	elif group == "rose": rose_bodies.append(n)
-	if small: n.scale = Vector3.ONE*0.68
 	if covered:
-		var sheet = sphere(n,Vector3(0,0.24,0),0.62,"9e9e96")
-		sheet.scale = Vector3(0.67,0.39,1.55)
-		box(n,Vector3(0,0.13,0),Vector3(0.85,0.05,2.1),"999a92")
+		var covered_model = CoveredBodyModel.create(small)
+		n.add_child(covered_model)
 	else:
-		box(n,Vector3(0,0.23,0),Vector3(0.6,0.32,0.84),"333637")
-		box(n,Vector3(0,0.405,-0.28),Vector3(0.22,0.012,0.2),"b9b8ad")
-		sphere(n,Vector3(0,0.24,-0.69),0.19,"a09f92")
-		for x in [-0.16,0.16]:
-			box(n,Vector3(x,0.14,0.67),Vector3(0.2,0.22,0.75),"292c2d")
-			box(n,Vector3(x,0.14,1.08),Vector3(0.24,0.22,0.27),"191b1b")
-		for x in [-0.4,0.4]: box(n,Vector3(x,0.16,0.08),Vector3(0.16,0.2,0.82),"333637")
+		if small: n.scale = Vector3.ONE*0.68
+		var victim = VictimModel.create()
+		n.add_child(victim)
 
 func hedge(pos:Vector3,size:Vector3) -> void:
 	box(self,pos,size,"343b36",true)
@@ -408,12 +413,39 @@ func _ready() -> void:
 	box(self,Vector3(-13.3,0.85,-11.7),Vector3(0.5,0.42,0.5),"353c36")
 	cylinder(self,Vector3(-13.5,0.06,-10.5),0.32,0.12,"242626")
 	sphere(self,Vector3(-13.5,0.24,-10.5),0.15,"656a66")
-	var groundskeeper = person(Vector3(-13.5,0,-11.7),"3a3f36",true,"7a2a1a")
+	var groundskeeper = CastModel.create(CastModel.OBSERVER_MAN)
+	groundskeeper.position = Vector3(-13.5,0,-11.7)
+	add_child(groundskeeper)
+	# Keep Abel's first color tell independent of lighting and fog. The rendered
+	# archetype supplies the figure; this small brooch preserves the established
+	# gameplay-readable accent and the shader contract.
+	var accent = box(groundskeeper,Vector3(0.18,1.5,-0.24),Vector3(0.12,0.15,0.04),"7a2a1a")
+	accent.name = "Accent"
+	accent.material_override = accent_material("7a2a1a")
+	accent.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	groundskeeper.rotation.y = 2.4
 	groundskeeper_actor = groundskeeper
 	groundskeeper.hide()
 	# Boundary walls and iron gate, with a lodge beside the entrance.
 	for x in [-14,14]: box(self,Vector3(x,1.2,37),Vector3(20,2.4,0.65),"6c736b",true)
+	# Two presentation-only clusters enrich the outer approach without replacing
+	# the functional gate, lodge, rose hedges, or their tested collision.
+	var rendered_landscape := Node3D.new()
+	rendered_landscape.name = "RenderedEstateLandscaping"
+	add_child(rendered_landscape)
+	var landscape_collision := Node3D.new()
+	landscape_collision.name = "LegacyEstateLandscapeCollisionVisuals"
+	add_child(landscape_collision)
+	for side in [-1.0, 1.0]:
+		var cluster_x := -18.0 if side < 0 else 14.0
+		var cluster := ESTATE_TREE_BUSH_MODEL.instantiate() as Node3D
+		cluster.name = "EntranceTree" + ("West" if side < 0 else "East")
+		cluster.position = Vector3(cluster_x, 0, 33.0)
+		cluster.scale = Vector3.ONE * 2.3
+		cluster.rotation.y = side * 0.22
+		rendered_landscape.add_child(cluster)
+		box(landscape_collision, Vector3(cluster_x, 1.0, 33.0), Vector3(3.8, 2.0, 3.0), "343b36", true)
+	landscape_collision.visible = false
 	for x in [-4.1,4.1]:
 		box(self,Vector3(x,2.0,37),Vector3(1,4,1),"92978b",true)
 		cylinder(self,Vector3(x,4.2,37),0.75,0.4,"b0b1a1",0.5)
@@ -446,13 +478,26 @@ func _ready() -> void:
 	for x in [6,8]: box(self,Vector3(x,0.45,-14),Vector3(0.13,0.9,0.8),"3b443b")
 	opening_report = box(self,Vector3(6.6,1.06,-13.8),Vector3(0.52,0.035,0.7),"cccbba")
 	box(self,Vector3(7.4,1.06,-13.8),Vector3(0.48,0.035,0.6),"babaa8")
-	person(Vector3(-2,0,31),"555c52").rotation.y = -0.3
-	opening_staff["odell"] = person(Vector3(4,0,-11.5),"272e2b")
-	opening_staff["odell"].rotation.y = 0.2
-	opening_staff["assistant"] = person(Vector3(12.5,0,-3.8),"aaa99a",false)
-	opening_staff["assistant"].rotation.y = -1.2
-	gardener_actor = person(Vector3(-12,0,1),"4e5a4b")
+	boy_actor = GatekeeperBoyModel.create()
+	boy_actor.position = Vector3(-2,0,31)
+	boy_actor.rotation.y = -0.3
+	add_child(boy_actor)
+	odell_actor = CaptainOdellModel.create()
+	odell_actor.position = Vector3(4,0,-11.5)
+	# Face Walter's approach from the garden while the rendered child retains
+	# the standard +Z-to-Godot-forward correction used by bespoke characters.
+	odell_actor.rotation.y = PI
+	add_child(odell_actor)
+	opening_staff["odell"] = odell_actor
+	assistant_actor = CoronersAssistantModel.create()
+	assistant_actor.position = Vector3(12.5, 0, -3.8)
+	assistant_actor.rotation.y = -1.2
+	add_child(assistant_actor)
+	opening_staff["assistant"] = assistant_actor
+	gardener_actor = CastModel.create(CastModel.LOWER_MAN)
+	gardener_actor.position = Vector3(-12,0,1)
 	gardener_actor.rotation.y = 0.7
+	add_child(gardener_actor)
 	opening_knife = box(self,Vector3(-7,0.08,-1),Vector3(0.08,0.1,0.72),"b8b8a6")
 	opening_knife.rotation.y = 0.5
 	# Interaction positions are reachable on foot and never embedded in collision.

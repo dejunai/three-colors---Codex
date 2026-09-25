@@ -5,17 +5,27 @@ OBJECT: wounds
   LABEL: "Examine the six men"
   THE ROSE GARDEN: "Six men in evening dress, arranged in a half-circle.\n\nWalter knows five of the faces. Judge Wexford. Dr. Fenn. Corliss, the district attorney. Pruitt. Kessler.\n\nThe sixth means nothing to him."
   EXAMINE · JUDGE WEXFORD: "A wound above the bridge of the nose.\nNo powder scorching.\n\nWalter turns the head.\nThere is no exit wound."
+  EXAMINE · DR. FENN: "Dr. Aldous Fenn. In his inside breast pocket, past the silk handkerchief: a brass fountain pen and two folded death certificates, blank on the line for the cause.\nFenn signed Constance Corwin's death certificate eleven months back with that same pen, without once looking up from the counter."
   WALTER'S NOTEBOOK: "The other five present the same condition.\n\nNo weapon in any visible hand.\nCause and sequence unestablished.\n\nThe observation is exact. It is the explanation that is missing."
   NOTEBOOK: wounds_note | "Six men in evening dress. A small wound above the bridge of each nose. No corresponding wound behind the skull. No powder marks on the collars."
   EVIDENCE: wounds
 
 OBJECT: watch
+  GATE: NOT rose_bodies_removed AND (evidence(watch) OR evidence(pocketwatch) OR taken(pocketwatch) OR object_done(estate, watch))
+  LABEL: "Examine the sixth man"
+  THE SIXTH BODY: "Walter has already searched the wool coat.\n\nThe gold watch is in his own pocket, stopped at seventeen minutes past three. The dead man's pockets are flat and empty: no calling card, no laundry mark, no name stitched into the silk lining."
+  WALTER CORWIN: "A guest who sat among five men of standing.\n\nEither nobody knew him, or nobody was meant to."
+  WALTER'S NOTEBOOK: "Sixth member. Identity unrecovered. The watch remains in custody.\n\nTake the movement to the clockmaker in town."
+
+OBJECT: watch
   GATE: NOT rose_bodies_removed
   LABEL: "Examine the sixth man's effects"
-  THE SIXTH MAN: "No calling card. No monogram. No wallet.\n\nA watch, stopped at 03:17. Its maker's plate has been filed smooth."
-  WALTER'S NOTEBOOK: "Unknown male, approximately fifty to sixty.\nClub dress. Identity unrecovered.\n\nAsk the steward. Then the tailor. A blank is still something to investigate."
+  THE SIXTH BODY: "Walter kneels beside the sixth body in the grass. Tailored wool, fifty to sixty years of age.\n\nHe goes through the pockets with the same flat method used on the other five: no calling card, no monogrammed cuff, no wallet, nothing sewn into the lining."
+  THE STOPPED WATCH: "From the inside coat pocket: a gold watch, stopped at 03:17. Its maker's plate has been filed smooth.\n\nWalter winds the stem once; it does not catch. He slips the watch into his pocket to have the movement examined in town."
+  WALTER'S NOTEBOOK: "Unknown male, approximately fifty to sixty.\nClub dress. Identity unrecovered. Watch retained as evidence.\n\nAsk the steward. Then the tailor. A blank is still something to investigate."
   NOTEBOOK: watch_note | "The unidentified man's watch is stopped at seventeen minutes past three. The maker's plate has been filed smooth. This alone does not establish the time of death."
   EVIDENCE: watch
+  TAKE: pocketwatch
 
 OBJECT: knife
   GATE: NOT rose_bodies_removed AND NOT evidence(knife)

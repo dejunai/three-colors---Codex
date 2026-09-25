@@ -63,7 +63,7 @@ const SCENES = {
 		["THE GAZETTE", "TRAGEDY AT THE OPHION CLUB\n\nFive names. Five professions.\nA paragraph about service to the community."],
 		["WALTER CORWIN", "The birches do not appear in the account.\nNeither does a source for the word accident."]],
 	"exemption": [
-		["THE DRESSER", "An exemption notice, folded along the same worn crease.\nConstance Corwin's name beneath his own.\n\nWalter puts it back.\nThere are other papers requiring him tonight."]],
+		["THE DRESSER", "An exemption notice, folded along the same worn crease.\nConstance Corwin's name beneath his own.\nBeside it, in the half-open drawer: a tin of menthol ointment dried to dark resin, and three folded gauze masks with brittle, yellowed ties.\n\nWalter puts the notice back.\nThere are other papers requiring him tonight."]],
 	"behan": [
 		["FATHER BEHAN", "Wexford's temper. Fenn's vanity. Kessler's grudges. Corliss's ambitions.\n\nI'll discuss any of it. None of it explains a hole above the bridge of a nose."],
 		["WALTER CORWIN", "You knew all six."],

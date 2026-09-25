@@ -93,6 +93,36 @@ func sleep(g:Node) -> void:
 		g.playthrough_log.day3_bed_reached()
 		g._cards(g.TownStory.SCENES.close_day,func(): _debrief_town_feel(g))
 
+# Optional early-exit debrief. This never completes the story; it records one
+# small feedback pair before honoring an in-game return-to-title or quit action.
+func exit_debrief(g:Node,action_label:String,continuation:Callable) -> void:
+	if g.state.finished or g.state.dialogue_state.flag("exit_debrief_completed"):
+		g._continue_exit_without_debrief(continuation)
+		return
+	_exit_debrief_town_feel(g,action_label,continuation)
+
+func _exit_debrief_town_feel(g:Node,action_label:String,continuation:Callable) -> void:
+	g._panel("case","Before you go — an optional playtest debrief.","A QUIET MOMENT")
+	g._paragraph("How did the town feel so far?")
+	var choose = func(answer:String): _exit_debrief_time_natural(g,action_label,continuation,answer)
+	g._button("Alive, and hard to fully take in",choose.bind("alive"))
+	g._button("Confusing",choose.bind("confusing"))
+	g._button("Too large for the time given",choose.bind("too_large"))
+	g._button("Easy enough to navigate",choose.bind("easy"))
+	g._button("Skip debrief and %s" % action_label,func(): g._finish_exit_debrief("skipped","skipped",continuation))
+	g._button("Cancel and keep playing",g._pause)
+	g._focus_first()
+
+func _exit_debrief_time_natural(g:Node,action_label:String,continuation:Callable,town_feel:String) -> void:
+	g._panel("case","One more optional thought.","A QUIET MOMENT")
+	g._paragraph("Did the passage of time feel natural while investigating?")
+	var finish = func(answer:String): g._finish_exit_debrief(town_feel,answer,continuation)
+	g._button("Yes",finish.bind("yes"))
+	g._button("No",finish.bind("no"))
+	g._button("Skip this question and %s" % action_label,finish.bind("skipped"))
+	g._button("Cancel and keep playing",g._pause)
+	g._focus_first()
+
 # Public entry for the slice's final beat: the two optional tester questions, then
 # the ending. Kept here so the questions and the telemetry event stay in one place.
 func debrief(g:Node) -> void:
@@ -118,9 +148,10 @@ func _debrief_time_natural(g:Node,town_feel:String) -> void:
 	g._panel("case","One more thought.","A QUIET MOMENT")
 	g._paragraph("Did the passage of time feel natural while investigating?")
 	var finish = func(answer:String):
-		g.playthrough_log.debrief(town_feel,answer)
 		g.state.finished=true
+		g.state.dialogue_state.set_flag("debrief_completed",true)
 		g._save_game()
+		g.playthrough_log.complete(g.state,town_feel,answer)
 		g._town_complete()
 	g._button("Yes",finish.bind("yes"))
 	g._button("No",finish.bind("no"))

@@ -1,0 +1,9 @@
+# Morgue coroner: silent despair over the sheeted tables.
+NPC: morgue_coroner
+LOCATION: morgue
+
+TOPIC: default
+  GATE: always
+  TAG: morgue_coroner_default
+  VOICE: violin_weary_short_v1
+  THE CORONER: "The coroner spreads his hands over the row of sheeted tables. He has no answer to offer."

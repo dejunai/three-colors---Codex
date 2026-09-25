@@ -5,7 +5,7 @@ const FACTS = {
 	"lower_foundation":["BEYOND THE FOUNDATION","The lower passage continues beyond the estate's recorded foundation. Walter measured the final support against the service plan. The cause remains unestablished.","Lower passage · service plan and direct measurement"],
 	"service_recess":["A RECESSED WALK","Pale wear marks continue behind the right-hand stone screen. The recess joins the far side of the central passage without crossing its open floor.","Service passage · reflected wear marks"],
 	"county_foundation_request":["A SECOND FOUNDATION RECORD","The county examiner requests the municipal foundation sheet after reading the wounds and intact-window observations together. The request names the survey drawer to consult. It supplies a second documentary lead for Walter's lower-passage measurement, not an explanation of the passage.","County examiner · reply to the dispatched observations"],
-	"flask_spill":["TORN FROM THE STRAP","A spur of rock tore Walter's flask loose on the descent. It fell into the dark below with two soft strikes against stone. What remained inside is lost. The case needed him thirsty now.","Descent into the lower rock · lost flask"],
+	"flask_spill":["TORN FROM THE STRAP","The flask was torn loose when Walter fell during the retreat from the deep passage, lost into the dark alongside his badge and whistle. What remained inside is gone. The case needed him thirsty now.","Descent into the lower rock · lost flask"],
 	"drowned_remains":["THE TWO CONDITIONS","Two kinds of remains inhabit the corridor beneath the sea: drowned sailors who can be put down by brutal force, and transformed cultists who only ever stagger and rise again. Force delays one; it never ends the other.","Deep passage · examination of remains"]
 }
 
@@ -15,10 +15,11 @@ const ENTRY = [
 	["WALTER'S NOTEBOOK","Compare the lower support with the service plan.\nReturn with the measurements.\n\nWalter checks the flask's familiar weight before he starts down."]
 ]
 
-const FLASK_SPILL = [
-	["THE ROCK SPUR","The stone stair narrows past the foundation support. A jagged spur of rock catches the leather strap.\n\nThe flask is torn loose before Walter's hand can reach it, falling into the dark below with two soft strikes, and then nothing."],
-	["WALTER'S NOTEBOOK","He does not chase it. He understands, with a calm colder than panic, that the case had only ever let the flask hold as much peace as it had use for, and had decided it needed him thirsty now."]
+const ROCK_SPUR = [
+	["THE ROCK SPUR","The stone stair narrows past the foundation support. A jagged spur of rock reaches out from the wall, catching the rough weave of Walter's coat.\n\nHe frees the cloth and checks his footing on the damp stone. Below, the stair continues into unmapped darkness."],
+	["WALTER'S NOTEBOOK","Past the foundation support, the masonry yields to raw cut rock. Walter checks the strap of the flask and keeps one hand against the wall as he descends."]
 ]
+const FLASK_SPILL = ROCK_SPUR
 
 # Past the spur, the passage asks for one more step. The pressure is never named;
 # the mind supplies the nearest shape it owns (Bible Part Three, The Entity).
@@ -28,10 +29,10 @@ const PRESSURE = [
 ]
 
 # The retreat costs him the last of what he carried (Bible Part Three, Coping
-# Mechanism). The flask is already gone at the spur; the badge and whistle follow.
+# Mechanism). The flask, badge, and whistle are lost together when he falls.
 # Each loss is stated plainly so it never reads as a bug (Design Law 4).
 const RETREAT = [
-	["THE STAIR","Somewhere in the dark before the stair his foot finds uneven stone and he goes down hard.\n\nThe badge tears loose from its pin. The whistle's cord snaps against the fall. The flask is already somewhere below him, and does not come back.\n\nHe gathers what his hands find and comes up with none of it. He does not go back. Going back means one more second in a place that has already taken more than three objects."],
+	["THE STAIR","Somewhere in the dark before the stair his foot finds uneven stone and he goes down hard.\n\nThe badge tears loose from its pin. The whistle's cord snaps against the fall. The flask is torn from its strap and strikes the stone, tumbling into the dark below.\n\nHe gathers what his hands find and comes up with none of it. He does not go back. Going back means one more second in a place that has already taken three objects."],
 	["THE ESTATE GROUNDS","He comes up into gray predawn light, a tired man in a torn coat crossing the grounds a little too early to be proper about it.\n\nNo one asks what he has seen. He would not know how to answer.\n\nHe goes home."],
 	["CORWIN'S ROOM","The room is as he left it. The board on the wall. The desk. A glass beside the notebook with an inch of something in the bottom of it.\n\nHe does not remember pouring it."]
 ]

@@ -34,8 +34,8 @@ func _run() -> void:
 	await _check_town_street_portals(g)
 	await _check_speakeasy_via_contiguous_town(g)
 	await _check_tunnel_exit_both_branches(g)
-	await _check_authored_time_charges_once()
-	print("PASS: live portal content audits clean; parse errors/wiring, service_entrance/lounge_exit round trip (including an immediate-GO completion), town street portals, route_speakeasy gated correctly from the real contiguous town world, both tunnel_exit branches, and authored TIME charging exactly once per portal identity all verified through the real chapter_one.gd adapter")
+	await _check_authored_time_charges_per_trip()
+	print("PASS: live portal content audits clean; parse errors/wiring, service_entrance/lounge_exit round trip (including an immediate-GO completion), town street portals, route_speakeasy gated correctly from the real contiguous town world, both tunnel_exit branches, and authored travel TIME charging per crossing all verified through the real chapter_one.gd adapter")
 	quit(0)
 
 func _check_parse_and_wiring() -> void:
@@ -213,7 +213,7 @@ func _check_tunnel_exit_both_branches(g) -> void:
 # cards-then-GO segment with nothing to click through) rather than after an
 # awaited process_frame, since a settled "play" page's own tick_world() adds
 # a small real-time WANDER_RATE nudge that would make an exact comparison flaky.
-func _check_authored_time_charges_once() -> void:
+func _check_authored_time_charges_per_trip() -> void:
 	var g = await _new_game()
 	var Lang = load("res://scripts/shared/portal_lang.gd")
 	var toll_src = "LOCATION: test_toll\nPORTAL: toll_gate\n  GATE: always\n  TIME: 15\n  GO: estate | 0,0.1,35 | 0\n"
@@ -230,19 +230,19 @@ func _check_authored_time_charges_once() -> void:
 	var minutes_before_replay = g.state.clock_minutes
 	var second = PortalRuntime.enter(parsed, "toll_gate", PortalRuntime.make_context(g.state), g.state)
 	g.portals._play(g, second)
-	assert(g.state.clock_minutes == minutes_before_replay, "a repeat crossing of an already-completed timed portal must not charge again")
+	assert(g.state.clock_minutes == minutes_before_replay + 15.0, "a repeat crossing of a timed portal must charge the authored TIME again")
 
-	# Omitted TIME defaults to 3 minutes, charged once on first completion:
+	# Omitted TIME delegates to _travel()'s travel_cost; intra-district travel charges 0:
 	var default_time_src = "LOCATION: test_default_time\nPORTAL: default_door\n  GATE: always\n  GO: estate | 0,0.1,35 | 0\n"
 	var default_parsed = Lang.parse(default_time_src)
 	assert(default_parsed.errors.is_empty(), str(default_parsed.errors))
 	var before_default = g.state.clock_minutes
 	var def_first = PortalRuntime.enter(default_parsed, "default_door", PortalRuntime.make_context(g.state), g.state)
 	g.portals._play(g, def_first)
-	assert(g.state.clock_minutes == before_default + 3.0, "omitted TIME must default to 3 minutes on first crossing")
+	assert(g.state.clock_minutes == before_default, "omitted TIME on intra-district portal must cost 0 minutes")
 	assert(g.state.portal_state.portal_done("test_default_time", "default_door"), "first crossing must complete the portal")
 	var before_def_replay = g.state.clock_minutes
 	var def_second = PortalRuntime.enter(default_parsed, "default_door", PortalRuntime.make_context(g.state), g.state)
 	g.portals._play(g, def_second)
-	assert(g.state.clock_minutes == before_def_replay, "repeat crossing of default-timed portal must not charge again")
+	assert(g.state.clock_minutes == before_def_replay, "repeat crossing of intra-district portal must remain 0 minutes")
 

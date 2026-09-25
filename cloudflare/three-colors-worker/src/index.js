@@ -6,7 +6,7 @@ const EVENT_FIELDS = {
   conversation: ["npc_id", "topic_id", "coat_state", "world", "day", "phase"],
   day3_bed_reached: ["real_seconds_since_day3_start"],
   debrief: ["town_feel", "time_natural"],
-  session_end: ["total_real_seconds", "final_day", "ended_via"],
+  session_end: ["total_real_seconds", "final_day", "ended_via", "dev_brisk_used"],
 };
 
 const STANDARD_FIELDS = ["session_id", "event", "timestamp"];
@@ -19,19 +19,24 @@ const INSERT_EVENT = `INSERT OR IGNORE INTO game_events (
   day, new_phase, npcs_spoken_to_this_phase,
   real_seconds_since_day3_start, town_feel, time_natural,
   total_real_seconds, final_day, ended_via,
-  npc_id, topic_id, coat_state, world, phase
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  npc_id, topic_id, coat_state, world, phase,
+  dev_brisk_used, page_origin, received_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-function corsHeaders(request) {
-  const origin = request.headers.get("Origin") || "";
-  const allowed = origin === "https://dejunai.github.io"
+function isAllowedOrigin(origin) {
+  return !origin
+    || origin === "https://dejunai.github.io"
     || origin.endsWith(".itch.io")
     || origin.endsWith(".itch.zone")
     || origin.endsWith(".hwcdn.net")
     || origin === "http://localhost:5173"
     || origin === "http://127.0.0.1:5173";
+}
+
+function corsHeaders(request) {
+  const origin = request.headers.get("Origin") || "";
   return {
-    "Access-Control-Allow-Origin": allowed ? origin : "https://dejunai.github.io",
+    "Access-Control-Allow-Origin": isAllowedOrigin(origin) && origin ? origin : "https://dejunai.github.io",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
@@ -41,6 +46,13 @@ function corsHeaders(request) {
 
 function response(request, status, message) {
   return new Response(message, { status, headers: corsHeaders(request) });
+}
+
+function acceptedResponse(request, accepted) {
+  return new Response(JSON.stringify({ accepted }), {
+    status: 200,
+    headers: { ...corsHeaders(request), "Content-Type": "application/json" },
+  });
 }
 
 function cleanEvent(raw) {
@@ -74,6 +86,7 @@ function cleanEvent(raw) {
   if (Object.hasOwn(raw, "ended_via") && !["closed", "completed"].includes(raw.ended_via)) throw new Error("invalid ending");
   if (Object.hasOwn(raw, "town_feel") && !["alive", "confusing", "too_large", "easy", "skipped"].includes(raw.town_feel)) throw new Error("invalid town_feel");
   if (Object.hasOwn(raw, "time_natural") && !["yes", "no", "skipped"].includes(raw.time_natural)) throw new Error("invalid time_natural");
+  if (Object.hasOwn(raw, "dev_brisk_used") && typeof raw.dev_brisk_used !== "boolean") throw new Error("invalid dev_brisk_used");
   return Object.fromEntries([...allowed].filter((key) => Object.hasOwn(raw, key)).map((key) => [key, raw[key]]));
 }
 
@@ -83,7 +96,7 @@ async function eventKey(event) {
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-async function d1Statements(env, events) {
+async function d1Statements(env, events, origin, receivedAt) {
   return Promise.all(events.map(async (event) => env.DB.prepare(INSERT_EVENT).bind(
     await eventKey(event), event.session_id, event.event, event.timestamp,
     event.from_world ?? null, event.to_world ?? null,
@@ -94,16 +107,21 @@ async function d1Statements(env, events) {
     event.total_real_seconds ?? null, event.final_day ?? null, event.ended_via ?? null,
     event.npc_id ?? null, event.topic_id ?? null, event.coat_state ?? null,
     event.world ?? null, event.phase ?? null,
+    event.dev_brisk_used == null ? null : (event.dev_brisk_used ? 1 : 0),
+    origin, receivedAt,
   )));
 }
 
 export default {
   async fetch(request, env) {
+    const origin = request.headers.get("Origin") || "";
+    if (!isAllowedOrigin(origin)) return response(request, 403, "Origin not allowed");
     if (request.method === "OPTIONS") return response(request, 204, null);
     if (request.method !== "POST") return response(request, 405, "Method not allowed");
-    if (!request.headers.get("Content-Type")?.toLowerCase().startsWith("application/json")) {
-      return response(request, 415, "JSON required");
-    }
+    const contentType = request.headers.get("Content-Type")?.toLowerCase() || "";
+    const isJson = contentType.startsWith("application/json");
+    const isBeacon = contentType.startsWith("text/plain");
+    if (!isJson && !isBeacon) return response(request, 415, "JSON required");
     const declaredLength = Number(request.headers.get("Content-Length") || 0);
     if (declaredLength > MAX_BODY_BYTES) return response(request, 413, "Payload too large");
 
@@ -129,13 +147,14 @@ export default {
     const now = new Date();
     const date = now.toISOString().slice(0, 10);
     const key = `events/${date}/${crypto.randomUUID()}.json`;
-    const statements = await d1Statements(env, events);
+    const requestOrigin = request.headers.get("Origin") || null;
+    const statements = await d1Statements(env, events, requestOrigin, now.toISOString());
     await Promise.all([
       env.DB.batch(statements),
       env.BUCKET_ONE.put(key, JSON.stringify({ events }), {
         httpMetadata: { contentType: "application/json" },
       }),
     ]);
-    return response(request, 204, null);
+    return acceptedResponse(request, events.length);
   },
 };
