@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ktup7r0ojmkg"
-path="res://.godot/imported/display_case_sloped_tripo_image_a8a76730-a7f2-451a-b86f-c6660a8e91aa_0.jpg-1ea45867e5265ff1a0bf805e0d5015db.ctex"
+path.s3tc="res://.godot/imported/display_case_sloped_tripo_image_a8a76730-a7f2-451a-b86f-c6660a8e91aa_0.jpg-1ea45867e5265ff1a0bf805e0d5015db.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "74ff8cf57c896fd5f77ceebe728d7663"
@@ -14,7 +15,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/civic/display_case_sloped_tripo_image_a8a76730-a7f2-451a-b86f-c6660a8e91aa_0.jpg"
-dest_files=["res://.godot/imported/display_case_sloped_tripo_image_a8a76730-a7f2-451a-b86f-c6660a8e91aa_0.jpg-1ea45867e5265ff1a0bf805e0d5015db.ctex"]
+dest_files=["res://.godot/imported/display_case_sloped_tripo_image_a8a76730-a7f2-451a-b86f-c6660a8e91aa_0.jpg-1ea45867e5265ff1a0bf805e0d5015db.s3tc.ctex"]
 
 [params]
 
