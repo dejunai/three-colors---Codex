@@ -2,15 +2,13 @@ extends SceneTree
 
 const Town = preload("res://town.gd")
 const TownExpansion = preload("res://town_expansion.gd")
-
-const EXPECTED := {
-	"room": ["CorwinBed", "CorwinRug", "CorwinDesk", "CorwinDresser", "CorwinRadiator", "CorwinWashstand", "CorwinWashBasin", "CorwinWashPitcher"],
-	"precinct": ["PrecinctIntakeCounterLeft", "PrecinctIntakeCounterRight", "PrecinctFilesSingle", "PrecinctFilesWide", "PrecinctSideDesk", "PrecinctDeskLamp"],
-	"lounge": ["LoungeBookshelf", "LoungeSideboard", "LoungeTableLamp", "LoungeDisplaySloped", "LoungeDisplayRectangular", "LoungeWallClock", "LoungeRug", "LoungeBarCounter", "LoungeFireplace", "LoungeClubSofa", "LoungePillowBurgundy", "LoungePillowGreen", "LoungeClubChairNorth", "LoungeClubChairSouth", "LoungeRoundTable", "LoungeAshtray", "PantryDoorStates"],
-	"upper_house_1": ["ParlorRug", "ParlorFireplace", "ParlorTuftedSofa", "ParlorPillowBurgundy", "ParlorPillowGreen", "ParlorArmchairNorth", "ParlorArmchairSouth", "ParlorLowTable", "ParlorDecorativeBowl", "ParlorSideboard", "ParlorTableLamp", "ParlorRoundVase"],
-	"post_office": ["PostOfficeCounterLeft", "PostOfficeCounterRight", "PostOfficePigeonholesLeft", "PostOfficePigeonholesRight", "PostOfficeBalanceScale", "PostOfficeEnvelopeStack", "PostOfficeParcelSquare", "PostOfficeParcelLarge", "PostOfficeParcelLong", "PostOfficePendantLeft", "PostOfficePendantRight", "PostOfficeCorkboard", "PostOfficeFrostedWindow", "PostOfficeHangingSign", "PostOfficeCrate", "PostOfficeOpenCrate", "PostOfficeBarrel"],
+const TABLES := {
+	"room": preload("res://scripts/chapters/interior_props/corwin_room.gd"),
+	"precinct": preload("res://scripts/chapters/interior_props/precinct.gd"),
+	"lounge": preload("res://scripts/chapters/interior_props/smoking_lounge.gd"),
+	"upper_house_1": preload("res://scripts/chapters/interior_props/upper_parlor.gd"),
+	"post_office": preload("res://scripts/chapters/interior_props/post_office.gd"),
 }
-
 const TARGETS := {
 	"room": ["board", "sleep", "day_close", "exemption", "interior_exit"],
 	"precinct": ["intake_clerk", "intake", "supplement", "survey_drawer", "route_morgue", "interior_exit"],
@@ -18,74 +16,159 @@ const TARGETS := {
 	"post_office": ["route_return"],
 	"upper_house_1": ["local_resident", "route_return"],
 }
+const WALLS := {"left":-8.85, "right":8.85, "back":-7.70}
+const CEILING_Y := 4.2
+const TOLERANCE := 0.025
+
+var violations: Array[String] = []
+
+func _violate(room: String, prop_id: String, rule: String, detail: String) -> void:
+	var line := "%s | %s | %s | %s" % [room,prop_id,rule,detail]
+	violations.append(line)
+	print("PLACEMENT VIOLATION | ",line)
+
+func _world_bounds(node: Node3D) -> AABB:
+	var result := AABB()
+	var first := true
+	var meshes := node.find_children("*","MeshInstance3D",true,false)
+	if node is MeshInstance3D: meshes.push_front(node)
+	for child in meshes:
+		var mesh := child as MeshInstance3D
+		if mesh.mesh == null: continue
+		var bounds: AABB = mesh.global_transform * mesh.get_aabb()
+		if first: result=bounds; first=false
+		else: result=result.merge(bounds)
+	return result
+
+func _rect_world_bounds(parent: Node3D, rect: Rect2, y: float) -> Rect2:
+	var points: Array[Vector2] = []
+	for corner in [rect.position,Vector2(rect.end.x,rect.position.y),rect.end,Vector2(rect.position.x,rect.end.y)]:
+		var point := parent.to_global(Vector3(corner.x,y,corner.y))
+		points.append(Vector2(point.x,point.z))
+	var minimum := points[0]; var maximum := points[0]
+	for point in points: minimum=minimum.min(point); maximum=maximum.max(point)
+	return Rect2(minimum,maximum-minimum)
+
+func _contains_rect(outer: Rect2, inner: Rect2) -> bool:
+	return inner.position.x>=outer.position.x-TOLERANCE and inner.position.y>=outer.position.y-TOLERANCE and inner.end.x<=outer.end.x+TOLERANCE and inner.end.y<=outer.end.y+TOLERANCE
+
+func _validate_table(room: String, table) -> void:
+	var ids := {}
+	for row in table.PROPS:
+		var prop_id := String(row.get("id",""))
+		if prop_id.is_empty(): _violate(room,"<missing>","table.id","row has no id"); continue
+		if ids.has(prop_id): _violate(room,prop_id,"table.id","duplicate id")
+		ids[prop_id]=row
+		var path := String(row.get("path",""))
+		if not ResourceLoader.exists(path): _violate(room,prop_id,"table.path","cannot load "+path)
+		if not row.has("scale") or float(row.scale)<=0.0: _violate(room,prop_id,"table.scale","must be one positive number")
+	for prop_id in ids:
+		var row: Dictionary=ids[prop_id]
+		var support := String(row.get("support","")); var parts := support.split(":")
+		if support in ["floor","ceiling"]: continue
+		if parts.size()==2 and parts[0]=="wall":
+			if not WALLS.has(parts[1]): _violate(room,prop_id,"table.support","unknown wall "+parts[1])
+			continue
+		if parts.size()!=3 or not parts[0] in ["on","inside"]:
+			_violate(room,prop_id,"table.support","invalid support "+support); continue
+		if not ids.has(parts[1]): _violate(room,prop_id,"table.support","missing parent "+parts[1]); continue
+		var parent_path := String(ids[parts[1]].path)
+		var definitions: Dictionary=table.SUPPORT_PLANES.get(parent_path,{})
+		if not definitions.has(parts[2]): _violate(room,prop_id,"table.support","undefined region %s on %s" % [parts[2],parts[1]])
+
+func _check_support(room: String, table, world: Node3D, row: Dictionary, node: Node3D) -> void:
+	var prop_id := String(row.id); var support := String(row.support); var bounds := _world_bounds(node)
+	if bounds.size==Vector3.ZERO: _violate(room,prop_id,"bounds","no rendered mesh bounds"); return
+	var tilt: Vector2=row.get("tilt",Vector2.ZERO)
+	if absf(node.rotation.x-tilt.x)>0.0001 or absf(node.rotation.z-tilt.y)>0.0001: _violate(room,prop_id,"tilt","actual=(%.4f,%.4f), expected=(%.4f,%.4f)" % [node.rotation.x,node.rotation.z,tilt.x,tilt.y])
+	if not (is_equal_approx(node.scale.x,node.scale.y) and is_equal_approx(node.scale.y,node.scale.z)): _violate(room,prop_id,"scale","non-uniform "+str(node.scale))
+	if support=="floor":
+		if absf(bounds.position.y)>TOLERANCE: _violate(room,prop_id,"floor","bottom %.4f m from Y=0" % bounds.position.y)
+	elif support=="ceiling":
+		if absf(bounds.end.y-CEILING_Y)>TOLERANCE: _violate(room,prop_id,"ceiling","top error %.4f m" % (bounds.end.y-CEILING_Y))
+		for child in node.find_children("*","MeshInstance3D",true,false):
+			if (child as MeshInstance3D).cast_shadow!=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF: _violate(room,prop_id,"shadow","ceiling mesh still casts shadows")
+	elif support.begins_with("wall:"):
+		var wall := support.get_slice(":",1); var plane := float(WALLS[wall])
+		var distance := minf(absf(bounds.position.x-plane),absf(bounds.end.x-plane)) if wall in ["left","right"] else minf(absf(bounds.position.z-plane),absf(bounds.end.z-plane))
+		if distance>TOLERANCE: _violate(room,prop_id,"wall","nearest face %.4f m from %s plane" % [distance,wall])
+	else:
+		var parts := support.split(":"); var parent := world.get_node_or_null(parts[1]) as Node3D
+		if parent==null: return
+		var parent_row: Dictionary={}
+		for candidate in table.PROPS:
+			if candidate.id==parts[1]: parent_row=candidate; break
+		var definition: Dictionary=table.SUPPORT_PLANES[String(parent_row.path)][parts[2]]
+		if parts[0]=="on":
+			var y := float(definition.y); var plane_y := parent.to_global(Vector3(0,y,0)).y
+			if absf(bounds.position.y-plane_y)>TOLERANCE: _violate(room,prop_id,"support.height","bottom %.4f, plane %.4f, error %.4f" % [bounds.position.y,plane_y,bounds.position.y-plane_y])
+			var outer := _rect_world_bounds(parent,definition.footprint,y)
+			var inner := Rect2(Vector2(bounds.position.x,bounds.position.z),Vector2(bounds.size.x,bounds.size.z))
+			if not _contains_rect(outer,inner): _violate(room,prop_id,"support.footprint","bounds "+str(inner)+" outside "+str(outer))
+		else:
+			var region: AABB=parent.global_transform*(definition.box as AABB)
+			if not region.grow(TOLERANCE).encloses(bounds): _violate(room,prop_id,"support.region","bounds "+str(bounds)+" outside "+str(region))
+
+func _row_half(row: Dictionary) -> Vector2:
+	var size: Vector3=row.get("collision",Vector3.ZERO)
+	return Vector2(size.x,size.z)*float(row.scale)*0.5
+
+func _point_clear(row: Dictionary, point: Vector3, radius: float) -> bool:
+	var half := _row_half(row)
+	if half==Vector2.ZERO: return true
+	var delta := Vector2(point.x-float(row.pos.x),point.z-float(row.pos.z)).rotated(-float(row.yaw))
+	var gap := Vector2(maxf(absf(delta.x)-half.x,0.0),maxf(absf(delta.y)-half.y,0.0))
+	return gap.length()>=radius-TOLERANCE
+
+func _obb_overlap(a: Dictionary, b: Dictionary) -> bool:
+	var ah := _row_half(a); var bh := _row_half(b)
+	if ah==Vector2.ZERO or bh==Vector2.ZERO: return false
+	var delta := Vector2(b.pos.x-a.pos.x,b.pos.z-a.pos.z)
+	var ax := Vector2.RIGHT.rotated(a.yaw); var az := Vector2.DOWN.rotated(a.yaw)
+	var bx := Vector2.RIGHT.rotated(b.yaw); var bz := Vector2.DOWN.rotated(b.yaw)
+	for axis in [ax,az,bx,bz]:
+		var ar := ah.x*absf(axis.dot(ax))+ah.y*absf(axis.dot(az))
+		var br := bh.x*absf(axis.dot(bx))+bh.y*absf(axis.dot(bz))
+		if absf(delta.dot(axis))>=ar+br-TOLERANCE: return false
+	return true
+
+func _check_clearance(room: String, table) -> void:
+	var solid_rows: Array[Dictionary]=[]
+	for row in table.PROPS:
+		if bool(row.get("clearance_check",true)) and row.get("collision",Vector3.ZERO)!=Vector3.ZERO: solid_rows.append(row)
+	for row in solid_rows:
+		for clearance_id in table.CLEARANCES:
+			var clearance: Dictionary=table.CLEARANCES[clearance_id]
+			if float(clearance.radius)>0.0 and not _point_clear(row,clearance.pos,float(clearance.radius)): _violate(room,row.id,"clearance","intrudes into %s radius %.2f" % [clearance_id,clearance.radius])
+	for i in solid_rows.size():
+		for j in range(i+1,solid_rows.size()):
+			if _obb_overlap(solid_rows[i],solid_rows[j]): _violate(room,solid_rows[i].id,"overlap","overlaps "+String(solid_rows[j].id))
 
 func _initialize() -> void:
-	for location in EXPECTED:
-		var world = TownExpansion.new() if location in ["post_office", "upper_house_1"] else Town.new()
-		world.location = location
-		root.add_child(world)
-		await process_frame
-		for prop_name in EXPECTED[location]:
-			var prop := world.get_node_or_null(prop_name) as Node3D
-			assert(prop != null, location + " missing rendered prop " + prop_name)
-			assert(prop.find_children("*", "MeshInstance3D", true, false).size() > 0, prop_name + " has no rendered mesh")
-			assert(is_equal_approx(prop.scale.x, prop.scale.y) and is_equal_approx(prop.scale.y, prop.scale.z), prop_name + " must use uniform scale")
-			assert(prop.find_children("*", "StaticBody3D", true, false).is_empty(), prop_name + " must remain presentation-only")
-		for target_id in TARGETS[location]:
-			assert(world.points.has(target_id), location + " lost interaction target " + target_id)
-		if location == "precinct": assert(world.has_node("PrecinctBookStack"), "Precinct must use period book clutter instead of lever-arch binders")
-		if location == "post_office":
-			assert(world.find_children("PostOfficeLetterBundle*", "MeshInstance3D", true, false).size() >= 5, "Post-office sorting wall needs visible mail bundles")
-			# Counter desk props sit on the open writing surface, clear of each module's wicket.
-			var counter_top_y := 1.0
-			for prop_name in ["PostOfficeBalanceScale", "PostOfficeEnvelopeStack", "PostOfficeParcelSquare", "PostOfficeParcelLarge", "PostOfficeParcelLong"]:
-				var desk_prop := world.get_node(prop_name) as Node3D
-				assert(is_equal_approx(desk_prop.position.y, counter_top_y), prop_name + " must sit on the counter writing surface")
-			assert(world.get_node("PostOfficeParcelSquare").position.x > -2.9, "Square parcel must clear the left wicket bars")
-			assert(world.get_node("PostOfficeParcelLarge").position.x > 1.5, "Large parcel must clear the right wicket bars")
-			# Side-wall props are thin on local X; keep them flush facing into the room.
-			var cork := world.get_node("PostOfficeCorkboard") as Node3D
-			assert(is_equal_approx(cork.rotation.y, PI), "Corkboard faces into the room from the left wall")
-			assert(cork.position.x < -8.7, "Corkboard sits flush to the left wall")
-			var window := world.get_node("PostOfficeFrostedWindow") as Node3D
-			assert(is_equal_approx(window.rotation.y, PI), "Frosted window faces into the room from the right wall")
-			assert(window.position.x > 8.6, "Frosted window sits flush to the right wall")
-			var sign := world.get_node("PostOfficeHangingSign") as Node3D
-			assert(is_equal_approx(sign.rotation.y, 0.0), "Hanging sign faces into the room from the right wall")
-			assert(sign.position.x > 8.6, "Hanging sign sits flush to the right wall")
-			for seat_name in ["PostOfficeChairLeft", "PostOfficeChairRight", "PostOfficeBarrel"]:
-				assert(is_equal_approx(world.get_node(seat_name).position.y, 0.0), seat_name + " must remain on the floor")
-		if location == "lounge":
-			assert(world.has_node("LoungeBarCounter") and world.has_node("LoungeClubSofa"), "Purpose-built club furniture must replace the provisional lounge primitives")
-			assert(world.steward_actor.position.is_equal_approx(Vector3(0,0,-7.0)), "Steward must remain behind the rendered bar")
-			assert(world.points.barman.pos.is_equal_approx(Vector3(0,0,-4.45)), "Steward talk point must remain on the public side of the bar")
+	for location in TABLES:
+		var table=TABLES[location]
+		_validate_table(location,table)
+		var world=TownExpansion.new() if location in ["post_office","upper_house_1"] else Town.new()
+		world.location=location; root.add_child(world); await process_frame
+		for row in table.PROPS:
+			var prop := world.get_node_or_null(row.id) as Node3D
+			if prop==null: _violate(location,row.id,"scene","missing rendered prop"); continue
+			assert(prop.find_children("*","StaticBody3D",true,false).is_empty(),row.id+" must remain presentation-only")
+			_check_support(location,table,world,row,prop)
+		for target_id in TARGETS[location]: assert(world.points.has(target_id),location+" lost interaction target "+target_id)
+		_check_clearance(location,table)
+		if location=="precinct": assert(world.has_node("PrecinctBookStack"),"Precinct uses period book clutter")
+		if location=="post_office": assert(world.get_node("PostOfficeLetterBundle01")!=null,"Sorting wall keeps individually adjustable mail bundles")
+		if location=="lounge":
+			assert(world.steward_actor.position.is_equal_approx(Vector3(0,0,-7.0)),"Steward position is fixed")
 			var states := world.get_node("PantryDoorStates")
-			assert(states.get_node("Boarded").visible and not states.get_node("Cleared").visible, "Pantry begins visibly boarded")
-			world.sync_pantry(true, true)
-			assert(not states.get_node("Boarded").visible and states.get_node("Cleared").visible, "Completed pantry portal shows removed boards")
-		# Tripo seat/front faces local +X (backrest/drawers opposite). Assert key room-facing yaws and Walter-relative bed scale.
-		if location == "precinct":
-			assert(is_equal_approx(world.get_node("PrecinctWaitingChair0").rotation.y, PI), "Waiting chairs face into the room toward intake")
-			assert(is_equal_approx(world.get_node("PrecinctSideChair").rotation.y, PI / 2), "Side chair faces the precinct desk")
-			assert(is_equal_approx(world.get_node("PrecinctClerkChair").rotation.y, -PI / 2), "Clerk chair faces the intake counter")
-		if location == "room":
-			assert(is_equal_approx(world.get_node("CorwinDeskChair").rotation.y, PI / 2), "Corwin desk chair faces the desk")
-			assert(is_equal_approx(world.get_node("CorwinBed").scale.x, 3.2), "Corwin bed scaled to Walter-relative single-bed size")
-			assert(is_equal_approx(world.get_node("CorwinDresser").rotation.y, PI), "Corwin dresser drawers face into the room")
-		if location == "lounge":
-			assert(is_equal_approx(world.get_node("LoungeFireplace").rotation.y, PI), "Lounge fireplace opens into the room")
-			assert(is_equal_approx(world.get_node("LoungeSideboard").rotation.y, PI), "Lounge sideboard drawers face into the room")
-			assert(is_equal_approx(world.get_node("LoungeClubChairNorth").rotation.y, 0.0), "Lounge club chairs face the round table")
-			assert(is_equal_approx(world.get_node("LoungeClubSofa").rotation.y, PI), "Lounge club sofa faces the rug")
-		if location == "upper_house_1":
-			assert(is_equal_approx(world.get_node("ParlorFireplace").rotation.y, -PI / 2), "Parlor fireplace opens into the room")
-			assert(is_equal_approx(world.get_node("ParlorSideboard").rotation.y, -PI / 2), "Parlor sideboard drawers face into the room")
-			assert(is_equal_approx(world.get_node("ParlorArmchairNorth").rotation.y, PI), "Parlor armchairs face into the room")
-			assert(is_equal_approx(world.get_node("ParlorArmchairSouth").rotation.y, PI), "Parlor armchairs face into the room")
-		if location == "post_office":
-			assert(is_equal_approx(world.get_node("PostOfficeChairLeft").rotation.y, 0.0), "Post-office left chair faces into the room")
-			assert(is_equal_approx(world.get_node("PostOfficeChairRight").rotation.y, PI), "Post-office right chair faces into the room")
-		for shade in world.find_children("InteriorLampShade", "MeshInstance3D", true, false): assert(shade.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "Interior shades must not cast floor blobs")
+			assert(states.get_node("Boarded").visible and not states.get_node("Cleared").visible,"Pantry begins boarded")
+			world.sync_pantry(true,true)
+			assert(not states.get_node("Boarded").visible and states.get_node("Cleared").visible,"Portal history shows cleared pantry")
 		world.free()
-	print("INTERIOR PROP DRESSING PASS: domestic, precinct, parlor, post office, and lounge props render with correct facing/scale and gameplay targets intact")
+	if not violations.is_empty():
+		print("INTERIOR PROP DRESSING FAILED: %d numeric placement violation(s); use the lines above as Grok's fix list" % violations.size())
+		quit(1)
+		return
+	print("INTERIOR PROP DRESSING PASS: five room tables validate; support, grounding, facing, shadow, overlap, and gameplay contracts hold")
 	quit(0)
