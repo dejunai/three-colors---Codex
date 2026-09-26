@@ -7,7 +7,7 @@ const PROPS: Array[Dictionary] = [
 	{"id":"PrecinctFilesSingle", "path":"res://assets/models/props/civic/filing_cabinet_single.glb", "pos":Vector3(-7.1,0,-6.35), "yaw":0.0, "scale":2.6, "collision":Vector3(0.38,1,0.45), "support":"floor"},
 	{"id":"PrecinctFilesWide", "path":"res://assets/models/props/civic/filing_cabinet_wide.glb", "pos":Vector3(7.25,0,-6.4), "yaw":0.0, "scale":2.5, "collision":Vector3(0.75,1,0.8), "support":"floor"},
 	{"id":"PrecinctSideDesk", "path":"res://assets/models/props/civic/wooden_desk_long.glb", "pos":Vector3(-5,0,1), "yaw":PI/2, "scale":2.25, "collision":Vector3(0.5,0.44,1), "support":"floor"},
-	{"id":"PrecinctSideChair", "path":"res://assets/models/props/domestic/wooden_chair_ladderback.glb", "pos":Vector3(-5,0,2.2), "yaw":PI/2, "scale":1.15, "collision":Vector3(0.62,0.9,0.62), "support":"floor"},
+	{"id":"PrecinctSideChair", "path":"res://assets/models/props/domestic/wooden_chair_ladderback.glb", "pos":Vector3(-5,0,2.72), "yaw":PI/2, "scale":1.15, "collision":Vector3(0.62,0.9,0.62), "support":"floor"},
 	{"id":"PrecinctDeskLamp", "path":"res://assets/models/props/common/desk_lamp.glb", "pos":Vector3(-5.65,0.98,0.85), "yaw":0.0, "scale":0.65, "support":"on:PrecinctSideDesk:top", "clearance_check":false},
 	{"id":"PrecinctBookStack", "path":"res://assets/models/props/common/book_stack.glb", "pos":Vector3(-4.45,0.99,0.9), "yaw":0.0, "scale":0.42, "support":"on:PrecinctSideDesk:top", "clearance_check":false},
 	{"id":"PrecinctWaitingChair0", "path":"res://assets/models/props/domestic/wooden_chair_ladderback.glb", "pos":Vector3(7,0,0), "yaw":PI, "scale":1.15, "collision":Vector3(0.62,0.9,0.62), "support":"floor"},
