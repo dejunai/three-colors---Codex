@@ -226,27 +226,28 @@ func _post_office() -> void:
 	_place_prop(PROP_POST_FROSTED_WINDOW,"PostOfficeFrostedWindow",Vector3(8.71,0.95,2.4),2.4,PI)
 	_place_prop(PROP_POST_HANGING_SIGN,"PostOfficeHangingSign",Vector3(8.71,1.35,-2.8),2.15,0.0)
 	# Medium pigeonhole fill: real letter/bundle (+few small parcel) props, not placeholder boxes.
+	# Raised one row (+0.48 Y from ~6-row pitch on unit H=2.93) and set back into cells (Z -0.24).
 	# Spec: [scene, name, pos, scale, yaw, pitch, roll] -- slight euler variance so slots do not clone.
 	var pigeon_fill := [
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill01", Vector3(-4.55, 0.42, -6.78), 0.28, 0.12, 0.04, -0.03],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill02", Vector3(-3.85, 0.88, -6.75), 0.34, -0.18, -0.02, 0.05],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill03", Vector3(-4.70, 1.35, -6.80), 0.30, 0.35, 0.06, -0.02],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill04", Vector3(-3.15, 0.55, -6.76), 0.26, PI / 2 + 0.08, -0.05, 0.03],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill05", Vector3(-2.45, 1.10, -6.74), 0.38, -0.22, 0.03, -0.04],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill06", Vector3(-3.40, 1.78, -6.79), 0.32, 0.15, -0.04, 0.06],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill07", Vector3(-1.90, 0.70, -6.77), 0.29, PI / 2 - 0.14, 0.05, -0.01],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill08", Vector3(-2.10, 1.55, -6.73), 0.36, 0.28, -0.03, 0.02],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill09", Vector3(-1.55, 2.15, -6.81), 0.27, -0.31, 0.02, -0.05],
-		[PROP_POST_PARCEL_SQUARE, "PostOfficePigeonParcel01", Vector3(-4.20, 2.05, -6.82), 0.22, 0.18, 0.01, 0.04],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill11", Vector3(1.45, 0.48, -6.76), 0.31, -0.10, 0.04, -0.02],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill12", Vector3(2.25, 0.95, -6.74), 0.35, PI / 2 + 0.16, -0.03, 0.05],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill13", Vector3(1.75, 1.48, -6.78), 0.28, 0.22, 0.05, -0.04],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill14", Vector3(3.05, 0.62, -6.75), 0.33, -0.26, -0.02, 0.03],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill15", Vector3(3.85, 1.20, -6.80), 0.37, 0.14, 0.03, -0.06],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill16", Vector3(2.55, 1.85, -6.73), 0.30, PI / 2 - 0.09, -0.05, 0.02],
-		[PROP_POST_ENVELOPES, "PostOfficePigeonFill17", Vector3(4.35, 0.80, -6.77), 0.26, 0.40, 0.02, -0.03],
-		[PROP_POST_PARCEL_SQUARE, "PostOfficePigeonParcel02", Vector3(3.55, 2.10, -6.83), 0.24, -0.15, 0.01, 0.05],
-		[PROP_POST_PARCEL_SQUARE, "PostOfficePigeonParcel03", Vector3(4.50, 1.65, -6.81), 0.20, 0.25, -0.02, -0.01],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill01", Vector3(-4.55, 0.90, -7.02), 0.28, 0.12, 0.04, -0.03],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill02", Vector3(-3.85, 1.36, -6.99), 0.34, -0.18, -0.02, 0.05],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill03", Vector3(-4.70, 1.83, -7.04), 0.30, 0.35, 0.06, -0.02],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill04", Vector3(-3.15, 1.03, -7.00), 0.26, PI / 2 + 0.08, -0.05, 0.03],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill05", Vector3(-2.45, 1.58, -6.98), 0.38, -0.22, 0.03, -0.04],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill06", Vector3(-3.40, 2.26, -7.03), 0.32, 0.15, -0.04, 0.06],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill07", Vector3(-1.90, 1.18, -7.01), 0.29, PI / 2 - 0.14, 0.05, -0.01],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill08", Vector3(-2.10, 2.03, -6.97), 0.36, 0.28, -0.03, 0.02],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill09", Vector3(-1.55, 2.63, -7.05), 0.27, -0.31, 0.02, -0.05],
+		[PROP_POST_PARCEL_SQUARE, "PostOfficePigeonParcel01", Vector3(-4.20, 2.53, -7.06), 0.22, 0.18, 0.01, 0.04],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill11", Vector3(1.45, 0.96, -7.00), 0.31, -0.10, 0.04, -0.02],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill12", Vector3(2.25, 1.43, -6.98), 0.35, PI / 2 + 0.16, -0.03, 0.05],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill13", Vector3(1.75, 1.96, -7.02), 0.28, 0.22, 0.05, -0.04],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill14", Vector3(3.05, 1.10, -6.99), 0.33, -0.26, -0.02, 0.03],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill15", Vector3(3.85, 1.68, -7.04), 0.37, 0.14, 0.03, -0.06],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill16", Vector3(2.55, 2.33, -6.97), 0.30, PI / 2 - 0.09, -0.05, 0.02],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill17", Vector3(4.35, 1.28, -7.01), 0.26, 0.40, 0.02, -0.03],
+		[PROP_POST_PARCEL_SQUARE, "PostOfficePigeonParcel02", Vector3(3.55, 2.58, -7.07), 0.24, -0.15, 0.01, 0.05],
+		[PROP_POST_PARCEL_SQUARE, "PostOfficePigeonParcel03", Vector3(4.50, 2.13, -7.05), 0.20, 0.25, -0.02, -0.01],
 	]
 	for spec in pigeon_fill:
 		var fill := _place_prop(spec[0], spec[1], spec[2], spec[3], spec[4])

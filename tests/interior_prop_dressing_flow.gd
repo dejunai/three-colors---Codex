@@ -55,7 +55,8 @@ func _initialize() -> void:
 				var node := fill as Node3D
 				assert(node != null and node.find_children("*", "MeshInstance3D", true, false).size() > 0, str(fill.name) + " must render a mesh")
 				assert(is_equal_approx(node.scale.x, node.scale.y) and is_equal_approx(node.scale.y, node.scale.z), str(fill.name) + " must use uniform scale")
-				assert(node.position.z < -6.5 and node.position.z > -7.0, str(fill.name) + " must sit in the pigeonhole front")
+				assert(node.position.y > 0.7 and node.position.y < 2.8, str(fill.name) + " must sit in a pigeonhole row (raised one row from drawer-base band)")
+				assert(node.position.z < -6.85 and node.position.z > -7.20, str(fill.name) + " must sit recessed into the pigeonhole cells")
 				seen_yaws["%.4f" % node.rotation.y] = true
 			assert(seen_yaws.size() >= 8, "Pigeonhole fillers need varied yaw so slots do not look cloned")
 			# Counter desk props sit on the open writing surface, clear of each module's wicket.
