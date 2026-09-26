@@ -404,6 +404,15 @@ All character, cast, corpse, exterior-building, landscape and waterfront models 
   - the pantry GLBs not yet wired;
   - lamp-shade shadows;
   - lever-arch binders.
+- **Placement workflow (author's decision, 2026-09-26).** Codex's placement fixes kept leaving props floating or misrotated, so dressing now has two steps:
+  1. Codex lays out each room's props.
+  2. A Grok-bot-mini adjusts the numbers (position, yaw, uniform scale). Its first post office pass was a clear improvement; residual issues are listed in the prompt below.
+
+  To keep the two from overwriting each other, `docs/qa/CODEX_PROMPT_prop_placement_tables.md` asks Codex for:
+  - one placement table per room (Codex owns rows; Grok edits only values);
+  - a grounding, wall-flush and facing guard in `tests/interior_prop_dressing_flow.gd`, whose failure output becomes Grok's fix list.
+
+  Order: Codex places and runs the tests, Grok adjusts, the tests run again, then the author checks screenshots. The role is recorded in `AGENTS.md` under Grok-bot-minis.
 - **Set-dressing rules** (from the reviews, author-approved):
   - **Text:** no baked text on props; lettering is added in-engine.
   - **Period:** no lever-arch binders (a mid-century design). Use ledgers, docket books and string-tied folders.
@@ -496,7 +505,7 @@ These need an author decision before build work can proceed. Nothing else in thi
 - **Test harness isolation.** Some focused tests read and write a real `user://` save path, so state can leak between back-to-back runs. The aggregate sets `APPDATA` to `.runtime-data`; focused runs don't.
 - **`docs/qa/` and repo-root housekeeping.** There are 30+ dated pass reports plus fifteen or more `qa_*.png` captures at the repo root, which Godot imports. Triage them into a keep/archive split. The TDD maintainer's review sheets were landing in a repo-root `Claude outputs/` folder, which Godot imported (`85efb55` committed their `.import` files). **Resolved 2026-09-25.** The sheets moved to the HCL repository's `Claude outputs/` folder, which is where the TDD maintainer's generated files go from now on. The repo-root folder keeps only a `.gdignore`, and `.gitignore` now excludes `Claude outputs/`.
 - **Interior-prop texture budget.** 26 of the 46 prop textures are 2K. The props add about 21 MB of GLB to the project, and the four dressed rooms are the first interiors to load them. At the scale props appear on screen through the film shader, most could drop to 1K on import. Fold this into the web-profile comparison (Part Eight).
-- **Interior-prop placement has no uniform-scale or facing guard.** The first in-game test found stretched props and chairs facing away from their tables (Part Three, "Interior props"). A shared placement helper that enforces uniform scale and one import facing correction would stop this recurring as more rooms are dressed.
+- **Interior-prop placement has no grounding or facing guard.** `town.gd::_place_prop()` now takes a single uniform scale factor, so stretching can't recur. But nothing yet catches floating, tilted, clipping or misfacing props. The placement-table and guard work in `docs/qa/CODEX_PROMPT_prop_placement_tables.md` closes this (Part Three, "Interior props").
 - **`walter_certainty` engine placement is unverified** (see Part Five).
 
 # Part Seven — Narrative Canon (Settled)
