@@ -96,10 +96,37 @@ func _default_facing(world: String, position: Vector3) -> float:
 		return PI if position.z < 5.0 else 0.0
 	return PI
 
-func face_actor(actor: String, world_position: Vector3) -> void:
-	if not figures.has(actor) or not is_instance_valid(figures[actor]): return
-	var figure := figures[actor] as Node3D
-	var local_target := figure.get_parent_node_3d().to_local(world_position)
+# Story actors (estate gardener/Odell/etc., town Behan/steward) live on the
+# world root, not in figures. Resolve those wrappers so focus can yaw them too.
+const STORY_ACTOR_KEYS := {
+	"gardener": "gardener_actor",
+	"crew": "groundskeeper_actor",
+	"boy": "boy_actor",
+	"odell": "odell_actor",
+	"assistant": "assistant_actor",
+	"behan": "behan_actor",
+	"barman": "steward_actor",
+	"old_woman": "departing_woman",
+}
+
+func _resolve_figure(g: Node, actor: String) -> Node3D:
+	if figures.has(actor) and is_instance_valid(figures[actor]):
+		return figures[actor] as Node3D
+	if g == null or not is_instance_valid(g) or not is_instance_valid(g.estate):
+		return null
+	var key := String(STORY_ACTOR_KEYS.get(actor, ""))
+	if key.is_empty():
+		return null
+	return g.estate.get(key) as Node3D
+
+func face_actor(actor: String, world_position: Vector3, g: Node = null) -> void:
+	var figure := _resolve_figure(g, actor)
+	if not is_instance_valid(figure):
+		return
+	var parent := figure.get_parent_node_3d()
+	if parent == null:
+		return
+	var local_target := parent.to_local(world_position)
 	local_target.y = figure.position.y
 	if figure.position.distance_squared_to(local_target) > 0.01:
 		figure.look_at(local_target, Vector3.UP)
