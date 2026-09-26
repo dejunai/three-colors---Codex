@@ -75,10 +75,15 @@ func populate(g: Node) -> void:
 		else:
 			figure = CastModel.create_for_npc(actor, spot[0])
 			figure.position = spot[1]
+			# Keep the authored public talk point fixed while placing the postal
+			# clerk fully behind the counter and brass service grille.
+			if actor == "post_office_clerk": figure.position.z -= 1.05
 			figure.rotation.y = _default_facing(spot[0], spot[1])
 			g.estate.add_child(figure)
 		figures[actor] = figure
-		var interaction_position: Vector3 = Vector3(0.4,0,-2.5) if actor == "intake_clerk" else spot[1]
+		var interaction_position: Vector3 = spot[1]
+		if actor == "intake_clerk": interaction_position = Vector3(0.4,0,-2.5)
+		elif actor == "post_office_clerk": interaction_position = Vector3(4,0,-1.55)
 		g.estate.target(actor,"Speak with " + TITLES[actor],interaction_position)
 		if g.state.world == "stationer": g.estate.points.erase("local_resident")
 

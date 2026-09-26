@@ -202,7 +202,7 @@ func _close() -> void:
 # only erase a hotspot, so re-offer it whenever a conversation closes in the lounge.
 func _sync_lounge() -> void:
 	if state.world == "lounge" and is_instance_valid(estate) and estate.has_method("sync_pantry"):
-		estate.sync_pantry(state.evidence.has("pantry_lead"))
+		estate.sync_pantry(state.evidence.has("pantry_lead"), state.portal_state.portal_done("lounge", "pantry_door"))
 
 func _title() -> void:
 	page="title"
@@ -737,7 +737,7 @@ func _travel(destination:String,spawn:Vector3,view_yaw:float=0.0,save:bool=true,
 		objects.sync_points(self, "tunnel", ["tunnel_record"])
 		portals.sync_points(self, "tunnel", ["tunnel_exit"])
 	elif destination == "lounge":
-		estate.sync_pantry(state.evidence.has("pantry_lead"))
+		estate.sync_pantry(state.evidence.has("pantry_lead"), state.portal_state.portal_done("lounge", "pantry_door"))
 		portals.sync_points(self, "lounge", ["lounge_exit", "pantry_door"])
 	else:
 		objects.sync_points(self, "town", ["gazette","lodging","exemption","morgue_tables"])

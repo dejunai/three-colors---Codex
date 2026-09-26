@@ -10,12 +10,73 @@ var board_threads: Array[MeshInstance3D] = []
 var glass_shattered := false
 var behan_actor: Node3D
 var steward_actor: Node3D
+var pantry_door_states: Node3D
+var interior_collision_root: Node3D
 const DistrictSurfaces = preload("res://scripts/shared/district_surfaces.gd")
 const FatherBehanModel = preload("res://scripts/shared/father_behan_model.gd")
 const StewardModel = preload("res://scripts/shared/steward_model.gd")
 const PRECINCT_EXTERIOR = preload("res://assets/models/exteriors/police_precinct.glb")
 const PICKMAN_HOUSE_1 = preload("res://assets/models/exteriors/pickman_house_1.glb")
 const PICKMAN_HOUSE_3 = preload("res://assets/models/exteriors/pickman_house_3.glb")
+
+const PROP_METAL_BED = "res://assets/models/props/domestic/metal_bed.glb"
+const PROP_WOODEN_DRESSER = "res://assets/models/props/domestic/wooden_dresser.glb"
+const PROP_WASHSTAND = "res://assets/models/props/domestic/washstand_table.glb"
+const PROP_WASH_BASIN = "res://assets/models/props/domestic/wash_basin_enamel.glb"
+const PROP_WASH_PITCHER = "res://assets/models/props/domestic/wash_pitcher_enamel.glb"
+const PROP_CHAIR = "res://assets/models/props/domestic/wooden_chair_ladderback.glb"
+const PROP_ARMCHAIR = "res://assets/models/props/domestic/wooden_armchair.glb"
+const PROP_TABLE_SQUARE = "res://assets/models/props/domestic/wooden_table_square.glb"
+const PROP_BOOKSHELF = "res://assets/models/props/domestic/bookshelf_narrow.glb"
+const PROP_CABINET = "res://assets/models/props/domestic/wooden_cabinet_small.glb"
+const PROP_RADIATOR = "res://assets/models/props/common/radiator_long.glb"
+const PROP_DESK_LAMP = "res://assets/models/props/common/desk_lamp.glb"
+const PROP_CRATE = "res://assets/models/props/common/wooden_crate_lidded.glb"
+const PROP_OPEN_CRATE = "res://assets/models/props/common/wooden_crate_open.glb"
+const PROP_BARREL = "res://assets/models/props/common/wooden_barrel.glb"
+const PROP_CLOCK = "res://assets/models/props/common/wall_clock_body.glb"
+const PROP_PRECINCT_COUNTER = "res://assets/models/props/civic/precinct_counter.glb"
+const PROP_FILING_SINGLE = "res://assets/models/props/civic/filing_cabinet_single.glb"
+const PROP_FILING_WIDE = "res://assets/models/props/civic/filing_cabinet_wide.glb"
+const PROP_DESK_LONG = "res://assets/models/props/civic/wooden_desk_long.glb"
+const PROP_BINDERS = "res://assets/models/props/civic/binder_book_stack.glb"
+const PROP_POST_COUNTER = "res://assets/models/props/civic/post_office_counter.glb"
+const PROP_POST_PIGEONHOLES = "res://assets/models/props/civic/post_office_pigeonholes.glb"
+const PROP_DISPLAY_RECTANGULAR = "res://assets/models/props/civic/display_case_rectangular.glb"
+const PROP_DISPLAY_SLOPED = "res://assets/models/props/civic/display_case_sloped.glb"
+const PROP_PANTRY_DOOR_STATES = "res://assets/models/props/estate/pantry_door_states_hd.tscn"
+const PROP_CLUB_ARMCHAIR = "res://assets/models/props/domestic/club_armchair.glb"
+const PROP_CLUB_SOFA = "res://assets/models/props/domestic/club_sofa.glb"
+const PROP_LOUNGE_BAR = "res://assets/models/props/estate/lounge_bar_counter.glb"
+const PROP_ROUND_TABLE_LOW = "res://assets/models/props/domestic/round_table_low.glb"
+const PROP_STONE_FIREPLACE = "res://assets/models/props/domestic/stone_fireplace.glb"
+const PROP_ASH_TRAY = "res://assets/models/props/common/ashtray.glb"
+const PROP_BOOK_STACK = "res://assets/models/props/common/book_stack.glb"
+const PROP_SIDEBOARD = "res://assets/models/props/domestic/sideboard.glb"
+const PROP_TABLE_LAMP_A = "res://assets/models/props/common/table_lamp_a.glb"
+const PROP_TABLE_LAMP_B = "res://assets/models/props/common/table_lamp_b.glb"
+const PROP_RUG_PATTERNED = "res://assets/models/props/common/rug_patterned.glb"
+const PROP_RUG_PLAIN = "res://assets/models/props/common/rug_plain.glb"
+const PROP_LOW_TABLE = "res://assets/models/props/domestic/low_table.glb"
+const PROP_PILLOW_BURGUNDY = "res://assets/models/props/domestic/throw_pillow_burgundy.glb"
+const PROP_PILLOW_GREEN = "res://assets/models/props/domestic/throw_pillow_green.glb"
+const PROP_PARLOR_SOFA = "res://assets/models/props/domestic/parlor_sofa_tufted.glb"
+const PROP_PARLOR_ARMCHAIR_A = "res://assets/models/props/domestic/parlor_armchair_a.glb"
+const PROP_PARLOR_ARMCHAIR_B = "res://assets/models/props/domestic/parlor_armchair_b.glb"
+const PROP_DECORATIVE_BOWL = "res://assets/models/props/domestic/decorative_bowl_ceramic.glb"
+const PROP_VASE_TALL = "res://assets/models/props/domestic/vase_ceramic_tall.glb"
+const PROP_VASE_ROUND = "res://assets/models/props/domestic/vase_ceramic_round.glb"
+const PROP_OIL_LAMP_ROUND = "res://assets/models/props/common/oil_lamp_round.glb"
+const PROP_POST_BALANCE_SCALE = "res://assets/models/props/civic/post_office_balance_scale.glb"
+const PROP_POST_CORKBOARD = "res://assets/models/props/civic/post_office_corkboard.glb"
+const PROP_POST_PARCEL_SQUARE = "res://assets/models/props/civic/parcel_tied_square.glb"
+const PROP_POST_PARCEL_LARGE = "res://assets/models/props/civic/parcel_wrapped_large.glb"
+const PROP_POST_PARCEL_LONG = "res://assets/models/props/civic/parcel_wrapped_long.glb"
+const PROP_POST_ENVELOPES = "res://assets/models/props/civic/envelope_stack.glb"
+const PROP_POST_HANGING_SIGN = "res://assets/models/props/civic/post_office_hanging_sign.glb"
+const PROP_POST_FROSTED_WINDOW = "res://assets/models/props/civic/post_office_frosted_window.glb"
+const PROP_POST_PENDANT_A = "res://assets/models/props/civic/post_office_pendant_a.glb"
+const PROP_POST_PENDANT_B = "res://assets/models/props/civic/post_office_pendant_b.glb"
 
 func district_box(parent: Node3D, position: Vector3, size: Vector3, tint: String, solid: bool = false, kind: String = "soot_brick") -> MeshInstance3D:
 	return DistrictSurfaces.apply(box(parent, position, size, tint, solid), kind, tint)
@@ -58,7 +119,9 @@ func _lighting(inside:bool) -> void:
 			light.light_energy = 1.2
 			light.omni_range = 11
 			add_child(light)
-			cylinder(self,Vector3(x,3.3,-2),0.4,0.2,"b3b29f",0.22)
+			var shade := cylinder(self,Vector3(x,3.3,-2),0.4,0.2,"b3b29f",0.22)
+			shade.name = "InteriorLampShade"
+			shade.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 func _door(x:float, title:String, id:String, visual_parent:Node3D = null) -> void:
 	if visual_parent == null:
@@ -189,6 +252,42 @@ func _room_shell() -> void:
 	# Cutaway doorway keeps the third-person view into the room clear.
 	target("interior_exit","Return to Pickman Street",Vector3(0,0,7.2))
 
+func _place_prop(packed_path: String, prop_name: String, pos: Vector3, prop_scale: float, angle: float = 0.0, collision_size: Vector3 = Vector3.ZERO) -> Node3D:
+	assert(prop_scale > 0.0, "Prop scale must be a positive uniform factor: " + prop_name)
+	var packed := load(packed_path) as PackedScene
+	assert(packed != null, "Failed to load prop: " + packed_path)
+	var prop := packed.instantiate() as Node3D
+	assert(prop != null, "Prop scene root must be Node3D: " + prop_name)
+	prop.name = prop_name
+	prop.position = pos
+	prop.scale = Vector3.ONE * prop_scale
+	prop.rotation.y = angle
+	add_child(prop)
+	# Rendered assets stay presentation-only. Simple sibling bodies preserve the
+	# traversal footprint without coupling collision to imported mesh transforms.
+	if collision_size != Vector3.ZERO:
+		if not is_instance_valid(interior_collision_root):
+			interior_collision_root = Node3D.new()
+			interior_collision_root.name = "LegacyInteriorCollisionVisuals"
+			add_child(interior_collision_root)
+		var body := StaticBody3D.new()
+		body.name = prop_name + "Collision"
+		body.position = pos
+		body.scale = Vector3.ONE * prop_scale
+		body.rotation.y = angle
+		var shape := BoxShape3D.new()
+		shape.size = collision_size
+		var collision := CollisionShape3D.new()
+		collision.shape = shape
+		collision.position = Vector3(0, collision_size.y * 0.5, 0)
+		body.add_child(collision)
+		interior_collision_root.add_child(body)
+	return prop
+
+func _place_chair(prop_name: String, pos: Vector3, prop_scale: float, angle: float = 0.0) -> Node3D:
+	# Keep chair placement angles literal so the visible seat faces its work surface.
+	return _place_prop(PROP_CHAIR,prop_name,pos,prop_scale,angle)
+
 func _desk(pos:Vector3,size:Vector3=Vector3(3,0.16,1.4)) -> void:
 	box(self,pos+Vector3(0,0.95,0),size,"687c5c",true)
 	for x in [-size.x*0.4,size.x*0.4]:
@@ -208,16 +307,17 @@ func _chair(pos:Vector3,angle:float=0) -> void:
 
 func _precinct() -> void:
 	lettering("PRECINCT 4  ·  INTAKE",Vector3(0,3.3,-7.6),46)
-	_desk(Vector3(0,0,-2.5),Vector3(6.2,0.16,1.4))
-	_chair(Vector3(0,0,-4.2),PI)
-	for x in [-7,7]:
-		box(self,Vector3(x,1.5,-6),Vector3(1.5,3,2),"4d654b",true)
-		for y in [0.5,1.3,2.1]:
-			box(self,Vector3(x,y,-4.95),Vector3(1.35,0.65,0.1),"647b59")
-			box(self,Vector3(x,y,-4.86),Vector3(0.3,0.07,0.07),"c1c1a1")
-	_desk(Vector3(-5,0,1))
-	_chair(Vector3(-5,0,2.2))
-	for z in [0,2,4]: _chair(Vector3(7,0,z),PI/2)
+	for x in [-1.78,1.78]:
+		_place_prop(PROP_PRECINCT_COUNTER,"PrecinctIntakeCounter"+("Left" if x < 0 else "Right"),Vector3(x,0,-2.5),3.55,0.0,Vector3(1,0.28,0.48))
+	_place_chair("PrecinctClerkChair",Vector3(0,0,-4.2),1.2,PI)
+	_place_prop(PROP_FILING_SINGLE,"PrecinctFilesSingle",Vector3(-7.1,0,-6.35),2.6,0.0,Vector3(0.38,1,0.45))
+	_place_prop(PROP_FILING_WIDE,"PrecinctFilesWide",Vector3(7.25,0,-6.4),2.5,0.0,Vector3(0.75,1,0.8))
+	_place_prop(PROP_DESK_LONG,"PrecinctSideDesk",Vector3(-5,0,1),2.25,PI/2,Vector3(0.5,0.44,1))
+	_place_chair("PrecinctSideChair",Vector3(-5,0,2.2),1.15,0.0)
+	_place_prop(PROP_DESK_LAMP,"PrecinctDeskLamp",Vector3(-5.65,0.98,0.85),0.65,0.0)
+	_place_prop(PROP_BOOK_STACK,"PrecinctBookStack",Vector3(-4.45,0.99,0.9),0.42,0.0)
+	for z in [0,2,4]:
+		_place_chair("PrecinctWaitingChair"+str(z),Vector3(7,0,z),1.15,PI/2)
 	box(self,Vector3(6.8,2.3,7.78),Vector3(2.2,1.5,0.1),"374d37")
 	target("intake_clerk","Speak with the intake clerk",Vector3(0.4,0,-2.5))
 	target("intake","Submit the estate report",Vector3(0,0,-1.3))
@@ -253,13 +353,15 @@ func _boardinghouse() -> void:
 	tabletop_target("lodging","Examine the meal ledger",Vector3(6.3,1.9,2),ledger_cabinet)
 
 func _corwin_room() -> void:
-	# Bed, desk, dresser, and a physical board. Every playable card has an immutable text source.
-	box(self,Vector3(-5.5,0.5,-3.1),Vector3(2.6,0.8,4.5),"526c4b",true)
-	box(self,Vector3(-5.5,0.94,-3.1),Vector3(2.5,0.18,4.3),"a4b28e")
-	box(self,Vector3(-5.5,1.1,-4.6),Vector3(1.6,0.18,0.8),"c2c6a8")
-	box(self,Vector3(-5.5,1.2,-5.4),Vector3(2.8,1.3,0.15),"3a5539")
-	_desk(Vector3(3.5,0,-4),Vector3(3.8,0.16,1.6))
-	_chair(Vector3(3.5,0,-2.7))
+	# Uniform scale follows real-world height; the room keeps the original interaction anchors.
+	_place_prop(PROP_METAL_BED,"CorwinBed",Vector3(-5.5,0,-3.6),2.4,PI/2,Vector3(1,0.5,0.72))
+	_place_prop(PROP_RUG_PLAIN,"CorwinRug",Vector3(-1.4,0.006,-3.0),4.4,0.0)
+	_place_prop(PROP_DESK_LONG,"CorwinDesk",Vector3(3.5,0,-4),2.25,PI/2,Vector3(0.5,0.44,1))
+	_place_chair("CorwinDeskChair",Vector3(3.5,0,-2.7),1.2,0.0)
+	_place_prop(PROP_RADIATOR,"CorwinRadiator",Vector3(-8.35,0,0.5),2.8,0.0,Vector3(0.19,0.56,1))
+	_place_prop(PROP_WASHSTAND,"CorwinWashstand",Vector3(-6.25,0,5.45),1.4,PI/2,Vector3(0.78,0.9,1))
+	_place_prop(PROP_WASH_BASIN,"CorwinWashBasin",Vector3(-6.25,1.26,5.45),0.65,0.0)
+	_place_prop(PROP_WASH_PITCHER,"CorwinWashPitcher",Vector3(-5.75,1.26,5.45),0.45,0.0)
 	box(self,Vector3(0,2.2,-7.64),Vector3(5.8,2.9,0.19),"374b33")
 	box(self,Vector3(0,2.2,-7.50),Vector3(5.4,2.5,0.06),"817d5b")
 	for i in 8:
@@ -273,12 +375,9 @@ func _corwin_room() -> void:
 		var thread=box(self,Vector3(x,2.15,-7.35),Vector3(1.8,0.016,0.018),"343e2a")
 		thread.rotation.z=0.6
 		board_threads.append(thread)
-	# A tumbler with an inch of something in it, left beside the notebook. Kept
-	# inside the room's gray palette until the break: a warm color anywhere in the
-	# world before then would read as the Observers' tell.
 	desk_glass=Node3D.new()
 	desk_glass.name="DeskGlass"
-	desk_glass.position=Vector3(4.75,1.03,-3.5)
+	desk_glass.position=Vector3(4.35,1.0,-3.65)
 	add_child(desk_glass)
 	var tumbler=cylinder(desk_glass,Vector3(0,0.12,0),0.095,0.24,"c3cbc2")
 	var tumbler_material=mat("c3cbc2").duplicate()
@@ -286,17 +385,17 @@ func _corwin_room() -> void:
 	tumbler_material.albedo_color=Color(0.76,0.8,0.76,0.42)
 	tumbler.material_override=tumbler_material
 	whiskey=cylinder(desk_glass,Vector3(0,0.05,0),0.083,0.09,"7e7c6e")
-	var notice_dresser=box(self,Vector3(6.8,0.9,3.5),Vector3(2.6,1.8,1.1),"5c7250",true)
-	box(self,Vector3(6.8,1.84,3.5),Vector3(0.7,0.025,0.45),"c8c7a8")
-	for y in [0.5,1.1]: box(self,Vector3(6.8,y,4.1),Vector3(0.3,0.07,0.06),"b6b798")
+	var notice_dresser=_place_prop(PROP_WOODEN_DRESSER,"CorwinDresser",Vector3(6.8,0,3.5),1.45,PI/2,Vector3(0.53,0.70,1))
+	box(self,Vector3(6.8,1.035,3.5),Vector3(0.55,0.025,0.36),"c8c7a8")
 	lettering("",Vector3(0,3.6,-7.35),28)
 	target("board","Consult the case board",Vector3(0,0,-6.2))
 	target("sleep","Turn in for the night",Vector3(-3.4,0,-2.2))
 	target("day_close","Set the notebook down for the evening",Vector3(3.5,0,-2.9))
-	tabletop_target("exemption","Examine the folded notice",Vector3(6.8,1.9,3.5),notice_dresser)
+	tabletop_target("exemption","Examine the folded notice",Vector3(6.8,1.08,3.5),notice_dresser)
 
 # Color returns as materials the film grade already lets through: a red thread
 # (red-dominant, so film.gdshader's preserve band passes it) then amber in the glass.
+
 func redden_threads() -> void:
 	for thread in board_threads: thread.material_override=mat("a8261d")
 
@@ -360,34 +459,39 @@ func _smoking_lounge() -> void:
 	points.erase("interior_exit")
 	target("lounge_exit","Leave through the service entrance",Vector3(0,0,7.2))
 	lettering("SMOKING LOUNGE",Vector3(0,3.3,-7.6),42)
-	# A modest staff-side approach to a members' sitting room.
-	for x in [-5,4]:
-		cylinder(self,Vector3(x,0.62,-2),0.75,0.12,"57614e")
-		cylinder(self,Vector3(x,0.3,-2),0.12,0.6,"35422f")
-		cylinder(self,Vector3(x,0.72,-2),0.18,0.05,"999b87")
-		for offset in [-1.6,1.6]:
-			var seat=Vector3(x+offset,0,-2)
-			box(self,seat+Vector3(0,0.45,0),Vector3(1.05,0.65,1.05),"4b5544",true)
-			box(self,seat+Vector3(0,1.0,0.43),Vector3(1.05,1.1,0.22),"48513f")
-			for arm in [-0.48,0.48]: box(self,seat+Vector3(arm,0.75,0),Vector3(0.22,0.35,1.05),"3b4735")
-	box(self,Vector3(0,0.03,-1),Vector3(4.4,0.03,6),"626957")
-	box(self,Vector3(0,1,-5.8),Vector3(3,2,0.8),"394638",true)
+	# Purpose-built club furniture keeps the central route to the steward and pantry clear.
+	_place_prop(PROP_BOOKSHELF,"LoungeBookshelf",Vector3(6.9,0,-6.85),2.7,PI/2,Vector3(0.27,1,0.70))
+	_place_prop(PROP_SIDEBOARD,"LoungeSideboard",Vector3(8.0,0,3.5),3.2,0.0,Vector3(0.324,0.502,1.0))
+	_place_prop(PROP_TABLE_LAMP_A,"LoungeTableLamp",Vector3(7.72,1.61,3.5),0.58,0.0)
+	_place_prop(PROP_DISPLAY_SLOPED,"LoungeDisplaySloped",Vector3(-5.8,0,4.65),2.1,PI/2,Vector3(0.51,0.70,1))
+	_place_prop(PROP_DISPLAY_RECTANGULAR,"LoungeDisplayRectangular",Vector3(4.7,0,4.65),2.0,PI/2,Vector3(0.50,0.66,1))
+	_place_prop(PROP_CLOCK,"LoungeWallClock",Vector3(0,1.75,-7.63),1.05,PI/2)
+	_place_prop(PROP_RUG_PATTERNED,"LoungeRug",Vector3(0,0.006,-0.7),5.7,0.0)
+	_place_prop(PROP_LOUNGE_BAR,"LoungeBarCounter",Vector3(0,0,-5.75),6.0,PI/2,Vector3(0.301,0.278,1.0))
+	_place_prop(PROP_STONE_FIREPLACE,"LoungeFireplace",Vector3(8.45,0,-2.8),3.4,0.0,Vector3(0.392,0.675,1.0))
+	_place_prop(PROP_CLUB_SOFA,"LoungeClubSofa",Vector3(5.65,0,-0.2),3.8,PI/2,Vector3(0.39,0.393,1.0))
+	_place_prop(PROP_PILLOW_BURGUNDY,"LoungePillowBurgundy",Vector3(5.05,0.62,-0.95),0.62,PI/2)
+	_place_prop(PROP_PILLOW_GREEN,"LoungePillowGreen",Vector3(5.05,0.62,0.75),0.62,PI/2)
+	_place_prop(PROP_CLUB_ARMCHAIR,"LoungeClubChairNorth",Vector3(-5.1,0,-1.45),1.35,-PI/2,Vector3(0.862,0.893,1.0))
+	_place_prop(PROP_CLUB_ARMCHAIR,"LoungeClubChairSouth",Vector3(-5.1,0,1.45),1.35,-PI/2,Vector3(0.862,0.893,1.0))
+	_place_prop(PROP_ROUND_TABLE_LOW,"LoungeRoundTable",Vector3(-3.55,0,0),1.72,0.0,Vector3(0.994,0.422,1.0))
+	_place_prop(PROP_ASH_TRAY,"LoungeAshtray",Vector3(-3.55,0.73,0),0.24,0.0)
 	steward_actor = StewardModel.create()
-	steward_actor.position = Vector3(0,0,-4.4)
-	steward_actor.rotation.y = PI
+	steward_actor.position = Vector3(0,0,-7.0)
+	steward_actor.rotation.y = 0.0
 	add_child(steward_actor)
-	target("barman","Speak with the club's steward",Vector3(0,0,-3.6))
-	# The steward's boarded pantry door. Only offered once he has pointed to it;
-	# see sync_pantry() and portals/lounge.portal.
-	box(self,Vector3(-8.78,1.55,-3.0),Vector3(0.12,3.1,1.7),"2a302b")
-	for y in [0.7,1.55,2.4]:
-		var board=box(self,Vector3(-8.62,y,-3.0),Vector3(0.1,0.22,2.0),"5b5f52")
-		if y > 2.0: board.rotation.z=0.11
+	target("barman","Speak with the club's steward",Vector3(0,0,-4.45))
+	pantry_door_states = _place_prop(PROP_PANTRY_DOOR_STATES,"PantryDoorStates",Vector3(-8.58,0,-3.0),3.1,PI/2,Vector3(0.7145,1,0.3656))
 	target("pantry_door","Examine the boarded pantry door",Vector3(-7.4,0,-3.0))
 
 # The old pantry door exists in the wall from the start. Before the steward
-# names it, curious players can examine the boarded door. Once named, it can be opened.
-func sync_pantry(open:bool) -> void:
+# names it, curious players can examine the boarded door. Once forced, the
+# cleared state survives every later round trip through the portal state.
+
+func sync_pantry(open:bool, cleared:bool = false) -> void:
 	if location != "lounge": return
 	if open: target("pantry_door","Open the boarded pantry door",Vector3(-7.4,0,-3.0))
 	else: target("pantry_door","Examine the boarded pantry door",Vector3(-7.4,0,-3.0))
+	if is_instance_valid(pantry_door_states):
+		pantry_door_states.get_node("Boarded").visible = not cleared
+		pantry_door_states.get_node("Cleared").visible = cleared
