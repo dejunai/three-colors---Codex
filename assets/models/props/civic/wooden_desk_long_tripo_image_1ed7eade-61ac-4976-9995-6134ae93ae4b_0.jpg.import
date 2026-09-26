@@ -3,18 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://xwwyfjqlq06t"
-path="res://.godot/imported/wooden_desk_long_tripo_image_1ed7eade-61ac-4976-9995-6134ae93ae4b_0.jpg-c0486104f35d873cd987b88ca199cbbb.ctex"
+path.s3tc="res://.godot/imported/wooden_desk_long_tripo_image_1ed7eade-61ac-4976-9995-6134ae93ae4b_0.jpg-c0486104f35d873cd987b88ca199cbbb.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
-"md5": "bb6c7ae67dff5d8eb7531e82094428ce"
+"md5": "b0dc83b2a4830afba5c188be6db4643f"
 }
 
 [deps]
 
 source_file="res://assets/models/props/civic/wooden_desk_long_tripo_image_1ed7eade-61ac-4976-9995-6134ae93ae4b_0.jpg"
-dest_files=["res://.godot/imported/wooden_desk_long_tripo_image_1ed7eade-61ac-4976-9995-6134ae93ae4b_0.jpg-c0486104f35d873cd987b88ca199cbbb.ctex"]
+dest_files=["res://.godot/imported/wooden_desk_long_tripo_image_1ed7eade-61ac-4976-9995-6134ae93ae4b_0.jpg-c0486104f35d873cd987b88ca199cbbb.s3tc.ctex"]
 
 [params]
 

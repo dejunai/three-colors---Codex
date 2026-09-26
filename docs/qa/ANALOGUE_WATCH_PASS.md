@@ -20,4 +20,4 @@ The watch remains a paused menu. Opening it cannot advance time, and reopening i
 
 - `tests/pocket_watch_flow.gd`: analogue node and live minutes, exact text, sun through 17:59, moon at 18:00, paused-menu behavior, wandering update and midnight clamp.
 - `tests/day_clock_flow.gd`: all advancement sources hold at midnight; save/load retains midnight; sleep still resets Day 2 and Day 3 to 06:00.
-- `docs/qa/analogue_watch.png`: native Godot renderer capture at Day 2, 18:30; inspected for hand position, Roman-numeral alignment, moon aperture, exact readout and button placement.
+- `archive/docs/qa/analogue_watch.png`: native Godot renderer capture at Day 2, 18:30; inspected for hand position, Roman-numeral alignment, moon aperture, exact readout and button placement.

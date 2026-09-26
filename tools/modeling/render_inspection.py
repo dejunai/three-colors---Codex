@@ -51,7 +51,7 @@ def render_outfit(plain: bool, badge_visible: bool, angle_name: str, cam_loc, ca
     scene = bpy.context.scene
     scene.render.resolution_x = 512
     scene.render.resolution_y = 512
-    out_path = ROOT / "tests" / out_filename
+    out_path = ROOT / "archive" / "tests" / out_filename
     scene.render.filepath = str(out_path)
     bpy.ops.render.render(write_still=True)
     print(f"Rendered {out_filename}")

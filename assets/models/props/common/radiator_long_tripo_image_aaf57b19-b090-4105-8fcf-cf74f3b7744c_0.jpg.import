@@ -3,18 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://00if0mbvw87o"
-path="res://.godot/imported/radiator_long_tripo_image_aaf57b19-b090-4105-8fcf-cf74f3b7744c_0.jpg-b493502be1d73477f4111a328a1f7583.ctex"
+path.s3tc="res://.godot/imported/radiator_long_tripo_image_aaf57b19-b090-4105-8fcf-cf74f3b7744c_0.jpg-b493502be1d73477f4111a328a1f7583.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
-"md5": "f24f63af4fec91dd2007ec7793575d05"
+"md5": "a13f4beca5a46900bfcdb0cbbb843e87"
 }
 
 [deps]
 
 source_file="res://assets/models/props/common/radiator_long_tripo_image_aaf57b19-b090-4105-8fcf-cf74f3b7744c_0.jpg"
-dest_files=["res://.godot/imported/radiator_long_tripo_image_aaf57b19-b090-4105-8fcf-cf74f3b7744c_0.jpg-b493502be1d73477f4111a328a1f7583.ctex"]
+dest_files=["res://.godot/imported/radiator_long_tripo_image_aaf57b19-b090-4105-8fcf-cf74f3b7744c_0.jpg-b493502be1d73477f4111a328a1f7583.s3tc.ctex"]
 
 [params]
 
