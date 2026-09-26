@@ -208,35 +208,40 @@ func _post_office() -> void:
 		_place_prop(PROP_POST_COUNTER,"PostOfficeCounter"+spec[0],Vector3(spec[1],0,-2.25),4.0,0.0,Vector3(1,0.43,0.26))
 	for spec in [["Left",-2.65],["Right",2.65]]:
 		_place_prop(PROP_POST_PIGEONHOLES,"PostOfficePigeonholes"+spec[0],Vector3(spec[1],0,-7.25),5.3,0.0,Vector3(1,0.55,0.20))
-	# Purpose-built postal tools and scaled parcel variants make the counter read as active.
-	_place_prop(PROP_POST_BALANCE_SCALE,"PostOfficeBalanceScale",Vector3(-1.55,1.23,-2.15),1.35,0.0)
-	_place_prop(PROP_POST_ENVELOPES,"PostOfficeEnvelopeStack",Vector3(-3.05,1.23,-2.15),0.72,0.08)
-	_place_prop(PROP_POST_PARCEL_SQUARE,"PostOfficeParcelSquare",Vector3(-4.0,1.23,-2.15),0.55,-0.06)
-	_place_prop(PROP_POST_PARCEL_LARGE,"PostOfficeParcelLarge",Vector3(1.15,1.23,-2.15),0.64,0.05)
-	_place_prop(PROP_POST_PARCEL_LONG,"PostOfficeParcelLong",Vector3(3.1,1.23,-2.15),0.72,-0.04)
+	# Counter modules keep a brass wicket on their local -X end. Desk props sit on the
+	# open writing surface (local y ~0.25 → world y 1.0 at scale 4) clear of those bars.
+	var counter_top_y := 1.0
+	_place_prop(PROP_POST_BALANCE_SCALE,"PostOfficeBalanceScale",Vector3(-1.55,counter_top_y,-2.15),1.35,0.0)
+	_place_prop(PROP_POST_ENVELOPES,"PostOfficeEnvelopeStack",Vector3(-2.35,counter_top_y,-2.05),0.72,PI/2)
+	_place_prop(PROP_POST_PARCEL_SQUARE,"PostOfficeParcelSquare",Vector3(-0.85,counter_top_y,-2.2),0.55,0.18)
+	_place_prop(PROP_POST_PARCEL_LARGE,"PostOfficeParcelLarge",Vector3(2.55,counter_top_y,-2.2),0.64,PI/2)
+	_place_prop(PROP_POST_PARCEL_LONG,"PostOfficeParcelLong",Vector3(3.55,counter_top_y,-2.05),0.72,PI/2)
 	_place_prop(PROP_POST_PARCEL_SQUARE,"PostOfficeParcelFloorSmall",Vector3(-6.1,0,4.15),0.66,0.16)
 	_place_prop(PROP_POST_PARCEL_LARGE,"PostOfficeParcelFloorLarge",Vector3(-5.65,0,4.7),0.92,-0.10)
 	_place_prop(PROP_POST_PENDANT_A,"PostOfficePendantLeft",Vector3(-3.2,2.58,0.7),1.18,0.0)
 	_place_prop(PROP_POST_PENDANT_B,"PostOfficePendantRight",Vector3(3.2,2.58,0.7),1.18,0.0)
-	_place_prop(PROP_POST_CORKBOARD,"PostOfficeCorkboard",Vector3(-8.58,1.10,0.8),2.6,PI/2)
-	_place_prop(PROP_POST_FROSTED_WINDOW,"PostOfficeFrostedWindow",Vector3(8.58,0.75,2.4),2.4,-PI/2)
-	_place_prop(PROP_POST_HANGING_SIGN,"PostOfficeHangingSign",Vector3(8.58,1.42,-2.8),2.15,-PI/2)
+	# Batch-7 wall props are thin on local X already; ±PI/2 was the back-wall convention
+	# and left them sticking out of the side walls. Face into the room and sit flush.
+	_place_prop(PROP_POST_CORKBOARD,"PostOfficeCorkboard",Vector3(-8.78,0.95,0.8),2.6,PI)
+	_place_prop(PROP_POST_FROSTED_WINDOW,"PostOfficeFrostedWindow",Vector3(8.71,0.95,2.4),2.4,PI)
+	_place_prop(PROP_POST_HANGING_SIGN,"PostOfficeHangingSign",Vector3(8.71,1.35,-2.8),2.15,0.0)
 	# A few uneven bundles keep the sorting wall from reading as an unused display.
 	for spec in [
-		[Vector3(-4.4,0.65,-6.66),Vector3(0.46,0.10,0.05),-0.03],
-		[Vector3(-2.0,1.22,-6.66),Vector3(0.62,0.12,0.05),0.02],
-		[Vector3(0.1,0.72,-6.66),Vector3(0.52,0.11,0.05),-0.015],
-		[Vector3(2.2,1.72,-6.66),Vector3(0.58,0.13,0.05),0.025],
-		[Vector3(4.25,2.28,-6.66),Vector3(0.43,0.10,0.05),-0.02],
+		[Vector3(-4.4,0.65,-6.72),Vector3(0.46,0.10,0.05),-0.03],
+		[Vector3(-2.0,1.22,-6.72),Vector3(0.62,0.12,0.05),0.02],
+		[Vector3(0.1,0.72,-6.72),Vector3(0.52,0.11,0.05),-0.015],
+		[Vector3(2.2,1.72,-6.72),Vector3(0.58,0.13,0.05),0.025],
+		[Vector3(4.25,2.28,-6.72),Vector3(0.43,0.10,0.05),-0.02],
 	]:
 		var letters := box(self,spec[0],spec[1],"c3bfa3")
 		letters.name = "PostOfficeLetterBundle"
 		letters.rotation.z = spec[2]
-	_place_chair("PostOfficeChairLeft",Vector3(-6,0,3),1.15,PI/2)
-	_place_chair("PostOfficeChairRight",Vector3(6,0,3),1.15,-PI/2)
+	# Seat public-side furniture on the room slab (floor mesh top is y≈-0.05).
+	_place_chair("PostOfficeChairLeft",Vector3(-6.2,0,3.1),1.15,PI/2)
+	_place_chair("PostOfficeChairRight",Vector3(6.2,0,3.1),1.15,-PI/2)
 	_place_prop(PROP_CRATE,"PostOfficeCrate",Vector3(-7.1,0,4.6),1.3,0.0,Vector3(1,0.66,0.65))
 	_place_prop(PROP_OPEN_CRATE,"PostOfficeOpenCrate",Vector3(7.0,0,4.7),1.15,0.0,Vector3(1,0.61,0.72))
-	_place_prop(PROP_BARREL,"PostOfficeBarrel",Vector3(7.4,0,0.4),1.1,0.0,Vector3(0.70,1,0.71))
+	_place_prop(PROP_BARREL,"PostOfficeBarrel",Vector3(7.55,0,0.55),1.1,0.0,Vector3(0.70,1,0.71))
 	lettering("COLLECTIONS  ·  ENQUIRIES",Vector3(0,3.18,-6.64),26)
 
 func _morgue() -> void:
