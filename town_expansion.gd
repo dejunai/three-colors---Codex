@@ -1,6 +1,8 @@
 extends "res://town.gd"
 
 const Places = preload("res://scripts/chapters/town_places.gd")
+const UpperParlorProps = preload("res://scripts/chapters/interior_props/upper_parlor.gd")
+const PostOfficeProps = preload("res://scripts/chapters/interior_props/post_office.gd")
 
 func _ready() -> void:
 	rng.seed=1925
@@ -164,18 +166,7 @@ func _dress(kind:String) -> void:
 			box(self,Vector3(6,1.5,-7.6),Vector3(1.7,3,0.1),"425b3f")
 			lettering("PRIVATE · ROOMS ABOVE",Vector3(5.2,3.3,-7.4),22)
 		"parlor":
-			_place_prop(PROP_RUG_PATTERNED,"ParlorRug",Vector3(0,0.006,0),5.8,0.0)
-			_place_prop(PROP_STONE_FIREPLACE,"ParlorFireplace",Vector3(0,0,-7.2),3.4,PI/2,Vector3(0.392,0.675,1.0))
-			_place_prop(PROP_PARLOR_SOFA,"ParlorTuftedSofa",Vector3(-5.6,0,-0.5),3.8,-PI/2,Vector3(0.39,0.393,1.0))
-			_place_prop(PROP_PILLOW_BURGUNDY,"ParlorPillowBurgundy",Vector3(-5.0,0.62,-1.2),0.62,-PI/2)
-			_place_prop(PROP_PILLOW_GREEN,"ParlorPillowGreen",Vector3(-5.0,0.62,0.5),0.62,-PI/2)
-			_place_prop(PROP_PARLOR_ARMCHAIR_A,"ParlorArmchairNorth",Vector3(4.8,0,-1.7),1.35,PI/2,Vector3(0.862,0.893,1.0))
-			_place_prop(PROP_PARLOR_ARMCHAIR_B,"ParlorArmchairSouth",Vector3(4.8,0,1.7),1.35,PI/2,Vector3(0.862,0.893,1.0))
-			_place_prop(PROP_LOW_TABLE,"ParlorLowTable",Vector3(0,0,0),2.35,0.0,Vector3(0.609,0.339,1.0))
-			_place_prop(PROP_DECORATIVE_BOWL,"ParlorDecorativeBowl",Vector3(0,0.73,0),0.42,0.0)
-			_place_prop(PROP_SIDEBOARD,"ParlorSideboard",Vector3(5.5,0,-5.7),3.0,PI/2,Vector3(0.324,0.502,1.0))
-			_place_prop(PROP_TABLE_LAMP_B,"ParlorTableLamp",Vector3(4.55,1.51,-5.7),0.58,0.0)
-			_place_prop(PROP_VASE_ROUND,"ParlorRoundVase",Vector3(6.25,1.51,-5.7),0.48,0.0)
+			_place_props(UpperParlorProps.PROPS)
 		"home":
 			box(self,Vector3(-5,0.45,-3),Vector3(2.3,0.8,4),"657953",true)
 			box(self,Vector3(-5,0.9,-3),Vector3(2.2,0.12,3.9),"a4b193")
@@ -204,44 +195,7 @@ func _dress(kind:String) -> void:
 
 func _post_office() -> void:
 	lettering("POST OFFICE",Vector3(0,3.3,-7.5),38)
-	for spec in [["Left",-2.15],["Right",2.15]]:
-		_place_prop(PROP_POST_COUNTER,"PostOfficeCounter"+spec[0],Vector3(spec[1],0,-2.25),4.0,0.0,Vector3(1,0.43,0.26))
-	for spec in [["Left",-2.65],["Right",2.65]]:
-		_place_prop(PROP_POST_PIGEONHOLES,"PostOfficePigeonholes"+spec[0],Vector3(spec[1],0,-7.25),5.3,0.0,Vector3(1,0.55,0.20))
-	# Counter modules keep a brass wicket on their local -X end. Desk props sit on the
-	# open writing surface (local y ~0.25 → world y 1.0 at scale 4) clear of those bars.
-	var counter_top_y := 1.0
-	_place_prop(PROP_POST_BALANCE_SCALE,"PostOfficeBalanceScale",Vector3(-1.55,counter_top_y,-2.15),1.35,0.0)
-	_place_prop(PROP_POST_ENVELOPES,"PostOfficeEnvelopeStack",Vector3(-2.35,counter_top_y,-2.05),0.72,PI/2)
-	_place_prop(PROP_POST_PARCEL_SQUARE,"PostOfficeParcelSquare",Vector3(-0.85,counter_top_y,-2.2),0.55,0.18)
-	_place_prop(PROP_POST_PARCEL_LARGE,"PostOfficeParcelLarge",Vector3(2.55,counter_top_y,-2.2),0.64,PI/2)
-	_place_prop(PROP_POST_PARCEL_LONG,"PostOfficeParcelLong",Vector3(3.55,counter_top_y,-2.05),0.72,PI/2)
-	_place_prop(PROP_POST_PARCEL_SQUARE,"PostOfficeParcelFloorSmall",Vector3(-6.1,0,4.15),0.66,0.16)
-	_place_prop(PROP_POST_PARCEL_LARGE,"PostOfficeParcelFloorLarge",Vector3(-5.65,0,4.7),0.92,-0.10)
-	_place_prop(PROP_POST_PENDANT_A,"PostOfficePendantLeft",Vector3(-3.2,2.58,0.7),1.18,0.0)
-	_place_prop(PROP_POST_PENDANT_B,"PostOfficePendantRight",Vector3(3.2,2.58,0.7),1.18,0.0)
-	# Batch-7 wall props are thin on local X already; ±PI/2 was the back-wall convention
-	# and left them sticking out of the side walls. Face into the room and sit flush.
-	_place_prop(PROP_POST_CORKBOARD,"PostOfficeCorkboard",Vector3(-8.78,0.95,0.8),2.6,PI)
-	_place_prop(PROP_POST_FROSTED_WINDOW,"PostOfficeFrostedWindow",Vector3(8.71,0.95,2.4),2.4,PI)
-	_place_prop(PROP_POST_HANGING_SIGN,"PostOfficeHangingSign",Vector3(8.71,1.35,-2.8),2.15,0.0)
-	# A few uneven bundles keep the sorting wall from reading as an unused display.
-	for spec in [
-		[Vector3(-4.4,0.65,-6.72),Vector3(0.46,0.10,0.05),-0.03],
-		[Vector3(-2.0,1.22,-6.72),Vector3(0.62,0.12,0.05),0.02],
-		[Vector3(0.1,0.72,-6.72),Vector3(0.52,0.11,0.05),-0.015],
-		[Vector3(2.2,1.72,-6.72),Vector3(0.58,0.13,0.05),0.025],
-		[Vector3(4.25,2.28,-6.72),Vector3(0.43,0.10,0.05),-0.02],
-	]:
-		var letters := box(self,spec[0],spec[1],"c3bfa3")
-		letters.name = "PostOfficeLetterBundle"
-		letters.rotation.z = spec[2]
-	# Seat public-side furniture on the room slab (floor mesh top is y≈-0.05).
-	_place_chair("PostOfficeChairLeft",Vector3(-6.2,0,3.1),1.15,PI/2)
-	_place_chair("PostOfficeChairRight",Vector3(6.2,0,3.1),1.15,-PI/2)
-	_place_prop(PROP_CRATE,"PostOfficeCrate",Vector3(-7.1,0,4.6),1.3,0.0,Vector3(1,0.66,0.65))
-	_place_prop(PROP_OPEN_CRATE,"PostOfficeOpenCrate",Vector3(7.0,0,4.7),1.15,0.0,Vector3(1,0.61,0.72))
-	_place_prop(PROP_BARREL,"PostOfficeBarrel",Vector3(7.55,0,0.55),1.1,0.0,Vector3(0.70,1,0.71))
+	_place_props(PostOfficeProps.PROPS)
 	lettering("COLLECTIONS  ·  ENQUIRIES",Vector3(0,3.18,-6.64),26)
 
 func _morgue() -> void:
