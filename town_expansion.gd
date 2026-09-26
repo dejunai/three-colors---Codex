@@ -165,15 +165,18 @@ func _dress(kind:String) -> void:
 			lettering("PRIVATE · ROOMS ABOVE",Vector3(5.2,3.3,-7.4),22)
 		"parlor":
 			_place_prop(PROP_RUG_PATTERNED,"ParlorRug",Vector3(0,0.006,0),5.8,0.0)
-			_place_prop(PROP_STONE_FIREPLACE,"ParlorFireplace",Vector3(0,0,-7.2),3.4,PI/2,Vector3(0.392,0.675,1.0))
+			# Fireplace opening faces local +X; -PI/2 opens into the room (+Z) from the back wall.
+			_place_prop(PROP_STONE_FIREPLACE,"ParlorFireplace",Vector3(0,0,-7.2),3.4,-PI/2,Vector3(0.392,0.675,1.0))
 			_place_prop(PROP_PARLOR_SOFA,"ParlorTuftedSofa",Vector3(-5.6,0,-0.5),3.8,-PI/2,Vector3(0.39,0.393,1.0))
 			_place_prop(PROP_PILLOW_BURGUNDY,"ParlorPillowBurgundy",Vector3(-5.0,0.62,-1.2),0.62,-PI/2)
 			_place_prop(PROP_PILLOW_GREEN,"ParlorPillowGreen",Vector3(-5.0,0.62,0.5),0.62,-PI/2)
-			_place_prop(PROP_PARLOR_ARMCHAIR_A,"ParlorArmchairNorth",Vector3(4.8,0,-1.7),1.35,PI/2,Vector3(0.862,0.893,1.0))
-			_place_prop(PROP_PARLOR_ARMCHAIR_B,"ParlorArmchairSouth",Vector3(4.8,0,1.7),1.35,PI/2,Vector3(0.862,0.893,1.0))
+			# Armchair seat faces local +X; yaw PI from the right wall faces the rug (-X).
+			_place_prop(PROP_PARLOR_ARMCHAIR_A,"ParlorArmchairNorth",Vector3(4.8,0,-1.7),1.35,PI,Vector3(0.862,0.893,1.0))
+			_place_prop(PROP_PARLOR_ARMCHAIR_B,"ParlorArmchairSouth",Vector3(4.8,0,1.7),1.35,PI,Vector3(0.862,0.893,1.0))
 			_place_prop(PROP_LOW_TABLE,"ParlorLowTable",Vector3(0,0,0),2.35,0.0,Vector3(0.609,0.339,1.0))
 			_place_prop(PROP_DECORATIVE_BOWL,"ParlorDecorativeBowl",Vector3(0,0.73,0),0.42,0.0)
-			_place_prop(PROP_SIDEBOARD,"ParlorSideboard",Vector3(5.5,0,-5.7),3.0,PI/2,Vector3(0.324,0.502,1.0))
+			# Sideboard drawers face local +X; -PI/2 aims them into the room (+Z) along the back wall.
+			_place_prop(PROP_SIDEBOARD,"ParlorSideboard",Vector3(5.5,0,-5.7),3.0,-PI/2,Vector3(0.324,0.502,1.0))
 			_place_prop(PROP_TABLE_LAMP_B,"ParlorTableLamp",Vector3(4.55,1.51,-5.7),0.58,0.0)
 			_place_prop(PROP_VASE_ROUND,"ParlorRoundVase",Vector3(6.25,1.51,-5.7),0.48,0.0)
 		"home":
@@ -237,8 +240,9 @@ func _post_office() -> void:
 		letters.name = "PostOfficeLetterBundle"
 		letters.rotation.z = spec[2]
 	# Seat public-side furniture on the room slab (floor mesh top is y≈-0.05).
-	_place_chair("PostOfficeChairLeft",Vector3(-6.2,0,3.1),1.15,PI/2)
-	_place_chair("PostOfficeChairRight",Vector3(6.2,0,3.1),1.15,-PI/2)
+	# Same ladderback +X seat: left wall yaw 0 faces +X into the room; right wall yaw PI faces -X.
+	_place_chair("PostOfficeChairLeft",Vector3(-6.2,0,3.1),1.15,0.0)
+	_place_chair("PostOfficeChairRight",Vector3(6.2,0,3.1),1.15,PI)
 	_place_prop(PROP_CRATE,"PostOfficeCrate",Vector3(-7.1,0,4.6),1.3,0.0,Vector3(1,0.66,0.65))
 	_place_prop(PROP_OPEN_CRATE,"PostOfficeOpenCrate",Vector3(7.0,0,4.7),1.15,0.0,Vector3(1,0.61,0.72))
 	_place_prop(PROP_BARREL,"PostOfficeBarrel",Vector3(7.55,0,0.55),1.1,0.0,Vector3(0.70,1,0.71))

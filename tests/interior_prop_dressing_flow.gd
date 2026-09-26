@@ -63,7 +63,29 @@ func _initialize() -> void:
 			assert(states.get_node("Boarded").visible and not states.get_node("Cleared").visible, "Pantry begins visibly boarded")
 			world.sync_pantry(true, true)
 			assert(not states.get_node("Boarded").visible and states.get_node("Cleared").visible, "Completed pantry portal shows removed boards")
+		# Tripo seat/front faces local +X (backrest/drawers opposite). Assert key room-facing yaws and Walter-relative bed scale.
+		if location == "precinct":
+			assert(is_equal_approx(world.get_node("PrecinctWaitingChair0").rotation.y, PI), "Waiting chairs face into the room toward intake")
+			assert(is_equal_approx(world.get_node("PrecinctSideChair").rotation.y, PI / 2), "Side chair faces the precinct desk")
+			assert(is_equal_approx(world.get_node("PrecinctClerkChair").rotation.y, -PI / 2), "Clerk chair faces the intake counter")
+		if location == "room":
+			assert(is_equal_approx(world.get_node("CorwinDeskChair").rotation.y, PI / 2), "Corwin desk chair faces the desk")
+			assert(is_equal_approx(world.get_node("CorwinBed").scale.x, 3.2), "Corwin bed scaled to Walter-relative single-bed size")
+			assert(is_equal_approx(world.get_node("CorwinDresser").rotation.y, PI), "Corwin dresser drawers face into the room")
+		if location == "lounge":
+			assert(is_equal_approx(world.get_node("LoungeFireplace").rotation.y, PI), "Lounge fireplace opens into the room")
+			assert(is_equal_approx(world.get_node("LoungeSideboard").rotation.y, PI), "Lounge sideboard drawers face into the room")
+			assert(is_equal_approx(world.get_node("LoungeClubChairNorth").rotation.y, 0.0), "Lounge club chairs face the round table")
+			assert(is_equal_approx(world.get_node("LoungeClubSofa").rotation.y, PI), "Lounge club sofa faces the rug")
+		if location == "upper_house_1":
+			assert(is_equal_approx(world.get_node("ParlorFireplace").rotation.y, -PI / 2), "Parlor fireplace opens into the room")
+			assert(is_equal_approx(world.get_node("ParlorSideboard").rotation.y, -PI / 2), "Parlor sideboard drawers face into the room")
+			assert(is_equal_approx(world.get_node("ParlorArmchairNorth").rotation.y, PI), "Parlor armchairs face into the room")
+			assert(is_equal_approx(world.get_node("ParlorArmchairSouth").rotation.y, PI), "Parlor armchairs face into the room")
+		if location == "post_office":
+			assert(is_equal_approx(world.get_node("PostOfficeChairLeft").rotation.y, 0.0), "Post-office left chair faces into the room")
+			assert(is_equal_approx(world.get_node("PostOfficeChairRight").rotation.y, PI), "Post-office right chair faces into the room")
 		for shade in world.find_children("InteriorLampShade", "MeshInstance3D", true, false): assert(shade.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "Interior shades must not cast floor blobs")
 		world.free()
-	print("INTERIOR PROP DRESSING PASS: domestic, precinct, post office, and lounge props render with gameplay targets intact")
+	print("INTERIOR PROP DRESSING PASS: domestic, precinct, parlor, post office, and lounge props render with correct facing/scale and gameplay targets intact")
 	quit(0)

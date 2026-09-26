@@ -285,7 +285,7 @@ func _place_prop(packed_path: String, prop_name: String, pos: Vector3, prop_scal
 	return prop
 
 func _place_chair(prop_name: String, pos: Vector3, prop_scale: float, angle: float = 0.0) -> Node3D:
-	# Keep chair placement angles literal so the visible seat faces its work surface.
+	# Ladderback GLB seat faces local +X (backrest on -X). Callers pass the yaw that aims +X at the work surface.
 	return _place_prop(PROP_CHAIR,prop_name,pos,prop_scale,angle)
 
 func _desk(pos:Vector3,size:Vector3=Vector3(3,0.16,1.4)) -> void:
@@ -309,15 +309,18 @@ func _precinct() -> void:
 	lettering("PRECINCT 4  ·  INTAKE",Vector3(0,3.3,-7.6),46)
 	for x in [-1.78,1.78]:
 		_place_prop(PROP_PRECINCT_COUNTER,"PrecinctIntakeCounter"+("Left" if x < 0 else "Right"),Vector3(x,0,-2.5),3.55,0.0,Vector3(1,0.28,0.48))
-	_place_chair("PrecinctClerkChair",Vector3(0,0,-4.2),1.2,PI)
+	# Ladderback seat faces local +X; yaw -PI/2 aims the clerk at the intake counter (+Z).
+	_place_chair("PrecinctClerkChair",Vector3(0,0,-4.2),1.2,-PI/2)
 	_place_prop(PROP_FILING_SINGLE,"PrecinctFilesSingle",Vector3(-7.1,0,-6.35),2.6,0.0,Vector3(0.38,1,0.45))
 	_place_prop(PROP_FILING_WIDE,"PrecinctFilesWide",Vector3(7.25,0,-6.4),2.5,0.0,Vector3(0.75,1,0.8))
 	_place_prop(PROP_DESK_LONG,"PrecinctSideDesk",Vector3(-5,0,1),2.25,PI/2,Vector3(0.5,0.44,1))
-	_place_chair("PrecinctSideChair",Vector3(-5,0,2.2),1.15,0.0)
+	# Face the side desk (-Z), not the wall.
+	_place_chair("PrecinctSideChair",Vector3(-5,0,2.2),1.15,PI/2)
 	_place_prop(PROP_DESK_LAMP,"PrecinctDeskLamp",Vector3(-5.65,0.98,0.85),0.65,0.0)
 	_place_prop(PROP_BOOK_STACK,"PrecinctBookStack",Vector3(-4.45,0.99,0.9),0.42,0.0)
+	# Right-wall waiting seats: yaw PI turns local +X into the room (-X) toward intake.
 	for z in [0,2,4]:
-		_place_chair("PrecinctWaitingChair"+str(z),Vector3(7,0,z),1.15,PI/2)
+		_place_chair("PrecinctWaitingChair"+str(z),Vector3(7,0,z),1.15,PI)
 	box(self,Vector3(6.8,2.3,7.78),Vector3(2.2,1.5,0.1),"374d37")
 	target("intake_clerk","Speak with the intake clerk",Vector3(0.4,0,-2.5))
 	target("intake","Submit the estate report",Vector3(0,0,-1.3))
@@ -354,10 +357,11 @@ func _boardinghouse() -> void:
 
 func _corwin_room() -> void:
 	# Uniform scale follows real-world height; the room keeps the original interaction anchors.
-	_place_prop(PROP_METAL_BED,"CorwinBed",Vector3(-5.5,0,-3.6),2.4,PI/2,Vector3(1,0.5,0.72))
+	# Uniform scale sized to Walter (~human single-bed length); was undersized at 2.4.
+	_place_prop(PROP_METAL_BED,"CorwinBed",Vector3(-5.5,0,-3.6),3.2,PI/2,Vector3(1,0.5,0.72))
 	_place_prop(PROP_RUG_PLAIN,"CorwinRug",Vector3(-1.4,0.006,-3.0),4.4,0.0)
 	_place_prop(PROP_DESK_LONG,"CorwinDesk",Vector3(3.5,0,-4),2.25,PI/2,Vector3(0.5,0.44,1))
-	_place_chair("CorwinDeskChair",Vector3(3.5,0,-2.7),1.2,0.0)
+	_place_chair("CorwinDeskChair",Vector3(3.5,0,-2.7),1.2,PI/2)
 	_place_prop(PROP_RADIATOR,"CorwinRadiator",Vector3(-8.35,0,0.5),2.8,0.0,Vector3(0.19,0.56,1))
 	_place_prop(PROP_WASHSTAND,"CorwinWashstand",Vector3(-6.25,0,5.45),1.4,PI/2,Vector3(0.78,0.9,1))
 	_place_prop(PROP_WASH_BASIN,"CorwinWashBasin",Vector3(-6.25,1.26,5.45),0.65,0.0)
@@ -385,7 +389,7 @@ func _corwin_room() -> void:
 	tumbler_material.albedo_color=Color(0.76,0.8,0.76,0.42)
 	tumbler.material_override=tumbler_material
 	whiskey=cylinder(desk_glass,Vector3(0,0.05,0),0.083,0.09,"7e7c6e")
-	var notice_dresser=_place_prop(PROP_WOODEN_DRESSER,"CorwinDresser",Vector3(6.8,0,3.5),1.45,PI/2,Vector3(0.53,0.70,1))
+	var notice_dresser=_place_prop(PROP_WOODEN_DRESSER,"CorwinDresser",Vector3(6.8,0,3.5),1.45,PI,Vector3(0.53,0.70,1))
 	box(self,Vector3(6.8,1.035,3.5),Vector3(0.55,0.025,0.36),"c8c7a8")
 	lettering("",Vector3(0,3.6,-7.35),28)
 	target("board","Consult the case board",Vector3(0,0,-6.2))
@@ -461,19 +465,23 @@ func _smoking_lounge() -> void:
 	lettering("SMOKING LOUNGE",Vector3(0,3.3,-7.6),42)
 	# Purpose-built club furniture keeps the central route to the steward and pantry clear.
 	_place_prop(PROP_BOOKSHELF,"LoungeBookshelf",Vector3(6.9,0,-6.85),2.7,PI/2,Vector3(0.27,1,0.70))
-	_place_prop(PROP_SIDEBOARD,"LoungeSideboard",Vector3(8.0,0,3.5),3.2,0.0,Vector3(0.324,0.502,1.0))
+	# Sideboard drawers face local +X; yaw PI aims them into the room from the right wall.
+	_place_prop(PROP_SIDEBOARD,"LoungeSideboard",Vector3(8.0,0,3.5),3.2,PI,Vector3(0.324,0.502,1.0))
 	_place_prop(PROP_TABLE_LAMP_A,"LoungeTableLamp",Vector3(7.72,1.61,3.5),0.58,0.0)
 	_place_prop(PROP_DISPLAY_SLOPED,"LoungeDisplaySloped",Vector3(-5.8,0,4.65),2.1,PI/2,Vector3(0.51,0.70,1))
 	_place_prop(PROP_DISPLAY_RECTANGULAR,"LoungeDisplayRectangular",Vector3(4.7,0,4.65),2.0,PI/2,Vector3(0.50,0.66,1))
 	_place_prop(PROP_CLOCK,"LoungeWallClock",Vector3(0,1.75,-7.63),1.05,PI/2)
 	_place_prop(PROP_RUG_PATTERNED,"LoungeRug",Vector3(0,0.006,-0.7),5.7,0.0)
 	_place_prop(PROP_LOUNGE_BAR,"LoungeBarCounter",Vector3(0,0,-5.75),6.0,PI/2,Vector3(0.301,0.278,1.0))
-	_place_prop(PROP_STONE_FIREPLACE,"LoungeFireplace",Vector3(8.45,0,-2.8),3.4,0.0,Vector3(0.392,0.675,1.0))
-	_place_prop(PROP_CLUB_SOFA,"LoungeClubSofa",Vector3(5.65,0,-0.2),3.8,PI/2,Vector3(0.39,0.393,1.0))
-	_place_prop(PROP_PILLOW_BURGUNDY,"LoungePillowBurgundy",Vector3(5.05,0.62,-0.95),0.62,PI/2)
-	_place_prop(PROP_PILLOW_GREEN,"LoungePillowGreen",Vector3(5.05,0.62,0.75),0.62,PI/2)
-	_place_prop(PROP_CLUB_ARMCHAIR,"LoungeClubChairNorth",Vector3(-5.1,0,-1.45),1.35,-PI/2,Vector3(0.862,0.893,1.0))
-	_place_prop(PROP_CLUB_ARMCHAIR,"LoungeClubChairSouth",Vector3(-5.1,0,1.45),1.35,-PI/2,Vector3(0.862,0.893,1.0))
+	# Fireplace opening faces local +X; yaw PI opens into the room from the right wall.
+	_place_prop(PROP_STONE_FIREPLACE,"LoungeFireplace",Vector3(8.45,0,-2.8),3.4,PI,Vector3(0.392,0.675,1.0))
+	# Club seat faces local +X; yaw PI faces the rug (-X).
+	_place_prop(PROP_CLUB_SOFA,"LoungeClubSofa",Vector3(5.65,0,-0.2),3.8,PI,Vector3(0.39,0.393,1.0))
+	_place_prop(PROP_PILLOW_BURGUNDY,"LoungePillowBurgundy",Vector3(5.05,0.62,-0.95),0.62,PI)
+	_place_prop(PROP_PILLOW_GREEN,"LoungePillowGreen",Vector3(5.05,0.62,0.75),0.62,PI)
+	# Club armchair seat faces local +X; yaw 0 from the left wall faces the round table.
+	_place_prop(PROP_CLUB_ARMCHAIR,"LoungeClubChairNorth",Vector3(-5.1,0,-1.45),1.35,0.0,Vector3(0.862,0.893,1.0))
+	_place_prop(PROP_CLUB_ARMCHAIR,"LoungeClubChairSouth",Vector3(-5.1,0,1.45),1.35,0.0,Vector3(0.862,0.893,1.0))
 	_place_prop(PROP_ROUND_TABLE_LOW,"LoungeRoundTable",Vector3(-3.55,0,0),1.72,0.0,Vector3(0.994,0.422,1.0))
 	_place_prop(PROP_ASH_TRAY,"LoungeAshtray",Vector3(-3.55,0.73,0),0.24,0.0)
 	steward_actor = StewardModel.create()
