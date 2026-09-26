@@ -3,18 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://4xo2cjq6oara"
-path="res://.godot/imported/wall_clock_body_tripo_image_acd475e9-20e8-469e-9005-c6570c8be6da_0.jpg-d097e807ac37923947049d8e684fe812.ctex"
+path.s3tc="res://.godot/imported/wall_clock_body_tripo_image_acd475e9-20e8-469e-9005-c6570c8be6da_0.jpg-d097e807ac37923947049d8e684fe812.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
-"md5": "6c3363b8d6ffb1852389dcb3502896f0"
+"md5": "5105ab7ae9987f35b00569057df2be52"
 }
 
 [deps]
 
 source_file="res://assets/models/props/common/wall_clock_body_tripo_image_acd475e9-20e8-469e-9005-c6570c8be6da_0.jpg"
-dest_files=["res://.godot/imported/wall_clock_body_tripo_image_acd475e9-20e8-469e-9005-c6570c8be6da_0.jpg-d097e807ac37923947049d8e684fe812.ctex"]
+dest_files=["res://.godot/imported/wall_clock_body_tripo_image_acd475e9-20e8-469e-9005-c6570c8be6da_0.jpg-d097e807ac37923947049d8e684fe812.s3tc.ctex"]
 
 [params]
 

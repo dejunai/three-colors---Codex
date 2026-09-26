@@ -3,18 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cntn1i8ffnyer"
-path="res://.godot/imported/washstand_table_tripo_image_2dea074f-6b88-4a8c-8027-adb94bc52195_0.jpg-9db515f1d021e78afa340f5d0ad72ac3.ctex"
+path.s3tc="res://.godot/imported/washstand_table_tripo_image_2dea074f-6b88-4a8c-8027-adb94bc52195_0.jpg-9db515f1d021e78afa340f5d0ad72ac3.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
-"md5": "9028dc026f948fc3d02f0a98f8e022e8"
+"md5": "c5a5a291b02432451173910c506c5601"
 }
 
 [deps]
 
 source_file="res://assets/models/props/domestic/washstand_table_tripo_image_2dea074f-6b88-4a8c-8027-adb94bc52195_0.jpg"
-dest_files=["res://.godot/imported/washstand_table_tripo_image_2dea074f-6b88-4a8c-8027-adb94bc52195_0.jpg-9db515f1d021e78afa340f5d0ad72ac3.ctex"]
+dest_files=["res://.godot/imported/washstand_table_tripo_image_2dea074f-6b88-4a8c-8027-adb94bc52195_0.jpg-9db515f1d021e78afa340f5d0ad72ac3.s3tc.ctex"]
 
 [params]
 

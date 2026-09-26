@@ -3,18 +3,19 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dtp654uubfjma"
-path="res://.godot/imported/metal_bed_tripo_image_789e55e5-b1e7-4a10-8320-c487c84e07c5_0.jpg-e75b443114c16c22304b997107c6494a.ctex"
+path.s3tc="res://.godot/imported/metal_bed_tripo_image_789e55e5-b1e7-4a10-8320-c487c84e07c5_0.jpg-e75b443114c16c22304b997107c6494a.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
-"md5": "2e710b0461cb341f6793f40e2a20e720"
+"md5": "79450e94d2ca7540705ed1972729d1bd"
 }
 
 [deps]
 
 source_file="res://assets/models/props/domestic/metal_bed_tripo_image_789e55e5-b1e7-4a10-8320-c487c84e07c5_0.jpg"
-dest_files=["res://.godot/imported/metal_bed_tripo_image_789e55e5-b1e7-4a10-8320-c487c84e07c5_0.jpg-e75b443114c16c22304b997107c6494a.ctex"]
+dest_files=["res://.godot/imported/metal_bed_tripo_image_789e55e5-b1e7-4a10-8320-c487c84e07c5_0.jpg-e75b443114c16c22304b997107c6494a.s3tc.ctex"]
 
 [params]
 
