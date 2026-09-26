@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://mohvi6ttpuol"
-path="res://.godot/imported/wash_basin_enamel_faceted_ceramic_bowl_3d_model_basecolor.jpg-7e66699cdc4d54554444a5a12d9afbf4.ctex"
+path.s3tc="res://.godot/imported/wash_basin_enamel_faceted_ceramic_bowl_3d_model_basecolor.jpg-7e66699cdc4d54554444a5a12d9afbf4.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "bde801c1dbebe81daa268e76a469c6db"
@@ -14,7 +15,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/domestic/wash_basin_enamel_faceted_ceramic_bowl_3d_model_basecolor.jpg"
-dest_files=["res://.godot/imported/wash_basin_enamel_faceted_ceramic_bowl_3d_model_basecolor.jpg-7e66699cdc4d54554444a5a12d9afbf4.ctex"]
+dest_files=["res://.godot/imported/wash_basin_enamel_faceted_ceramic_bowl_3d_model_basecolor.jpg-7e66699cdc4d54554444a5a12d9afbf4.s3tc.ctex"]
 
 [params]
 
