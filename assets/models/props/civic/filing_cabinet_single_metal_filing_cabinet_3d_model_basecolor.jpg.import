@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d1mdgbjj0smu8"
-path="res://.godot/imported/filing_cabinet_single_metal_filing_cabinet_3d_model_basecolor.jpg-ee46b24b7c9a70ecea7b81103fa4f823.ctex"
+path.s3tc="res://.godot/imported/filing_cabinet_single_metal_filing_cabinet_3d_model_basecolor.jpg-ee46b24b7c9a70ecea7b81103fa4f823.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "002a0715aa3a4397e5ce891b43b008a7"
@@ -14,7 +15,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/civic/filing_cabinet_single_metal_filing_cabinet_3d_model_basecolor.jpg"
-dest_files=["res://.godot/imported/filing_cabinet_single_metal_filing_cabinet_3d_model_basecolor.jpg-ee46b24b7c9a70ecea7b81103fa4f823.ctex"]
+dest_files=["res://.godot/imported/filing_cabinet_single_metal_filing_cabinet_3d_model_basecolor.jpg-ee46b24b7c9a70ecea7b81103fa4f823.s3tc.ctex"]
 
 [params]
 

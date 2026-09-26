@@ -27,7 +27,15 @@ Sometimes credited as "Copilot" by GitHub's own tooling attribution regardless o
 
 **Manus** — third-party auditor, a later arrival to the team; distinguished from the other reviewers by being able to actually play the game rather than only read source and docs.
 
-**Grok-bot-minis** — red-team the conceptual commercial release (market/positioning concerns, not code or docs).
+**Grok-bot-minis** — red-team the conceptual commercial release (market/positioning concerns, not code or docs). They also take on two art-pipeline roles under Dejunai's direction:
+- **Concept and prop reference renders.** Period interior concepts and isolated single-prop images for the Tripo 3D pipeline. The reference-only rules are in `docs/art_reference/PROP_LIST.md`: render text is never reference, and there are no fantasy or Gothic-iconography props.
+- **Prop touch-up (since 2026-09-26).** After Codex lays out a room's props, a Grok-bot-mini adjusts the placement numbers until nothing floats, tilts, clips or faces the wrong way.
+  - It edits only the `pos` / `yaw` / `scale` values of existing rows in the room's prop placement table.
+  - It does not add, remove or rename rows (Codex's lane).
+  - It does not touch collision primitives, hotspots, talk points or `FIXED_STAFF`/`RETURNING_STAFF` positions (fixed contracts).
+  - It keeps scale uniform.
+  - Its fix list is the failure output of `tests/interior_prop_dressing_flow.gd`, and the job is done when that suite passes and Dejunai signs off the room from screenshots.
+  - The same verification standard applies as for every agent: a touch-up isn't recorded as landed until the tests pass on the working tree.
 
 **Lumo and MetaAI** — consulted occasionally for outside assessments of the repository, usually after major updates; may or may not red-team the code depending on what's asked of them for that pass.
 
