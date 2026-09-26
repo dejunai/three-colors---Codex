@@ -209,7 +209,7 @@ func run(g:Node) -> void:
 		g.breaker._break_glass(g,g.estate)
 	await g.get_tree().create_timer(1.5).timeout
 	await RenderingServer.frame_post_draw
-	var path=ProjectSettings.globalize_path("res://qa_"+g.capture_mode+".png")
+	var path=ProjectSettings.globalize_path("res://archive/qa_captures/qa_"+g.capture_mode+".png")
 	var result=g.get_viewport().get_texture().get_image().save_png(path)
 	if result==OK: print("CAPTURE "+path)
 	else: push_error("Capture failed: "+str(result))

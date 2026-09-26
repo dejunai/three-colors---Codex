@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cllmh46vc20he"
-path="res://.godot/imported/qa_gate.png-feff3cb256bf6510e3c21ca324cffbaf.ctex"
+uid="uid://c73k8wns5po1c"
+path="res://.godot/imported/qa_town_pickman.png-bb7ef7ee0f97132651ff54fe62c824a2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://qa_gate.png"
-dest_files=["res://.godot/imported/qa_gate.png-feff3cb256bf6510e3c21ca324cffbaf.ctex"]
+source_file="res://qa_town_pickman.png"
+dest_files=["res://.godot/imported/qa_town_pickman.png-bb7ef7ee0f97132651ff54fe62c824a2.ctex"]
 
 [params]
 

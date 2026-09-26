@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0tlnoq8ory0v"
-path="res://.godot/imported/qa_town_business.png-2d63c80f265d420b197f8cad4a5d65e8.ctex"
+uid="uid://dc7x5u2t12x5"
+path="res://.godot/imported/qa_coroners_assistant.png-a180538077369dfdcdea15b3c73a9a16.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://qa_town_business.png"
-dest_files=["res://.godot/imported/qa_town_business.png-2d63c80f265d420b197f8cad4a5d65e8.ctex"]
+source_file="res://qa_coroners_assistant.png"
+dest_files=["res://.godot/imported/qa_coroners_assistant.png-a180538077369dfdcdea15b3c73a9a16.ctex"]
 
 [params]
 

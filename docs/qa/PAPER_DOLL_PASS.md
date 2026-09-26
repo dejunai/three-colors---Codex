@@ -18,6 +18,6 @@ Implemented on `feature/analogue-pocket-watch` as the second focused UI refineme
 
 - `tests/paper_doll_flow.gd`: all six controls exist; coat selection mutates the canonical state and redraws; badge visibility follows coat/loss; flask loss and ammunition mirror state; the grounds action stays in the right-hand action group; child equipment/notebook UI returns to the doll while directly opened UI still returns to gameplay.
 - `tests/pocket_watch_flow.gd`: the icon exists with its textual tooltip and still reaches the full watch behavior.
-- `docs/qa/paper_doll.png`: native Godot capture inspected for hierarchy, callout alignment, equipment readability, watch placement, scrolling and return-button placement.
+- `archive/docs/qa/paper_doll.png`: native Godot capture inspected for hierarchy, callout alignment, equipment readability, watch placement, scrolling and return-button placement.
 
 The paper doll is presentation over existing state. It adds no equipment bonuses, inventory duplication, or new combat rules.

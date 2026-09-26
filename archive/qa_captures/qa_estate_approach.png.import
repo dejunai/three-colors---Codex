@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0tlnoq8ory0v"
-path="res://.godot/imported/qa_town_business.png-2d63c80f265d420b197f8cad4a5d65e8.ctex"
+uid="uid://d3bogpp1a4lag"
+path="res://.godot/imported/qa_estate_approach.png-d7a2b3a5188143ca4c84852c6ebecd12.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://qa_town_business.png"
-dest_files=["res://.godot/imported/qa_town_business.png-2d63c80f265d420b197f8cad4a5d65e8.ctex"]
+source_file="res://qa_estate_approach.png"
+dest_files=["res://.godot/imported/qa_estate_approach.png-d7a2b3a5188143ca4c84852c6ebecd12.ctex"]
 
 [params]
 
