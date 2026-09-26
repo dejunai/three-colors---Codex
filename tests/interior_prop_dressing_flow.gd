@@ -35,7 +35,29 @@ func _initialize() -> void:
 			assert(world.points.has(target_id), location + " lost interaction target " + target_id)
 		if location == "precinct": assert(world.has_node("PrecinctBookStack"), "Precinct must use period book clutter instead of lever-arch binders")
 		if location == "post_office":
-			assert(world.find_children("PostOfficeLetterBundle*", "MeshInstance3D", true, false).size() >= 5, "Post-office sorting wall needs visible mail bundles")
+			# White placeholder BoxMesh bundles removed; medium fill uses real envelope/parcel props.
+			assert(world.find_children("PostOfficeLetterBundle*", "MeshInstance3D", true, false).is_empty(), "Placeholder letter-bundle boxes must be gone")
+			var pigeon_fills: Array = []
+			var envelope_fills := 0
+			var parcel_fills := 0
+			var seen_yaws: Dictionary = {}
+			for child in world.get_children():
+				var child_name := str(child.name)
+				if child_name.begins_with("PostOfficePigeonFill") or child_name.begins_with("PostOfficePigeonParcel"):
+					pigeon_fills.append(child)
+					if child_name.begins_with("PostOfficePigeonParcel"):
+						parcel_fills += 1
+					else:
+						envelope_fills += 1
+			assert(pigeon_fills.size() >= 12 and pigeon_fills.size() <= 20, "Post-office pigeonholes need medium fill (12-20 slots), got %s" % pigeon_fills.size())
+			assert(envelope_fills > parcel_fills and parcel_fills >= 1, "Pigeonhole fill should be mostly letters/bundles with a few parcels")
+			for fill in pigeon_fills:
+				var node := fill as Node3D
+				assert(node != null and node.find_children("*", "MeshInstance3D", true, false).size() > 0, str(fill.name) + " must render a mesh")
+				assert(is_equal_approx(node.scale.x, node.scale.y) and is_equal_approx(node.scale.y, node.scale.z), str(fill.name) + " must use uniform scale")
+				assert(node.position.z < -6.5 and node.position.z > -7.0, str(fill.name) + " must sit in the pigeonhole front")
+				seen_yaws["%.4f" % node.rotation.y] = true
+			assert(seen_yaws.size() >= 8, "Pigeonhole fillers need varied yaw so slots do not look cloned")
 			# Counter desk props sit on the open writing surface, clear of each module's wicket.
 			var counter_top_y := 1.0
 			for prop_name in ["PostOfficeBalanceScale", "PostOfficeEnvelopeStack", "PostOfficeParcelSquare", "PostOfficeParcelLarge", "PostOfficeParcelLong"]:

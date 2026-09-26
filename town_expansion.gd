@@ -225,17 +225,33 @@ func _post_office() -> void:
 	_place_prop(PROP_POST_CORKBOARD,"PostOfficeCorkboard",Vector3(-8.78,0.95,0.8),2.6,PI)
 	_place_prop(PROP_POST_FROSTED_WINDOW,"PostOfficeFrostedWindow",Vector3(8.71,0.95,2.4),2.4,PI)
 	_place_prop(PROP_POST_HANGING_SIGN,"PostOfficeHangingSign",Vector3(8.71,1.35,-2.8),2.15,0.0)
-	# A few uneven bundles keep the sorting wall from reading as an unused display.
-	for spec in [
-		[Vector3(-4.4,0.65,-6.72),Vector3(0.46,0.10,0.05),-0.03],
-		[Vector3(-2.0,1.22,-6.72),Vector3(0.62,0.12,0.05),0.02],
-		[Vector3(0.1,0.72,-6.72),Vector3(0.52,0.11,0.05),-0.015],
-		[Vector3(2.2,1.72,-6.72),Vector3(0.58,0.13,0.05),0.025],
-		[Vector3(4.25,2.28,-6.72),Vector3(0.43,0.10,0.05),-0.02],
-	]:
-		var letters := box(self,spec[0],spec[1],"c3bfa3")
-		letters.name = "PostOfficeLetterBundle"
-		letters.rotation.z = spec[2]
+	# Medium pigeonhole fill: real letter/bundle (+few small parcel) props, not placeholder boxes.
+	# Spec: [scene, name, pos, scale, yaw, pitch, roll] -- slight euler variance so slots do not clone.
+	var pigeon_fill := [
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill01", Vector3(-4.55, 0.42, -6.78), 0.28, 0.12, 0.04, -0.03],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill02", Vector3(-3.85, 0.88, -6.75), 0.34, -0.18, -0.02, 0.05],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill03", Vector3(-4.70, 1.35, -6.80), 0.30, 0.35, 0.06, -0.02],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill04", Vector3(-3.15, 0.55, -6.76), 0.26, PI / 2 + 0.08, -0.05, 0.03],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill05", Vector3(-2.45, 1.10, -6.74), 0.38, -0.22, 0.03, -0.04],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill06", Vector3(-3.40, 1.78, -6.79), 0.32, 0.15, -0.04, 0.06],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill07", Vector3(-1.90, 0.70, -6.77), 0.29, PI / 2 - 0.14, 0.05, -0.01],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill08", Vector3(-2.10, 1.55, -6.73), 0.36, 0.28, -0.03, 0.02],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill09", Vector3(-1.55, 2.15, -6.81), 0.27, -0.31, 0.02, -0.05],
+		[PROP_POST_PARCEL_SQUARE, "PostOfficePigeonParcel01", Vector3(-4.20, 2.05, -6.82), 0.22, 0.18, 0.01, 0.04],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill11", Vector3(1.45, 0.48, -6.76), 0.31, -0.10, 0.04, -0.02],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill12", Vector3(2.25, 0.95, -6.74), 0.35, PI / 2 + 0.16, -0.03, 0.05],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill13", Vector3(1.75, 1.48, -6.78), 0.28, 0.22, 0.05, -0.04],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill14", Vector3(3.05, 0.62, -6.75), 0.33, -0.26, -0.02, 0.03],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill15", Vector3(3.85, 1.20, -6.80), 0.37, 0.14, 0.03, -0.06],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill16", Vector3(2.55, 1.85, -6.73), 0.30, PI / 2 - 0.09, -0.05, 0.02],
+		[PROP_POST_ENVELOPES, "PostOfficePigeonFill17", Vector3(4.35, 0.80, -6.77), 0.26, 0.40, 0.02, -0.03],
+		[PROP_POST_PARCEL_SQUARE, "PostOfficePigeonParcel02", Vector3(3.55, 2.10, -6.83), 0.24, -0.15, 0.01, 0.05],
+		[PROP_POST_PARCEL_SQUARE, "PostOfficePigeonParcel03", Vector3(4.50, 1.65, -6.81), 0.20, 0.25, -0.02, -0.01],
+	]
+	for spec in pigeon_fill:
+		var fill := _place_prop(spec[0], spec[1], spec[2], spec[3], spec[4])
+		fill.rotation.x = spec[5]
+		fill.rotation.z = spec[6]
 	# Seat public-side furniture on the room slab (floor mesh top is y≈-0.05).
 	_place_chair("PostOfficeChairLeft",Vector3(-6.2,0,3.1),1.15,PI/2)
 	_place_chair("PostOfficeChairRight",Vector3(6.2,0,3.1),1.15,-PI/2)
