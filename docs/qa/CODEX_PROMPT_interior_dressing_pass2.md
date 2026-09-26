@@ -1,4 +1,6 @@
-# Codex handoff: interior dressing, pass 2
+﻿# Codex handoff: interior dressing, pass 2
+
+**Superseded in part (2026-09-26):** where this prompt's placement guidance conflicts with `docs/qa/CODEX_PROMPT_prop_placement_tables.md` (revision 2), the placement-tables contract wins.
 
 **Written:** 2026-09-25 by the Cowork session that maintains the TDD. **Basis:** Dejunai's 12 in-game screenshots of Corwin's room, the precinct, the post office and the smoking lounge, plus Codex's four preliminary shots in `archive/screenshots/`. Performance and loading are fine. Everything below is placement, transform or asset-choice work.
 

@@ -1,6 +1,8 @@
 # Codex handoff: prop placement tables and grounding guard
 
-**Written:** 2026-09-26, by the Cowork session that maintains the TDD. **Revision 2:** same day, folding in Codex's review. Codex has approved the workflow and ownership split with these refinements.
+**Written:** 2026-09-26, by the Cowork session that maintains the TDD. **Revision 2:** same day, folding in Codex's review. Codex and Grok have both approved this contract.
+
+**Status:** this document supersedes any conflicting placement guidance in `CODEX_PROMPT_interior_dressing_pass2.md`. Commit it together with the implementation, so that both agents work from the same versioned contract.
 
 **Why:** interior dressing now runs in two stages. Codex lays out props per room, then a Grok-bot-mini touches up the numbers: position, yaw and uniform scale (see `AGENTS.md`, Grok-bot-minis). For that to work, Grok's corrections must survive Codex's next pass, and floating, tilted or clipping props should be caught by a test before anyone has to spot them in a screenshot.
 
@@ -25,7 +27,7 @@
   | `pos`, `yaw`, `scale` | **Grok** (values only) | Placement; `scale` is one positive uniform factor |
   | `support` | Codex | See the support grammar below |
   | `collision` | Codex | Primitive footprint, or none |
-  | `tilt` | Codex | Allows non-zero pitch/roll (pigeonhole letters); default false |
+  | `tilt` | Codex | Codex-authored pitch/roll values (pigeonhole letters); absent means zero |
   | `cast_shadow` | Codex | Default on; off for pendant shades and lamp glass |
   | `clearance_check` | Codex | Default on; off for deliberate overlaps (see section 2) |
 
@@ -33,7 +35,7 @@
   - Codex adds, removes and reorders rows, and owns every field except `pos`, `yaw` and `scale`.
   - Grok edits only those three values in existing rows.
   - Neither rewrites the other's rows wholesale.
-- **The data-driven pigeonhole fill** (`8a9fe0f`) can stay procedural. Record its seed or its expanded row list so it's reproducible.
+- **The pigeonhole fill** (`8a9fe0f`) is expanded into named rows, one per occupied cell, rather than kept as a procedural seed. That gives Grok individual control of every cell.
 
 ### Support grammar
 
