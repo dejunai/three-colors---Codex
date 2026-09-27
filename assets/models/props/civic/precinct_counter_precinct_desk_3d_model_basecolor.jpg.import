@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://blri7v0icxllg"
-path="res://.godot/imported/precinct_counter_precinct_desk_3d_model_basecolor.jpg-68db7fbbe5d0aea8fb05fcf359e5a09f.ctex"
+path.s3tc="res://.godot/imported/precinct_counter_precinct_desk_3d_model_basecolor.jpg-68db7fbbe5d0aea8fb05fcf359e5a09f.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "19e6e1d2f667997c76c01d395beb3b4b"
@@ -14,7 +15,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/civic/precinct_counter_precinct_desk_3d_model_basecolor.jpg"
-dest_files=["res://.godot/imported/precinct_counter_precinct_desk_3d_model_basecolor.jpg-68db7fbbe5d0aea8fb05fcf359e5a09f.ctex"]
+dest_files=["res://.godot/imported/precinct_counter_precinct_desk_3d_model_basecolor.jpg-68db7fbbe5d0aea8fb05fcf359e5a09f.s3tc.ctex"]
 
 [params]
 

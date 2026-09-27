@@ -3,9 +3,10 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bkp0w4qj2jf08"
-path="res://.godot/imported/bookshelf_narrow_tripo_image_0b84e855-e909-4bf2-8e06-3bd3cdeb9b15_0.jpg-264c1527cebe6516c801bbae02cb75f5.ctex"
+path.s3tc="res://.godot/imported/bookshelf_narrow_tripo_image_0b84e855-e909-4bf2-8e06-3bd3cdeb9b15_0.jpg-264c1527cebe6516c801bbae02cb75f5.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "5948b340829df0eb6056477e84b193da"
@@ -14,7 +15,7 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/props/domestic/bookshelf_narrow_tripo_image_0b84e855-e909-4bf2-8e06-3bd3cdeb9b15_0.jpg"
-dest_files=["res://.godot/imported/bookshelf_narrow_tripo_image_0b84e855-e909-4bf2-8e06-3bd3cdeb9b15_0.jpg-264c1527cebe6516c801bbae02cb75f5.ctex"]
+dest_files=["res://.godot/imported/bookshelf_narrow_tripo_image_0b84e855-e909-4bf2-8e06-3bd3cdeb9b15_0.jpg-264c1527cebe6516c801bbae02cb75f5.s3tc.ctex"]
 
 [params]
 
